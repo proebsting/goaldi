@@ -13,6 +13,13 @@ func NewString(s string) *VString {
 	return &vs
 }
 
+func (v *VString) String() string {
+	return string(*v)
+}
+func (v *VString) Deref() Value {
+	return v
+}
+
 func (v *VString) AsString() *VString {
 	return v
 }
@@ -26,8 +33,4 @@ func (v *VString) AsNumber() *VNumber {
 	} else {
 		return nil
 	}
-}
-
-func (v *VString) String() string {
-	return string(*v)
 }

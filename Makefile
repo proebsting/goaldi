@@ -1,10 +1,11 @@
 
 PKG = goaldi
-PROGS = $(PKG)/test1
+PROGS = $(PKG)/test1 $(PKG)/test2
 GOBIN = $$GOPATH/bin
 
 default:  build
 	$$GOPATH/bin/test1
+	$$GOPATH/bin/test2
 
 build:
 	go install $(PROGS)

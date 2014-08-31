@@ -20,6 +20,15 @@ func NewNil() *VNil {
 	return NIL
 }
 
+//  VNil.String returns "nil" as a Go string for printing
+func (v *VNil) String() string {
+	return "nil"
+}
+
+func (v *VNil) Deref() Value {
+	return v
+}
+
 // //  VNil.AsString returns nil, signifying no implicit conversion to VString
 // func (v *VNil) AsString() *VString {
 // 	return nil
@@ -29,8 +38,3 @@ func NewNil() *VNil {
 // func (v *VNil) AsNumber() *VNumber {
 // 	return nil
 // }
-
-//  VNil.String returns "%nil%" as a Go string for printing
-func (v *VNil) String() string {
-	return "%nil%"
-}

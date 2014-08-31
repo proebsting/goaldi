@@ -28,8 +28,5 @@ func gmain(args []Value) (Value, *Closure) {
 	f.Print("strings: ")
 	f.Println(V("19").Mult(V("3")))
 
-	f.Print("boom: ")
-	f.Println(V(31).Add(V(nil)))
-
 	return Fail()
 }

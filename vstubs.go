@@ -4,6 +4,9 @@
 //  the String() method, effectively implements the Value interface.
 //  These stub functions act as defaults if not overridden by
 //  implementations in the enclosing struct.  Each one panics.
+//
+//  Note that a stub can't access its enclosing struct.
+//  This means that a default stub can't do anything *useful*.
 
 package goaldi
 
@@ -21,6 +24,7 @@ type Stubs struct { // the Stubs struct itself is empty
 // The String() method, used by fmt.Printf, is deliberately not implemented.
 // Every Value interface *must* supply at least that one method.
 
+func (p *Stubs) Deref() Value       { no(); return nil }
 func (p *Stubs) AsString() *VString { no(); return nil }
 func (p *Stubs) AsNumber() *VNumber { no(); return nil }
 
@@ -35,7 +39,7 @@ type stubsplus struct {
 
 func (p *stubsplus) String() string { return "stubsplus"}
 
-var _ Value = &stubsplus{}	// if error, stub collection is imcomplete
+var _ Value = &stubsplus{}	// if error, stub collection is incomplete
 
 //  --------------- support functions --------------
 

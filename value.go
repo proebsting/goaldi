@@ -8,6 +8,7 @@ import (
 
 type Value interface {
 	String() string // return (Go) string image for printing
+	Deref() Value   // return dereferenced value
 
 	AsString() *VString // convert self to VString
 	AsNumber() *VNumber // convert self to VNumber
