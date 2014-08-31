@@ -13,7 +13,7 @@ type Value interface {
 	AsNumber() *VNumber // convert self to VNumber
 
 	Add(v2 Value) (Value, *Closure)  // e1 + e2
-	Mult(v2 Value) (Value, *Closure) // e1 + e2
+	Mult(v2 Value) (Value, *Closure) // e1 * e2
 }
 
 // verify that the interface is implemented as expected
