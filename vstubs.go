@@ -47,7 +47,7 @@ var _ Value = &stubsplus{}	// if error, stub collection is incomplete
 //  and a source reference identifying the caller's caller.
 //
 //  Assuming the information is available, the message takes the form (e.g.)
-//	No Divide() function for supplied argument type (sourcefile.go+29)
+//	No Divide() function for type of supplied argument (sourcefile.go+29)
 //
 //  It would be really nice if we could include the offending value and type,
 //  but that information is not available.
@@ -59,7 +59,7 @@ func no() (Value, *Closure) {
 			msg = msg + tail(f.Name(), ".") + "() "
 		}
 	}
-	msg = msg + "function for supplied argument type"
+	msg = msg + "function for type of supplied argument"
 	if _, file, line, ok := runtime.Caller(2); ok {
 		msg = fmt.Sprintf("%s (%s+%d)", msg, tail(file, "/"), line)
 	}
