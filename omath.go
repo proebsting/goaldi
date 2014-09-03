@@ -1,4 +1,4 @@
-//  math.go -- math operations
+//  omath.go -- math operations
 
 package goaldi
 

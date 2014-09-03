@@ -5,7 +5,6 @@ import (
 	g "goaldi"
 )
 
-
 // text implementation of a Value struct outside the Goaldi package
 
 type MyValue struct {
@@ -14,9 +13,8 @@ type MyValue struct {
 }
 
 func (v *MyValue) String() string {
-	return f.Sprintf("my(%d)",v.value)
+	return f.Sprintf("my(%d)", v.value)
 }
-
 
 func main() {
 	g.Run(gmain)

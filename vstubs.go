@@ -1,4 +1,4 @@
-//  vstubs.go -- a collection of stub methods that panic
+//  vstubs.go -- a collection of Value stub methods that panic
 //
 //  A struct type that includes a Stubs field, and additionally implements
 //  the String() method, effectively implements the Value interface.
@@ -37,9 +37,9 @@ type stubsplus struct {
 	Stubs
 }
 
-func (p *stubsplus) String() string { return "stubsplus"}
+func (p *stubsplus) String() string { return "stubsplus" }
 
-var _ Value = &stubsplus{}	// if error, stub collection is incomplete
+var _ Value = &stubsplus{} // if error, stub collection is incomplete
 
 //  --------------- support functions --------------
 

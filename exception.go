@@ -30,12 +30,12 @@ func Throwf(format string, args ...interface{}) (Value, *Closure) {
 func Run(p Procedure) {
 	fmt.Println("[--------------------- begin ---------------------]")
 
-//	defer func() {
-//		// this works, but get more detailed traceback without it
-//		if x := recover(); x != nil {
-//			fmt.Println("PANIC:", x)
-//		}
-//	}()
+	//	defer func() {
+	//		// this works, but get more detailed traceback without it
+	//		if x := recover(); x != nil {
+	//			fmt.Println("PANIC:", x)
+	//		}
+	//	}()
 
 	t1, c1 := p(nil)
 	if c1 == CATCHME {

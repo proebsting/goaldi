@@ -1,4 +1,4 @@
-//  number.go -- the Goaldi type "number"
+//  vnumber.go -- VNumber, the Goaldi type "number"
 
 package goaldi
 

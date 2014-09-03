@@ -1,4 +1,4 @@
-//  string.go -- the Goaldi type "string"
+//  vstring.go -- VString, the Goaldi type "string"
 
 package goaldi
 

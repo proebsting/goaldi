@@ -1,4 +1,4 @@
-//  nil.go -- the Goaldi type "nil"
+//  vnil.go -- VNil, the Goaldi type "nil"
 
 package goaldi
 

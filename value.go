@@ -1,4 +1,4 @@
-//  value.go -- the parent of all Goaldi types
+//  value.go -- Value, the parent of all Goaldi types
 
 package goaldi
 
