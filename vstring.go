@@ -16,15 +16,8 @@ func NewString(s string) *VString {
 func (v *VString) String() string {
 	return string(*v)
 }
-func (v *VString) Deref() Value {
-	return v
-}
 
-func (v *VString) AsString() *VString {
-	return v
-}
-
-func (v *VString) AsNumber() *VNumber {
+func (v *VString) ToNumber() *VNumber {
 	var f float64
 	var b byte
 	n, _ := fmt.Sscanf(string(*v), "%f%c", &f, &b)

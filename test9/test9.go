@@ -9,7 +9,6 @@ import (
 
 type MyValue struct {
 	value int
-	g.Stubs
 }
 
 func (v *MyValue) String() string {
@@ -28,6 +27,7 @@ func gmain(args []g.Value) (g.Value, *g.Closure) {
 	f.Println(v)
 	v.(*MyValue).value = 19
 	f.Println(v)
-	v.Add(g.NewNumber(23))
+	f.Println("Expect PANIC:")
+	v.(g.IMath).Add(g.NewNumber(23)) // Add not impl by MyValue
 	return g.Fail()
 }

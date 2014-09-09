@@ -21,7 +21,9 @@ func gmain(args []Value) (Value, *Closure) {
 	var c Value = NewNil()
 	tc := Trapped(&c)
 	f.Println(a, ta, b, tb, c, tc)
-	d, _ := ta.Add(tb)
+	av, _ := ta.Deref()
+	bv, _ := tb.Deref()
+	d, _ := bv.(IMath).Add(av.(IMath)) // #%#% not a.Add(b) yet
 	f.Println(d)
 	tc.Assign(NewNumber(7.3))
 	f.Println(c)

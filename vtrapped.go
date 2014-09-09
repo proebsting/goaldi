@@ -19,26 +19,19 @@ func Trapped(target *Value) *VTrapped {
 }
 
 //  extract value of a trapped variable for use as an rvalue
-func (t *VTrapped) Deref() Value {
+func (t *VTrapped) Deref() (Value, *Closure) {
 	// later becomes more complicated with tvsubs, tvstr
-	return *t.Target
+	return *t.Target, nil
 }
 
 //  show trapped variable as a string for debugging: produces [[value]]
+//  #%#% should make this smarter
 func (t *VTrapped) String() string {
-	return fmt.Sprintf("[[%s]]", (*(t.Target)).String())
+	return fmt.Sprintf("[[%v]]", (*(t.Target)))
 }
 
 //  assign value to trapped variable
-func (t *VTrapped) Assign(v Value) *VTrapped {
-	*t.Target = v.Deref()
-	return t
+func (t *VTrapped) Assign(v Value) (IVariable, *Closure) {
+	*t.Target = v
+	return t, nil
 }
-
-//  implement Value interface
-
-func (t *VTrapped) AsString() *VString { return t.Deref().AsString() }
-func (t *VTrapped) AsNumber() *VNumber { return t.Deref().AsNumber() }
-
-func (t *VTrapped) Add(v2 Value) (Value, *Closure)  { return t.Deref().Add(v2) }
-func (t *VTrapped) Mult(v2 Value) (Value, *Closure) { return t.Deref().Mult(v2) }
