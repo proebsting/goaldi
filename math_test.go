@@ -21,11 +21,15 @@ func TestMath(t *testing.T) {
 
 func setup(t *testing.T, v float64) (*VNumber, *VString) {
 	n1 := NewNumber(v)
-	s1 := NewString(fmt.Sprintf("%g",v))
+	s1 := NewString(fmt.Sprintf("%g", v))
 	n2 := s1.ToNumber()
 	s2 := n2.ToString()
-	if n1.val() != n2.val() { t.Errorf("numbers %v != %v", n1, n2) }
-	if s1.String() != s2.String() { t.Errorf("strings %v != %v", s1, s2) }
+	if n1.val() != n2.val() {
+		t.Errorf("numbers %v != %v", n1, n2)
+	}
+	if s1.String() != s2.String() {
+		t.Errorf("strings %v != %v", s1, s2)
+	}
 	return n1, s1
 }
 
