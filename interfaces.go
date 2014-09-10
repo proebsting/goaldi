@@ -3,6 +3,7 @@
 package goaldi
 
 //  A Value can now be anything
+//  Use of this interface is intended to designate a Goaldi value
 type Value interface{}
 
 //  Interfaces for implicitly convertible values

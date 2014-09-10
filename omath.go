@@ -2,14 +2,12 @@
 
 package goaldi
 
-import "fmt"
-
 //  extract float64 value from arbitrary Value, or panic
 func fval(v Value) float64 {
 	if n, ok := v.(Numerable); ok {
 		return float64(*(n.ToNumber()))
 	} else {
-		panic("not a number: " + fmt.Sprintf("%v", v))
+		panic(&RunErr{"Not a number", v})
 	}
 }
 

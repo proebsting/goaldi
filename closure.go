@@ -7,13 +7,12 @@
 //  -----  -------   ---------------------------------
 //   nil     nil     procedure failed
 //  value    nil     procedure returned a value
-//  value  CATCHME   procedure threw an exception  (#%#% NOT ALWAYS CHECKED)
 //  value   resume   procedure suspended and can be resumed
 
 package goaldi
 
-type Procedure func([]Value) (Value, *Closure) // a Goaldi procedure
-type Resumer func() (Value, *Closure)          // a resumption function
+type Procedure func(...Value) (Value, *Closure) // a Goaldi procedure
+type Resumer func() (Value, *Closure)           // a resumption function
 
 type Closure struct {
 	Go Resumer // start or resumption function, depending on context

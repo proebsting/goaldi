@@ -12,7 +12,7 @@ type MyValue struct {
 }
 
 func (v *MyValue) String() string {
-	return f.Sprintf("my(%d)", v.value)
+	return f.Sprintf("MyValue(%d)", v.value)
 }
 
 func main() {
@@ -20,14 +20,39 @@ func main() {
 }
 
 //  procedure gmain()
-func gmain(args []g.Value) (g.Value, *g.Closure) {
+func gmain(args ...g.Value) (g.Value, *g.Closure) {
 
-	//#%#% this code doesn't check for thrown exceptions or even failures
+	// boilerplate prologue
+	var ev interface{}
+	var ln = 100
+	defer func() {
+		if p := recover(); p != nil {
+			panic(g.Catch(p, ev, "test.gdi", ln, "gmain", args))
+		}
+	}()
+
+	return gsubr(g.NewNumber(23), g.NewString("skidoo"))
+}
+
+//  procedure gsubr()
+func gsubr(args ...g.Value) (g.Value, *g.Closure) {
+
+	// boilerplate prologue
+	var ev interface{}
+	var ln = 200
+	defer func() {
+		if p := recover(); p != nil {
+			panic(g.Catch(p, ev, "test.gdi", ln, "gsubr", args))
+		}
+	}()
+
 	var v g.Value = &MyValue{}
 	f.Println(v)
 	v.(*MyValue).value = 19
 	f.Println(v)
 	f.Println("Expect PANIC:")
+	ln = 222
+	ev = v
 	v.(g.IAdd).Add(g.NewNumber(23)) // Add not impl by MyValue
 	return g.Fail()
 }

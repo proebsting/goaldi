@@ -1,48 +1,87 @@
-//  exception.go -- things dealing with exceptions
-
-//  NOTE:  Not all of the runtime code currently checks for exceptions.
-//  It adds clutter, and we may end up doing this differently via panics.
+//  exception.go -- things dealing with exceptions and panics
 
 package goaldi
 
 import (
 	"fmt"
+	"io"
+	"os"
+	"runtime"
+	"strings"
 )
 
-var CATCHME *Closure = &Closure{} // special flag value for exceptions
-
-//  NewException constructs an exception from a format string and arguments
-func NewException(format string, args ...interface{}) Value {
-	return NewString(fmt.Sprintf(format, args...))
+//  RunErr records a Goaldi runtime error
+type RunErr struct {
+	msg  string // explanatory message
+	offv Value  // offending value
 }
 
-//  Throw returns a simple Goaldi value as an exception
-func Throw(v Value) (Value, *Closure) {
-	return v, CATCHME
-}
-
-//  Throwf formats and throws an exception a la printf.
-func Throwf(format string, args ...interface{}) (Value, *Closure) {
-	return Throw(NewException(format, args...))
+//  CallFrame records one frame of traceback information
+type CallFrame struct {
+	cause interface{} // underlying panic call
+	offv  Value       // offending value
+	fname string      // source filename
+	ln    int         // source line number
+	pname string      // procedure name
+	args  []Value     // procedure arguments
 }
 
 //  Run wraps a Goaldi procedure in an exception catcher, and calls it from Go
 func Run(p Procedure) {
-	fmt.Println("[--------------------- begin ---------------------]")
+	fmt.Println("[-------------------- begin --------------------]")
+	defer func() {
+		if x := recover(); x != nil {
+			fmt.Fprintln(os.Stderr,
+				"[-------------------- PANIC --------------------]")
+			Diagnose(os.Stderr, x)
+			os.Exit(1)
+		}
+	}()
+	p(nil)
+	fmt.Println("[--------------------- end ---------------------]")
+}
 
-	//	defer func() {
-	//		// this works, but get more detailed traceback without it
-	//		if x := recover(); x != nil {
-	//			fmt.Println("PANIC:", x)
-	//		}
-	//	}()
+//  Catch annotates a caught panic value with traceback information
+func Catch(p interface{}, ev Value, fname string, ln int,
+	procname string, arglist []Value) *CallFrame {
+	return &CallFrame{p, ev, fname, ln, procname, arglist}
+}
 
-	t1, c1 := p(nil)
-	if c1 == CATCHME {
-		fmt.Println("UNCAUGHT EXCEPTION: ", t1)
-	} else if t1 == nil {
-		fmt.Println("[failed]")
+//  Diagnose handles traceback for a panic caught by Run()
+func Diagnose(f io.Writer, v Value) {
+	switch x := v.(type) {
+	case *CallFrame:
+		Diagnose(f, x.cause)
+		if _, ok := x.cause.(*runtime.TypeAssertionError); ok {
+			fmt.Fprintf(f, "Offending value: %v\n", x.offv)
+		}
+		fmt.Fprintf(f, "Called by %s(%v) at %s line %d\n",
+			x.pname, x.args, x.fname, x.ln)
+	case *RunErr:
+		fmt.Fprintln(f, x.msg)
+		if x.offv != nil {
+			fmt.Fprintf(f, "Offending value: %v\n", x.offv)
+		}
+	case *runtime.TypeAssertionError:
+		s := fmt.Sprintf("%#v", x)
+		conc := extract(s, "concreteString")
+		asst := extract(s, "assertedString")
+		fmt.Fprintf(f, "Type %s does not implement %s\n",
+			conc, asst)
+	default:
+		fmt.Fprintf(f, "%#v\n", x)
+	}
+}
+
+//  extract finds a field in the %#v image of a struct
+func extract(s string, label string) string {
+	label = label + `:"`
+	i := strings.Index(s, label)
+	if i >= 0 {
+		s = s[i+len(label) : len(s)]
+		j := strings.Index(s, `"`)
+		return s[0:j]
 	} else {
-		fmt.Printf("[returned %s]\n", t1)
+		return "[?]"
 	}
 }

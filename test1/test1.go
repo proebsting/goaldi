@@ -10,7 +10,7 @@ func main() {
 }
 
 //  procedure gmain()
-func gmain(args []Value) (Value, *Closure) {
+func gmain(args ...Value) (Value, *Closure) {
 
 	//#%#% this code doesn't check for thrown exceptions or even failures
 
