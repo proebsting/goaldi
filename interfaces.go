@@ -1,11 +1,17 @@
 //  interfaces.go -- interfaces for implementing types and operations
 
-//#%#% Add INumerbable, IStringable for 2nd operand of math/string oprns?
-
 package goaldi
 
 //  A Value can now be anything
 type Value interface{}
+
+//  Interfaces for implicitly convertible values
+type Stringable interface {
+	ToString() *VString
+}
+type Numerable interface {
+	ToNumber() *VNumber
+}
 
 //  ICore -- should be implemented by all Goaldi types
 type ICore interface {
@@ -26,23 +32,36 @@ type IVariable interface {
 
 var _ IVariable = &VTrapped{} // confirm implementation by VTrapped
 
-//  IMath -- arithmetic operations
-type IMath interface {
-	Negate() IMath    // -e
-	Add(IMath) IMath  // e1 + e2
-	Mult(IMath) IMath // e1 * e2
+//  interfaces for math operations
+
+type INegate interface { // -e
+	Negate() Value
 }
 
-var _ IMath = NewNumber(1)   // confirm implementation by VNumber
-var _ IMath = NewString("a") // confirm implementation by VString
+var _ INegate = NewNumber(1)
+var _ INegate = NewString("1")
 
-//  IString -- string operations
-type IString interface {
-	Concat(IString) IString // e1 || e2
+type IAdd interface { // e1 + e2
+	Add(Value) Value
 }
 
-var _ IString = NewNumber(1)   // confirm implementation by VNumber
-var _ IString = NewString("a") // confirm implementation by VString
+var _ IAdd = NewNumber(1)
+var _ IAdd = NewString("1")
+
+type IMult interface { // e1 * e2
+	Mult(Value) Value
+}
+
+var _ IMult = NewNumber(1)
+var _ IMult = NewString("1")
+
+//  interfaces for string operations
+type IConcat interface { // e1 || e2
+	Concat(Value) Value
+}
+
+var _ IConcat = NewNumber(1)
+var _ IConcat = NewString("a")
 
 //  IExternal -- declares an external type to be a Goaldi external
 //  (i.e. tells Goaldi to keeps hands off even it it looks convertible)

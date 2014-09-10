@@ -17,6 +17,10 @@ func (v *VString) String() string {
 	return string(*v)
 }
 
+func (v *VString) ToString() *VString {
+	return v
+}
+
 func (v *VString) ToNumber() *VNumber {
 	var f float64
 	var b byte

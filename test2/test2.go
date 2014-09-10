@@ -23,8 +23,10 @@ func gmain(args []Value) (Value, *Closure) {
 	f.Println(a, ta, b, tb, c, tc)
 	av := ta.Deref()
 	bv := tb.Deref()
-	d := bv.(IMath).Add(av.(IMath)) // #%#% not a.Add(b) yet
+	d := av.(IAdd).Add(bv)
 	f.Println(d)
+	e := bv.(IAdd).Add(av)
+	f.Println(e)
 	tc.Assign(NewNumber(7.3))
 	f.Println(c)
 

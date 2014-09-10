@@ -28,6 +28,6 @@ func gmain(args []g.Value) (g.Value, *g.Closure) {
 	v.(*MyValue).value = 19
 	f.Println(v)
 	f.Println("Expect PANIC:")
-	v.(g.IMath).Add(g.NewNumber(23)) // Add not impl by MyValue
+	v.(g.IAdd).Add(g.NewNumber(23)) // Add not impl by MyValue
 	return g.Fail()
 }

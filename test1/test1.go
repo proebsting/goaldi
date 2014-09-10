@@ -24,7 +24,7 @@ func gmain(args []Value) (Value, *Closure) {
 	f.Println(s.ToNumber())
 
 	f.Print("22+33: ")
-	f.Println(V(22).(IMath).Add(V(33).(IMath)))
+	f.Println(V(22).(IAdd).Add(V(33)))
 	f.Print("7*11: ")
 	f.Println(NewNumber(7).Mult(NewNumber(11)))
 	f.Print("strings: ")

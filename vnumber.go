@@ -20,3 +20,7 @@ func (v *VNumber) String() string {
 func (v *VNumber) ToString() *VString {
 	return NewString(v.String())
 }
+
+func (v *VNumber) ToNumber() *VNumber {
+	return v
+}
