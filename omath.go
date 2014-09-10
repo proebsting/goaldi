@@ -1,8 +1,17 @@
 //  omath.go -- math operations
 
-//#%#%  not quite right yet.  not guaranteed that e2 is a VNumber.
-
 package goaldi
+
+import "fmt"
+
+//  extract float64 value from arbitrary Value, or panic
+func fval(v Value) float64 {
+	if n, ok := v.(Numerable); ok {
+		return float64(*(n.ToNumber()))
+	} else {
+		panic("not a number: " + fmt.Sprintf("%v", v))
+	}
+}
 
 //  -e
 
@@ -21,9 +30,7 @@ func (v1 *VString) Add(v2 Value) Value {
 }
 
 func (v1 *VNumber) Add(v2 Value) Value {
-	n1 := v1
-	n2 := v2.(Numerable).ToNumber()
-	return NewNumber(float64(*n1) + float64(*n2))
+	return NewNumber(float64(*v1) + fval(v2))
 }
 
 //  e1 * e2
@@ -33,7 +40,5 @@ func (v1 *VString) Mult(v2 Value) Value {
 }
 
 func (v1 *VNumber) Mult(v2 Value) Value {
-	n1 := v1
-	n2 := v2.(Numerable).ToNumber()
-	return NewNumber(float64(*n1) * float64(*n2))
+	return NewNumber(float64(*v1) * fval(v2))
 }
