@@ -17,6 +17,10 @@ func (v *VNumber) String() string {
 	return fmt.Sprintf("%g", float64(*v))
 }
 
+func (v *VNumber) val() float64 {
+	return float64(*v)
+}
+
 func (v *VNumber) ToString() *VString {
 	return NewString(v.String())
 }
