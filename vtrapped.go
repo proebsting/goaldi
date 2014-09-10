@@ -19,9 +19,9 @@ func Trapped(target *Value) *VTrapped {
 }
 
 //  extract value of a trapped variable for use as an rvalue
-func (t *VTrapped) Deref() (Value, *Closure) {
+func (t *VTrapped) Deref() Value {
 	// later becomes more complicated with tvsubs, tvstr
-	return *t.Target, nil
+	return *t.Target
 }
 
 //  show trapped variable as a string for debugging: produces [[value]]
@@ -31,7 +31,7 @@ func (t *VTrapped) String() string {
 }
 
 //  assign value to trapped variable
-func (t *VTrapped) Assign(v Value) (IVariable, *Closure) {
+func (t *VTrapped) Assign(v Value) IVariable {
 	*t.Target = v
-	return t, nil
+	return t
 }
