@@ -17,6 +17,7 @@ func TestString(t *testing.T) {
 // ck4s -- check four string values for equality with expected value
 func ck4s(t *testing.T, label string, s0 string, v1, v2, v3, v4 Value) {
 	t.Log("testing", label)
+	s0 = `"` + s0 + `"`
 	s1 := v1.(*VString).String()
 	s2 := v2.(*VString).String()
 	s3 := v3.(*VString).String()
