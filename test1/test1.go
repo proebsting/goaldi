@@ -26,9 +26,9 @@ func gmain(args ...Value) (Value, *Closure) {
 	f.Print("22+33: ")
 	f.Println(V(22).(IAdd).Add(V(33)))
 	f.Print("7*11: ")
-	f.Println(NewNumber(7).Mult(NewNumber(11)))
+	f.Println(NewNumber(7).Mul(NewNumber(11)))
 	f.Print("strings: ")
-	f.Println(NewString("19").Mult(NewString("3").ToNumber()))
+	f.Println(NewString("19").Mul(NewString("3").ToNumber()))
 
 	return Fail()
 }
