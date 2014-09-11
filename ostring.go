@@ -11,7 +11,14 @@ func sval(v Value) string {
 	}
 }
 
-//  e1 || e2
+//  Concat:  e1 || e2
+
+type IConcat interface { // e1 || e2
+	Concat(Value) Value
+}
+
+var _ IConcat = NewNumber(1)
+var _ IConcat = NewString("a")
 
 func (v1 *VNumber) Concat(v2 Value) Value {
 	return v1.ToString().Concat(v2)

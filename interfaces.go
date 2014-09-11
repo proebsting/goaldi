@@ -33,37 +33,6 @@ type IVariable interface {
 
 var _ IVariable = &VTrapped{} // confirm implementation by VTrapped
 
-//  interfaces for math operations
-
-type INegate interface { // -e
-	Negate() Value
-}
-
-var _ INegate = NewNumber(1)
-var _ INegate = NewString("1")
-
-type IAdd interface { // e1 + e2
-	Add(Value) Value
-}
-
-var _ IAdd = NewNumber(1)
-var _ IAdd = NewString("1")
-
-type IMult interface { // e1 * e2
-	Mult(Value) Value
-}
-
-var _ IMult = NewNumber(1)
-var _ IMult = NewString("1")
-
-//  interfaces for string operations
-type IConcat interface { // e1 || e2
-	Concat(Value) Value
-}
-
-var _ IConcat = NewNumber(1)
-var _ IConcat = NewString("a")
-
 //  IExternal -- declares an external type to be a Goaldi external
 //  (i.e. tells Goaldi to keeps hands off even it it looks convertible)
 type IExternal interface {
