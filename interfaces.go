@@ -16,9 +16,8 @@ type Numerable interface {
 
 //  ICore -- should be implemented by all Goaldi types
 type ICore interface {
-	String() string // return (Go) string image for printing
-	// Type()?
-	// Copy()?
+	IImage // i.e. v.String() -> string
+	IType
 }
 
 var _ ICore = NewNil()       // confirm implementation by VNil

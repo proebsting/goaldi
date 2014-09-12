@@ -33,3 +33,10 @@ func (v *VNumber) ToString() *VString {
 func (v *VNumber) ToNumber() *VNumber {
 	return v
 }
+
+//  VNumber.Type -- return "number"
+func (v *VNumber) Type() Value {
+	return type_number
+}
+
+var type_number = NewString("number")

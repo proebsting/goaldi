@@ -17,9 +17,9 @@ func gmain(args ...Value) (Value, *Closure) {
 	i := NewNumber(23)
 	s := NewString("45.0")
 	n := NewNil()
-	f.Printf("%v %#v\n", i, i)
-	f.Printf("%v %#v\n", s, s)
-	f.Printf("%v %#v\n", n, n)
+	f.Printf("%v %#v %v %v\n", i, i, Type(i), Image(i))
+	f.Printf("%v %#v %v %v\n", s, s, Type(s), Image(s))
+	f.Printf("%v %#v %v %v\n", n, n, Type(n), Image(n))
 	f.Println(i.ToString())
 	f.Println(s.ToNumber())
 

@@ -19,7 +19,14 @@ func NewNil() *VNil {
 	return NIL
 }
 
-//  VNil.String returns "nil" as a Go string for printing
+//  VNil.String returns "nil" as a Go string
 func (v *VNil) String() string {
 	return "nil"
 }
+
+//  VNil.Type returns "nil"
+func (v *VNil) Type() Value {
+	return type_nil
+}
+
+var type_nil = NewString("nil")

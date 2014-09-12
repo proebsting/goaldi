@@ -14,7 +14,7 @@ func NewString(s string) *VString {
 	return &vs
 }
 
-//  VString.String -- return image of string, quoted, for debugging
+//  VString.String -- return image of string, quoted, as a Go string
 func (v *VString) String() string {
 	return `"` + string(*v) + `"`
 }
@@ -35,3 +35,10 @@ func (v *VString) ToNumber() *VNumber {
 		return nil
 	}
 }
+
+//  VString.Type -- return "string"
+func (v *VString) Type() Value {
+	return type_string
+}
+
+var type_string = NewString("string")
