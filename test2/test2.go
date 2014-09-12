@@ -19,6 +19,7 @@ func gmain(args ...Value) (Value, *Closure) {
 	var c *Closure
 	f.Println("sums:  ", a, b, a.(IAdd).Add(b), b.(IAdd).Add(a))
 	f.Printf("begin:  a=%v b=%v\n", a, b)
+	Swap(ta, tb)
 	f.Printf("swap:   a=%v b=%v\n", a, b)
 	_, c = RevSwap(ta, tb)
 	f.Printf("rswap:  a=%v b=%v\n", a, b)
