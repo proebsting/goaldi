@@ -2,6 +2,10 @@
 
 package goaldi
 
+import (
+	"fmt"
+)
+
 //  A Value can now be anything
 //  Use of this interface is intended to designate a Goaldi value
 type Value interface{}
@@ -16,8 +20,9 @@ type Numerable interface {
 
 //  ICore -- should be implemented by all Goaldi types
 type ICore interface {
-	IImage // i.e. v.String() -> string
+	fmt.Stringer // i.e. v.String() -> string
 	IType
+	IExport
 }
 
 var _ ICore = NewNil()       // confirm implementation by VNil

@@ -24,9 +24,12 @@ type IType interface {
 }
 
 func Type(v Value) Value {
-	if _, ok := v.(IType); ok {
-		return v.(IType).Type()
-	} else {
+	switch t := v.(type) {
+	case IExternal:
+		return NewString(t.ExternalType())
+	case IType:
+		return t.Type()
+	default:
 		return type_external
 	}
 }

@@ -42,3 +42,8 @@ func (v *VString) Type() Value {
 }
 
 var type_string = NewString("string")
+
+//  VString.Export returns a Go string
+func (v *VString) Export() interface{} {
+	return string(*v)
+}

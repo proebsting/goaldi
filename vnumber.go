@@ -14,6 +14,13 @@ func NewNumber(n float64) *VNumber {
 	return &vn
 }
 
+// predefined constants
+var (
+	ZERO      = NewNumber(0)
+	ONE       = NewNumber(1)
+	MAX_EXACT = 1 << 53 // beyond 9e15, integers are noncontiguous
+)
+
 //  VNumber.val -- return underlying float64 value
 func (v *VNumber) val() float64 {
 	return float64(*v)
@@ -40,3 +47,8 @@ func (v *VNumber) Type() Value {
 }
 
 var type_number = NewString("number")
+
+//  VNumber.Export returns a float64
+func (v *VNumber) Export() interface{} {
+	return float64(*v)
+}

@@ -29,4 +29,9 @@ func (v *VNil) Type() Value {
 	return type_nil
 }
 
+//  VNil.Export returns a nil
+func (v *VNil) Export() interface{} {
+	return nil
+}
+
 var type_nil = NewString("nil")
