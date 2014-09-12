@@ -12,23 +12,20 @@ func main() {
 //  procedure gmain()
 func gmain(args ...Value) (Value, *Closure) {
 
-	//#%#% this code doesn't check for thrown exceptions or even failures
-
 	var a Value = NewNumber(3)
 	ta := Trapped(&a)
 	var b Value = NewString("5")
 	tb := Trapped(&b)
-	var c Value = NewNil()
-	tc := Trapped(&c)
-	f.Println(a, ta, b, tb, c, tc)
-	av := ta.Deref()
-	bv := tb.Deref()
-	d := av.(IAdd).Add(bv)
-	f.Println(d)
-	e := bv.(IAdd).Add(av)
-	f.Println(e)
-	tc.Assign(NewNumber(7.3))
-	f.Println(c)
+	var c *Closure
+	f.Println("sums:  ", a, b, a.(IAdd).Add(b), b.(IAdd).Add(a))
+	f.Printf("begin:  a=%v b=%v\n", a, b)
+	f.Printf("swap:   a=%v b=%v\n", a, b)
+	_, c = RevSwap(ta, tb)
+	f.Printf("rswap:  a=%v b=%v\n", a, b)
+	_, c = c.Resume()
+	f.Printf("resume: a=%v b=%v\n", a, b)
+	_, c = c.Resume()
+	f.Printf("resume: a=%v b=%v\n", a, b)
 
 	return Fail()
 }
