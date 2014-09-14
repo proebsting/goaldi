@@ -101,6 +101,11 @@ func passfunc(t reflect.Type) func(Value) reflect.Value {
 			return reflect.ValueOf(
 				int(v.(Numerable).ToNumber().val()))
 		}
+	case reflect.Int64:
+		return func(v Value) reflect.Value {
+			return reflect.ValueOf(
+				int64(v.(Numerable).ToNumber().val()))
+		}
 	case reflect.Float64:
 		return func(v Value) reflect.Value {
 			return reflect.ValueOf(
