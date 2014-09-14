@@ -44,6 +44,8 @@ var type_procedure = NewString("procedure")
 
 //  GoProcedure(name, func) -- construct a procedure from a Go function
 func GoProcedure(name string, f interface{}) *VProcedure {
+
+	//  get information about the Go function
 	ftype := reflect.TypeOf(f)
 	fval := reflect.ValueOf(f)
 	if fval.Kind() != reflect.Func {
@@ -58,12 +60,15 @@ func GoProcedure(name string, f interface{}) *VProcedure {
 		panic(&RunErr{"Variadic function", f}) //#%#% not yet
 	}
 
+	//  make an array of conversion functions, one per parameter
 	passer := make([]func(Value) reflect.Value, nargs)
 	for i := 0; i < nargs; i++ {
 		passer[i] = passfunc(ftype.In(i))
 	}
 
+	//  define a func to convert arguments and call the underlying func
 	pfun := func(args ...Value) (Value, *Closure) {
+		//  convert arguments from Goaldi values to needed Go type
 		in := make([]reflect.Value, nargs)
 		for i := 0; i < nargs; i++ {
 			if i < len(args) {
@@ -72,16 +77,22 @@ func GoProcedure(name string, f interface{}) *VProcedure {
 				in[i] = passer[i](NIL)
 			}
 		}
+		//  call the Go function
 		out := fval.Call(in)
+		//  return the result
 		if nrtn == 1 {
 			return Import(out[0].Interface()), nil
 		} else {
 			return NIL, nil
 		}
 	}
+
+	//  make this function a Goaldi procedure, and return it
 	return NewProcedure(name, pfun)
 }
 
+//  passfunc returns a function that converts a Goaldi value
+//  into a Go reflect.Value of the specified type
 func passfunc(t reflect.Type) func(Value) reflect.Value {
 	k := t.Kind()
 	switch k {
