@@ -74,7 +74,7 @@ func GoProcedure(name string, f interface{}) *VProcedure {
 		}
 		out := fval.Call(in)
 		if nrtn == 1 {
-			return out[0].Interface(), nil //#%#% Import(out[0]), nil
+			return Import(out[0].Interface()), nil
 		} else {
 			return NIL, nil
 		}
