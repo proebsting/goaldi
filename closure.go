@@ -11,8 +11,7 @@
 
 package goaldi
 
-type Procedure func(...Value) (Value, *Closure) // a Goaldi procedure
-type Resumer func() (Value, *Closure)           // a resumption function
+type Resumer func() (Value, *Closure) // a resumption function
 
 type Closure struct {
 	Go Resumer // start or resumption function, depending on context

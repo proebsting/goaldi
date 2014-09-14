@@ -31,7 +31,9 @@ func gmain(args ...g.Value) (g.Value, *g.Closure) {
 		}
 	}()
 
-	return gsubr(g.NewNumber(23), g.NewString("skidoo"))
+	f.Println("testing panic, offending value, traceback")
+	var p g.Value = g.NewProcedure("gsubr", gsubr)
+	return p.(g.ICall).Call(g.NewNumber(23), g.NewString("skidoo"))
 }
 
 //  procedure gsubr()

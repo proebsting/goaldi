@@ -14,12 +14,16 @@ func gmain(args ...Value) (Value, *Closure) {
 
 	//#%#% this code doesn't check for thrown exceptions or even failures
 
+	f.Println("testing construction, imaging, a few operators")
+
 	i := NewNumber(23)
 	s := NewString("45.0")
 	n := NewNil()
-	f.Printf("%v %#v %v %v\n", i, i, Type(i), Image(i))
-	f.Printf("%v %#v %v %v\n", s, s, Type(s), Image(s))
-	f.Printf("%v %#v %v %v\n", n, n, Type(n), Image(n))
+	p := NewProcedure("gmain", gmain)
+	f.Printf("%v %v %v\n", i, Type(i), Image(i))
+	f.Printf("%v %v %v\n", s, Type(s), Image(s))
+	f.Printf("%v %v %v\n", n, Type(n), Image(n))
+	f.Printf("%v %v %v\n", p, Type(p), Image(p))
 	f.Println(i.ToString())
 	f.Println(s.ToNumber())
 
