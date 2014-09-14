@@ -14,6 +14,11 @@ func NewString(s string) *VString {
 	return &vs
 }
 
+//  VString.val -- return underlying string value
+func (v *VString) val() string {
+	return string(*v)
+}
+
 //  VString.String -- return image of string, quoted, as a Go string
 func (v *VString) String() string {
 	return `"` + string(*v) + `"`

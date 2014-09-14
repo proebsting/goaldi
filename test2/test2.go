@@ -12,6 +12,7 @@ func main() {
 //  procedure gmain()
 func gmain(args ...Value) (Value, *Closure) {
 
+	f.Println("testing string<->number and assignment operators")
 	var a Value = NewNumber(3)
 	ta := Trapped(&a)
 	var b Value = NewString("5")

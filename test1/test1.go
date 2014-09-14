@@ -14,6 +14,8 @@ func gmain(args ...Value) (Value, *Closure) {
 
 	//#%#% this code doesn't check for thrown exceptions or even failures
 
+	f.Println("testing construction, imaging, a few operators")
+
 	i := NewNumber(23)
 	s := NewString("45.0")
 	n := NewNil()
