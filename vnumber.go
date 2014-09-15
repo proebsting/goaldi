@@ -48,6 +48,16 @@ func (v *VNumber) Type() Value {
 
 var type_number = NewString("number")
 
+//  VNumber.Identical -- check equality for === operator
+func (a *VNumber) Identical(x Value) Value {
+	b, ok := x.(*VNumber)
+	if ok && a.val() == b.val() {
+		return x
+	} else {
+		return nil
+	}
+}
+
 //  VNumber.Export returns a float64
 func (v *VNumber) Export() interface{} {
 	return float64(*v)

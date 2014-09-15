@@ -48,6 +48,16 @@ func (v *VString) Type() Value {
 
 var type_string = NewString("string")
 
+//  VString.Identical -- check equality for === operator
+func (s *VString) Identical(x Value) Value {
+	t, ok := x.(*VString)
+	if ok && s.val() == t.val() {
+		return x
+	} else {
+		return nil
+	}
+}
+
 //  VString.Export returns a Go string
 func (v *VString) Export() interface{} {
 	return string(*v)
