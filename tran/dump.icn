@@ -1,0 +1,94 @@
+#  dump.icn -- routines for creating string representations of data
+
+procedure echo(c, flags)
+    local p
+    while p := @\c do {
+        if "-verbose" == !\flags then {
+            write(dump_verbose(p, "", ""))
+        } else {
+            write(dump_simple(p))
+        }
+    }
+end
+
+procedure dump_get_names(x)
+    local L
+
+    static tab
+    initial {
+        tab := table()
+    }
+    if not (L := \tab[type(x)]) then {
+        L := []
+        every put(L, name(!x))
+        tab[type(x)] := L
+    }
+    return L
+end
+
+procedure dump_verbose(x, nm,  indent)
+    local s, i, n, v, names
+
+    s := image(x)
+    if type(x) == "list" then {
+        every i := 1 to *x do {
+            n := "L[" || i || "]"
+            v := x[i]
+            s ||:= "\n" || indent || n || " = " ||
+                   dump_verbose(v, n, indent || "| ")
+        }
+    } else if match("record ir_coordinate", s) then {
+	s ||:= ": " || x.file || "+" || x.line || "." || x.column
+    } else if match("record", s) then {
+        names := dump_get_names(x)
+        every i := 1 to *x do {
+            n := names[i]
+            v := x[i]
+            s ||:= "\n" || indent || n || " = " ||
+                   dump_verbose(v, n, indent || "| ")
+        }
+    }
+    return s
+end
+
+procedure dump_simple(x, excl)
+    local s, i, n, names
+
+    if type(x) == "list" then {
+        s := "["
+        every i := 1 to *x do {
+            s ||:= dump_simple(x[i], excl)
+            if x[i+1] then {
+                s ||:= ", "
+            }
+        }
+        s ||:= "]"
+    } else if type(x) == "set" then {
+        s := "{"
+        every i := !x do {
+            if *s > 1 then {
+                s ||:= ", "
+            }
+            s ||:= dump_simple(i, excl)
+        }
+        s ||:= "}"
+    } else if match("record", image(x)) then {
+        s := type(x) || "("
+        names := dump_get_names(x)
+        every i := 1 to *x do {
+            n := names[i]
+            if member(\excl, n ? (tab(upto('.')) & move(1) & tab(0))) then {
+                s ||:= "..."
+            } else {
+                s ||:= dump_simple(x[i])
+            }
+            if x[i+1] then {
+                s ||:= ", "
+            }
+        }
+        s ||:= ")"
+    } else {
+        s := image(x)
+    }
+    return s
+end

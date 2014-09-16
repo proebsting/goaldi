@@ -1,0 +1,255 @@
+#  lexer.icn -- routines that do lexical analysis.
+
+global lex_newline, lex_lineno, lex_coord_pos, lex_filename
+record lex_coordinate(file, line, column)
+record lex_TOK(sym, str, coord)
+
+procedure yylex(getline)
+    local last_pos, t, ptok
+    static last_token
+
+    initial {
+        initialize()
+    }
+
+    lex_newline := &null
+    lex_lineno := 0
+    lex_filename := "<<stdin>>"
+
+    "" ? {
+        every t := lex_yylex0(getline) do {
+            if \lex_newline then {
+                lex_newline := &null
+                if member(lex_ender_set,\last_token) &
+                   member(lex_beginner_set,\t) then {
+                    lex_SEMICOL.coord := lex_coordinate(lex_filename,
+                                                        lex_lineno-1,
+                                                        last_pos)
+                    suspend lex_SEMICOL
+                    last_token := lex_SEMICOL
+                }
+            }
+            t.coord := lex_coordinate(lex_filename, lex_lineno, lex_coord_pos)
+            last_pos := &pos
+            suspend t
+            last_token := t
+        }
+        ptok := lex_EOFX
+        ptok.str := &null
+        ptok.coord := lex_coordinate(lex_filename, lex_lineno, lex_coord_pos)
+        last_pos := &pos
+        suspend ptok
+    }
+end
+
+
+procedure lex_yylex0(getline)
+    local sym, str, op, ptok
+    static let_und, let_und_dig, let_dig
+
+    initial {
+        let_und := &letters ++ '_'
+        let_und_dig := &letters ++ '_' ++ &digits
+        let_dig := &letters ++ &digits
+    }
+
+    repeat {
+        if pos(1) then {
+            lex_newline := 1
+            if ="#line " then {
+                tab(upto(&digits)) &
+                lex_lineno := integer(tab(many(&digits))) &
+                tab(upto('"')) &
+                move(1) &
+                lex_filename := tab(upto('"'))
+                tab(0)
+            }
+        }
+
+        # skip whitespace
+        tab(many(' \t\f\r'))
+        lex_coord_pos := &pos
+
+        # check if EOL
+        if pos(0) then {
+            &subject := lex_nextline(getline) | fail
+            next
+        }
+
+        # check if comment
+        if ="#" then {
+            tab(0)
+            next
+        }
+
+        # check if identifier
+        if str := tab(many(let_und)) then {
+            str ||:= tab(many(let_und_dig))
+        
+            # check if reserved word
+            if ptok := do_reserveds(str) then {
+                suspend ptok
+                next
+            }
+            ptok := lex_IDENT
+            ptok.str := str
+            suspend ptok
+            next
+        }
+
+        # check if int lit  (digit or radix)
+        # check if digit
+        if str := tab(many(&digits)) then {
+            sym := lex_INTLIT
+            if str ||:= =("r"|"R") then { # radix
+                str ||:= tab(many(let_dig)) |
+                    lex_error("invalid integer literal")
+                ptok := sym
+                ptok.str := str
+                suspend ptok
+                next
+            }
+
+            # check if real lit
+            if str ||:= ="." then {
+                str ||:= tab(many(&digits))
+                sym := lex_REALLIT
+            }
+
+            if str ||:= =("e"|"E") then { # exponent lit
+                str ||:= =("+"|"-")
+                str ||:= tab(many(&digits)) | lex_error("invalid real literal")
+                sym := lex_REALLIT
+            }
+            ptok := sym
+            ptok.str := str
+            suspend ptok
+            next
+        }
+
+        # the following special cases ".123" as a real.
+        if str <- ="." & str ||:= tab(many(&digits)) then {
+            sym := lex_REALLIT
+            if str ||:= =("e"|"E") then { # exponent lit
+                str ||:= =("+"|"-")
+                str ||:= tab(many(&digits)) | lex_error("invalid real literal")
+            }
+            ptok := sym
+            ptok.str := str
+            suspend ptok
+            next
+        }
+
+        # check if op
+        if op := do_ops() then {
+            suspend op
+            next
+        }
+
+        # check if string lit
+        if str := lex_quoted("\"", getline) then {
+            ptok := lex_STRINGLIT
+            ptok.str := str
+            suspend ptok
+            next
+        }
+
+        # check if cset
+        if str := lex_quoted("'", getline) then {
+            ptok := lex_CSETLIT
+            ptok.str := str
+            suspend ptok
+            next
+        }
+
+        # default
+        lex_error("invalid character: " || image(&subject[&pos]))
+    }
+end
+
+procedure lex_error(msg)
+    if \parse_tok_rec then {
+        stop("File ", lex_filename, ": ", "Line ", lex_lineno, " # ", msg)
+    } else {
+        stop(msg)
+    }
+end
+
+procedure lex_nextline(getline)
+    local s
+
+    s := @getline | fail
+    lex_lineno +:= 1
+    return s
+end
+
+procedure lex_quoted(delim, getline) 
+    local str, dset, hex, h, ch, octal, o
+    static lookup
+    initial {
+        lookup := table()
+        lookup["b"] := "\b"
+        lookup["d"] := "\d"
+        lookup["e"] := "\e"
+        lookup["f"] := "\f"
+        lookup["l"] := "\l"
+        lookup["n"] := "\n"
+        lookup["r"] := "\r"
+        lookup["t"] := "\t"
+        lookup["v"] := "\v"
+        lookup["'"] := "\'"
+        lookup["\""] := "\""
+        lookup["\\"] := "\\"
+    }
+    if =delim then {
+        str := ""
+        dset := '\\' ++ delim
+        repeat {
+            if str ||:= tab(upto(dset)) then {
+                if =delim then {
+                    return str
+                }
+                ="\\" | runerr(500, lex_lineno)
+                if ="x" | ="X" then {
+                    if hex:= tab(many('0123456789abcdefABCDEF',,,&pos+2)) then {
+                        h := "16r" || hex
+                        str ||:= char(h)
+                        next
+                    } else {
+                        str ||:= "\\x"
+                    }
+                } else if ="^" then {
+                    if ch := move(1) then {
+                        str ||:= char(iand(ord(ch),16r1f))
+                        next
+                    } else {
+                        str ||:= "\\^"
+                    }   
+                } else if octal := tab(many('01234567',,,&pos+3)) then {
+                    o := "8r" || octal
+                    str ||:= char(o)
+                    next
+                } else if ch := move(1) then {
+                    str ||:= (\lookup[ch] | ch)
+                    next
+                } else {
+                    lex_error("unclosed quote")
+                }
+            } else {
+                every (str ||:= tab(upto('_'))) do {
+                    if pos(-1) then {
+                        &subject := lex_nextline(getline) | fail
+                        tab(many(' \t\f'))
+                        break next
+                    } else {
+                        str ||:= move(1)
+                    }
+                }
+                lex_error("unclosed quote")
+            }
+            runerr(500, lex_lineno)
+        }
+        runerr(500, lex_lineno)
+    }
+    fail
+end

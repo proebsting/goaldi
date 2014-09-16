@@ -1,0 +1,15 @@
+# keywords.icn:  provide information about keywords to the compiler
+
+procedure key_generator(name)
+    static t
+    initial {
+	t := set([
+		    "features",
+		    "allocated",
+		    "collections",
+		    "regions",
+		    "storage"
+		    ])
+    }
+    return member(t, name)
+end

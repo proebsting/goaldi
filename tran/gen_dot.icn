@@ -1,0 +1,102 @@
+#  gen_dot.icn -- create "dot" input from intermediate representation.
+
+global dot_emit_table
+
+procedure dot_emit(label, code)
+    dot_emit_table[label] := code
+end
+
+procedure dot_dump(i)
+    return map(ir_dump(i), "<>", "()")
+end
+
+procedure dot_output(t)
+    local label, code, lab, s, i, insn
+
+    every label := key(t) & code := t[label] do {
+        lab := image(dot_dump(label))
+        writes(lab)
+        writes(" [shape=record,label=")
+        s := "{ <f0> "
+        s ||:= dot_dump(label) || ":"
+        every i := 1 to *code do {
+            s ||:= " |"
+            s ||:= "<f" || i || "> " || dot_dump(code[i])
+        }
+        s ||:= " }"
+        writes(image(s))
+        write("];")
+        every i := 1 to *code do {
+            insn := code[i]
+            case type(insn) of {
+            "ir_MoveLabel" : {
+                if type(\insn.lhs) == "ir_TmpLabel" then {
+                    write(image(dot_dump(insn.lhs)),
+                          "->",
+                          image(dot_dump(insn.rhs)))
+                }
+                }
+            "ir_Goto" : {
+                write(lab, ":f", i, " ->", image(dot_dump(insn.targetLabel)))
+                }
+            "ir_Field" |
+            "ir_OpFunction" |
+            "ir_ResumeValue" : {
+                write(lab, ":f", i,
+                      " ->",
+                      image(dot_dump(\insn.failLabel)), " [label=failure]")
+                }
+            "ir_Succeed" : {
+                write(lab, ":f", i,
+                      " ->",
+                      image(dot_dump(\insn.resumeLabel)),
+                      " [label=resumeLabel]")
+                }
+            "ir_CoRet" : {
+                write(lab, ":f", i,
+                      " ->",
+                      image(dot_dump(insn.resumeLabel)),
+                      " [label=resumeLabel]")
+                }
+            "ir_EnterInit" : {
+                write(lab, ":f", i,
+                      " ->",
+                      image(dot_dump(insn.startLabel)),
+                      " [label=start]")
+                }
+            }
+        }
+    }
+end
+
+procedure dot_function(name, params, accumulate, locals, statics, code,
+                       codestart, coord)
+    local i
+
+    write("digraph ", name, " {")
+    write("ratio=auto;")
+    write("page=\"8.5,11\";")
+    dot_emit_table := table()
+    every i := !code do {
+        dot_emit_table[i.label] := i.insnList
+    }
+    dot_output(dot_emit_table)
+    write("}")
+end
+
+procedure dot_File(irgen, flagList)
+    local p
+    while p := @irgen do {
+        case type(p) of {
+        "ir_Global" : { }
+        "ir_Record" : { }
+        "ir_Invocable" : { }
+        "ir_Link" : { }
+        "ir_Function" : {
+            dot_function(p.name, p.paramList, p.accumulate, p.localList,
+                         p.staticList, p.codeList, p.codeStart)
+        }
+        default: runerr(500, p)
+        }
+    }
+end

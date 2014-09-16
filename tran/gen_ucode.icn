@@ -1,0 +1,1073 @@
+#  gen_ucode.icn -- create Icon .u[12] files from abstract syntax trees.
+
+record u_arg(n)
+record u_asgn()
+record u_bang()
+record u_bscan()
+record u_cat()
+record u_ccase()
+record u_chfail(n)
+record u_coact()
+record u_cofail()
+record u_colm(n)
+record u_compl()
+record u_coret()
+record u_create(n)
+record u_cset(a)
+record u_diff()
+record u_div()
+record u_dup()
+record u_efail()
+record u_eqv()
+record u_eret()
+record u_escan()
+record u_esusp()
+record u_field(n)
+record u_filen(n)
+record u_global(n)
+record u_goto(n)
+record u_init(n)
+record u_int(n)
+record u_inter()
+record u_invoke(n)
+record u_keywd(n)
+record u_lab(n)
+record u_lconcat()
+record u_lexeq()
+record u_lexge()
+record u_lexgt()
+record u_lexle()
+record u_lexlt()
+record u_lexne()
+record u_limit()
+record u_line(n)
+record u_llist(n)
+record u_local(n)
+record u_lsusp()
+record u_mark(n)
+record u_mark0()
+record u_minus()
+record u_mod()
+record u_mult()
+record u_neg()
+record u_neqv()
+record u_nonnull()
+record u_null()
+record u_number()
+record u_numeq()
+record u_numge()
+record u_numgt()
+record u_numle()
+record u_numlt()
+record u_numne()
+record u_pfail()
+record u_plus()
+record u_pnull()
+record u_pop()
+record u_power()
+record u_pret()
+record u_psusp()
+record u_push1()
+record u_pushn1()
+record u_quit()
+record u_random()
+record u_rasgn()
+record u_real(a)
+record u_refresh()
+record u_rswap()
+record u_sdup()
+record u_sect()
+record u_size()
+record u_static(n)
+record u_str(n,a)
+record u_subsc()
+record u_swap()
+record u_tabmat()
+record u_toby()
+record u_unions()
+record u_unmark()
+record u_value()
+record u_var(s)
+
+procedure u_emit(i)
+    local s
+
+    type(i) ? ="u_" | runerr(500, i)
+
+    case type(i) of {
+    "u_var": {
+        return "\tvar\t" || u_variables[i.s]
+    }
+    "u_lab": {
+        return "lab " || i.n
+    }
+    default: {
+        type(i) ? {
+            ="u_"
+            s := "\t" || tab(0)
+            every s ||:= "\t" || \!i
+            return s
+        }
+    }
+    }
+end
+
+record u_loopinfo(nextlab, breaklab, markcount, everyflag)
+global u_loops, u_nextlab
+global u_createflag
+global u_constants, u_constList
+global u_variables
+global u_u1, u_u2
+global u_lastline, u_lastfile, u_lastcolm
+
+procedure u_reset_coord()
+    u_lastline := u_lastfile := u_lastcolm := &null
+end
+procedure u_coord(s, p)
+    \p.coord | return
+
+    if not (\u_lastfile == p.coord.file) then {
+        put(s, u_filen(p.coord.file))
+        u_lastfile := p.coord.file
+    }
+    if (not (\u_lastline == p.coord.line)) |
+       (not (\u_lastcolm == p.coord.column)) then {
+        put(s, u_line(p.coord.line))
+        u_lastline := p.coord.line
+        put(s, u_colm(p.coord.column))
+        u_lastcolm := p.coord.column
+    }
+end
+
+# record a_NoOp( )
+procedure u_gen_a_NoOp(s, p)
+end
+
+# record a_ProcCode( init body )
+procedure u_gen_a_ProcCode(s, p)
+    u_gen(s, p.init)
+    u_gen(s, p.body)
+end
+
+# record a_Field( expr field )
+procedure u_gen_a_Field(s, p)
+    put(s, u_pnull())
+    u_gen(s, p.expr)
+    u_coord(s, p)
+    put(s, u_field(p.field.id))
+end
+
+# record a_Case( expr clauseList dflt)
+procedure u_gen_a_Case(s, p)
+    local endlab, nextlab, i
+
+    endlab := @u_nextlab
+    put(s, u_mark0())
+    u_loops[1].ir.markcount +:= 1
+    u_gen(s, p.expr)
+    u_loops[1].ir.markcount -:= 1
+    put(s, u_eret())
+    every i := !p.clauseList do {
+        nextlab := @u_nextlab
+        put(s, u_mark(nextlab))
+        u_loops[1].ir.markcount +:= 1
+        put(s, u_ccase())
+        u_gen(s, i.expr)
+        u_coord(s, i)
+        put(s, u_eqv())
+        u_loops[1].ir.markcount -:= 1
+        put(s, u_unmark())
+        put(s, u_pop())
+        u_gen(s, i.body)
+        put(s, u_goto(endlab))
+        put(s, u_lab(nextlab))
+    }
+    if \p.dflt then {
+        put(s, u_pop())
+        u_gen(s, p.dflt)
+    } else {
+        put(s, u_efail())
+    }
+    put(s, u_lab(endlab))
+end
+
+# record a_Not( expr )
+procedure u_gen_a_Not(s, p)
+    local lab
+
+    lab := @u_nextlab
+    put(s, u_mark(lab))
+    u_loops[1].ir.markcount +:= 1
+    u_gen(s, p.expr)
+    u_loops[1].ir.markcount -:= 1
+    put(s, u_unmark())
+    put(s, u_efail())
+    put(s, u_lab(lab))
+    put(s, u_pnull())
+end
+
+# record a_RepAlt( expr )
+procedure u_gen_a_RepAlt(s, p)
+    local lab
+
+    lab := @u_nextlab
+    put(s, u_lab(lab))
+    put(s, u_mark0())
+    u_loops[1].ir.markcount +:= 1
+    u_gen(s, p.expr)
+    u_loops[1].ir.markcount -:= 1
+    put(s, u_chfail(lab))
+    put(s, u_esusp())
+end
+
+# record a_Call( fn args )
+procedure u_gen_a_Call(s, p)
+    u_gen(s, p.fn)
+    u_gen(s, p.args)
+    u_coord(s, p)
+    if type(p.args) == "a_CoexpList" then {
+        put(s, u_invoke(1))
+    } else {
+        put(s, u_invoke(*p.args.exprList))
+    }
+end
+
+# The following is used rather than a more natural solution to get
+# .u1 files that match icont.
+# record a_Alt( eList )
+procedure u_gen_a_Alt0(s, L)
+    local i, endlab, nextlab
+
+    if *L > 1 then {
+        nextlab := @u_nextlab
+        endlab := @u_nextlab
+        put(s, u_mark(nextlab))
+        u_loops[1].ir.markcount +:= 1
+        u_gen(s, L[1])
+        u_loops[1].ir.markcount -:= 1
+        put(s, u_esusp())
+        put(s, u_goto(endlab))
+        put(s, u_lab(nextlab))
+        u_gen_a_Alt0(s, L[2:0])
+        put(s, u_lab(endlab))
+    } else {
+        u_gen(s, L[1])
+    }
+end
+procedure u_gen_a_Alt(s, p)
+    u_gen_a_Alt0(s, p.eList)
+end
+
+# record a_Limitation( expr limit )
+procedure u_gen_a_Limitation(s, p)
+    u_gen(s, p.limit)
+    u_coord(s, p)
+    put(s, u_limit())
+    u_loops[1].ir.markcount +:= 1
+    u_gen(s, p.expr)
+    u_loops[1].ir.markcount -:= 1
+    put(s, u_lsusp())
+end
+
+# record a_Scan( op expr body )
+procedure u_gen_a_Scan(s, p)
+    case p.op of {
+    "?": {
+        u_gen(s, p.expr)
+        u_coord(s, p)
+        put(s, u_bscan())
+        u_gen(s, p.body)
+        u_coord(s, p)
+        put(s, u_escan())
+    }
+    "?:=": {
+        put(s, u_pnull())
+        u_gen(s, p.expr)
+        put(s, u_sdup())
+        u_coord(s, p)
+        put(s, u_bscan())
+        u_gen(s, p.body)
+        u_coord(s, p)
+        put(s, u_escan())
+        put(s, u_asgn())
+    }
+    default: runerr(500, p)
+    }
+end
+
+# record a_Every( expr body )
+procedure u_gen_a_Every(s, p)
+    p.ir := u_loopinfo(@u_nextlab, @u_nextlab, 1, "every")
+    push(u_loops, p)
+    put(s, u_mark0())
+    u_gen(s, p.expr)
+    put(s, u_pop())
+    if \p.body then {
+        put(s, u_mark0())
+        p.ir.everyflag := &null
+        u_loops[1].ir.markcount +:= 1
+        u_gen(s, p.body)
+        u_loops[1].ir.markcount -:= 1
+        put(s, u_unmark())
+    }
+    put(s, u_lab(p.ir.nextlab))
+    put(s, u_efail())
+    put(s, u_lab(p.ir.breaklab))
+    pop(u_loops)
+end
+
+# record a_Sectionop( op val left right )
+procedure u_gen_a_Sectionop(s, p)
+    static fn
+    initial {
+        fn := table()
+        fn["[+:]"] := u_plus
+        fn["[-:]"] := u_minus
+    }
+
+    if *p.op > *"[:]" then {
+        put(s, u_pnull())
+        u_gen(s, p.val)
+        u_gen(s, p.left)
+        put(s, u_dup())
+        u_gen(s, p.right)
+        u_coord(s, p)
+        put(s, (\fn[p.op])()) | runerr(500, p)
+        u_coord(s, p)
+        put(s, u_sect())
+    } else {
+        put(s, u_pnull())
+        u_gen(s, p.val)
+        u_gen(s, p.left)
+        u_gen(s, p.right)
+        u_coord(s, p)
+        put(s, u_sect())
+    }
+end
+
+# record a_Binop( op left right )
+procedure u_gen_a_Binop(s, p)
+    local op
+    static fn
+    initial {
+        fn := table()
+        fn[":="] := u_asgn
+        fn["&:="] := u_asgn
+        fn["||"] := u_cat
+        fn["@"] := u_coact
+        fn["--"] := u_diff
+        fn["/"] := u_div
+        fn["==="] := u_eqv
+        fn["**"] := u_inter
+        fn["|||"] := u_lconcat
+        fn["=="] := u_lexeq
+        fn[">>="] := u_lexge
+        fn[">>"] := u_lexgt
+        fn["<<="] := u_lexle
+        fn["<<"] := u_lexlt
+        fn["~=="] := u_lexne
+        fn["-"] := u_minus
+        fn["%"] := u_mod
+        fn["*"] := u_mult
+        fn["~==="] := u_neqv
+        fn["="] := u_numeq
+        fn[">="] := u_numge
+        fn[">"] := u_numgt
+        fn["<="] := u_numle
+        fn["<"] := u_numlt
+        fn["~="] := u_numne
+        fn["+"] := u_plus
+        fn["^"] := u_power
+        fn["<-"] := u_rasgn
+        fn["<->"] := u_rswap
+        fn["[]"] := u_subsc
+        fn[":=:"] := u_swap
+        fn["++"] := u_unions
+    }
+
+    if p.op == "@" then {
+        u_gen(s, p.left)
+        u_gen(s, p.right)
+        u_coord(s, p)
+        put(s, u_coact())
+    } else if p.op == "@:=" then {
+        put(s, u_pnull())
+        u_gen(s, p.left)
+        put(s, u_sdup())
+        u_gen(s, p.right)
+        u_coord(s, p)
+        put(s, u_coact())
+        put(s, u_asgn())
+    } else if p.op == "&" then {
+        u_gen(s, p.left)
+        put(s, u_pop())
+        u_gen(s, p.right)
+    } else if p.op == "!" then {
+        u_gen(s, p.left)
+        u_gen(s, p.right)
+        # u_coord(s, p)
+        put(s, u_invoke(-1))
+    } else if op := (p.op ? tab(find(":="))) & op ~== "" & op ~== "&" then {
+        put(s, u_pnull())
+        u_gen(s, p.left)
+        put(s, u_dup())
+        u_gen(s, p.right)
+        u_coord(s, p)
+        put(s, (\fn[op])()) | runerr(500, p)
+        put(s, u_asgn())
+    } else {
+        put(s, u_pnull())
+        u_gen(s, p.left)
+        u_gen(s, p.right) 
+        u_coord(s, p)
+        put(s, (\fn[p.op])()) | runerr(500, p)
+    }
+
+end
+
+# record a_Unop( op operand )
+procedure u_gen_a_Unop(s, p)
+    static fn
+    initial {
+        fn := table()
+        fn["!"] := u_bang
+        fn["~"] := u_compl
+        fn["-"] := u_neg
+        fn["\\"] := u_nonnull
+        fn["/"] := u_null
+        fn["+"] := u_number
+        fn["?"] := u_random
+        fn["^"] := u_refresh
+        fn["*"] := u_size
+        fn["="] := u_tabmat
+        fn["."] := u_value
+    }
+
+    if p.op == "@" then {
+        put(s, u_pnull())
+        u_gen(s, p.operand)
+        u_coord(s, p)
+        put(s, u_coact())
+        return
+    }
+    put(s, u_pnull())
+    u_gen(s, p.operand)
+    u_coord(s, p)
+    put(s, (\fn[p.op])()) | runerr(500, p)
+end
+
+# record a_Global( idList )
+procedure u_gen_a_Global(s, p)
+    put(s, p)
+end
+
+# record a_If( expr thenexpr elseexpr )
+procedure u_gen_a_If(s, p)
+    local elselab, endlab
+
+    if \p.elseexpr then {
+        elselab := @u_nextlab
+        endlab := @u_nextlab
+        put(s, u_mark(elselab))
+        u_loops[1].ir.markcount +:= 1
+        u_gen(s, p.expr)
+        u_loops[1].ir.markcount -:= 1
+        put(s, u_unmark())
+        u_gen(s, p.thenexpr)
+        put(s, u_goto(endlab))
+        put(s, u_lab(elselab))
+        u_gen(s, p.elseexpr)
+        put(s, u_lab(endlab))
+    } else {
+        put(s, u_mark0())
+        u_loops[1].ir.markcount +:= 1
+        u_gen(s, p.expr)
+        u_loops[1].ir.markcount -:= 1
+        put(s, u_unmark())
+        u_gen(s, p.thenexpr)
+    }
+end
+
+# record a_Initial( expr )
+procedure u_gen_a_Initial(s, p)
+    local lab
+
+    if \p.expr then {
+        lab := @u_nextlab
+        put(s, u_init(lab))
+        put(s, u_mark(lab))
+        u_gen(s, p.expr)
+        put(s, u_unmark())
+        put(s, u_lab(lab))
+    }
+end
+
+# record a_Invocable( invocList )
+procedure u_gen_a_Invocable(s, p)
+    put(s, p)
+end
+
+# record a_Link( linkfileList )
+procedure u_gen_a_Link(s, p)
+    put(s, p)
+end
+
+# record a_Intlit( int )
+procedure u_gen_a_Intlit(s, p)
+    local v
+
+    v := p.int
+    type(v) == "integer" | runerr(500, v)
+    /u_constants[v] := *u_constants & put(u_constList, v)
+    put(s, u_int(u_constants[v]))
+end
+
+# record a_Reallit( real )
+procedure u_gen_a_Reallit(s, p)
+    local v
+
+    v := p.real
+    type(v) == "real" | runerr(500, v)
+    /u_constants[v] := *u_constants & put(u_constList, v)
+    put(s, u_real(u_constants[v]))
+end
+
+# record a_Stringlit( str )
+procedure u_gen_a_Stringlit(s, p)
+    local v
+
+    v := p.str
+    type(v) == "string" | runerr(500, v)
+    /u_constants[v] := *u_constants & put(u_constList, v)
+    put(s, u_str(u_constants[v]))
+end
+
+# record a_Csetlit( str )
+procedure u_gen_a_Csetlit(s, p)
+    local v
+
+    v := p.str
+    type(v) == "cset" | runerr(500, v)
+    /u_constants[v] := *u_constants & put(u_constList, v)
+    put(s, u_cset(u_constants[v]))
+end
+
+# record a_Locals( idList )
+procedure u_gen_a_Locals(s, p)
+end
+
+# record a_Statics( idList )
+procedure u_gen_a_Statics(s, p)
+end
+
+# record a_ProcDecl( ident paramList localsList code )
+procedure u_gen_a_ProcDecl(s, p)
+    local x, i, k, code
+
+    put(s, p)
+
+    u_constants := table()
+    u_constList := []
+    u_nextlab := create ("L" || seq())
+    u_loops := []
+    code := []
+    u_reset_coord()
+    u_coord(code, p.ident)
+    u_gen(code, p.code)
+
+    write(u_u1, "proc ", p.ident.id)
+    u_variables := table()
+    u_local_declarations(p, code)
+    u_constant_declarations()
+
+    write(u_u1, "\tdeclend")
+    every write(u_u1, u_emit(!code))
+    write(u_u1, "\tend")
+end
+
+procedure u_local_declarations(p, code)
+    local i, x, k
+
+    i := 0
+    every x := !p.paramList do {
+        write(u_u1, "\tlocal\t", i, ",", "001000", ",", x.id)
+        i +:= 1
+        u_variables[x.id] := *u_variables
+    }
+    every x := !p.localsList do {
+        every k := !x.idList do {
+            write(u_u1, "\tlocal\t", i, ",",
+                  if type(x) == "a_Statics" then "000040" else "000020",
+                  ",", k.id)
+            i +:= 1
+            u_variables[k.id] := *u_variables
+        }
+    }
+    every x := !code do {
+        if type(x) == "u_var" & /u_variables[x.s] then {
+            u_variables[x.s] := *u_variables
+            write(u_u1, "\tlocal\t", i, ",", "000000", ",", x.s)
+            i +:= 1
+        }
+    }
+end
+
+procedure u_constant_declarations()
+    local i, x
+
+    every i := 1 to *u_constList & x := u_constList[i] do {
+        writes(u_u1, "\tcon\t", i-1, ",")
+        case type(x) of {
+        "string": {
+            writes(u_u1, "010000", ",", *x)
+            every writes(u_u1, ",", u_octal(ord(!x)))
+            write(u_u1)
+        }
+        "cset": {
+            writes(u_u1, "020000", ",", *x)
+            every writes(u_u1, ",", u_octal(ord(!x)))
+            write(u_u1)
+        }
+        "integer": {
+            write(u_u1, "002000", ",", *x, ",", x)
+        }
+        "real": {
+            write(u_u1, "004000", ",", x)
+        }
+        default: runerr(500, u_constList[i])
+        }
+    }
+end
+
+# record a_ProcBody( nexprList )
+procedure u_gen_a_ProcBody(s, p)
+    local lab, i
+
+    every i := !p.nexprList do {
+        lab := @u_nextlab
+        put(s, u_mark(lab))
+        if \i then {
+            u_gen(s, i)
+        } else {
+            put(s, u_pnull())
+        }
+        put(s, u_unmark())
+        put(s, u_lab(lab))
+    }
+    if *p.nexprList > 0 then {
+        put(s, u_pnull())
+    }
+    u_coord(s, p)
+    put(s, u_pfail())
+end
+
+# record a_Record( ident idlist )
+procedure u_gen_a_Record(s, p)
+    put(s, p)
+end
+
+# record a_Repeat( expr )
+procedure u_gen_a_Repeat(s, p)
+    local lab
+
+    lab := @u_nextlab
+    p.ir := u_loopinfo(@u_nextlab, @u_nextlab, 1)
+    push(u_loops, p)
+    put(s, u_lab(lab))
+    put(s, u_mark(lab))
+    u_gen(s, p.expr)
+    put(s, u_lab(p.ir.nextlab))
+    put(s, u_unmark())
+    put(s, u_goto(lab))
+    put(s, u_lab(p.ir.breaklab))
+    pop(u_loops)
+end
+
+# record a_Return( expr )
+procedure u_gen_a_Return(s, p)
+    local lab
+
+    /u_createflag | semantic_error("invalid context for return or fail",p.coord)
+    lab := @u_nextlab
+    put(s, u_mark(lab))
+    if \p.expr then {
+        u_loops[1].ir.markcount +:= 1
+        u_gen(s, p.expr)
+        u_loops[1].ir.markcount -:= 1
+    } else {
+        put(s, u_pnull())
+    }
+    u_coord(s, p)
+    put(s, u_pret())
+    put(s, u_lab(lab))
+    u_coord(s, p)
+    put(s, u_pfail())
+end
+
+# record a_Fail( )
+procedure u_gen_a_Fail(s, p)
+    /u_createflag | semantic_error("invalid context for return or fail",p.coord)
+    u_coord(s, p)
+    put(s, u_pfail())
+end
+
+# record a_Suspend( expr body )
+procedure u_gen_a_Suspend(s, p)
+    /u_createflag | semantic_error("invalid context for suspend", p.coord)
+    p.ir := u_loopinfo(@u_nextlab, @u_nextlab, 1, "every")
+    push(u_loops, p)
+    put(s, u_mark0())
+    u_gen(s, p.expr)
+    u_coord(s, p)
+    put(s, u_psusp())
+    put(s, u_pop())
+    if \p.body then {
+        put(s, u_mark0())
+        u_loops[1].ir.markcount +:= 1
+        p.ir.everyflag := &null
+        u_gen(s, p.body)
+        u_loops[1].ir.markcount -:= 1
+        put(s, u_unmark())
+    }
+    put(s, u_lab(p.ir.nextlab))
+    put(s, u_efail())
+    put(s, u_lab(p.ir.breaklab))
+    pop(u_loops)
+end
+
+# record a_Until( expr body )
+procedure u_gen_a_Until(s, p)
+    local exprlab, bodylab
+
+    exprlab := @u_nextlab
+    bodylab := @u_nextlab
+    p.ir := u_loopinfo(@u_nextlab, @u_nextlab, 1)
+    push(u_loops, p)
+    put(s, u_lab(exprlab))
+    put(s, u_mark(bodylab))
+    u_gen(s, p.expr)
+    put(s, u_unmark())
+    put(s, u_efail())
+    put(s, u_lab(bodylab))
+    put(s, u_mark(exprlab))
+    u_gen(s, p.body)
+    put(s, u_lab(p.ir.nextlab))
+    put(s, u_unmark())
+    put(s, u_goto(exprlab))
+    put(s, u_lab(p.ir.breaklab))
+    pop(u_loops)
+end
+
+# record a_While( expr body )
+procedure u_gen_a_While(s, p)
+    local lab
+
+    lab := @u_nextlab
+    p.ir := u_loopinfo(@u_nextlab, @u_nextlab, 1)
+    push(u_loops, p)
+    put(s, u_lab(lab))
+    put(s, u_mark0())
+    u_gen(s, p.expr)
+    if \p.body then {
+        put(s, u_unmark())
+        put(s, u_mark(lab))
+        u_gen(s, p.body)
+    }
+    put(s, u_lab(p.ir.nextlab))
+    put(s, u_unmark())
+    put(s, u_goto(lab))
+    put(s, u_lab(p.ir.breaklab))
+    pop(u_loops)
+end
+
+# record a_Create( expr )
+procedure u_gen_a_Create(s, p)
+    local exprlab, faillab, createlab
+
+    exprlab := @u_nextlab
+    faillab := @u_nextlab
+    createlab := @u_nextlab
+    put(s, u_goto(createlab))
+    put(s, u_lab(exprlab))
+    put(s, u_pop())
+    put(s, u_mark(faillab))
+    u_loops[1].ir.markcount +:= 1
+    u_createflag := p.expr
+    u_gen(s, p.expr)
+    u_createflag := &null
+    u_loops[1].ir.markcount -:= 1
+    u_coord(s, p)
+    put(s, u_coret())
+    put(s, u_efail())
+    put(s, u_lab(faillab))
+    put(s, u_cofail())
+    put(s, u_goto(faillab))
+    put(s, u_lab(createlab))
+    put(s, u_create(exprlab))
+end
+
+# record a_Ident( id )
+procedure u_gen_a_Ident(s, p)
+    put(s, u_var(p.id))
+end
+
+# record a_Next( )
+procedure u_gen_a_Next(s, p)
+    *u_loops > 0 | semantic_error("invalid context for next", p.coord)
+    if /u_loops[1].ir.everyflag then {
+        every 1 to u_loops[1].ir.markcount-1 do {
+            put(s, u_unmark())
+        }
+    }
+    put(s, u_goto(u_loops[1].ir.nextlab))
+end
+
+# record a_Break( expr )
+procedure u_gen_a_Break(s, p)
+    local tmp
+
+    *u_loops > 0 | semantic_error("invalid context for break", p.coord)
+    every 1 to u_loops[1].ir.markcount do {
+        put(s, u_unmark())
+    }
+    tmp := pop(u_loops)
+    u_gen(s, p.expr)
+    push(u_loops, tmp)
+    put(s, u_goto(tmp.ir.breaklab))
+end
+
+# record a_ToBy( fromexpr toexpr byexpr )
+procedure u_gen_a_ToBy(s, p)
+    put(s, u_pnull())
+    u_gen(s, p.fromexpr)
+    u_gen(s, p.toexpr)
+    if \p.byexpr then {
+        u_gen(s, p.byexpr)
+    } else {
+        put(s, u_push1())
+    }
+    u_coord(s, p)
+    put(s, u_toby())
+end
+
+# record a_Mutual( exprList )
+procedure u_gen_a_Mutual(s, p)
+    if *p.exprList = 0 then {
+        put(s, u_pnull())
+    } else if *p.exprList = 1 then {
+        u_gen(s, p.exprList[1])
+    } else {
+        put(s, u_pushn1())
+        every u_gen(s, !p.exprList)
+	u_coord(s, p)
+        put(s, u_invoke(*p.exprList))
+    }
+end
+
+# record a_CoexpList( exprList )
+procedure u_gen_a_CoexpList(s, p)
+    local L
+
+    L := []
+    every put(L, a_Create(!p.exprList))
+    p := a_Arglist([a_ListConstructor(L)])
+    u_gen(s, p)
+end
+
+# record a_Arglist( exprList )
+procedure u_gen_a_Arglist(s, p)
+    every u_gen(s, !p.exprList)
+end
+
+# record a_Compound( exprList )
+procedure u_gen_a_Compound(s, p)
+    local i, lab
+
+    every i := 1 to *p.exprList-1 do {
+        lab := @u_nextlab
+        put(s, u_mark(lab))
+        u_loops[1].ir.markcount +:= 1
+        u_gen(s, p.exprList[i])
+        u_loops[1].ir.markcount -:= 1
+        put(s, u_unmark())
+        put(s, u_lab(lab))
+    }
+    u_gen(s, p.exprList[-1])
+end
+
+# record a_ListConstructor( exprList )
+procedure u_gen_a_ListConstructor(s, p)
+    put(s, u_pnull())
+    every u_gen(s, !p.exprList)
+    u_coord(s, p)
+    put(s, u_llist(*p.exprList))
+end
+
+# record a_Key( id )
+procedure u_gen_a_Key(s, p)
+    u_coord(s, p)
+    put(s, u_keywd(p.id))
+end
+
+procedure u_gen(s, p)
+    case type(p) of {
+
+    "null" : return put(s, u_pnull())
+
+    "a_Alt" : return u_gen_a_Alt(s, p)
+    "a_Call" : return u_gen_a_Call(s, p)
+    "a_Not" : return u_gen_a_Not(s, p)
+    "a_RepAlt" : return u_gen_a_RepAlt(s, p)
+    "a_Field" : return u_gen_a_Field(s, p)
+    "a_NoOp" : return u_gen_a_NoOp(s, p)
+    "a_Case" : return u_gen_a_Case(s, p)
+    "a_Every" : return u_gen_a_Every(s, p)
+    "a_Scan" : return u_gen_a_Scan(s, p)
+    "a_Limitation" : return u_gen_a_Limitation(s, p)
+    "a_Sectionop" : return u_gen_a_Sectionop(s, p)
+    "a_Binop" : return u_gen_a_Binop(s, p)
+    "a_Unop" : return u_gen_a_Unop(s, p)
+    "a_Global" : return u_gen_a_Global(s, p)
+    "a_If" : return u_gen_a_If(s, p)
+    "a_Initial" : return u_gen_a_Initial(s, p)
+    "a_Invocable" : return u_gen_a_Invocable(s, p)
+    "a_Link" : return u_gen_a_Link(s, p)
+    "a_Intlit" : return u_gen_a_Intlit(s, p)
+    "a_Reallit" : return u_gen_a_Reallit(s, p)
+    "a_Stringlit" : return u_gen_a_Stringlit(s, p)
+    "a_Csetlit" : return u_gen_a_Csetlit(s, p)
+    "a_Locals" : return u_gen_a_Locals(s, p)
+    "a_Statics" : return u_gen_a_Statics(s, p)
+    "a_ProcDecl" : return u_gen_a_ProcDecl(s, p)
+    "a_ProcBody" : return u_gen_a_ProcBody(s, p)
+    "a_ProcCode" : return u_gen_a_ProcCode(s, p)
+    "a_Record" : return u_gen_a_Record(s, p)
+    "a_Repeat" : return u_gen_a_Repeat(s, p)
+    "a_Return" : return u_gen_a_Return(s, p)
+    "a_Fail" : return u_gen_a_Fail(s, p)
+    "a_Suspend" : return u_gen_a_Suspend(s, p)
+    "a_Until" : return u_gen_a_Until(s, p)
+    "a_While" : return u_gen_a_While(s, p)
+    "a_Create" : return u_gen_a_Create(s, p)
+    "a_Ident" : return u_gen_a_Ident(s, p)
+    "a_Next" : return u_gen_a_Next(s, p)
+    "a_Break" : return u_gen_a_Break(s, p)
+    "a_ToBy" : return u_gen_a_ToBy(s, p)
+    "a_Mutual" : return u_gen_a_Mutual(s, p)
+    "a_Arglist" : return u_gen_a_Arglist(s, p)
+    "a_CoexpList" : return u_gen_a_CoexpList(s, p)
+    "a_Compound" : return u_gen_a_Compound(s, p)
+    "a_ListConstructor" : return u_gen_a_ListConstructor(s, p)
+    "a_Key" : return u_gen_a_Key(s, p)
+    default : { runerr(500, p) }
+    }
+end
+
+procedure u_gen_File(parse, flagList)
+    local g, p, outfile
+
+    outfile := (!flagList ? (="-out:" & tab(0)))
+    if \outfile then {
+        u_u1 := open(outfile || ".u1", "w") | stop("ERROR: ", outfile)
+        u_u2 := open(outfile || ".u2", "w") | stop("ERROR: ", outfile)
+    }
+
+    g := []
+    while p := @parse do {
+        u_gen(g, p)
+    }
+
+    # g contains nodes for global declarations
+    write(/u_u2, "# stuff for .u2 file")
+    write(u_u2, "version\t", "U9.0.00")
+    u_record_declarations(g)
+    write(u_u2, "impl\t", "local")
+    u_link_declarations(g)
+    u_invocable_declarations(g)
+    u_global_declarations(g)
+end
+
+procedure u_record_declarations(g)
+    local p, i
+
+    every p := !g & type(p) == "a_Record" do {
+        write(u_u2, "record\t", p.ident.id, ",", *p.idlist)
+        every i := 1 to *p.idlist do {
+            write(u_u2, "\t", i-1, ",", p.idlist[i].id)
+        }
+    }
+end
+
+procedure u_link_declarations(g)
+    local p, i
+
+    every p := !g & type(p) == "a_Link" do {
+        every i := !p.linkfileList do {
+            write(u_u2, "link\t", i, ".u1")
+        }
+    }
+end
+
+procedure u_invocable_declarations(g)
+    local p, i, t
+
+    every p := !g & type(p) == "a_Invocable" do {
+        every i := !p.invocList do {
+            case type(i) of {
+            "a_Ident": {
+                t := i.id
+                if i.id == "all" then t := 0
+            }
+            "a_Stringlit": {
+                t := i.str
+            }
+            }
+            write(u_u2, "invocable\t", t)
+        }
+    }
+end
+
+procedure u_global_declarations(g)
+    local p, t, i
+
+    t := 0
+    every p := !g do {
+        case type(p) of {
+        "a_Record":   t +:= 1
+        "a_Global":   t +:= *p.idList
+        "a_ProcDecl": t +:= 1
+        }
+    }
+    write(u_u2, "global\t", t)
+    t := 0
+    every p := !g do {
+        case type(p) of {
+        "a_Record": {
+            write(u_u2, "\t", t, ",", "000011", ",", p.ident.id, ",", *p.idlist)
+            t +:= 1
+        }
+        "a_Global": {
+            every i := !p.idList do {
+                write(u_u2, "\t", t, ",", "000001", ",", i.id, ",", 0)
+                t +:= 1
+            }
+        }
+        "a_ProcDecl": {
+            write(u_u2, "\t", t, ",", "000005", ",", p.ident.id, ",",
+                  if /p.accumulate then *p.paramList else -*p.paramList)
+            t +:= 1
+        }
+        }
+    }
+end
+
+procedure u_octal(x)
+    local s
+    s := ""
+    while x > 0 do {
+        s := (x%8) || s
+        x /:= 8
+    }
+    s := right(s, 3, "0")
+    return s
+end

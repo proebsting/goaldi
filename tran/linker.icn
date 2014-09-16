@@ -1,0 +1,78 @@
+#  linker.icn -- Jcon's "linker" routines.
+
+# linker outputclassname inputclassname*
+procedure main(L)
+    local init, initcode, m, mcode, constructor
+    local outclass, i, atype, start, f, c
+    local ifile
+
+    outclass := pop(L) | stop("missing output class name")
+
+    f := open(outclass || ".class", "wu")
+    c := j_ClassFile(3, 45, [&null], table(), 16r11,
+        &null,
+        &null,
+        [],[],[],[]
+        )
+    c.super_class := j_cp_Class(c, j_cp_Utf8(c, "jcon/iExecutable"))
+    c.this_class := j_cp_Class(c, j_cp_Utf8(c, outclass))
+
+    init := j_create_method(c, 1, "<init>", "()V")
+    initcode := j_create_code(c, 2, 2)
+    put(init.attributes, initcode)
+    put(initcode.code, j_aload_0())
+    constructor := j_create_methodref(c, "<init>", "()V", "jcon/iExecutable")
+    put(initcode.code, j_invokespecial(constructor))
+    put(initcode.code, j_return())
+
+    m := j_create_method(c, 9, "main", "([Ljava/lang/String;)V")
+    mcode := j_create_code(c, 10, 10)
+    put(m.attributes, mcode)
+
+    # put(mcode.code, j_invokestatic(j_create_methodref(c, "init_baseTramp", "()V", "BaseTramp")))
+
+    put(mcode.code, j_aload_0() )
+    put(mcode.code, j_ldc(j_cp_String(c, j_cp_Utf8(c, outclass))) )
+    put(mcode.code, j_new(c.this_class) )
+    put(mcode.code, j_dup() )
+    constructor := j_create_methodref(c, "<init>", "()V", outclass)
+    put(mcode.code, j_invokespecial(constructor))
+    start := j_create_methodref(c, "start",
+	"([Ljava/lang/String;Ljava/lang/String;Ljcon/iExecutable;)V",
+	"jcon/iInterface")
+    put(mcode.code, j_invokestatic(start) )
+    put(mcode.code, j_return() )
+
+    m := j_create_method(c, 1, "start", "()V")
+    mcode := j_create_code(c, 10, 10)
+    put(m.attributes, mcode)
+    start := j_create_methodref(c, "start",
+	"([Ljcon/iFile;[Ljava/lang/String;)V", "jcon/iInterface")
+    put(mcode.code, j_ipush(*L) )
+    atype := j_cp_Class(c, j_cp_Utf8(c, "jcon/iFile"))
+    put(mcode.code, j_anewarray(atype) )
+    every i := 1 to *L do {
+        put(mcode.code, j_dup() )
+        put(mcode.code, j_ipush(i-1) )
+        constructor := j_create_methodref(c, "<init>", "()V", L[i])
+	ifile := j_cp_Class(c, j_cp_Utf8(c, L[i]))
+        put(mcode.code, j_new(ifile) )
+        put(mcode.code, j_dup() )
+        put(mcode.code, j_invokespecial(constructor))
+        put(mcode.code, j_aastore() )
+    }
+    put(mcode.code, j_ipush(*L) )
+    atype := j_cp_Class(c, j_cp_Utf8(c, "java/lang/String"))
+    put(mcode.code, j_anewarray(atype) )
+    every i := 1 to *L do {
+        put(mcode.code, j_dup() )
+        put(mcode.code, j_ipush(i-1) )
+	ifile := j_cp_String(c, j_cp_Utf8(c, L[i]))
+        put(mcode.code, j_ldc_w(ifile) )
+        put(mcode.code, j_aastore() )
+    }
+    put(mcode.code, j_invokestatic(start) )
+    put(mcode.code, j_return() )
+
+    j_writer_j_ClassFile(f, c)
+end

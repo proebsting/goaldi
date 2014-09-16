@@ -1,0 +1,472 @@
+#  optimize.icn -- intermediate representation optimizer routines.
+
+procedure optim_optimize(t, start)
+    local new, i
+
+    new := t
+    new := optim_dead_assignment(new, start)
+    new := optim_goto_elimination(new, start)
+    new := optim_copy_propagation(new, start)
+    return new
+end
+
+procedure optim_dead_assignment(t, start)
+    local k, chunk, new, c, i
+
+    new := table()
+    every k := key(t) & chunk := t[k] do {
+        c := []
+        every i := !chunk do {
+	    case type(i) of {
+	    "ir_MoveLabel" |
+	    "ir_IntLit" |
+	    "ir_RealLit" |
+	    "ir_StrLit" |
+	    "ir_CsetLit" |
+	    "ir_Var" |
+	    "ir_Move" : if /i.lhs then next
+	    }
+            put(c, i)
+        }
+        new[k] := c
+    }
+    return new
+end
+
+procedure optim_copy_propagation(t, start)
+    local rename, uses, defs, chunk, insn, newchunk, changes
+    local k, i
+
+    repeat {
+        changes := &null
+        uses := table(0)
+        defs := table(0)
+        every chunk := !t do {
+            every insn := !chunk do {
+                optim_def_use(insn, uses, defs)
+            }
+        }
+        rename := table()
+        every k := key(t) & chunk := t[k] do {
+            newchunk := []
+            every insn := !chunk do {
+                if type(insn) == "ir_Move" &
+                   defs[insn.lhs] = 1 &
+                   uses[insn.rhs] = 1 
+                   then {
+                    rename[insn.lhs] := insn.rhs
+                    changes := 1
+                } else {
+                    put(newchunk, insn)
+                }
+            }
+            t[k] := newchunk
+        }
+        if /changes then break;
+        every chunk := !t do {
+            every i := 1 to *chunk do {
+                chunk[i] := optim_rewrite(chunk[i], rename)
+            }
+        }
+    }
+    return t
+end
+
+procedure optim_def_use(p, uses, defs)
+    case type(p) of {
+    "ir_Field" : { defs[\p.lhs] +:= 1
+	    uses[p.expr] +:= 1
+            }
+    "ir_Move" :  { defs[\p.lhs] +:= 1
+	    uses[p.rhs] +:= 1
+            }
+    "ir_MoveLabel" :  { defs[\p.lhs] +:= 1
+	    uses[p.label] +:= 1
+            }
+    "ir_Assign" :  { uses[p.target] +:= 1
+	    uses[p.value] +:= 1
+            }
+    "ir_Deref" :  { defs[\p.lhs] +:= 1
+	    uses[p.value] +:= 1
+            }
+    "ir_ScanSwap" :  {
+	    uses[p.subject] +:= 1
+	    uses[p.pos] +:= 1
+	    defs[p.subject] +:= 1
+	    defs[p.pos] +:= 1
+            }
+    "ir_Goto" :  {
+	    uses[p.targetLabel] +:= 1
+	    }
+    "ir_IndirectGoto" :  { 
+	    uses[p.targetTmpLabel] +:= 1
+	    }
+    "ir_Var" :   { defs[\p.lhs] +:= 1
+	    }
+    "ir_Key" :   { defs[\p.lhs] +:= 1
+	    uses[\p.failLabel] +:= 1
+	    }
+    "ir_IntLit" :    { defs[\p.lhs] +:= 1
+	    }
+    "ir_RealLit" :   { defs[\p.lhs] +:= 1
+	    }
+    "ir_StrLit" :    { defs[\p.lhs] +:= 1
+	    }
+    "ir_CsetLit" :   { defs[\p.lhs] +:= 1
+	    }
+    "ir_Succeed" :   { 
+	    uses[p.expr] +:= 1
+	    uses[\p.resumeLabel] +:= 1
+	    }
+    "ir_Fail" :  { }
+    "ir_ResumeValue" :    { 
+	    uses[p.value] +:= 1
+	    uses[\p.failLabel] +:= 1
+            defs[\p.lhs] +:= 1
+	    }
+    "ir_MakeList" :  { defs[\p.lhs] +:= 1
+	    every uses[!p.valueList] +:= 1
+	    }
+    "ir_Call" |
+    "ir_OpFunction":{defs[\p.lhs] +:= 1
+	    uses[p.fn] +:= 1
+	    uses[\p.failLabel] +:= 1
+	    every uses[!p.argList] +:= 1
+	    }
+    "ir_Create" :    {
+	    defs[\p.lhs] +:= 1
+	    uses[p.coexpLabel] +:= 1
+	    }
+    "ir_CoRet" : { 
+	    uses[p.value] +:= 1
+	    uses[p.resumeLabel] +:= 1
+	    }
+    "ir_CoFail" :    { }
+
+    "ir_EnterInit" : { 
+	    uses[p.startLabel] +:= 1
+	    }
+#    "ir_EnterInit" : { optim_def_use(p.startLabel, uses, uses, defs) }
+
+    "ir_Unreachable":{ }
+
+    default :   { runerr(500, p); }
+    }
+end
+
+procedure optim_rename(p, rename)
+    while member(rename, p) do {
+	p := rename[p]
+    }
+    return p
+end
+
+procedure optim_rewrite(p, rename)
+    local i
+
+    case type(p) of {
+    "ir_Move" :  { p.lhs := optim_rename(\p.lhs, rename);
+            p.rhs := optim_rename(p.rhs, rename) }
+    "ir_MoveLabel" :  { p.lhs := optim_rename(\p.lhs, rename);
+            p.label := optim_rename(p.label, rename) }
+    "ir_Assign" :  { p.target := optim_rename(p.target, rename);
+            p.value := optim_rename(p.value, rename) }
+    "ir_Deref" :  { p.lhs := optim_rename(\p.lhs, rename);
+            p.value := optim_rename(p.value, rename) }
+    "ir_ScanSwap" :  { }
+    "ir_Goto" :  { }
+    "ir_IndirectGoto" :  { }
+    "ir_Var" :   { p.lhs := optim_rename(\p.lhs, rename) }
+    "ir_Key" :   { p.lhs := optim_rename(\p.lhs, rename) 
+            p.failLabel := optim_rename(\p.failLabel, rename);
+	    }
+    "ir_IntLit" :    { p.lhs := optim_rename(\p.lhs, rename) }
+    "ir_RealLit" :   { p.lhs := optim_rename(\p.lhs, rename) }
+    "ir_StrLit" :    { p.lhs := optim_rename(\p.lhs, rename) }
+    "ir_CsetLit" :   { p.lhs := optim_rename(\p.lhs, rename) }
+    "ir_Succeed" :   { p.expr := optim_rename(p.expr, rename);
+            p.resumeLabel := optim_rename(\p.resumeLabel, rename); }
+    "ir_Fail" :  { }
+    "ir_ResumeValue" :    { p.value := optim_rename(p.value, rename);
+            p.failLabel := optim_rename(\p.failLabel, rename);
+            p.lhs := optim_rename(\p.lhs, rename); }
+    "ir_MakeList" :  { p.lhs := optim_rename(\p.lhs, rename);
+            every i := 1 to *p.valueList do {
+                p.valueList[i] := optim_rename(p.valueList[i],
+                                  rename); }
+            }
+    "ir_Field" : { p.lhs := optim_rename(\p.lhs, rename)
+            p.expr := optim_rename(p.expr, rename)
+            p.failLabel := optim_rename(\p.failLabel, rename)
+            }
+    "ir_Call" |
+    "ir_OpFunction":{p.lhs := optim_rename(\p.lhs, rename);
+            every i := 1 to *p.argList do {
+                p.argList[i] := optim_rename(p.argList[i], rename);
+	    }
+            p.failLabel := optim_rename(\p.failLabel, rename);
+            }
+    "ir_Create" :    {
+            p.lhs := optim_rename(\p.lhs, rename);
+	    p.coexpLabel := optim_rename(p.coexpLabel, rename); }
+    "ir_CoRet" : { p.value := optim_rename(p.value, rename);
+            p.resumeLabel := optim_rename(p.resumeLabel, rename);}
+    "ir_CoFail" :    { }
+    "ir_Unreachable":{ }
+    "ir_EnterInit" : { p.startLabel := optim_rename(p.startLabel, rename) }
+
+    default :   { runerr(500,p); }
+    }
+    return p;
+end
+
+procedure optim_goto_elimination(t, start)
+    local new, i
+
+    new := table()
+    optim_goto_transitive(t, new, start)
+    optim_test_elimination(new, start)
+    if i := new[start] &
+       type(i[1]) == "ir_EnterInit" &
+       type(i[2]) == "ir_Goto" &
+       i[1].startLabel === i[2].targetLabel then {
+        new[start] := [ i[2] ]
+    }
+    optim_fallthrough(new)
+    return new
+end
+
+procedure optim_fallthrough(new)
+    local lab, insn, chunk, refcount
+
+    refcount := optim_refcount(new)
+
+    every lab := key(new) do {
+        while chunk := \new[lab] &
+              insn := chunk[-1] &
+              type(insn) == "ir_Goto" &
+              type(insn.targetLabel) == "ir_Label" &
+              refcount[insn.targetLabel] = 1 do {
+            \new[insn.targetLabel] | runerr(500, insn.targetLabel)
+            new[lab] := chunk[1:-1] ||| new[insn.targetLabel]
+            delete(new, insn.targetLabel)
+        }
+    }
+end
+
+procedure optim_refcount(t)
+    local refcount
+
+    refcount := table(0)
+    every optim_refcountX(refcount, !!t)
+    return refcount
+end
+
+
+procedure optim_goto_chain(lab, t)
+    local chunk, seen
+
+    seen := set([])
+    while chunk := \t[lab] &
+	  type(chunk[1]) == "ir_Goto" &
+	  not member(seen, chunk[1].targetLabel) do {
+        lab := chunk[1].targetLabel
+        insert(seen, lab)
+    }
+    return lab
+end
+
+procedure optim_goto_chain_defer(lab, t)
+    local chunk, seen
+
+    seen := set([])
+    while chunk := \t[lab] &
+          type(chunk[1]) == "ir_Goto" &
+	  not member(seen, chunk[1].targetLabel) &
+          type(chunk[1].targetLabel) ~== "ir_TmpLabel" do {
+        lab := chunk[1].targetLabel
+        insert(seen, lab)
+    }
+    return lab
+end
+
+procedure optim_goto_transitive(t, new, lab)
+    local p
+
+    if /t[lab] | \new[lab] then {
+	return
+    }
+    new[lab] := t[lab]
+
+    every p := !t[lab] do {
+	    case type(p) of {
+	    "ir_CoFail" |
+	    "ir_Unreachable" |
+	    "ir_MakeList" |
+	    "ir_operator" |
+	    "ir_Fail" |
+	    "ir_Var" |
+	    "ir_IntLit" |
+	    "ir_RealLit" |
+	    "ir_StrLit" |
+	    "ir_CsetLit" |
+	    "ir_ScanSwap" |
+	    "ir_Tmp" |
+	    "ir_TmpLabel" |
+	    "ir_Move" |
+	    "ir_IndirectGoto" |
+	    "ir_Assign" |
+	    "ir_Deref" : {
+		# nothing
+		}
+	    "ir_Label" : {  # ir_Label : ( value )
+		}
+	    "ir_MoveLabel" : {  # ir_MoveLabel : ( lhs label )
+		p.label := optim_goto_chain_defer(p.label, t)
+		optim_goto_transitive(t, new, p.label)
+		}
+	    "ir_Goto" : {  # ir_Goto : ( targetLabel )
+		p.targetLabel := optim_goto_chain(p.targetLabel, t)
+		optim_goto_transitive(t, new, p.targetLabel)
+		}
+	    "ir_Succeed" : {  # ir_Succeed : ( expr resumeLabel )
+		p.resumeLabel := optim_goto_chain(\p.resumeLabel, t)
+		optim_goto_transitive(t, new, \p.resumeLabel)
+		}
+	    "ir_Field" : {  # ir_Field : ( lhs expr field failLabel )
+		p.failLabel := optim_goto_chain(\p.failLabel, t)
+		optim_goto_transitive(t, new, \p.failLabel)
+		}
+	    "ir_Call" |
+	    "ir_Key" |
+	    "ir_OpFunction" : {  # ir_OpFunction : ( lhs fn argList failLabel )
+		p.failLabel := optim_goto_chain(\p.failLabel, t)
+		optim_goto_transitive(t, new, \p.failLabel)
+		}
+	    "ir_ResumeValue" : {  # ir_ResumeValue : ( lhs value failLabel )
+		p.failLabel := optim_goto_chain(\p.failLabel, t)
+		optim_goto_transitive(t, new, \p.failLabel)
+		}
+	    "ir_Create" : {  # ir_Create : ( lhs location )
+		p.coexpLabel := optim_goto_chain_defer(p.coexpLabel, t)
+		optim_goto_transitive(t, new, p.coexpLabel)
+		}
+	    "ir_CoRet" : {  # ir_CoRet : ( value resumeLabel )
+		p.resumeLabel := optim_goto_chain(p.resumeLabel, t)
+		optim_goto_transitive(t, new, p.resumeLabel)
+		}
+	    "ir_EnterInit" : {  # ir_EnterInit : ( startLabel )
+		p.startLabel := optim_goto_chain(p.startLabel, t)
+		optim_goto_transitive(t, new, p.startLabel)
+		}
+	    default : runerr(500, p)
+	    }
+    }
+end
+
+procedure optim_refcountX(refcount, p)
+    case type(p) of {
+    "ir_CoFail" |
+    "ir_Unreachable" |
+    "ir_MakeList" |
+    "ir_operator" |
+    "ir_Fail" |
+    "ir_Var" |
+    "ir_IntLit" |
+    "ir_RealLit" |
+    "ir_StrLit" |
+    "ir_CsetLit" |
+    "ir_ScanSwap" |
+    "ir_Tmp" |
+    "ir_TmpLabel" : {
+	# nothing
+    }
+    "ir_Assign" : {
+	refcount[p.target] +:= 1
+	refcount[p.value] +:= 1
+    }
+    "ir_Deref" : {
+	refcount[p.value] +:= 1
+        }
+    "ir_Label" : {  # ir_Label : ( value )
+        }
+    "ir_Move" : {  # ir_Move : ( lhs rhs )
+	refcount[p.rhs] +:= 1
+        }
+    "ir_MoveLabel" : {  # ir_MoveLabel : ( lhs label )
+	refcount[p.label] +:= 1
+        }
+    "ir_Goto" : {  # ir_Goto : ( targetLabel )
+	refcount[p.targetLabel] +:= 1
+        }
+    "ir_IndirectGoto" : {  # ir_IndirectGoto : ( targetTmpLabel )
+	refcount[p.targetTmpLabel] +:= 1
+        }
+    "ir_Succeed" : {  # ir_Succeed : ( expr resumeLabel )
+	refcount[p.resumeLabel] +:= 1
+        }
+    "ir_Field" : {  # ir_Field : ( lhs expr field failLabel )
+	refcount[p.failLabel] +:= 1
+        }
+    "ir_Call" |
+    "ir_Key" |
+    "ir_OpFunction" : {  # ir_OpFunction : ( lhs fn argList failLabel )
+	refcount[p.failLabel] +:= 1
+        }
+    "ir_ResumeValue" : {  # ir_ResumeValue : ( lhs value failLabel )
+	refcount[\p.failLabel] +:= 1
+        }
+    "ir_Create" : {  # ir_Create : ( lhs coexpLabel )
+	refcount[p.coexpLabel] +:= 1
+        }
+    "ir_CoRet" : {  # ir_CoRet : ( value resumeLabel )
+	refcount[p.resumeLabel] +:= 1
+        }
+    "ir_EnterInit" : {  # ir_EnterInit : ( startLabel )
+	refcount[p.startLabel] +:= 1
+        }
+    default : runerr(500, p)
+    }
+end
+
+procedure optim_test_elimination(t, start)
+	local chunk
+
+	every chunk := !t &
+	      type(chunk[-1]) == "ir_Goto" &
+	      type(chunk[-2]) == ("ir_Call" | "ir_OpFunction" | "ir_Key") &
+	      chunk[-1].targetLabel === \chunk[-2].failLabel do {
+	    chunk[-2].failLabel := &null
+	}
+end
+
+procedure optim(irgen, flagList)
+    local p, T, L, i
+
+    while p := @irgen do {
+        case type(p) of {
+        "ir_Global" |
+        "ir_Record" |
+        "ir_Invocable" |
+        "ir_Link" : {
+		suspend p
+	}
+        "ir_Function" : {
+            if match("-O", !flagList) then {
+	        T := table()
+	        every i := !p.codeList do {
+		    T[i.label] := i.insnList
+	        }
+	        T := optim_optimize(T, p.codeStart)
+	        L := []
+	        every i := key(T) do {
+		    put(L, ir_chunk(i, T[i]))
+	        }
+	        p.codeList := L
+            }
+	    suspend p
+        }
+        default: runerr(500, p)
+        }
+    }
+end

@@ -1,0 +1,90 @@
+#  gen_symbolic.icn -- create symbolic output from intermediate representation.
+
+global symbolic_emit_table
+
+procedure symbolic_emit(label, code)
+    symbolic_emit_table[label] := code
+end
+
+procedure symbolic_invocables(all, L)
+    writes("invocable")
+    writes(\all & " all")
+    every writes(" ", image(!L))
+    write()
+end
+
+procedure symbolic_links(L)
+    writes("link ")
+    every writes(" ", !L)
+    write()
+end
+
+procedure symbolic_records(name, fields, coord)
+    writes("record ", name, "(")
+    every writes(" ", !fields)
+    write(")")
+end
+
+procedure symbolic_globals(L)
+    writes("global ")
+    every writes(" ", !L)
+    write()
+end
+
+procedure symbolic_function(name, params, accumulate, locals, statics, code,
+                        codestart, coord)
+    local i
+
+    writes("procedure ", name, "(")
+    every writes(" ", !params)
+    writes(\accumulate & "[]")
+    writes(" )")
+    write()
+    writes("local")
+    every writes(" ", !locals)
+    write()
+    writes("static")
+    every writes(" ", !statics)
+    write()
+    symbolic_emit_table := table()
+    every i := !code do {
+        symbolic_emit_table[i.label] := i.insnList
+    }
+    symbolic_table(&output, symbolic_emit_table)
+    write("end ", name)
+end
+
+procedure symbolic_table(p, t)
+    local lab, c
+
+    every lab := key(t) & c := t[lab] do {
+        write(p, ir_dump(lab))
+        every write(p, "\t", ir_dump(!c))
+    }
+end
+
+procedure symbolic_File(irgen, flagList)
+    local p
+
+    while p := @irgen do {
+        case type(p) of {
+        "ir_Global" : {
+            symbolic_globals(p.nameList)
+        }
+        "ir_Record" : {
+            symbolic_records(p.name, p.fieldList)
+        }
+        "ir_Invocable" : {
+            symbolic_invocables(p.all, p.nameList)
+        }
+        "ir_Function" : {
+            symbolic_function(p.name, p.paramList, p.accumulate, p.localList,
+                        p.staticList, p.codeList, p.codeStart)
+        }
+        "ir_Link" : {
+            symbolic_links(p.nameList)
+        }
+        default: runerr(500, p)
+        }
+    }
+end

@@ -1,0 +1,4 @@
+jcon/tran -- Jcon translator directory
+
+This directory contains source code for the Jcon translator
+and linker, all written in Icon.

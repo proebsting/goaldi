@@ -1,0 +1,48 @@
+#  ir.icn -- data structures for the Jcon intermediate representation.
+
+record ir_Invocable(coord, nameList, all)
+record ir_Link(coord, nameList)
+record ir_Record(coord, name, fieldList)
+record ir_Global(coord, nameList)
+record ir_Function(coord, name, paramList, accumulate, localList, staticList,
+		  codeList, codeStart, lvalset)
+record ir_chunk(label, insnList)
+ 
+record ir_Tmp(name)
+record ir_TmpLabel(name)
+record ir_Label(value)
+
+record ir_Var(coord, lhs, name)
+record ir_Key(coord, lhs, name, failLabel)
+record ir_IntLit(coord, lhs, val)
+record ir_RealLit(coord, lhs, val)
+record ir_StrLit(coord, lhs, len, val)
+record ir_CsetLit(coord, lhs, len, val)
+
+record ir_operator(name, arity, rval)
+
+record ir_Move(coord, lhs, rhs)
+record ir_MoveLabel(coord, lhs, label)
+record ir_Deref(coord, lhs, value)
+record ir_Assign(coord, target, value)
+record ir_MakeList(coord, lhs, valueList)
+record ir_Field(coord, lhs, expr, field, failLabel)
+record ir_OpFunction(coord, lhs, fn, argList, failLabel)
+record ir_Call(coord, lhs, fn, argList, failLabel)
+record ir_ResumeValue(coord, lhs, value, failLabel)
+
+record ir_EnterInit(coord, startLabel)
+record ir_Goto(coord, targetLabel)
+record ir_IndirectGoto(coord, targetTmpLabel)
+record ir_Succeed(coord, expr, resumeLabel)
+record ir_Fail(coord)
+
+record ir_Create(coord, lhs, coexpLabel)
+record ir_CoRet(coord, value, resumeLabel)
+record ir_CoFail(coord)
+
+record ir_ScanSwap(coord, subject, pos)
+
+record ir_Unreachable(coord)
+
+record ir_coordinate(file, line, column)

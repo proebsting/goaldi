@@ -1,0 +1,1770 @@
+#  bytecode.icn -- data structures and routines for manipulating class files.
+
+record j_CONSTANT_Class(name_index, pool_index)
+record j_CONSTANT_a_Fieldref(class_index, name_and_type_index, pool_index)
+record j_CONSTANT_Methodref(class_index, name_and_type_index, pool_index)
+record j_CONSTANT_InterfaceMethodref(class_index, name_and_type_index,
+                   pool_index)
+record j_CONSTANT_String(string_index, pool_index)
+record j_CONSTANT_Integer(value, pool_index)
+record j_CONSTANT_Float(value, pool_index)
+record j_CONSTANT_Long(value, pool_index)
+record j_CONSTANT_Double(value, pool_index)
+record j_CONSTANT_NameAndType(name_index, signature_index, pool_index)
+record j_CONSTANT_Utf8(value, pool_index)
+record j_CONSTANT_Unicode(value, pool_index)
+
+record j_ClassFile(minor_version, major_version, constant_pool, constant_table,
+         access_flags, this_class, super_class, interfaces, fields,
+         methods, attributes)
+record j_field_info(access_flags, name_index, signature_index, attributes)
+
+record j_SourceFile_attribute(attribute_name_index, sourcefile_index)
+record j_ConstantValue_attribute(attribute_name_index, constantvalue_index)
+record j_Code_attribute(attribute_name_index, ir_max_stack, max_locals, code,
+              exception_table, attributes)
+record j_Exceptions_attribute(attribute_name_index, exception_index_table)
+record j_LineNumberTable_attribute(attribute_name_index, line_number_table)
+record j_LocalVariableTable_attribute(attribute_name_index,
+        			      local_variable_table)
+record j_GenericAttribute_info(attribute_name_index, info)
+
+record j_method_info(access_flags, name_index, signature_index, attributes)
+record j_exception_table_info(start_pc, end_pc, handler_pc, catch_type)
+record j_line_number_table_info(start_pc, line_number)
+record j_local_variable_table_info(start_pc, length, name_index,
+                                   signature_index, slot)
+
+record j_label(name)
+record j_bipush(byte)
+record j_sipush(byte)
+record j_ldc(index)
+record j_ldc_w(index)
+record j_ldc2_w(index)
+record j_aconst_null()
+record j_iconst_m1()
+record j_iconst_0()
+record j_iconst_1()
+record j_iconst_2()
+record j_iconst_3()
+record j_iconst_4()
+record j_iconst_5()
+record j_lconst_0()
+record j_lconst_1()
+record j_fconst_0()
+record j_fconst_1()
+record j_fconst_2()
+record j_dconst_0()
+record j_dconst_1()
+record j_iload(index)
+record j_iload_w(index)
+record j_iload_0()
+record j_iload_1()
+record j_iload_2()
+record j_iload_3()
+record j_lload(index)
+record j_lload_w(index)
+record j_lload_0()
+record j_lload_1()
+record j_lload_2()
+record j_lload_3()
+record j_fload(index)
+record j_fload_w(index)
+record j_fload_0()
+record j_fload_1()
+record j_fload_2()
+record j_fload_3()
+record j_dload(index)
+record j_dload_w(index)
+record j_dload_0()
+record j_dload_1()
+record j_dload_2()
+record j_dload_3()
+record j_aload(index)
+record j_aload_w(index)
+record j_aload_0()
+record j_aload_1()
+record j_aload_2()
+record j_aload_3()
+record j_istore(index)
+record j_istore_w(index)
+record j_istore_0()
+record j_istore_1()
+record j_istore_2()
+record j_istore_3()
+record j_lstore(index)
+record j_lstore_0()
+record j_lstore_1()
+record j_lstore_2()
+record j_lstore_3()
+record j_fstore(index)
+record j_fstore_0()
+record j_fstore_1()
+record j_fstore_2()
+record j_fstore_3()
+record j_dstore(index)
+record j_dstore_0()
+record j_dstore_1()
+record j_dstore_2()
+record j_dstore_3()
+record j_astore(index)
+record j_astore_w(index)
+record j_astore_0()
+record j_astore_1()
+record j_astore_2()
+record j_astore_3()
+record j_iinc(index, const)
+record j_iinc_w(index, const)
+record j_wide()
+record j_newarray(atype)
+record j_anewarray(index)
+record j_multinewarray(index, dimensions)
+record j_arraylength()
+record j_iaload()
+record j_laload()
+record j_faload()
+record j_daload()
+record j_aaload()
+record j_baload()
+record j_caload()
+record j_saload()
+record j_iastore()
+record j_lastore()
+record j_fastore()
+record j_dastore()
+record j_aastore()
+record j_bastore()
+record j_castore()
+record j_sastore()
+record j_nop()
+record j_pop()
+record j_pop2()
+record j_dup()
+record j_dup2()
+record j_dup_x1()
+record j_dup2_x1()
+record j_dup_x2()
+record j_dup2_x2()
+record j_swap()
+record j_iadd()
+record j_ladd()
+record j_fadd()
+record j_dadd()
+record j_isub()
+record j_lsub()
+record j_fsub()
+record j_dsub()
+record j_imul()
+record j_lmul()
+record j_fmul()
+record j_dmul()
+record j_idiv()
+record j_ldiv()
+record j_fdiv()
+record j_ddiv()
+record j_irem()
+record j_lrem()
+record j_frem()
+record j_drem()
+record j_ineg()
+record j_lneg()
+record j_fneg()
+record j_dneg()
+record j_ishl()
+record j_ishr()
+record j_iushr()
+record j_lshl()
+record j_lshr()
+record j_lushr()
+record j_Iand()
+record j_land()
+record j_ior()
+record j_lor()
+record j_ixor()
+record j_lxor()
+record j_i2l()
+record j_i2f()
+record j_i2d()
+record j_l2i()
+record j_l2f()
+record j_l2d()
+record j_f2i()
+record j_f2l()
+record j_f2d()
+record j_d2i()
+record j_d2l()
+record j_d2f()
+record j_int2byte()
+record j_int2char()
+record j_int2short()
+record j_ifeq(branch)
+record j_ifnull(branch)
+record j_iflt(branch)
+record j_ifle(branch)
+record j_ifne(branch)
+record j_ifnonnull(branch)
+record j_ifgt(branch)
+record j_ifge(branch)
+record j_if_icmpeq(branch)
+record j_if_icmpne(branch)
+record j_if_icmplt(branch)
+record j_if_icmpgt(branch)
+record j_if_icmple(branch)
+record j_if_icmpge(branch)
+record j_lcmp()
+record j_fcmpl()
+record j_fcmpg()
+record j_dcmpl()
+record j_dcmpg()
+record j_if_acmpeq(branch)
+record j_if_acmpne(branch)
+record j_goto(branch)
+record j_goto_w(branch)
+record j_jsr(branch)
+record j_jsr_w(branch)
+record j_ret(index)
+record j_ret_w(index)
+record j_ireturn()
+record j_lreturn()
+record j_freturn()
+record j_dreturn()
+record j_areturn()
+record j_return()
+record j_breakpoint()
+record j_tableswitch(pad, default_offset, low, high, offsets)
+record j_lookupswitch(pad, default_offset, npairs, offsets)
+record j_putfield(index)
+record j_getfield(index)
+record j_putstatic(index)
+record j_getstatic(index)
+record j_invokevirtual(index)
+record j_invokespecial(index)
+record j_invokestatic(index)
+record j_invokeinterface(index)
+record j_athrow()
+record j_new(index)
+record j_checkcast(index)
+record j_instanceof(index)
+record j_monitorenter()
+record j_monitorexit()
+record j_match_offset_pairs(Match, offset)
+
+procedure j_writer_j_ClassFile(writer, p)
+    local i
+
+    j_writer_u4(writer, 16rCAFEBABE)
+    j_writer_u2(writer, p.minor_version)
+    j_writer_u2(writer, p.major_version)
+    j_writer_u2(writer, *p.constant_pool)
+    every i := \!p.constant_pool do {
+        j_writer_cp_info(writer, i)
+    }
+    j_writer_u2(writer, p.access_flags)
+    j_writer_u2(writer, p.this_class)
+    j_writer_u2(writer, p.super_class)
+    j_writer_u2(writer, *p.interfaces)
+    every i := !p.interfaces do {
+        j_writer_u2(writer, i)
+    }
+    j_writer_u2(writer, *p.fields)
+    every i := !p.fields do {
+        j_writer_j_field_info(writer, i)
+    }
+    j_writer_u2(writer, *p.methods)
+    every i := !p.methods do {
+        j_writer_j_method_info(writer, i)
+    }
+    j_writer_u2(writer, *p.attributes)
+    every i := !p.attributes do {
+        j_writer_attribute_info(writer, i)
+    }
+end
+
+procedure j_writer_cp_info(writer, p)
+    local i, s
+
+    case (type(p)) of {
+    default: {
+        runerr(500, p)
+    }
+    "j_CONSTANT_Class": {
+        j_writer_u1(writer, 7)
+        j_writer_u2(writer, p.name_index)
+    }
+    "j_CONSTANT_a_Fieldref": {
+        j_writer_u1(writer, 9)
+        j_writer_u2(writer, p.class_index)
+        j_writer_u2(writer, p.name_and_type_index)
+    }
+    "j_CONSTANT_Methodref": {
+        j_writer_u1(writer, 10)
+        j_writer_u2(writer, p.class_index)
+        j_writer_u2(writer, p.name_and_type_index)
+    }
+    "j_CONSTANT_InterfaceMethodref": {
+        j_writer_u1(writer, 11)
+        j_writer_u2(writer, p.class_index)
+        j_writer_u2(writer, p.name_and_type_index)
+    }
+    "j_CONSTANT_String": {
+        j_writer_u1(writer, 8)
+        j_writer_u2(writer, p.string_index)
+    }
+    "j_CONSTANT_Integer": {
+        j_writer_u1(writer, 3)
+        j_writer_u4(writer, p.value)
+    }
+    "j_CONSTANT_Float": {
+        j_writer_u1(writer, 4)
+        j_writer_u4(writer, p.value)
+    }
+    "j_CONSTANT_Long": {
+        j_writer_u1(writer, 5)
+        j_writer_u4(writer, iand(ishift(p.value, -32), 16rFFFFFFFF))
+        j_writer_u4(writer, iand(ishift(p.value,   0), 16rFFFFFFFF))
+    }
+    "j_CONSTANT_Double": {
+        j_writer_u1(writer, 6)
+        j_writer_u4(writer, p.high_bytes)
+        j_writer_u4(writer, p.low_bytes)
+    }
+    "j_CONSTANT_NameAndType": {
+        j_writer_u1(writer, 12)
+        j_writer_u2(writer, p.name_index)
+        j_writer_u2(writer, p.signature_index)
+    }
+    "j_CONSTANT_Utf8": {
+        s := j_utf8_repr(p.value)
+        j_writer_u1(writer, 1)
+        j_writer_u2(writer, *s)
+        writes(writer, s)
+    }
+    "j_CONSTANT_Unicode": {
+        j_writer_u1(writer, 2)
+        j_writer_u2(writer, *p.value)
+        every i := !p.value do {
+            j_writer_u1(writer, i)
+        }
+    }
+    }
+end
+
+procedure j_utf8_repr(s)
+    local t, c
+    static hard
+    initial hard := '\x00' ++ &cset[129:0]
+
+    s ? {
+        t := tab(upto(hard)) | return s
+        while not pos(0) do {
+            if c := ord(tab(any(hard))) then {
+                if (c < 16r0800) then {
+                    t ||:= char(16rC0 + ishift(c, -6))
+                    t ||:= char(16r80 + iand(c, 16r3F))
+                } else {
+                    t ||:= char(16rE0 + ishift(c, -12))
+                    t ||:= char(16r80 +
+                        iand(ishift(c, -6), 16r3F))
+                    t ||:= char(16r80 + iand(c, 16r3F))
+                }
+            }
+            t ||:= tab(upto(hard) | 0)
+        }
+    }
+    return t
+end
+
+procedure j_writer_j_field_info(writer, p)
+    local i
+
+    j_writer_u2(writer, p.access_flags)
+    j_writer_u2(writer, p.name_index)
+    j_writer_u2(writer, p.signature_index)
+    j_writer_u2(writer, *p.attributes)
+    every i := !p.attributes do {
+        j_writer_attribute_info(writer, i)
+    }
+end
+
+procedure j_writer_attribute_info(writer, p)
+    local i, locations, code_length, attribute_length
+
+    case (type(p)) of {
+    default: {
+        runerr(500, p)
+    }
+    "j_SourceFile_attribute": {
+        j_writer_u2(writer, p.attribute_name_index)
+        j_writer_u4(writer, 2)
+        j_writer_u2(writer, p.sourcefile_index)
+    }
+    "j_ConstantValue_attribute": {
+        j_writer_u2(writer, p.attribute_name_index)
+        j_writer_u4(writer, 2)
+        j_writer_u2(writer, p.constantvalue_index)
+    }
+    "j_Code_attribute": {
+        j_writer_u2(writer, p.attribute_name_index)
+
+        locations := table()
+        code_length := 0
+        every code_length := j_offset_opcodes(!p.code, code_length, locations)
+        every j_relocate(!p.code, locations)
+
+	j_relocate_exceptions(p.exception_table, locations)
+
+        attribute_length := 0
+        every attribute_length := j_offset_attribute_info(!p.attributes,
+                            attribute_length)
+
+        j_writer_u4(writer,
+          2+2+4+code_length+2+8* *p.exception_table+2+attribute_length)
+        j_writer_u2(writer, p.ir_max_stack)
+        j_writer_u2(writer, p.max_locals)
+        if code_length >= 65536 then {
+            # runerr(500)
+	    #%#%#% What is the max length for code????
+        }
+        j_writer_u4(writer, code_length)
+        every i := !p.code do {
+            j_writer_opcodes(writer, i)
+        }
+        j_writer_u2(writer, *p.exception_table)
+        every i := !p.exception_table do {
+            j_writer_j_exception_table_info(writer, i)
+        }
+        j_writer_u2(writer, *p.attributes)
+        every i := !p.attributes do {
+            j_writer_attribute_info(writer, i)
+        }
+    }
+    "j_Exceptions_attribute": {
+        j_writer_u2(writer, p.attribute_name_index)
+        j_writer_u4(writer, 2+2* *p.exception_index_table)
+        j_writer_u2(writer, *p.exception_index_table)
+        every i := !p.exception_index_table do {
+            j_writer_u2(writer, i)
+        }
+    }
+    "j_LineNumberTable_attribute": {
+        j_writer_u2(writer, p.attribute_name_index)
+        j_writer_u4(writer, 2+4* *p.line_number_table)
+        j_writer_u2(writer, *p.line_number_table)
+        every i := !p.line_number_table do {
+            j_writer_j_line_number_table_info(writer, i)
+        }
+    }
+    "j_LocalVariableTable_attribute": {
+        j_writer_u2(writer, p.attribute_name_index)
+        j_writer_u4(writer, 2+10* *p.local_variable_table)
+        j_writer_u2(writer, *p.local_variable_table)
+        every i := !p.local_variable_table do {
+            j_writer_j_local_variable_table_info(writer, i)
+        }
+    }
+    "j_GenericAttribute_info": {
+        j_writer_u2(writer, p.attribute_name_index)
+        j_writer_u4(writer, *p.info)
+        every i := !p.info do {
+            j_writer_u1(writer, i)
+        }
+    }
+    }
+end
+
+procedure j_writer_j_method_info(writer, p)
+    local i
+
+    j_writer_u2(writer, p.access_flags)
+    j_writer_u2(writer, p.name_index)
+    j_writer_u2(writer, p.signature_index)
+    j_writer_u2(writer, *p.attributes)
+    every i := !p.attributes do {
+        j_writer_attribute_info(writer, i)
+    }
+end
+
+procedure j_writer_j_exception_table_info(writer, p)
+    #%#%#%# the following two lines are because the JVM is brain-damaged
+    p.start_pc >:= 65534
+    p.end_pc >:= 65534
+
+    j_writer_u2(writer, p.start_pc)
+    j_writer_u2(writer, p.end_pc)
+    j_writer_u2(writer, p.handler_pc)
+    j_writer_u2(writer, p.catch_type)
+end
+
+procedure j_writer_j_line_number_table_info(writer, p)
+    j_writer_u2(writer, p.start_pc)
+    j_writer_u2(writer, p.line_number)
+end
+
+procedure j_writer_j_local_variable_table_info(writer, p)
+    j_writer_u2(writer, p.start_pc)
+    j_writer_u2(writer, p.length)
+    j_writer_u2(writer, p.name_index)
+    j_writer_u2(writer, p.signature_index)
+    j_writer_u2(writer, p.slot)
+end
+
+procedure j_writer_opcodes(writer, p)
+    local i, high, low, npairs, t, o
+    static opcode_table, opcode_leaf
+    initial {
+        opcode_table := table()
+        opcode_table["j_bipush"] := 16
+        opcode_table["j_sipush"] := 17
+        opcode_table["j_ldc"] := 18
+        opcode_table["j_ldc_w"] := 19
+        opcode_table["j_ldc2_w"] := 20
+        opcode_table["j_aconst_null"] := 1
+        opcode_table["j_iconst_m1"] := 2
+        opcode_table["j_iconst_0"] := 3
+        opcode_table["j_iconst_1"] := 4
+        opcode_table["j_iconst_2"] := 5
+        opcode_table["j_iconst_3"] := 6
+        opcode_table["j_iconst_4"] := 7
+        opcode_table["j_iconst_5"] := 8
+        opcode_table["j_lconst_0"] := 9
+        opcode_table["j_lconst_1"] := 10
+        opcode_table["j_fconst_0"] := 11
+        opcode_table["j_fconst_1"] := 12
+        opcode_table["j_fconst_2"] := 13
+        opcode_table["j_dconst_0"] := 14
+        opcode_table["j_dconst_1"] := 15
+        opcode_table["j_iload"] := 21
+        opcode_table["j_iload_w"] := 196
+        opcode_table["j_iload_0"] := 26
+        opcode_table["j_iload_1"] := 27
+        opcode_table["j_iload_2"] := 28
+        opcode_table["j_iload_3"] := 29
+        opcode_table["j_lload"] := 22
+        opcode_table["j_lload_w"] := 196
+        opcode_table["j_lload_0"] := 30
+        opcode_table["j_lload_1"] := 31
+        opcode_table["j_lload_2"] := 32
+        opcode_table["j_lload_3"] := 33
+        opcode_table["j_fload"] := 23
+        opcode_table["j_fload_w"] := 196
+        opcode_table["j_fload_0"] := 34
+        opcode_table["j_fload_1"] := 35
+        opcode_table["j_fload_2"] := 36
+        opcode_table["j_fload_3"] := 37
+        opcode_table["j_dload"] := 24
+        opcode_table["j_dload_w"] := 196
+        opcode_table["j_dload_0"] := 38
+        opcode_table["j_dload_1"] := 39
+        opcode_table["j_dload_2"] := 40
+        opcode_table["j_dload_3"] := 41
+        opcode_table["j_aload"] := 25
+        opcode_table["j_aload_w"] := 196
+        opcode_table["j_aload_0"] := 42
+        opcode_table["j_aload_1"] := 43
+        opcode_table["j_aload_2"] := 44
+        opcode_table["j_aload_3"] := 45
+        opcode_table["j_istore"] := 54
+        opcode_table["j_istore_w"] := 196
+        opcode_table["j_istore_0"] := 59
+        opcode_table["j_istore_1"] := 60
+        opcode_table["j_istore_2"] := 61
+        opcode_table["j_istore_3"] := 62
+        opcode_table["j_lstore"] := 55
+        opcode_table["j_lstore_w"] := 196
+        opcode_table["j_lstore_0"] := 63
+        opcode_table["j_lstore_1"] := 64
+        opcode_table["j_lstore_2"] := 65
+        opcode_table["j_lstore_3"] := 66
+        opcode_table["j_fstore"] := 56
+        opcode_table["j_fstore_w"] := 196
+        opcode_table["j_fstore_0"] := 67
+        opcode_table["j_fstore_1"] := 68
+        opcode_table["j_fstore_2"] := 69
+        opcode_table["j_fstore_3"] := 70
+        opcode_table["j_dstore"] := 57
+        opcode_table["j_dstore_w"] := 196
+        opcode_table["j_dstore_0"] := 71
+        opcode_table["j_dstore_1"] := 72
+        opcode_table["j_dstore_2"] := 73
+        opcode_table["j_dstore_3"] := 74
+        opcode_table["j_astore"] := 58
+        opcode_table["j_astore_w"] := 196
+        opcode_table["j_astore_0"] := 75
+        opcode_table["j_astore_1"] := 76
+        opcode_table["j_astore_2"] := 77
+        opcode_table["j_astore_3"] := 78
+        opcode_table["j_iinc"] := 132
+        opcode_table["j_iinc_w"] := 196
+        opcode_table["j_wide"] := 196
+        opcode_table["j_newarray"] := 188
+        opcode_table["j_anewarray"] := 189
+        opcode_table["j_multinewarray"] := 197
+        opcode_table["j_arraylength"] := 190
+        opcode_table["j_iaload"] := 46
+        opcode_table["j_laload"] := 47
+        opcode_table["j_faload"] := 48
+        opcode_table["j_daload"] := 49
+        opcode_table["j_aaload"] := 50
+        opcode_table["j_baload"] := 51
+        opcode_table["j_caload"] := 52
+        opcode_table["j_saload"] := 53
+        opcode_table["j_iastore"] := 79
+        opcode_table["j_lastore"] := 80
+        opcode_table["j_fastore"] := 81
+        opcode_table["j_dastore"] := 82
+        opcode_table["j_aastore"] := 83
+        opcode_table["j_bastore"] := 84
+        opcode_table["j_castore"] := 85
+        opcode_table["j_sastore"] := 86
+        opcode_table["j_nop"] := 0
+        opcode_table["j_pop"] := 87
+        opcode_table["j_pop2"] := 88
+        opcode_table["j_dup"] := 89
+        opcode_table["j_dup2"] := 92
+        opcode_table["j_dup_x1"] := 90
+        opcode_table["j_dup2_x1"] := 93
+        opcode_table["j_dup_x2"] := 91
+        opcode_table["j_dup2_x2"] := 94
+        opcode_table["j_swap"] := 95
+        opcode_table["j_iadd"] := 96
+        opcode_table["j_ladd"] := 97
+        opcode_table["j_fadd"] := 98
+        opcode_table["j_dadd"] := 99
+        opcode_table["j_isub"] := 100
+        opcode_table["j_lsub"] := 101
+        opcode_table["j_fsub"] := 102
+        opcode_table["j_dsub"] := 103
+        opcode_table["j_imul"] := 104
+        opcode_table["j_lmul"] := 105
+        opcode_table["j_fmul"] := 106
+        opcode_table["j_dmul"] := 107
+        opcode_table["j_idiv"] := 108
+        opcode_table["j_ldiv"] := 109
+        opcode_table["j_fdiv"] := 110
+        opcode_table["j_ddiv"] := 111
+        opcode_table["j_irem"] := 112
+        opcode_table["j_lrem"] := 113
+        opcode_table["j_frem"] := 114
+        opcode_table["j_drem"] := 115
+        opcode_table["j_ineg"] := 116
+        opcode_table["j_lneg"] := 117
+        opcode_table["j_fneg"] := 118
+        opcode_table["j_dneg"] := 119
+        opcode_table["j_ishl"] := 120
+        opcode_table["j_ishr"] := 122
+        opcode_table["j_iushr"] := 124
+        opcode_table["j_lshl"] := 121
+        opcode_table["j_lshr"] := 123
+        opcode_table["j_lushr"] := 125
+        opcode_table["j_Iand"] := 126
+        opcode_table["j_land"] := 127
+        opcode_table["j_ior"] := 128
+        opcode_table["j_lor"] := 129
+        opcode_table["j_ixor"] := 130
+        opcode_table["j_lxor"] := 131
+        opcode_table["j_i2l"] := 133
+        opcode_table["j_i2f"] := 134
+        opcode_table["j_i2d"] := 135
+        opcode_table["j_l2i"] := 136
+        opcode_table["j_l2f"] := 137
+        opcode_table["j_l2d"] := 138
+        opcode_table["j_f2i"] := 139
+        opcode_table["j_f2l"] := 140
+        opcode_table["j_f2d"] := 141
+        opcode_table["j_d2i"] := 142
+        opcode_table["j_d2l"] := 143
+        opcode_table["j_d2f"] := 144
+        opcode_table["j_int2byte"] := 145
+        opcode_table["j_int2char"] := 146
+        opcode_table["j_int2short"] := 147
+        opcode_table["j_ifeq"] := 153
+        opcode_table["j_ifnull"] := 198
+        opcode_table["j_iflt"] := 155
+        opcode_table["j_ifle"] := 158
+        opcode_table["j_ifne"] := 154
+        opcode_table["j_ifnonnull"] := 199
+        opcode_table["j_ifgt"] := 157
+        opcode_table["j_ifge"] := 156
+        opcode_table["j_if_icmpeq"] := 159
+        opcode_table["j_if_icmpne"] := 160
+        opcode_table["j_if_icmplt"] := 161
+        opcode_table["j_if_icmpgt"] := 163
+        opcode_table["j_if_icmple"] := 164
+        opcode_table["j_if_icmpge"] := 162
+        opcode_table["j_lcmp"] := 148
+        opcode_table["j_fcmpl"] := 149
+        opcode_table["j_fcmpg"] := 150
+        opcode_table["j_dcmpl"] := 151
+        opcode_table["j_dcmpg"] := 152
+        opcode_table["j_if_acmpeq"] := 165
+        opcode_table["j_if_acmpne"] := 166
+        opcode_table["j_goto"] := 167
+        opcode_table["j_goto_w"] := 200
+        opcode_table["j_jsr"] := 168
+        opcode_table["j_jsr_w"] := 201
+        opcode_table["j_ret"] := 169
+        opcode_table["j_ret_w"] := 196
+        opcode_table["j_ireturn"] := 172
+        opcode_table["j_lreturn"] := 173
+        opcode_table["j_freturn"] := 174
+        opcode_table["j_dreturn"] := 175
+        opcode_table["j_areturn"] := 176
+        opcode_table["j_return"] := 177
+        opcode_table["j_breakpoint"] := 202
+        opcode_table["j_tableswitch"] := 170
+        opcode_table["j_lookupswitch"] := 171
+        opcode_table["j_putfield"] := 181
+        opcode_table["j_getfield"] := 180
+        opcode_table["j_putstatic"] := 179
+        opcode_table["j_getstatic"] := 178
+        opcode_table["j_invokevirtual"] := 182
+        opcode_table["j_invokespecial"] := 183
+        opcode_table["j_invokestatic"] := 184
+        opcode_table["j_invokeinterface"] := 185
+        opcode_table["j_athrow"] := 191
+        opcode_table["j_new"] := 187
+        opcode_table["j_checkcast"] := 192
+        opcode_table["j_instanceof"] := 193
+        opcode_table["j_monitorenter"] := 194
+        opcode_table["j_monitorexit"] := 195
+
+        opcode_leaf := set([
+            "j_aconst_null",
+            "j_iconst_m1", "j_iconst_0", "j_iconst_1", "j_iconst_2",
+            "j_iconst_3", "j_iconst_4", "j_iconst_5",
+            "j_lconst_0", "j_lconst_1",
+            "j_fconst_0", "j_fconst_1", "j_fconst_2",
+            "j_dconst_0", "j_dconst_1",
+            "j_iload_0", "j_iload_1", "j_iload_2", "j_iload_3",
+            "j_lload_0", "j_lload_1", "j_lload_2", "j_lload_3",
+            "j_fload_0", "j_fload_1", "j_fload_2", "j_fload_3",
+            "j_dload_0", "j_dload_1", "j_dload_2", "j_dload_3",
+            "j_aload_0", "j_aload_1", "j_aload_2", "j_aload_3",
+            "j_istore_0", "j_istore_1", "j_istore_2", "j_istore_3",
+            "j_lstore_0", "j_lstore_1", "j_lstore_2", "j_lstore_3",
+            "j_fstore_0", "j_fstore_1", "j_fstore_2", "j_fstore_3",
+            "j_dstore_0", "j_dstore_1", "j_dstore_2", "j_dstore_3",
+            "j_astore_0", "j_astore_1", "j_astore_2", "j_astore_3",
+            "j_arraylength",
+            "j_iaload", "j_laload", "j_faload", "j_daload", "j_aaload",
+            "j_baload", "j_caload", "j_saload",
+            "j_iastore", "j_lastore", "j_fastore", "j_dastore", "j_aastore",
+            "j_bastore", "j_castore", "j_sastore",
+            "j_nop",
+            "j_pop", "j_pop2",
+            "j_dup", "j_dup2", "j_dup_x1", "j_dup2_x1", "j_dup_x2", "j_dup2_x2",
+            "j_swap",
+            "j_iadd", "j_ladd", "j_fadd", "j_dadd",
+            "j_isub", "j_lsub", "j_fsub", "j_dsub",
+            "j_imul", "j_lmul", "j_fmul", "j_dmul",
+            "j_idiv", "j_ldiv", "j_fdiv", "j_ddiv",
+            "j_irem", "j_lrem", "j_frem", "j_drem",
+            "j_ineg", "j_lneg", "j_fneg", "j_dneg",
+            "j_ishl", "j_ishr", "j_iushr", "j_lshl", "j_lshr", "j_lushr",
+            "j_Iand", "j_land",
+            "j_ior", "j_lor",
+            "j_ixor", "j_lxor",
+            "j_i2l", "j_i2f", "j_i2d",
+            "j_l2i", "j_l2f", "j_l2d",
+            "j_f2i", "j_f2l", "j_f2d",
+            "j_d2i", "j_d2l", "j_d2f",
+            "j_int2byte", "j_int2char", "j_int2short",
+            "j_lcmp",
+            "j_fcmpl", "j_fcmpg",
+            "j_dcmpl", "j_dcmpg",
+            "j_ireturn", "j_lreturn", "j_freturn", "j_dreturn", "j_areturn",
+            "j_return",
+            "j_breakpoint",
+            "j_athrow",
+            "j_monitorenter",
+            "j_monitorexit",
+            "j_label"
+        ])
+    }
+
+    t := type(p)
+
+    j_writer_u1(writer, \opcode_table[t])
+
+    if member(opcode_leaf, t) then return
+
+    case (t) of {
+    "j_iload": {
+        j_writer_u1(writer, p.index)
+        return
+    }
+    "j_iload_w": {
+	t := t[1:-2]
+        j_writer_u1(writer, opcode_table[t])
+        j_writer_u2(writer, p.index)
+        return
+    }
+    "j_aload": {
+        j_writer_u1(writer, p.index)
+        return
+    }
+    "j_aload_w": {
+	t := t[1:-2]
+        j_writer_u1(writer, opcode_table[t])
+        j_writer_u2(writer, p.index)
+        return
+    }
+    "j_istore": {
+        j_writer_u1(writer, p.index)
+        return
+    }
+    "j_istore_w": {
+	t := t[1:-2]
+        j_writer_u1(writer, opcode_table[t])
+        j_writer_u2(writer, p.index)
+        return
+    }
+    "j_astore": {
+        j_writer_u1(writer, p.index)
+        return
+    }
+    "j_astore_w": {
+	t := t[1:-2]
+        j_writer_u1(writer, opcode_table[t])
+        j_writer_u2(writer, p.index)
+        return
+    }
+    "j_putfield": {
+        j_writer_u2(writer, p.index)
+    }
+    "j_getfield": {
+        j_writer_u2(writer, p.index)
+    }
+    "j_putstatic": {
+        j_writer_u2(writer, p.index)
+    }
+    "j_getstatic": {
+        j_writer_u2(writer, p.index)
+    }
+    "j_goto": {
+        j_writer_s2(writer, p.branch)
+    }
+    "j_goto_w": {
+        j_writer_s4(writer, p.branch)
+    }
+    "j_invokevirtual": {
+        j_writer_u2(writer, p.index)
+    }
+    "j_invokespecial": {
+        j_writer_u2(writer, p.index)
+    }
+    "j_invokestatic": {
+        j_writer_u2(writer, p.index)
+    }
+    "j_invokeinterface": {
+        j_writer_u2(writer, p.index)
+    }
+    "j_bipush": {
+        j_writer_s1(writer, p.byte)
+    }
+    "j_sipush": {
+        j_writer_s2(writer, p.byte)
+    }
+    "j_ldc": {
+        j_writer_u1(writer, p.index)
+    }
+    "j_ldc_w": {
+        j_writer_u2(writer, p.index)
+    }
+    "j_ldc2_w": {
+        j_writer_u2(writer, p.index)
+    }
+    "j_tableswitch": {
+        j_writer_align4(writer, p.pad)
+        j_writer_s4(writer, p.default_offset)
+        j_writer_s4(writer, p.low)
+        j_writer_s4(writer, p.high)
+        p.high - p.low +1 = *p.offsets | runerr(500, p)
+        every i := !p.offsets do {
+            j_writer_s4(writer, i)
+        }
+    }
+    "j_lload": {
+        j_writer_u1(writer, p.index)
+    }
+    "j_lload_w": {
+	t := t[1:-2]
+        j_writer_u1(writer, opcode_table[t])
+        j_writer_u2(writer, p.index)
+        return
+    }
+    "j_fload": {
+        j_writer_u1(writer, p.index)
+    }
+    "j_fload_w": {
+	t := t[1:-2]
+        j_writer_u1(writer, opcode_table[t])
+        j_writer_u2(writer, p.index)
+        return
+    }
+    "j_dload": {
+        j_writer_u1(writer, p.index)
+    }
+    "j_dload_w": {
+	t := t[1:-2]
+        j_writer_u1(writer, opcode_table[t])
+        j_writer_u2(writer, p.index)
+        return
+    }
+    "j_lstore": {
+        j_writer_u1(writer, p.index)
+    }
+    "j_lstore_w": {
+	t := t[1:-2]
+        j_writer_u1(writer, opcode_table[t])
+        j_writer_u2(writer, p.index)
+        return
+    }
+    "j_fstore": {
+        j_writer_u1(writer, p.index)
+    }
+    "j_fstore_w": {
+	t := t[1:-2]
+        j_writer_u1(writer, opcode_table[t])
+        j_writer_u2(writer, p.index)
+        return
+    }
+    "j_dstore": {
+        j_writer_u1(writer, p.index)
+    }
+    "j_dstore_w": {
+	t := t[1:-2]
+        j_writer_u1(writer, opcode_table[t])
+        j_writer_u2(writer, p.index)
+        return
+    }
+    "j_iinc": {
+        j_writer_u1(writer, p.index)
+        j_writer_s1(writer, p.const)
+    }
+    "j_iinc_w": {
+	t := t[1:-2]
+        j_writer_u1(writer, opcode_table[t])
+        j_writer_u2(writer, p.index)
+        j_writer_s2(writer, p.const)
+    }
+    "j_newarray": {
+        j_writer_u1(writer, p.atype)
+    }
+    "j_anewarray": {
+        j_writer_s2(writer, p.index)
+    }
+    "j_multinewarray": {
+        j_writer_s2(writer, p.index)
+    }
+    "j_ifeq": {
+        j_writer_s2(writer, p.branch)
+    }
+    "j_ifnull": {
+        j_writer_s2(writer, p.branch)
+    }
+    "j_iflt": {
+        j_writer_s2(writer, p.branch)
+    }
+    "j_ifle": {
+        j_writer_s2(writer, p.branch)
+    }
+    "j_ifne": {
+        j_writer_s2(writer, p.branch)
+    }
+    "j_ifnonnull": {
+        j_writer_s2(writer, p.branch)
+    }
+    "j_ifgt": {
+        j_writer_s2(writer, p.branch)
+    }
+    "j_ifge": {
+        j_writer_s2(writer, p.branch)
+    }
+    "j_if_icmpeq": {
+        j_writer_s2(writer, p.branch)
+    }
+    "j_if_icmpne": {
+        j_writer_s2(writer, p.branch)
+    }
+    "j_if_icmplt": {
+        j_writer_s2(writer, p.branch)
+    }
+    "j_if_icmpgt": {
+        j_writer_s2(writer, p.branch)
+    }
+    "j_if_icmple": {
+        j_writer_s2(writer, p.branch)
+    }
+    "j_if_icmpge": {
+        j_writer_s2(writer, p.branch)
+    }
+    "j_if_acmpeq": {
+        j_writer_s2(writer, p.branch)
+    }
+    "j_if_acmpne": {
+        j_writer_s2(writer, p.branch)
+    }
+    "j_jsr": {
+        j_writer_s2(writer, p.branch)
+    }
+    "j_jsr_w": {
+        j_writer_s4(writer, p.branch)
+    }
+    "j_ret": {
+        j_writer_u1(writer, p.index)
+    }
+    "j_ret_w": {
+        j_writer_u1(writer, opcode_table[t ? tab(upto('_'))])
+        j_writer_u2(writer, p.index)
+    }
+    "j_lookupswitch": {
+        j_writer_align4(writer, p.pad)
+        j_writer_s4(writer, p.default_offset)
+        j_writer_s4(writer, p.npairs)
+        every i := !p.offsets do {
+            j_writer_j_match_offset_pairs(writer, i)
+        }
+    }
+    "j_new": {
+        j_writer_u2(writer, p.index)
+    }
+    "j_checkcast": {
+        j_writer_u2(writer, p.index)
+    }
+    "j_instanceof": {
+        j_writer_u2(writer, p.index)
+    }
+    }
+end
+
+procedure j_writer_j_match_offset_pairs(writer, p)
+    j_writer_s4(writer, p.Match)
+    j_writer_s4(writer, p.offset)
+end
+
+
+procedure j_offset_opcodes(p, offset, locations)
+    local i, high, low, npairs
+    static offset_table
+    initial {
+        offset_table := table()
+        offset_table["j_label"] := -1
+        offset_table["j_putfield"] := 2
+        offset_table["j_getfield"] := 2
+        offset_table["j_putstatic"] := 2
+        offset_table["j_getstatic"] := 2
+        offset_table["j_invokevirtual"] := 2
+        offset_table["j_invokespecial"] := 2
+        offset_table["j_invokestatic"] := 2
+        offset_table["j_invokeinterface"] := 2
+        offset_table["j_sipush"] := 2
+        offset_table["j_bipush"] := 1
+        offset_table["j_ldc"] := 1
+        offset_table["j_ldc_w"] := 2
+        offset_table["j_ldc2_w"] := 2
+        offset_table["j_aconst_null"] := 0
+        offset_table["j_iconst_m1"] := 0
+        offset_table["j_iconst_0"] := 0
+        offset_table["j_iconst_1"] := 0
+        offset_table["j_iconst_2"] := 0
+        offset_table["j_iconst_3"] := 0
+        offset_table["j_iconst_4"] := 0
+        offset_table["j_iconst_5"] := 0
+        offset_table["j_lconst_0"] := 0
+        offset_table["j_lconst_1"] := 0
+        offset_table["j_fconst_0"] := 0
+        offset_table["j_fconst_1"] := 0
+        offset_table["j_fconst_2"] := 0
+        offset_table["j_dconst_0"] := 0
+        offset_table["j_dconst_1"] := 0
+        offset_table["j_iload"] := 1
+        offset_table["j_iload_w"] := 3
+        offset_table["j_iload_0"] := 0
+        offset_table["j_iload_1"] := 0
+        offset_table["j_iload_2"] := 0
+        offset_table["j_iload_3"] := 0
+        offset_table["j_lload"] := 1
+        offset_table["j_lload_w"] := 3
+        offset_table["j_lload_0"] := 0
+        offset_table["j_lload_1"] := 0
+        offset_table["j_lload_2"] := 0
+        offset_table["j_lload_3"] := 0
+        offset_table["j_fload"] := 1
+        offset_table["j_fload_w"] := 3
+        offset_table["j_fload_0"] := 0
+        offset_table["j_fload_1"] := 0
+        offset_table["j_fload_2"] := 0
+        offset_table["j_fload_3"] := 0
+        offset_table["j_dload"] := 1
+        offset_table["j_dload_w"] := 3
+        offset_table["j_dload_0"] := 0
+        offset_table["j_dload_1"] := 0
+        offset_table["j_dload_2"] := 0
+        offset_table["j_dload_3"] := 0
+        offset_table["j_aload"] := 1
+        offset_table["j_aload_w"] := 3
+        offset_table["j_aload_0"] := 0
+        offset_table["j_aload_1"] := 0
+        offset_table["j_aload_2"] := 0
+        offset_table["j_aload_3"] := 0
+        offset_table["j_istore"] := 1
+        offset_table["j_istore_w"] := 3
+        offset_table["j_istore_0"] := 0
+        offset_table["j_istore_1"] := 0
+        offset_table["j_istore_2"] := 0
+        offset_table["j_istore_3"] := 0
+        offset_table["j_lstore"] := 1
+        offset_table["j_lstore_w"] := 3
+        offset_table["j_lstore_0"] := 0
+        offset_table["j_lstore_1"] := 0
+        offset_table["j_lstore_2"] := 0
+        offset_table["j_lstore_3"] := 0
+        offset_table["j_fstore"] := 1
+        offset_table["j_fstore_w"] := 3
+        offset_table["j_fstore_0"] := 0
+        offset_table["j_fstore_1"] := 0
+        offset_table["j_fstore_2"] := 0
+        offset_table["j_fstore_3"] := 0
+        offset_table["j_dstore"] := 1
+        offset_table["j_dstore_w"] := 3
+        offset_table["j_dstore_0"] := 0
+        offset_table["j_dstore_1"] := 0
+        offset_table["j_dstore_2"] := 0
+        offset_table["j_dstore_3"] := 0
+        offset_table["j_astore"] := 1
+        offset_table["j_astore_w"] := 3
+        offset_table["j_astore_0"] := 0
+        offset_table["j_astore_1"] := 0
+        offset_table["j_astore_2"] := 0
+        offset_table["j_astore_3"] := 0
+        offset_table["j_iinc"] := 2
+        offset_table["j_iinc_w"] := 5
+        offset_table["j_newarray"] := 1
+        offset_table["j_anewarray"] := 2
+        offset_table["j_multinewarray"] := 3
+        offset_table["j_arraylength"] := 0
+        offset_table["j_iaload"] := 0
+        offset_table["j_laload"] := 0
+        offset_table["j_faload"] := 0
+        offset_table["j_daload"] := 0
+        offset_table["j_aaload"] := 0
+        offset_table["j_baload"] := 0
+        offset_table["j_caload"] := 0
+        offset_table["j_saload"] := 0
+        offset_table["j_iastore"] := 0
+        offset_table["j_lastore"] := 0
+        offset_table["j_fastore"] := 0
+        offset_table["j_dastore"] := 0
+        offset_table["j_aastore"] := 0
+        offset_table["j_bastore"] := 0
+        offset_table["j_castore"] := 0
+        offset_table["j_sastore"] := 0
+        offset_table["j_nop"] := 0
+        offset_table["j_pop"] := 0
+        offset_table["j_pop2"] := 0
+        offset_table["j_dup"] := 0
+        offset_table["j_dup2"] := 0
+        offset_table["j_dup_x1"] := 0
+        offset_table["j_dup2_x1"] := 0
+        offset_table["j_dup_x2"] := 0
+        offset_table["j_dup2_x2"] := 0
+        offset_table["j_swap"] := 0
+        offset_table["j_iadd"] := 0
+        offset_table["j_ladd"] := 0
+        offset_table["j_fadd"] := 0
+        offset_table["j_dadd"] := 0
+        offset_table["j_isub"] := 0
+        offset_table["j_lsub"] := 0
+        offset_table["j_fsub"] := 0
+        offset_table["j_dsub"] := 0
+        offset_table["j_imul"] := 0
+        offset_table["j_lmul"] := 0
+        offset_table["j_fmul"] := 0
+        offset_table["j_dmul"] := 0
+        offset_table["j_idiv"] := 0
+        offset_table["j_ldiv"] := 0
+        offset_table["j_fdiv"] := 0
+        offset_table["j_ddiv"] := 0
+        offset_table["j_irem"] := 0
+        offset_table["j_lrem"] := 0
+        offset_table["j_frem"] := 0
+        offset_table["j_drem"] := 0
+        offset_table["j_ineg"] := 0
+        offset_table["j_lneg"] := 0
+        offset_table["j_fneg"] := 0
+        offset_table["j_dneg"] := 0
+        offset_table["j_ishl"] := 0
+        offset_table["j_ishr"] := 0
+        offset_table["j_iushr"] := 0
+        offset_table["j_lshl"] := 0
+        offset_table["j_lshr"] := 0
+        offset_table["j_lushr"] := 0
+        offset_table["j_Iand"] := 0
+        offset_table["j_land"] := 0
+        offset_table["j_ior"] := 0
+        offset_table["j_lor"] := 0
+        offset_table["j_ixor"] := 0
+        offset_table["j_lxor"] := 0
+        offset_table["j_i2l"] := 0
+        offset_table["j_i2f"] := 0
+        offset_table["j_i2d"] := 0
+        offset_table["j_l2i"] := 0
+        offset_table["j_l2f"] := 0
+        offset_table["j_l2d"] := 0
+        offset_table["j_f2i"] := 0
+        offset_table["j_f2l"] := 0
+        offset_table["j_f2d"] := 0
+        offset_table["j_d2i"] := 0
+        offset_table["j_d2l"] := 0
+        offset_table["j_d2f"] := 0
+        offset_table["j_int2byte"] := 0
+        offset_table["j_int2char"] := 0
+        offset_table["j_int2short"] := 0
+        offset_table["j_ifeq"] := 2
+        offset_table["j_ifne"] := 2
+        offset_table["j_ifle"] := 2
+        offset_table["j_iflt"] := 2
+        offset_table["j_ifge"] := 2
+        offset_table["j_ifgt"] := 2
+        offset_table["j_ifnull"] := 2
+        offset_table["j_ifnonnull"] := 2
+        offset_table["j_if_icmpeq"] := 2
+        offset_table["j_if_icmpne"] := 2
+        offset_table["j_if_icmplt"] := 2
+        offset_table["j_if_icmple"] := 2
+        offset_table["j_if_icmpge"] := 2
+        offset_table["j_if_icmpgt"] := 2
+        offset_table["j_lcmp"] := 0
+        offset_table["j_fcmpl"] := 0
+        offset_table["j_fcmpg"] := 0
+        offset_table["j_dcmpl"] := 0
+        offset_table["j_dcmpg"] := 0
+        offset_table["j_if_acmpeq"] := 2
+        offset_table["j_if_acmpne"] := 2
+        offset_table["j_goto"] := 2
+        offset_table["j_goto_w"] := 4
+        offset_table["j_jsr"] := 2
+        offset_table["j_jsr_w"] := 4
+        offset_table["j_ret"] := 1
+        offset_table["j_ret_w"] := 3
+        offset_table["j_ireturn"] := 0
+        offset_table["j_lreturn"] := 0
+        offset_table["j_freturn"] := 0
+        offset_table["j_dreturn"] := 0
+        offset_table["j_areturn"] := 0
+        offset_table["j_return"] := 0
+        offset_table["j_breakpoint"] := 0
+        offset_table["j_athrow"] := 0
+        offset_table["j_new"] := 2
+        offset_table["j_checkcast"] := 2
+        offset_table["j_instanceof"] := 2
+        offset_table["j_monitorenter"] := 0
+        offset_table["j_monitorexit"] := 0
+    }
+
+
+    locations[p] := offset
+
+    offset +:= 1    # p.opcode
+
+    if offset +:= \offset_table[type(p)] then return offset
+
+    case (type(p)) of {
+    default: {
+        runerr(500, p)
+    }
+    "j_tableswitch": {
+        p.pad := offset
+        offset := j_offset_align4(offset, p.pad)
+        p.pad := offset - p.pad
+        offset +:= 4
+        offset +:= 4
+        offset +:= 4
+        offset +:= 4* *p.offsets
+    }
+    "j_lookupswitch": {
+        p.pad := offset
+        offset := j_offset_align4(offset, p.pad)
+        p.pad := offset - p.pad
+        offset +:= 4
+        offset +:= 4
+        every i := !p.offsets do {
+            offset := j_offset_j_match_offset_pairs(offset, i)
+        }
+    }
+    }
+    return offset
+end
+
+procedure j_offset_j_match_offset_pairs(offset, p)
+    offset +:= 8
+    return offset
+end
+
+procedure j_cp_Class(c, name_index)
+    local s
+
+    s := "j_CONSTANT_Class" || "," || name_index
+    if /c.constant_table[s] then {
+        put(c.constant_pool,
+        c.constant_table[s]:= j_CONSTANT_Class(name_index, *c.constant_pool))
+    }
+    return c.constant_table[s].pool_index
+end
+
+procedure j_cp_a_Fieldref(c, class_index, name_and_type_index)
+    local s
+
+    s:= "j_CONSTANT_a_Fieldref," || class_index || "," || name_and_type_index
+    if /c.constant_table[s] then {
+        put(c.constant_pool, c.constant_table[s] :=
+      j_CONSTANT_a_Fieldref(class_index, name_and_type_index, *c.constant_pool))
+    }
+    return c.constant_table[s].pool_index
+end
+
+procedure j_cp_Methodref(c, class_index, name_and_type_index)
+    local s
+
+    s:= "j_CONSTANT_Methodref," || class_index || "," || name_and_type_index
+    if /c.constant_table[s] then {
+        put(c.constant_pool, c.constant_table[s] :=
+     j_CONSTANT_Methodref(class_index, name_and_type_index, *c.constant_pool))
+    }
+    return c.constant_table[s].pool_index
+end
+
+procedure j_cp_InterfaceMethodref(c, class_index, name_and_type_index)
+    local s
+
+    s := "j_CONSTANT_InterfaceMethodref" ||
+     "," || class_index || "," || name_and_type_index
+    if /c.constant_table[s] then {
+        put(c.constant_pool, c.constant_table[s] :=
+      j_CONSTANT_InterfaceMethodref(class_index, name_and_type_index,
+                      *c.constant_pool))
+    }
+    return c.constant_table[s].pool_index
+end
+
+procedure j_cp_String(c, string_index)
+    local s
+
+    s := "j_CONSTANT_String" || "," || string_index
+    if /c.constant_table[s] then {
+        put(c.constant_pool, c.constant_table[s] :=
+      j_CONSTANT_String(string_index, *c.constant_pool))
+    }
+    return c.constant_table[s].pool_index
+end
+
+procedure j_cp_Integer(c, value)
+    local s
+
+    s := "j_CONSTANT_Integer" || "," || value
+    if /c.constant_table[s] then {
+        put(c.constant_pool, c.constant_table[s] :=
+      j_CONSTANT_Integer(value, *c.constant_pool))
+    }
+    return c.constant_table[s].pool_index
+end
+
+procedure j_cp_Float(c, value)
+    local s
+
+    s := "j_CONSTANT_Float" || "," || value
+    if /c.constant_table[s] then {
+        put(c.constant_pool, c.constant_table[s] :=
+      j_CONSTANT_Float(value, *c.constant_pool))
+    }
+    return c.constant_table[s].pool_index
+end
+
+procedure j_cp_Long(c, value)
+    local s
+
+    s := "j_CONSTANT_Long" || "," || value
+    if /c.constant_table[s] then {
+        put(c.constant_pool, c.constant_table[s] :=
+      j_CONSTANT_Long(value, *c.constant_pool))
+    }
+    put(c.constant_pool, &null) # Sun JVM stupidity
+    return c.constant_table[s].pool_index
+end
+
+procedure j_cp_Double(c, value)
+    local s
+
+    s := "j_CONSTANT_Double" || "," || value
+    if /c.constant_table[s] then {
+        put(c.constant_pool, c.constant_table[s] :=
+      j_CONSTANT_Double(value, *c.constant_pool))
+    }
+    put(c.constant_pool, &null) # Sun JVM stupidity
+    return c.constant_table[s].pool_index
+end
+
+procedure j_cp_NameAndType(c, name_index, signature_index)
+    local s
+
+    s := "j_CONSTANT_NameAndType" || "," || name_index || "," || signature_index
+    if /c.constant_table[s] then {
+        put(c.constant_pool, c.constant_table[s] :=
+      j_CONSTANT_NameAndType(name_index, signature_index, *c.constant_pool))
+    }
+    return c.constant_table[s].pool_index
+end
+
+procedure j_cp_Utf8(c, value)
+    local s, t
+
+    s := "j_CONSTANT_Utf8" || "," || value
+    if /(t := c.constant_table[s]) then {
+        put(c.constant_pool, t := c.constant_table[s] :=
+      j_CONSTANT_Utf8(value, *c.constant_pool))
+    }
+    return t.pool_index
+end
+
+procedure j_cp_Unicode(c, value)
+    local s
+
+    s := "j_CONSTANT_Unicode" || "," || value
+    if /c.constant_table[s] then {
+        put(c.constant_pool, c.constant_table[s] :=
+      j_CONSTANT_Unicode(value, *c.constant_pool))
+    }
+    return c.constant_table[s].pool_index
+end
+
+
+procedure j_offset_attribute_info(offset)
+    local code_length, i, p
+
+    offset +:= 6
+    case (type(p)) of {
+    default: {
+        runerr(500, p)
+    }
+    "j_SourceFile_attribute": {
+        offset +:= 2
+    }
+    "j_ConstantValue_attribute": {
+        offset +:= 2
+    }
+    "j_Code_attribute": {
+        offset +:= 4
+
+        code_length := 0
+        every code_length := j_offset_opcodes(!p.code, code_length)
+
+        offset +:= 4
+
+        offset +:= code_length
+
+        offset +:= 2
+        every i := !p.exception_table do {
+            offset := j_offset_j_exception_table_info(offset, i)
+        }
+        offset +:= 2
+        every i := !p.attributes do {
+            offset := j_offset_attribute_info(offset, i)
+        }
+    }
+    "j_Exceptions_attribute": {
+        offset +:= 2
+        every i := !p.exception_index_table do {
+            offset +:= 2
+        }
+    }
+    "j_LineNumberTable_attribute": {
+        offset +:= 2
+        every i := !p.line_number_table do {
+            offset := j_offset_j_line_number_table_info(offset, i)
+        }
+    }
+    "j_LocalVariableTable_attribute": {
+        offset +:= 2
+        every i := !p.local_variable_table do {
+            offset := j_offset_j_local_variable_table_info(offset, i)
+        }
+    }
+    "j_GenericAttribute_info": {
+        every i := !p.info do {
+            offset +:= 1
+        }
+    }
+    }
+    return offset
+end
+
+procedure j_offset_j_exception_table_info(offset, p)
+    offset +:= 8
+    return offset
+end
+procedure j_offset_j_line_number_table_info(offset, p)
+    offset +:= 4
+    return offset
+end
+procedure j_offset_j_local_variable_table_info(offset, p)
+    offset +:= 10
+    return offset
+end
+
+procedure j_relocate_exceptions(eList, locations)
+    local e
+
+    every e := !eList do {
+        e.start_pc :=   \locations[e.start_pc]   | runerr(500, e.start_pc)
+        e.end_pc :=     \locations[e.end_pc]     | runerr(500, e.end_pc)
+        e.handler_pc := \locations[e.handler_pc] | runerr(500, e.handler_pc)
+    }
+end
+
+procedure j_relocate(insn, locations)
+    local i
+    static branching
+    initial {
+        branching := set([
+        "j_ifnull", "j_ifnonnull",
+            "j_ifeq", "j_iflt", "j_ifle", "j_ifne", "j_ifgt", "j_ifge",
+            "j_if_icmpeq", "j_if_icmpne",
+            "j_if_icmplt", "j_if_icmpgt",
+            "j_if_icmple", "j_if_icmpge",
+            "j_if_acmpeq", "j_if_acmpne",
+            "j_goto", "j_goto_w", "j_jsr", "j_jsr_w"
+        ])
+    }
+
+    if member(branching, type(insn)) & type(insn.branch) == "j_label" then {
+        insn.branch := locations[insn.branch] - locations[insn]
+    }
+    if type(insn) == "j_tableswitch" then {
+        if type(insn.default_offset) == "j_label" then {
+            insn.default_offset :=
+          locations[insn.default_offset] - locations[insn]
+        }
+        every i := 1 to *insn.offsets do {
+            if type(insn.offsets[i]) == "j_label" then {
+                insn.offsets[i] := locations[insn.offsets[i]] - locations[insn]
+            }
+        }
+    }
+    if type(insn) == "j_lookupswitch" then {
+        if type(insn.default_offset) == "j_label" then {
+            insn.default_offset :=
+          locations[insn.default_offset] - locations[insn]
+        }
+        every i := 1 to *insn.offsets do {
+            if type(insn.offsets[i].offset) == "j_label" then {
+                insn.offsets[i].offset :=
+          locations[insn.offsets[i].offset] - locations[insn]
+            }
+        }
+    }
+end
+
+procedure j_create_fieldref(classfile, name, Type, class)
+    local name_index, type_index, class_index, nat_index, field_index
+
+    type(classfile) == "j_ClassFile" | runerr(500, classfile)
+    type(name) == "string" | runerr(500, name)
+    type(Type) == "string" | runerr(500, Type)
+    type(class) == "string" | runerr(500, class)
+
+    name_index := j_cp_Utf8(classfile, name)
+    type_index := j_cp_Utf8(classfile, Type)
+    class_index := j_cp_Class(classfile, j_cp_Utf8(classfile, class))
+    nat_index := j_cp_NameAndType(classfile, name_index, type_index)
+    field_index := j_cp_a_Fieldref(classfile, class_index, nat_index)
+    return field_index
+end
+
+procedure j_create_field(classfile, access, name, Type)
+    local name_index, type_index, field
+
+    type(classfile) == "j_ClassFile" | runerr(500, classfile)
+    type(name) == "string" | runerr(500, name)
+    type(Type) == "string" | runerr(500, Type)
+    type(access) == "integer" | runerr(500, access)
+
+    name_index := j_cp_Utf8(classfile, name)
+    type_index := j_cp_Utf8(classfile, Type)
+    field := j_field_info(access, name_index, type_index, [])
+    put(classfile.fields, field)
+    return field
+end
+
+procedure j_create_methodref(classfile, name, Type, class)
+    local name_index, type_index, class_index, nat_index, method_index
+
+    type(classfile) == "j_ClassFile" | runerr(500, classfile)
+    type(name) == "string" | runerr(500, name)
+    type(Type) == "string" | runerr(500, Type)
+    type(class) == "string" | runerr(500, class)
+
+    name_index := j_cp_Utf8(classfile, name)
+    type_index := j_cp_Utf8(classfile, Type)
+    class_index := j_cp_Class(classfile, j_cp_Utf8(classfile, class))
+    nat_index := j_cp_NameAndType(classfile, name_index, type_index)
+    method_index := j_cp_Methodref(classfile, class_index, nat_index)
+    return method_index
+end
+
+procedure j_create_method(classfile, access, name, Type)
+    local name_index, type_index, method
+
+    type(classfile) == "j_ClassFile" | runerr(500, classfile)
+    type(name) == "string" | runerr(500, name)
+    type(Type) == "string" | runerr(500, Type)
+    type(access) == "integer" | runerr(500, access)
+
+    name_index := j_cp_Utf8(classfile, name)
+    type_index := j_cp_Utf8(classfile, Type)
+    method := j_method_info(access, name_index, type_index, [])
+    put(classfile.methods, method)
+    return method
+end
+
+procedure j_create_code(classfile, stacksize, localsize)
+    local code, cp_index
+
+    type(classfile) == "j_ClassFile" | runerr(500, classfile)
+    type(stacksize) == "integer" | runerr(500, stacksize)
+    type(localsize) == "integer" | runerr(500, localsize)
+
+    cp_index := j_cp_Utf8(classfile, "Code")
+    code := j_Code_attribute(cp_index, stacksize, localsize, [], [], [])
+    return code
+end
+
+procedure j_writer_align4(writer, pad)
+    every 1 to pad do {
+        writes(writer, char(0))
+    }
+end
+
+procedure j_writer_u1(writer, u1)
+    (0 <= u1 < 256) | runerr(500, u1)
+    writes(writer, char(iand(u1, 255)))
+end
+
+procedure j_writer_u2(writer, u2)
+    (0 <= u2 < 65536) | runerr(500, u2)
+    writes(writer, char(iand(ishift(u2, - 8), 255)),
+                   char(iand(u2, 255)))
+end
+
+procedure j_writer_u4(writer, u4)
+    (0 <= u4 < 4294967296) | runerr(500, u4)
+    writes(writer, char(iand(ishift(u4, -24), 255)),
+                   char(iand(ishift(u4, -16), 255)),
+                   char(iand(ishift(u4, - 8), 255)),
+                   char(iand(u4, 255)))
+end
+
+procedure j_writer_s1(writer, s1)
+    (-128 <= s1 <= 127) | runerr(500, s1)
+    writes(writer, char(iand(s1, 255)))
+end
+
+procedure j_writer_s2(writer, s2)
+    (-32768 <= s2 <= 32767) | runerr(500, s2)
+    writes(writer, char(iand(ishift(s2, - 8), 255)),
+                   char(iand(s2, 255)))
+end
+
+procedure j_writer_s4(writer, s4)
+    (-2147483648 <= s4 < 2147483648) | runerr(500, s4)
+    writes(writer, char(iand(ishift(s4, -24), 255)),
+                   char(iand(ishift(s4, -16), 255)),
+                   char(iand(ishift(s4, - 8), 255)),
+                   char(iand(s4, 255)))
+end
+
+procedure j_offset_align4(offset, x)
+    local k
+
+    k := (4 - offset % 4) % 4
+    return offset + k
+end
+
+procedure j_ipush(x, classptr)
+    case x of {
+    -1 :    return j_iconst_m1()
+    0 : return j_iconst_0()
+    1 : return j_iconst_1()
+    2 : return j_iconst_2()
+    3 : return j_iconst_3()
+    4 : return j_iconst_4()
+    5 : return j_iconst_5()
+    }
+    if -128 <= x <= 127 then return j_bipush(x)
+    if -32768 <= x <= 32767 then return j_sipush(x)
+    if -2147483648 <= x <= 2147483647 then {
+        return j_ldc_w(j_cp_Integer(classptr, x))
+    }
+    runerr(500, x)
+end
+
+procedure j_Iload(x)
+    case x of {
+    0 : return j_iload_0()
+    1 : return j_iload_1()
+    2 : return j_iload_2()
+    3 : return j_iload_3()
+    }
+    if x < 256 then {
+        return j_iload(x)
+    } 
+    if x < 65536 then {
+        return j_iload_w(x)
+    }
+    runerr(500, x)
+end
+procedure j_Istore(x)
+    case x of {
+    0 : return j_istore_0()
+    1 : return j_istore_1()
+    2 : return j_istore_2()
+    3 : return j_istore_3()
+    }
+    if x < 256 then {
+        return j_istore(x)
+    } 
+    if x < 65536 then {
+        return j_istore_w(x)
+    }
+    runerr(500, x)
+end
+procedure j_Aload(x)
+    case x of {
+    0 : return j_aload_0()
+    1 : return j_aload_1()
+    2 : return j_aload_2()
+    3 : return j_aload_3()
+    }
+    if x < 256 then {
+        return j_aload(x)
+    } 
+    if x < 65536 then {
+        return j_aload_w(x)
+    }
+    runerr(500, x)
+end
+procedure j_Astore(x)
+    case x of {
+    0 : return j_astore_0()
+    1 : return j_astore_1()
+    2 : return j_astore_2()
+    3 : return j_astore_3()
+    }
+    if x < 256 then {
+        return j_astore(x)
+    } 
+    if x < 65536 then {
+        return j_astore_w(x)
+    }
+    runerr(500, x)
+end
