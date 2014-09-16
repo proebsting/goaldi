@@ -52,35 +52,40 @@ func GoProcedure(name string, f interface{}) *VProcedure {
 		panic(&RunErr{"Not a func", f})
 	}
 	nargs := ftype.NumIn()
-	nrtn := ftype.NumOut()
-	if nrtn > 1 {
-		panic(&RunErr{"Multiple returns", f}) //#%#% not yet
-	}
+	nfixed := nargs
 	if ftype.IsVariadic() {
-		panic(&RunErr{"Variadic function", f}) //#%#% not yet
+		nfixed--
 	}
+	nrtn := ftype.NumOut()
 
 	//  make an array of conversion functions, one per parameter
 	passer := make([]func(Value) reflect.Value, nargs)
-	for i := 0; i < nargs; i++ {
+	for i := 0; i < nfixed; i++ {
 		passer[i] = passfunc(ftype.In(i))
+	}
+	if nfixed < nargs { // if variadic
+		passer[nfixed] = passfunc(ftype.In(nfixed).Elem())
 	}
 
 	//  define a func to convert arguments and call the underlying func
 	pfun := func(args ...Value) (Value, *Closure) {
-		//  convert arguments from Goaldi values to needed Go type
-		in := make([]reflect.Value, nargs)
-		for i := 0; i < nargs; i++ {
+		//  convert fixed arguments from Goaldi values to needed Go type
+		in := make([]reflect.Value, 0, len(args))
+		for i := 0; i < nfixed; i++ {
 			if i < len(args) {
-				in[i] = passer[i](args[i])
+				in = append(in, passer[i](args[i]))
 			} else {
-				in[i] = passer[i](NIL)
+				in = append(in, passer[i](NIL))
 			}
+		}
+		//  convert additional variadic arguments to final type
+		for i := nfixed; i < len(args); i++ {
+			in = append(in, passer[nfixed](args[i]))
 		}
 		//  call the Go function
 		out := fval.Call(in)
-		//  return the result
-		if nrtn == 1 {
+		//  return the result   #%#% returns first result only!!!
+		if nrtn >= 1 {
 			return Import(out[0].Interface()), nil
 		} else {
 			return NIL, nil
@@ -115,6 +120,10 @@ func passfunc(t reflect.Type) func(Value) reflect.Value {
 		return func(v Value) reflect.Value {
 			return reflect.ValueOf(
 				string(v.(Stringable).ToString().val()))
+		}
+	case reflect.Interface: //#%#% assuming interface{}
+		return func(v Value) reflect.Value {
+			return reflect.ValueOf(Export(v)) // default conversion
 		}
 	default:
 		panic(&RunErr{"Unimpl paramkind", t})

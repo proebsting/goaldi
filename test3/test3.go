@@ -18,16 +18,19 @@ func gmain(args ...Value) (Value, *Closure) {
 	fmt.Println("testing calls of Go library functions")
 
 	// make Goaldi procedures corresponding to Go library functions
-	var IsNaN Value = GoProcedure("IsNaN", math.IsNaN)
-	var Intn Value = GoProcedure("Intn", rand.Intn)
-	var Max Value = GoProcedure("Max", math.Max)
-	var NaN Value = GoProcedure("NaN", math.NaN)
-	var Seed Value = GoProcedure("Seed", rand.Seed)
 	var Sqrt Value = GoProcedure("Sqrt", math.Sqrt)
+	var Max Value = GoProcedure("Max", math.Max)
+	var IsNaN Value = GoProcedure("IsNaN", math.IsNaN)
+	var NaN Value = GoProcedure("NaN", math.NaN)
+	var Intn Value = GoProcedure("Intn", rand.Intn)
+	var Seed Value = GoProcedure("Seed", rand.Seed)
 	var EqualFold Value = GoProcedure("EqualFold", strings.EqualFold)
 	var Replace Value = GoProcedure("Replace", strings.Replace)
 	var ToUpper Value = GoProcedure("ToUpper", strings.ToUpper)
 	var Trim Value = GoProcedure("Trim", strings.Trim)
+	var Print Value = GoProcedure("Print", fmt.Print)
+	var Println Value = GoProcedure("Println", fmt.Println)
+	var Printf Value = GoProcedure("Printf", fmt.Printf)
 
 	// call them and print results (value,closure)
 	fmt.Println(Sqrt, r(Sqrt.(ICall).Call(NewNumber(2))))
@@ -46,6 +49,10 @@ func gmain(args ...Value) (Value, *Closure) {
 		NewString("  a b c  "), NewString(" "))))
 	fmt.Println(EqualFold, r(EqualFold.(ICall).Call(
 		NewString("mixedCase"), NewString("Mixedcase"))))
+	Print.(ICall).Call(V(11), V(22), V(33))
+	Println.(ICall).Call(V(11), V(22), V(33))
+	Println.(ICall).Call(NewString("car"), NewNumber(54))
+	Printf.(ICall).Call(V("%.3s %6.4f\n"), V("cowboy"), V(3.1415926535))
 	return Fail()
 }
 
