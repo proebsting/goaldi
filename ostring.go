@@ -2,10 +2,10 @@
 
 package goaldi
 
-//  extract string value from arbitrary Value, or panic
-func sval(v Value) string {
+//  extract VString value from arbitrary Value, or panic
+func sval(v Value) *VString {
 	if n, ok := v.(Stringable); ok {
-		return string(*(n.ToString()))
+		return n.ToString()
 	} else {
 		panic(&RunErr{"Not a string", v})
 	}
@@ -22,5 +22,5 @@ func (v1 *VNumber) Concat(v2 Value) Value {
 }
 
 func (v1 *VString) Concat(v2 Value) Value {
-	return NewString(string(*v1) + sval(v2))
+	return NewString(v1.data + sval(v2).data)
 }

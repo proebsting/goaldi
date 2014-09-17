@@ -119,7 +119,7 @@ func passfunc(t reflect.Type) func(Value) reflect.Value {
 	case reflect.String:
 		return func(v Value) reflect.Value {
 			return reflect.ValueOf(
-				string(v.(Stringable).ToString().val()))
+				v.(Stringable).ToString().ToUTF8())
 		}
 	case reflect.Interface: //#%#% assuming interface{}
 		return func(v Value) reflect.Value {
