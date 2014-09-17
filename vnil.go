@@ -34,4 +34,4 @@ func (v *VNil) Export() interface{} {
 	return nil
 }
 
-var type_nil = NewString("nil")
+var type_nil = EasyString("nil")

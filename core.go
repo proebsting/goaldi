@@ -34,7 +34,7 @@ func Type(v Value) Value {
 	}
 }
 
-var type_external = NewString("external")
+var type_external = EasyString("external")
 
 //  Identical(a,b) implements the === operator.
 //  NotIdentical(a,b) implements the ~=== operator.

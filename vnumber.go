@@ -33,7 +33,7 @@ func (v *VNumber) String() string {
 
 //  VNumber.ToString -- convert to Goaldi string
 func (v *VNumber) ToString() *VString {
-	return NewString(v.String())
+	return EasyString(v.String())
 }
 
 //  VNumber.Number -- return self
@@ -46,7 +46,7 @@ func (v *VNumber) Type() Value {
 	return type_number
 }
 
-var type_number = NewString("number")
+var type_number = EasyString("number")
 
 //  VNumber.Identical -- check equality for === operator
 func (a *VNumber) Identical(x Value) Value {

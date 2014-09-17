@@ -40,7 +40,7 @@ func (v *VProcedure) Call(args ...Value) (Value, *Closure) {
 	return v.entry(args...)
 }
 
-var type_procedure = NewString("procedure")
+var type_procedure = EasyString("procedure")
 
 //  GoProcedure(name, func) -- construct a procedure from a Go function
 func GoProcedure(name string, f interface{}) *VProcedure {

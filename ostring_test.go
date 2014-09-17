@@ -12,6 +12,18 @@ func TestString(t *testing.T) {
 	t.Log("values:", i123, s123, i456, s456)
 	ck4s(t, "Concat", "123456", i123.Concat(i456), i123.Concat(s456),
 		s123.Concat(i456), s123.Concat(s456))
+	sh := NewString("♡") // heart
+	sd := NewString("♢") // diamond
+	sc := NewString("♣") // club
+	ss := NewString("♠") // spade
+	hd := sh.Concat(sd)
+	cs := sc.Concat(ss)
+	hdcs := hd.(*VString).Concat(cs)
+	ck4s(t, "Concat", "♡♢♣♠", hdcs, hdcs, hdcs, hdcs)
+	sz := hdcs.(ISize).Size().(*VNumber).val()
+	if sz != 4.0 {
+		t.Errorf("String %s length %d, expected 4", hdcs, sz)
+	}
 }
 
 // ck4s -- check four string values for equality with expected value
