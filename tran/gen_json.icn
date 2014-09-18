@@ -6,14 +6,11 @@ procedure json_File(irgen, flagList)
     flag := &null
     s := "["
     while p := @irgen do {
-    	write("top ", image(p))
         if \flag then s ||:= ", "
 	flag := "true"
 
 	s ||:= json(p)
-    	write("bottom")
     }
-    write("out")
     s ||:= "]"
     return s
 end
@@ -55,10 +52,12 @@ procedure json_record(p)
 end
 
 procedure json(p)
-	case type(p) of {
-	default: return image(p)
-	"string": return image(p)
-	"list": return json_list(p)
-	match("record ", image(p)): return json_record(p)
+	if match("record", image(p)) & type(p) ~== "string" then {
+		return json_record(p)
+	} else {
+		case type(p) of {
+		"list": return json_list(p)
+		default: return image(string(p))
+		}
 	}
 end
