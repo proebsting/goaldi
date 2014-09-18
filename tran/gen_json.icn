@@ -30,13 +30,11 @@ procedure json_list(p)
 end
 
 procedure json_record(p)
-	local s, flag, i, t
+	local s, i, t
 
-	s := "{"
-	flag := &null
+	s := "{ \"tag\" : " || image(type(p))
 	every i := 1 to *p do {
-		if \flag then s ||:= ", "
-		flag := "true"
+		s ||:= ", "
 		name(p[i]) ? {
 			tab(upto('.'))
 			move(1)
@@ -52,12 +50,17 @@ procedure json_record(p)
 end
 
 procedure json(p)
-	if match("record", image(p)) & type(p) ~== "string" then {
+	if /p then {
+		return "null"
+	} else if match("record", image(p)) & type(p) ~== "string" then {
 		return json_record(p)
 	} else {
 		case type(p) of {
 		"list": return json_list(p)
-		default: return image(string(p))
+		"set": return json_list(p)
+		"string": return image(p)
+		"integer": return image(string(p))
+		default: runerr(500, p)
 		}
 	}
 end
