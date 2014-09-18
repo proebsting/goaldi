@@ -31,6 +31,7 @@ IRGENSRC = \
 	irgen.icn
 
 CODEGENSRC = \
+	gen_json.icn \
 	gen_bc.icn \
 	gen_symbolic.icn \
 	gen_dot.icn \

@@ -1,0 +1,64 @@
+#  gen_json.icn -- create json output from intermediate representation.
+
+procedure json_File(irgen, flagList)
+    local p, flag, s
+
+    flag := &null
+    s := "["
+    while p := @irgen do {
+    	write("top ", image(p))
+        if \flag then s ||:= ", "
+	flag := "true"
+
+	s ||:= json(p)
+    	write("bottom")
+    }
+    write("out")
+    s ||:= "]"
+    return s
+end
+
+procedure json_list(p)
+	local s, flag, i
+
+	s := "["
+	flag := &null
+	every i := !p do {
+		if \flag then s ||:= ", "
+		flag := "true"
+		s ||:= json(i)
+	}
+	s ||:= "]"
+	return s
+end
+
+procedure json_record(p)
+	local s, flag, i, t
+
+	s := "{"
+	flag := &null
+	every i := 1 to *p do {
+		if \flag then s ||:= ", "
+		flag := "true"
+		name(p[i]) ? {
+			tab(upto('.'))
+			move(1)
+			t := tab(0)
+		}
+		s ||:= image(t)
+		s ||:= " : "
+		s ||:= json(p[i])
+	}
+	s ||:= "}"
+	return s
+	
+end
+
+procedure json(p)
+	case type(p) of {
+	default: return image(p)
+	"string": return image(p)
+	"list": return json_list(p)
+	match("record ", image(p)): return json_record(p)
+	}
+end
