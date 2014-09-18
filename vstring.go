@@ -51,12 +51,12 @@ func BinaryString(s []byte) *VString {
 
 //  VString.ToUTF8 -- convert Goaldi Unicode string to Go UTF8 string
 func (v *VString) ToUTF8() string {
-	b := make([]byte, 0, 2*len(v.low))
+	b := make([]byte, 0, len(v.low))
 	p := make([]byte, 8, 8)
 	for i, c := range v.low {
 		r := rune(c)
 		if v.high != nil {
-			r |= rune(v.high[i] << 8)
+			r |= rune(v.high[i]) << 8
 		}
 		n := utf8.EncodeRune(p, r)
 		b = append(b, p[:n]...)

@@ -6,7 +6,7 @@ import (
 	"testing"
 )
 
-func TestString(t *testing.T) {
+func TestStringOps(t *testing.T) {
 	i123, s123 := nspair(t, 123)
 	i456, s456 := nspair(t, 456)
 	t.Log("values:", i123, s123, i456, s456)
