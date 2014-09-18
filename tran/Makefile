@@ -64,11 +64,11 @@ all:	jtran jlink
 
 jtran:	$(TRANOBJ)
 	$(ICONT) -o jtran $(TRANOBJ)
-	cp jtran ../bin
+	# cp jtran ../bin
 
 jlink:	$(LINKOBJ)
 	$(ICONT) -o jlink $(LINKOBJ)
-	cp jlink ../bin
+	# cp jlink ../bin
 
 
 # versions built by Jcon (not built by default)
@@ -77,11 +77,11 @@ jj:	jjtran jjlink
 
 jjtran:	$(TRANZIP)
 	$(JCONT) -o jjtran $(TRANZIP)
-	cp jjtran ../bin
+	# cp jjtran ../bin
 
 jjlink:	$(LINKZIP)
 	$(JCONT) -o jjlink $(LINKZIP)
-	cp jjlink ../bin
+	# cp jjlink ../bin
 
 
 # benchmarking
