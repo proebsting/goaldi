@@ -7,13 +7,16 @@ TESTS = $(PKG)/test1 $(PKG)/test2 $(PKG)/test3 $(PKG)/test9
 PROGS = $(MAIN) $(TESTS)
 GOBIN = $$GOPATH/bin
 
-default:  build test
+default:  build test tran/jtran
 
 build:
 	go install $(PROGS)
 
 test:
 	go test
+
+tran/jtran:
+	cd tran; $(MAKE)
 
 format:	
 	go fmt *.go
@@ -30,3 +33,4 @@ bundle:
 
 clean:
 	go clean -i $(PKG) $(PROGS)
+	cd tran; make clean
