@@ -80,7 +80,7 @@ procedure ir_a_Scan(p, st, inuse, target, bounded, rval)
 	ir_Deref(ir_coord(p.coord), p.ir.x.oldpos, tmp),
         ir_Key(ir_coord(p.coord), tmp, "subject", &null),
 	ir_Deref(ir_coord(p.coord), p.ir.x.oldsubject, tmp),
-        ir_opfn(ir_coord(p.coord), target, ir_operator(":?", 2, rval), [ tmp, lv ],
+        ir_opfn(ir_coord(p.coord), target, &null, ir_operator(":?", 2, rval), [ tmp, lv ],
                 p.expr.ir.resume),
         ir_Goto(ir_coord(p.coord), p.body.ir.start)
         ])
@@ -102,7 +102,7 @@ procedure ir_a_Scan(p, st, inuse, target, bounded, rval)
     } else {
         # p.op == "?:="
         suspend ir_chunk(p.body.ir.success, [
-            ir_opfn(ir_coord(p.coord), target, ir_operator(":=", 2, rval), [ lv, rv ], p.body.ir.resume),
+            ir_opfn(ir_coord(p.coord), target, &null, ir_operator(":=", 2, rval), [ lv, rv ], p.body.ir.resume),
             ir_ScanSwap( ir_coord(p.coord), p.ir.x.oldsubject, p.ir.x.oldpos ),
             ir_Goto(ir_coord(p.coord), p.ir.success)
             ])
