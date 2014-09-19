@@ -2,7 +2,9 @@
 
 package main
 
-import ()
+import (
+	"os"
+)
 
 type UNKNOWN interface{} // temporary designation for type TBD
 
@@ -13,6 +15,7 @@ func main() {
 	for _, f := range files {
 		parts = append(parts, load(f))
 	}
+	os.Exit(0) //#%#%#%#%#%#%#%
 	prog := link(parts)
 	showInterval("loading")
 	run(prog, args)
