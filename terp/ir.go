@@ -50,7 +50,7 @@ var irlist = [...]struct {
 //  all fields must be capitalized for access by the reflection package
 
 //  #%#% field types are only partially defined
-//  #%#% slice fields can't be typed without first enhancing jfix()
+//  #%#% n.b. jfix can't handle slices of other than string or interface{}
 
 type ir_Invocable struct {
 	Coord    ir_coordinate
@@ -77,22 +77,22 @@ type ir_Function struct {
 	Accumulate interface{}
 	LocalList  []string
 	StaticList []string
-	CodeList   []interface{}
+	CodeList   []interface{} //#%#% []ir_chunk
 	CodeStart  ir_Label
 	Lvalset    interface{}
 }
 type ir_chunk struct {
 	Label    ir_Label
-	InsnList []interface{}
+	InsnList []interface{} // heterogeneous
 }
 type ir_Tmp struct {
-	Name interface{}
+	Name string
 }
 type ir_TmpLabel struct {
-	Name interface{}
+	Name string
 }
 type ir_TmpClosure struct {
-	Name interface{}
+	Name string
 }
 type ir_Label struct {
 	Value interface{}
@@ -158,7 +158,7 @@ type ir_Assign struct {
 type ir_MakeList struct {
 	Coord     ir_coordinate
 	Lhs       interface{}
-	ValueList []interface{}
+	ValueList []interface{} // heterogeneous
 }
 type ir_Field struct {
 	Coord     ir_coordinate
@@ -172,7 +172,7 @@ type ir_OpFunction struct {
 	Lhs        interface{}
 	Lhsclosure interface{}
 	Fn         interface{}
-	ArgList    []interface{}
+	ArgList    []interface{} // heterogeneous
 	FailLabel  interface{}
 }
 type ir_Call struct {
@@ -180,7 +180,7 @@ type ir_Call struct {
 	Lhs        interface{}
 	Lhsclosure interface{}
 	Fn         interface{}
-	ArgList    []interface{}
+	ArgList    []interface{} // heterogeneous
 	FailLabel  interface{}
 }
 type ir_ResumeValue struct {
