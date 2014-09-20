@@ -54,29 +54,29 @@ var irlist = [...]struct {
 
 type ir_Invocable struct {
 	Coord    ir_coordinate
-	NameList []interface{}
+	NameList []string
 	All      interface{}
 }
 type ir_Link struct {
 	Coord    ir_coordinate
-	NameList []interface{}
+	NameList []string
 }
 type ir_Record struct {
 	Coord     ir_coordinate
 	Name      string
-	FieldList []interface{}
+	FieldList []string
 }
 type ir_Global struct {
 	Coord    ir_coordinate
-	NameList []interface{}
+	NameList []string
 }
 type ir_Function struct {
 	Coord      ir_coordinate
 	Name       string
-	ParamList  []interface{}
+	ParamList  []string
 	Accumulate interface{}
-	LocalList  []interface{}
-	StaticList []interface{}
+	LocalList  []string
+	StaticList []string
 	CodeList   []interface{}
 	CodeStart  ir_Label
 	Lvalset    interface{}

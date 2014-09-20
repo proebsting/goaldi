@@ -75,13 +75,32 @@ func structFor(m map[string]interface{}) interface{} {
 	for key, val := range m {
 		key = Capitalize(key)
 		f := result.FieldByName(key)
-		if f.CanSet() {
-			if val != nil {
-				f.Set(reflect.ValueOf(val))
-			}
-		} else if key != "Tag" {
-			panic("cannot set key " + key)
-		}
+		setField(f, key, val)
 	}
 	return result.Interface()
+}
+
+//  setField -- set field in struct
+func setField(f reflect.Value, key string, val interface{}) {
+	if key == "Tag" || val == nil {
+		return // nothing to do
+	}
+	if !f.CanSet() {
+		panic("cannot set key " + key)
+	}
+	t := f.Type()
+	if t.Kind() != reflect.Slice || t.Elem().Kind() == reflect.Interface {
+		f.Set(reflect.ValueOf(val))
+		return
+	}
+	// we have to make a typed slice and copy in the elements
+	resultp := reflect.New(t)
+	fmt.Printf("%T %v\n", resultp, resultp)
+	result := *(resultp.Interface().(*[]string))
+	fmt.Printf("%T %v\n", result, result)
+	for _, v := range val.([]interface{}) {
+		fmt.Printf("%T %v\n", v, v)
+		result = append(result, v.(string))
+	}
+	f.Set(reflect.ValueOf(result))
 }
