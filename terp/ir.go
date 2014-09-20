@@ -54,36 +54,36 @@ var irlist = [...]struct {
 
 type ir_Invocable struct {
 	Coord    ir_coordinate
-	NameList interface{}
+	NameList []interface{}
 	All      interface{}
 }
 type ir_Link struct {
 	Coord    ir_coordinate
-	NameList interface{}
+	NameList []interface{}
 }
 type ir_Record struct {
 	Coord     ir_coordinate
 	Name      string
-	FieldList interface{}
+	FieldList []interface{}
 }
 type ir_Global struct {
 	Coord    ir_coordinate
-	NameList interface{}
+	NameList []interface{}
 }
 type ir_Function struct {
 	Coord      ir_coordinate
 	Name       string
-	ParamList  interface{}
+	ParamList  []interface{}
 	Accumulate interface{}
-	LocalList  interface{}
-	StaticList interface{}
-	CodeList   interface{}
+	LocalList  []interface{}
+	StaticList []interface{}
+	CodeList   []interface{}
 	CodeStart  ir_Label
 	Lvalset    interface{}
 }
 type ir_chunk struct {
 	Label    ir_Label
-	InsnList interface{}
+	InsnList []interface{}
 }
 type ir_Tmp struct {
 	Name interface{}
@@ -158,7 +158,7 @@ type ir_Assign struct {
 type ir_MakeList struct {
 	Coord     ir_coordinate
 	Lhs       interface{}
-	ValueList interface{}
+	ValueList []interface{}
 }
 type ir_Field struct {
 	Coord     ir_coordinate
@@ -172,7 +172,7 @@ type ir_OpFunction struct {
 	Lhs        interface{}
 	Lhsclosure interface{}
 	Fn         interface{}
-	ArgList    interface{}
+	ArgList    []interface{}
 	FailLabel  interface{}
 }
 type ir_Call struct {
@@ -180,7 +180,7 @@ type ir_Call struct {
 	Lhs        interface{}
 	Lhsclosure interface{}
 	Fn         interface{}
-	ArgList    interface{}
+	ArgList    []interface{}
 	FailLabel  interface{}
 }
 type ir_ResumeValue struct {
