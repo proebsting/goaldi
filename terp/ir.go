@@ -53,94 +53,142 @@ var irlist = [...]struct {
 //  #%#% slice fields can't be typed without first enhancing jfix()
 
 type ir_Invocable struct {
-	Coord         ir_coordinate
-	NameList, All interface{}
+	Coord    ir_coordinate
+	NameList interface{}
+	All      interface{}
 }
 type ir_Link struct {
 	Coord    ir_coordinate
 	NameList interface{}
 }
 type ir_Record struct {
-	Coord           ir_coordinate
-	Name, FieldList interface{}
+	Coord     ir_coordinate
+	Name      string
+	FieldList interface{}
 }
 type ir_Global struct {
 	Coord    ir_coordinate
 	NameList interface{}
 }
 type ir_Function struct {
-	Coord ir_coordinate
-	Name, ParamList, Accumulate, LocalList,
-	StaticList, CodeList, CodeStart, Lvalset interface{}
+	Coord      ir_coordinate
+	Name       string
+	ParamList  interface{}
+	Accumulate interface{}
+	LocalList  interface{}
+	StaticList interface{}
+	CodeList   interface{}
+	CodeStart  ir_Label
+	Lvalset    interface{}
 }
 type ir_chunk struct {
 	Label    ir_Label
 	InsnList interface{}
 }
-type ir_Tmp struct{ Name interface{} }
-type ir_TmpLabel struct{ Name interface{} }
-type ir_TmpClosure struct{ Name interface{} }
-type ir_Label struct{ Value interface{} }
+type ir_Tmp struct {
+	Name interface{}
+}
+type ir_TmpLabel struct {
+	Name interface{}
+}
+type ir_TmpClosure struct {
+	Name interface{}
+}
+type ir_Label struct {
+	Value interface{}
+}
 type ir_Var struct {
-	Coord     ir_coordinate
-	Lhs, Name interface{}
+	Coord ir_coordinate
+	Lhs   interface{}
+	Name  string
 }
 type ir_Key struct {
-	Coord                ir_coordinate
-	Lhs, Name, FailLabel interface{}
+	Coord     ir_coordinate
+	Lhs       interface{}
+	Name      string
+	FailLabel string
 }
 type ir_IntLit struct {
-	Coord    ir_coordinate
-	Lhs, Val interface{}
+	Coord ir_coordinate
+	Lhs   interface{}
+	Val   interface{}
 }
 type ir_RealLit struct {
-	Coord    ir_coordinate
-	Lhs, Val interface{}
+	Coord ir_coordinate
+	Lhs   interface{}
+	Val   interface{}
 }
 type ir_StrLit struct {
-	Coord         ir_coordinate
-	Lhs, Len, Val interface{}
+	Coord ir_coordinate
+	Lhs   interface{}
+	Len   interface{}
+	Val   interface{}
 }
 type ir_CsetLit struct {
-	Coord         ir_coordinate
-	Lhs, Len, Val interface{}
+	Coord ir_coordinate
+	Lhs   interface{}
+	Len   interface{}
+	Val   interface{}
 }
-type ir_operator struct{ Name, Arity, Rval interface{} }
+type ir_operator struct {
+	Name  interface{}
+	Arity interface{}
+	Rval  interface{}
+}
 type ir_Move struct {
-	Coord    ir_coordinate
-	Lhs, Rhs interface{}
+	Coord ir_coordinate
+	Lhs   interface{}
+	Rhs   interface{}
 }
 type ir_MoveLabel struct {
-	Coord      ir_coordinate
-	Lhs, Label interface{}
+	Coord ir_coordinate
+	Lhs   interface{}
+	Label interface{}
 }
 type ir_Deref struct {
-	Coord      ir_coordinate
-	Lhs, Value interface{}
+	Coord ir_coordinate
+	Lhs   interface{}
+	Value interface{}
 }
 type ir_Assign struct {
-	Coord         ir_coordinate
-	Target, Value interface{}
+	Coord  ir_coordinate
+	Target interface{}
+	Value  interface{}
 }
 type ir_MakeList struct {
-	Coord          ir_coordinate
-	Lhs, ValueList interface{}
+	Coord     ir_coordinate
+	Lhs       interface{}
+	ValueList interface{}
 }
 type ir_Field struct {
-	Coord                       ir_coordinate
-	Lhs, Expr, Field, FailLabel interface{}
+	Coord     ir_coordinate
+	Lhs       interface{}
+	Expr      interface{}
+	Field     string
+	FailLabel string
 }
 type ir_OpFunction struct {
-	Coord                                   ir_coordinate
-	Lhs, Lhsclosure, Fn, ArgList, FailLabel interface{}
+	Coord      ir_coordinate
+	Lhs        interface{}
+	Lhsclosure interface{}
+	Fn         interface{}
+	ArgList    interface{}
+	FailLabel  interface{}
 }
 type ir_Call struct {
-	Coord                                   ir_coordinate
-	Lhs, Lhsclosure, Fn, ArgList, FailLabel interface{}
+	Coord      ir_coordinate
+	Lhs        interface{}
+	Lhsclosure interface{}
+	Fn         interface{}
+	ArgList    interface{}
+	FailLabel  interface{}
 }
 type ir_ResumeValue struct {
-	Coord                               ir_coordinate
-	Lhs, Lhsclosure, Closure, FailLabel interface{}
+	Coord      ir_coordinate
+	Lhs        interface{}
+	Lhsclosure interface{}
+	Closure    interface{}
+	FailLabel  interface{}
 }
 type ir_EnterInit struct {
 	Coord      ir_coordinate
@@ -155,26 +203,36 @@ type ir_IndirectGoto struct {
 	TargetTmpLabel interface{}
 }
 type ir_Succeed struct {
-	Coord             ir_coordinate
-	Expr, ResumeLabel interface{}
+	Coord       ir_coordinate
+	Expr        interface{}
+	ResumeLabel interface{}
 }
-type ir_Fail struct{ Coord ir_coordinate }
+type ir_Fail struct {
+	Coord ir_coordinate
+}
 type ir_Create struct {
-	Coord           ir_coordinate
-	Lhs, CoexpLabel interface{}
+	Coord      ir_coordinate
+	Lhs        interface{}
+	CoexpLabel interface{}
 }
 type ir_CoRet struct {
-	Coord              ir_coordinate
-	Value, ResumeLabel interface{}
+	Coord       ir_coordinate
+	Value       interface{}
+	ResumeLabel interface{}
 }
-type ir_CoFail struct{ Coord ir_coordinate }
+type ir_CoFail struct {
+	Coord ir_coordinate
+}
 type ir_ScanSwap struct {
-	Coord        ir_coordinate
-	Subject, Pos interface{}
+	Coord   ir_coordinate
+	Subject interface{}
+	Pos     interface{}
 }
-type ir_Unreachable struct{ Coord ir_coordinate }
-
+type ir_Unreachable struct {
+	Coord ir_coordinate
+}
 type ir_coordinate struct {
-	File string
-	Line, Column/*also*/ string
+	File   string
+	Line   string
+	Column string
 }
