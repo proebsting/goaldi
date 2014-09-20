@@ -10,6 +10,11 @@ import (
 	"unicode/utf8"
 )
 
+// predefined constants
+var (
+	EMPTY = NewString("") // the empty string
+)
+
 //  A string is encoded by one (usually) or two parallel slices
 type VString struct {
 	low  []uint8  // required: low-order 8 bits of each rune
@@ -111,4 +116,72 @@ func (s *VString) Identical(x Value) Value {
 //  VString.Export returns a Go string
 func (v *VString) Export() interface{} {
 	return v.ToUTF8()
+}
+
+//  -------------------------- internal functions ---------------------
+
+//  VString.length -- return string length as int
+func (s *VString) length() int {
+	return len(s.low)
+}
+
+//  VString.compare -- compare two strings, return <0, 0, or >0
+func (s *VString) compare(t *VString) int {
+	// check for easy case
+	if s == t {
+		return 0
+	}
+	// extract fields
+	sl := s.low
+	tl := t.low
+	sh := s.high
+	th := t.high
+	sn := len(sl)
+	tn := len(tl)
+	// compare runes until one differs
+	for i := 0; i < sn && i < tn; i++ {
+		sr := rune(sl[i])
+		tr := rune(tl[i])
+		if sh != nil {
+			sr |= rune(sh[i] << 8)
+		}
+		if th != nil {
+			tr |= rune(th[i] << 8)
+		}
+		if sr != tr {
+			return int(sr) - int(tr)
+		}
+	}
+	// reached the end of one or both strings
+	return sn - tn
+}
+
+//  scat -- general string concatenator.
+//  produces x1[i1:j1] || s2[i2:j2] || s3[i3:j3]  (using Go indexing).
+//  all arguments are assumed valid.
+func scat(s1 *VString, i1, j1 int, s2 *VString, i2, j2 int,
+	s3 *VString, i3, j3 int) *VString {
+	n1 := j1 - i1
+	n2 := j2 - i2
+	n3 := j3 - i3
+	nt := n1 + n2 + n3
+	low := make([]uint8, nt, nt)
+	copy(low[0:], s1.low[i1:j1])
+	copy(low[n1:], s2.low[i2:j2])
+	copy(low[n1+n2:], s3.low[i3:j3])
+	if s1.high == nil && s2.high == nil && s3.high == nil {
+		return &VString{low, nil}
+	}
+	high := make([]uint16, nt, nt)
+	if s1.high != nil {
+		copy(high[0:], s1.high[i1:j1])
+	}
+	if s2.high != nil {
+		copy(high[n1:], s2.high[i2:j2])
+	}
+	if s3.high != nil {
+		copy(high[n1+n2:], s3.high[i3:j3])
+	}
+	//#%#% could check here if "high" is really needed
+	return &VString{low, high}
 }
