@@ -11,6 +11,7 @@ import (
 //  command-line options
 var opt_timings bool // show CPU timings
 var opt_verbose bool // issue verbose commentary
+var opt_jdump bool   // dump JSON in outline form
 
 //  usage prints a usage message (with option descriptions) and aborts.
 func usage() {
@@ -25,6 +26,7 @@ func options() (files []string, args []string) {
 
 	flag.BoolVar(&opt_timings, "t", true, "show CPU timings")
 	flag.BoolVar(&opt_verbose, "v", true, "issue verbose commentary")
+	flag.BoolVar(&opt_jdump, "J", false, "dump JSON IR in outline form")
 	flag.Usage = usage
 	flag.Parse()
 	args = flag.Args()

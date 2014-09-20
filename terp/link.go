@@ -32,7 +32,9 @@ func load(fname string) UNKNOWN {
 	jd := json.NewDecoder(gcode)
 	var jtree interface{}
 	jd.Decode(&jtree)
-	// jdump(jtree) //#%#%#%
+	if opt_jdump {
+		jdump(jtree)
+	}
 	jtree = jfix(jtree)
 	dumptree("", jtree) //#%#%#%
 	return jtree
