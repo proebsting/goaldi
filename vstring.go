@@ -37,11 +37,6 @@ func NewString(s string) *VString {
 	}
 }
 
-//  EasyString -- construct a Goaldi string from ASCII input (no byte > 0x7F)
-func EasyString(s string) *VString {
-	return &VString{[]uint8(s), nil}
-}
-
 //  BinaryString -- construct a Goaldi string from Go Latin1 bytes
 func BinaryString(s []byte) *VString {
 	b := make([]uint8, len(s), len(s))
@@ -99,7 +94,7 @@ func (v *VString) Type() Value {
 	return type_string
 }
 
-var type_string = EasyString("string")
+var type_string = NewString("string")
 
 //  VString.Identical -- check equality for === operator
 func (s *VString) Identical(x Value) Value {
