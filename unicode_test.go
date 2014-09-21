@@ -93,7 +93,7 @@ func testUniConcat(t *testing.T, s1, s2, s3 *VString) {
 	u123 := u1 + u2 + u3
 	s123 := scat(s1, 0, n1, s2, 0, n2, s3, 0, n3)
 	us123 := s123.ToUTF8()
-	expect(t, "concatenatiion", u123, us123)
+	expect(t, "concatenation", u123, us123)
 }
 
 func randomUniString(len int, low rune, high rune) string {
