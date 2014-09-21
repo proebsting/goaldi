@@ -22,6 +22,7 @@ record ir_CsetLit(coord, lhs, len, val)
 
 record ir_operator(name, arity, rval)
 
+record ir_MakeClosure(coord, lhs, name)
 record ir_Move(coord, lhs, rhs)
 record ir_MoveLabel(coord, lhs, label)
 record ir_Deref(coord, lhs, value)

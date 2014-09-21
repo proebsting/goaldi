@@ -114,6 +114,8 @@ procedure optim_def_use(p, uses, defs)
 	    }
     "ir_CsetLit" :   { defs[\p.lhs] +:= 1
 	    }
+    "ir_MakeClosure" :   { defs[\p.lhs] +:= 1
+	    }
     "ir_Succeed" :   { 
 	    uses[p.expr] +:= 1
 	    uses[\p.resumeLabel] +:= 1
@@ -316,6 +318,7 @@ procedure optim_goto_transitive(t, new, lab)
 	    "ir_Move" |
 	    "ir_IndirectGoto" |
 	    "ir_Assign" |
+	    "ir_MakeClosure" |
 	    "ir_Deref" : {
 		# nothing
 		}
@@ -378,6 +381,7 @@ procedure optim_refcountX(refcount, p)
     "ir_CsetLit" |
     "ir_ScanSwap" |
     "ir_Tmp" |
+    "ir_MakeClosure" |
     "ir_TmpLabel" : {
 	# nothing
     }

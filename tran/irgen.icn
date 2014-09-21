@@ -1,11 +1,15 @@
 #  irgen.icn -- translate abstract syntax trees to intermediate representation.
 
+global ir_current_proc
+
 global ir_noerror2failure
 global ir_createflag
 
 global ir_LvalSet
 
 global ir_declare_set
+
+global ir_deferred
 
 record ir_info(start, resume, failure, success, x)
 record ir_loopinfo(scanlevel, nextlabel, continue, in_st, out_st, value,
@@ -730,9 +734,39 @@ procedure ir_a_Csetlit(p, st, inuse, target, bounded, rval)
     /bounded & suspend ir_chunk(p.ir.resume, [ ir_Goto(ir_coord(p.coord), p.ir.failure) ])
 end
 
+procedure ir_nested(p, st, inuse, target, bounded, rval)
+    if type(target) == "ir_ProcDecl" then target := &null
+
+    ir_init(p)
+
+    suspend ir_chunk(p.ir.start, [
+        ir_MakeClosure(ir_coord(p.coord), target, p.ident.id),
+        ir_Goto(ir_coord(p.coord), p.ir.success)
+        ])
+    /bounded & suspend ir_chunk(p.ir.resume, [ ir_Goto(ir_coord(p.coord), p.ir.failure) ])
+end
+
 # record a_ProcDecl( ident paramList accumulate localsList code )
 procedure ir_a_ProcDecl(p, st, inuse, target, bounded, rval)
     local locals, statics, params, i, v, code
+    static nesting, counter
+    initial {
+    	nesting := 0
+	counter := 0
+    }
+
+    nesting +:= 1
+
+    if nesting > 1 then {
+        counter +:= 1
+	p.ident.id := ir_current_proc || "$nested$" || counter
+        suspend ir_nested(p, st, inuse, target, bounded, rval)
+	nesting -:= 1
+	put(ir_deferred, p)
+	fail
+    }
+
+    ir_current_proc := p.ident.id
 
     v := set([])
     every i := !p.paramList | !(!p.localsList).idList do {
@@ -766,6 +800,8 @@ procedure ir_a_ProcDecl(p, st, inuse, target, bounded, rval)
 
     code := []
     every put(code, ir(p.code))
+
+    nesting -:= 1
 
     return ir_Function(ir_coord(p.ident.coord), p.ident.id, params,
 		      p.accumulate, locals, statics, code,
@@ -1355,6 +1391,17 @@ procedure ir_a_ListConstructor(p, st, inuse, target, bounded, rval)
 
 end
 
+procedure ir_outer(p)
+    case type(p) of {
+    "a_ProcDecl" : suspend ir_a_ProcDecl(p)
+    "a_Global" : suspend ir_a_Global(p)
+    "a_Record" : suspend ir_a_Record(p)
+    "a_Invocable" : suspend ir_a_Invocable(p)
+    "a_Link" : suspend ir_a_Link(p)
+    default : runerr(500, p)
+    }
+end
+
 procedure ir(p, st, inuse, target, bounded, rval)
     case type(p) of {
     "a_NoOp" : suspend ir_a_NoOp(p, st, inuse, target, bounded, rval)
@@ -1371,11 +1418,8 @@ procedure ir(p, st, inuse, target, bounded, rval)
     "a_Sectionop" : suspend ir_a_Sectionop(p, st, inuse, target, bounded, rval)
     "a_Binop" : suspend ir_a_Binop(p, st, inuse, target, bounded, rval)
     "a_Unop" : suspend ir_a_Unop(p, st, inuse, target, bounded, rval)
-    "a_Global" : suspend ir_a_Global(p, st, inuse, target, bounded, rval)
     "a_If" : suspend ir_a_If(p, st, inuse, target, bounded, rval)
     "a_Initial" : suspend ir_a_Initial(p, st, inuse, target, bounded, rval)
-    "a_Invocable" : suspend ir_a_Invocable(p, st, inuse, target, bounded, rval)
-    "a_Link" : suspend ir_a_Link(p, st, inuse, target, bounded, rval)
     "a_Intlit" : suspend ir_a_Intlit(p, st, inuse, target, bounded, rval)
     "a_Reallit" : suspend ir_a_Reallit(p, st, inuse, target, bounded, rval)
     "a_Stringlit" : suspend ir_a_Stringlit(p, st, inuse, target, bounded, rval)
@@ -1383,7 +1427,6 @@ procedure ir(p, st, inuse, target, bounded, rval)
     "a_ProcDecl" : suspend ir_a_ProcDecl(p, st, inuse, target, bounded, rval)
     "a_ProcBody" : suspend ir_a_ProcBody(p, st, inuse, target, bounded, rval)
     "a_ProcCode" : suspend ir_a_ProcCode(p, st, inuse, target, bounded, rval)
-    "a_Record" : suspend ir_a_Record(p, st, inuse, target, bounded, rval)
     "a_Repeat" : suspend ir_a_Repeat(p, st, inuse, target, bounded, rval)
     "a_Return" : suspend ir_a_Return(p, st, inuse, target, bounded, rval)
     "a_Fail" : suspend ir_a_Fail(p, st, inuse, target, bounded, rval)
@@ -1560,8 +1603,14 @@ procedure ast2ir(parse, flagList)
             }
         }
     }
+
     ir_declare_set := set([])
+    ir_deferred := []
+
     while p := @parse do {
-        suspend ir(p)
+        suspend ir_outer(p)
+	while *ir_deferred > 0 do {
+		suspend ir_outer(get(ir_deferred))
+	}
     }
 end
