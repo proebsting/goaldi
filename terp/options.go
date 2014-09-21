@@ -16,7 +16,7 @@ var opt_jdump bool   // dump JSON in outline form
 //  usage prints a usage message (with option descriptions) and aborts.
 func usage() {
 	fmt.Fprintf(os.Stderr,
-		"Usage: %s [options] file [args]\n", os.Args[0])
+		"Usage: %s [options] [file [args]]\n", os.Args[0])
 	flag.PrintDefaults()
 	os.Exit(1)
 }
@@ -30,10 +30,9 @@ func options() (files []string, args []string) {
 	flag.Usage = usage
 	flag.Parse()
 	args = flag.Args()
-	if len(args) < 1 {
-		usage()
+	if len(args) > 0 {
+		files = append(files, args[0])
+		args = args[1:]
 	}
-	files = append(files, args[0])
-	args = args[1:]
 	return files, args
 }

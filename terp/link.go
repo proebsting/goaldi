@@ -15,8 +15,14 @@ func load(fname string) UNKNOWN {
 	babble("loading %s", fname)
 
 	//  open the file
-	gfile, err := os.Open(fname)
-	checkError(err)
+	var gfile *os.File
+	var err error
+	if fname == "-" {
+		gfile = os.Stdin
+	} else {
+		gfile, err = os.Open(fname)
+		checkError(err)
+	}
 	gcode := bufio.NewReader(gfile)
 
 	//  skip initial comment lines (e.g. #!/usr/bin/env gdx...)

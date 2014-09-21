@@ -12,8 +12,12 @@ type UNKNOWN interface{} // temporary designation for type TBD
 func main() {
 	files, args := options()
 	parts := make([]UNKNOWN, 0)
-	for _, f := range files {
-		parts = append(parts, load(f))
+	if len(files) == 0 {
+		parts = append(parts, load("-"))
+	} else {
+		for _, f := range files {
+			parts = append(parts, load(f))
+		}
 	}
 	os.Exit(0) //#%#%#%#%#%#%#%
 	prog := link(parts)
