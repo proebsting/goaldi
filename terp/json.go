@@ -19,9 +19,9 @@ func jdu(indent string, jtree interface{}) {
 	switch x := jtree.(type) {
 	case []interface{}:
 		for _, v := range x {
-			jdu("   "+indent, v)
-			fmt.Printf("\n%s-----------------------------",
+			fmt.Printf("\n%s----------------------------- ",
 				indent)
+			jdu("   "+indent, v)
 		}
 	case map[string]interface{}:
 		for k, v := range x {
