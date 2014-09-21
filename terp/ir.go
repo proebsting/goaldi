@@ -79,7 +79,7 @@ type ir_Function struct {
 	StaticList []string
 	CodeList   []interface{} //#%#% []ir_chunk
 	CodeStart  ir_Label
-	Lvalset    interface{}
+	Lvalset    []string
 }
 type ir_chunk struct {
 	Label    ir_Label
