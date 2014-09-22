@@ -96,135 +96,135 @@ type ir_TmpClosure struct {
 	Name string
 }
 type ir_Label struct {
-	Value interface{}
+	Value string
 }
 type ir_Var struct {
 	Coord ir_coordinate
-	Lhs   interface{}
+	Lhs   ir_Tmp
 	Name  string
 }
 type ir_Key struct {
 	Coord     ir_coordinate
-	Lhs       interface{}
+	Lhs       ir_Tmp
 	Name      string
 	FailLabel string
 }
 type ir_IntLit struct {
 	Coord ir_coordinate
-	Lhs   interface{}
-	Val   interface{}
+	Lhs   ir_Tmp
+	Val   string
 }
 type ir_RealLit struct {
 	Coord ir_coordinate
-	Lhs   interface{}
-	Val   interface{}
+	Lhs   ir_Tmp
+	Val   string
 }
 type ir_StrLit struct {
 	Coord ir_coordinate
-	Lhs   interface{}
-	Len   interface{}
-	Val   interface{}
+	Lhs   ir_Tmp
+	Len   string
+	Val   string
 }
 type ir_CsetLit struct {
 	Coord ir_coordinate
-	Lhs   interface{}
-	Len   interface{}
-	Val   interface{}
+	Lhs   ir_Tmp
+	Len   string
+	Val   string
 }
 type ir_operator struct {
-	Name  interface{}
-	Arity interface{}
+	Name  string
+	Arity string
 	Rval  interface{}
 }
 type ir_MakeClosure struct {
 	Coord ir_coordinate
-	Lhs   interface{}
+	Lhs   ir_Tmp
 	Name  string
 }
 type ir_Move struct {
 	Coord ir_coordinate
-	Lhs   interface{}
+	Lhs   ir_Tmp
 	Rhs   interface{}
 }
 type ir_MoveLabel struct {
 	Coord ir_coordinate
-	Lhs   interface{}
-	Label interface{}
+	Lhs   ir_Tmp
+	Label ir_Label
 }
 type ir_Deref struct {
 	Coord ir_coordinate
-	Lhs   interface{}
-	Value interface{}
+	Lhs   ir_Tmp
+	Value string
 }
 type ir_Assign struct {
 	Coord  ir_coordinate
 	Target interface{}
-	Value  interface{}
+	Value  string
 }
 type ir_MakeList struct {
 	Coord     ir_coordinate
-	Lhs       interface{}
+	Lhs       ir_Tmp
 	ValueList []interface{} // heterogeneous
 }
 type ir_Field struct {
 	Coord     ir_coordinate
-	Lhs       interface{}
+	Lhs       ir_Tmp
 	Expr      interface{}
 	Field     string
 	FailLabel string
 }
 type ir_OpFunction struct {
 	Coord      ir_coordinate
-	Lhs        interface{}
+	Lhs        ir_Tmp
 	Lhsclosure interface{}
 	Fn         interface{}
 	ArgList    []interface{} // heterogeneous
-	FailLabel  interface{}
+	FailLabel  ir_Label
 }
 type ir_Call struct {
 	Coord      ir_coordinate
-	Lhs        interface{}
+	Lhs        ir_Tmp
 	Lhsclosure interface{}
 	Fn         interface{}
 	ArgList    []interface{} // heterogeneous
-	FailLabel  interface{}
+	FailLabel  ir_Label
 }
 type ir_ResumeValue struct {
 	Coord      ir_coordinate
-	Lhs        interface{}
+	Lhs        ir_Tmp
 	Lhsclosure interface{}
 	Closure    interface{}
-	FailLabel  interface{}
+	FailLabel  ir_Label
 }
 type ir_EnterInit struct {
 	Coord      ir_coordinate
-	StartLabel interface{}
+	StartLabel ir_Label
 }
 type ir_Goto struct {
 	Coord       ir_coordinate
-	TargetLabel interface{}
+	TargetLabel ir_Label
 }
 type ir_IndirectGoto struct {
 	Coord          ir_coordinate
-	TargetTmpLabel interface{}
+	TargetTmpLabel ir_Label
 }
 type ir_Succeed struct {
 	Coord       ir_coordinate
 	Expr        interface{}
-	ResumeLabel interface{}
+	ResumeLabel ir_Label
 }
 type ir_Fail struct {
 	Coord ir_coordinate
 }
 type ir_Create struct {
 	Coord      ir_coordinate
-	Lhs        interface{}
-	CoexpLabel interface{}
+	Lhs        ir_Tmp
+	CoexpLabel ir_Label
 }
 type ir_CoRet struct {
 	Coord       ir_coordinate
-	Value       interface{}
-	ResumeLabel interface{}
+	Value       string
+	ResumeLabel ir_Label
 }
 type ir_CoFail struct {
 	Coord ir_coordinate
