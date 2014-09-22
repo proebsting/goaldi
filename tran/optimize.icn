@@ -122,7 +122,7 @@ procedure optim_def_use(p, uses, defs)
 	    }
     "ir_Fail" :  { }
     "ir_ResumeValue" :    { 
-	    uses[p.value] +:= 1
+	    # uses[p.value] +:= 1
 	    uses[\p.failLabel] +:= 1
             defs[\p.lhs] +:= 1
 	    }
