@@ -10,23 +10,36 @@ import (
 //  jdump -- print contents of generic JSON data tree
 //  (does not recurse into arrays inside typed structs)
 func jdump(jtree interface{}) {
+	tally := make(map[string]int)
 	fmt.Printf("JSON data:")
-	jdu("", jtree)
-	fmt.Printf("\n")
+	jdu("", jtree, tally)
+	fmt.Printf("\n\nStruct field types:\n")
+	for k, v := range tally {
+		fmt.Printf("field %-45s %3d\n", k, v)
+	}
 }
 
-func jdu(indent string, jtree interface{}) {
+func jdu(indent string, jtree interface{}, tally map[string]int) {
 	switch x := jtree.(type) {
 	case []interface{}:
 		for _, v := range x {
 			fmt.Printf("\n%s----------------------------- ",
 				indent)
-			jdu("   "+indent, v)
+			jdu("   "+indent, v, tally)
 		}
 	case map[string]interface{}:
 		for k, v := range x {
 			fmt.Printf("\n%s%v: ", indent, k)
-			jdu("   "+indent, v)
+			jdu("   "+indent, v, tally)
+			if submap, ok := v.(map[string]interface{}); ok {
+				tx := fmt.Sprintf("%15s.%-12s %s",
+					x["tag"], k, submap["tag"])
+				tally[tx]++
+			} else if k != "tag" {
+				tx := fmt.Sprintf("%15s.%-12s %T",
+					x["tag"], k, v)
+				tally[tx]++
+			}
 		}
 	default:
 		fmt.Printf("%v", x)
