@@ -54,7 +54,8 @@ func jfix(jtree interface{}) interface{} {
 //  initialize IR mapping table
 func init() {
 	for _, ir := range irlist {
-		irtable[ir.name] = reflect.TypeOf(ir.example)
+		t := reflect.TypeOf(ir)
+		irtable[t.Name()] = t
 	}
 }
 
