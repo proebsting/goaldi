@@ -24,6 +24,7 @@ var irlist = [...]struct {
 	{"ir_StrLit", ir_StrLit{}},
 	{"ir_CsetLit", ir_CsetLit{}},
 	{"ir_operator", ir_operator{}},
+	{"ir_MakeClosure", ir_MakeClosure{}},
 	{"ir_Move", ir_Move{}},
 	{"ir_MoveLabel", ir_MoveLabel{}},
 	{"ir_Deref", ir_Deref{}},
@@ -134,6 +135,11 @@ type ir_operator struct {
 	Name  interface{}
 	Arity interface{}
 	Rval  interface{}
+}
+type ir_MakeClosure struct {
+	Coord ir_coordinate
+	Lhs   interface{}
+	Name  string
 }
 type ir_Move struct {
 	Coord ir_coordinate
