@@ -59,6 +59,7 @@ procedure parse_cclause()
                               lex_SLASH, lex_SNE, lex_STAR, lex_STRINGLIT,
                               lex_SUSPEND, lex_TILDE, lex_UNION, lex_UNTIL,
                               lex_WHILE,
+			      lex_LCOMP,
 			      lex_PROCEDURE])
     }
     if parse_tok_rec === lex_DEFAULT then {
@@ -171,6 +172,7 @@ procedure parse_expr10()
                               lex_LPAREN, lex_NEXT, lex_REALLIT, lex_REPEAT,
                               lex_RETURN, lex_STRINGLIT, lex_SUSPEND, lex_UNTIL,
                               lex_WHILE,
+			      lex_LCOMP,
 			      lex_PROCEDURE ])
     expr10_set2 := set([lex_AT, lex_NOT, lex_BAR, lex_DOT, lex_BANG,
                               lex_PLUS, lex_STAR, lex_SLASH, lex_CARET,
@@ -284,6 +286,14 @@ procedure parse_expr11()
         parse_match_token(lex_RBRACK)
         return a_ListConstructor(e, coord)
         }
+    lex_LCOMP  :   # LCOMP  expr  RCOMP 
+        {
+        coord := parse_tok_rec.coord
+        parse_eat_token()
+        e := parse_expr()
+        parse_match_token(lex_RCOMP)
+        return a_ListComprehension(e, coord)
+        }
     lex_AND :   # AND ( FAIL  |  IDENT )
         {
         coord := parse_tok_rec.coord
@@ -315,7 +325,7 @@ procedure parse_expr11a()
     static expr11_set
 
     initial {
-    expr11_set := set([lex_DOT, lex_LBRACE, lex_LBRACK, lex_LPAREN])
+    expr11_set := set([lex_DOT, lex_LBRACE, lex_LBRACK, lex_LPAREN, lex_LCOMP])
     }
     #  expr11 {  expr11suffix } 
     left := parse_expr11()
@@ -343,6 +353,7 @@ procedure parse_expr11suffix(lhs)
                                   lex_SNE, lex_STAR, lex_STRINGLIT,
                                   lex_SUSPEND, lex_TILDE, lex_UNION, lex_UNTIL,
                                   lex_WHILE,
+				  lex_LCOMP,
 				  lex_PROCEDURE ])
         expr11suffix_set2 := set([lex_COLON, lex_MCOLON, lex_PCOLON])
     }
@@ -748,6 +759,7 @@ procedure parse_nexpr()
                       lex_RETURN, lex_SEQ, lex_SLASH, lex_SNE, lex_STAR,
                       lex_STRINGLIT, lex_SUSPEND, lex_TILDE, lex_UNION,
                       lex_UNTIL, lex_WHILE,
+		      lex_LCOMP,
 		      lex_PROCEDURE ])
     }
     if member(nexpr_set, parse_tok_rec) then {
@@ -785,6 +797,7 @@ procedure parse_do_proc(noident)
                         lex_RETURN, lex_SEMICOL, lex_SEQ, lex_SLASH,
                         lex_SNE, lex_STAR, lex_STRINGLIT, lex_SUSPEND,
                         lex_TILDE, lex_UNION, lex_UNTIL, lex_WHILE,
+			lex_LCOMP,
 			lex_PROCEDURE ])
     }
     #  prochead  SEMICOL  locals  initial  procbody  END 

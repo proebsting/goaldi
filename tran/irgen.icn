@@ -1391,6 +1391,34 @@ procedure ir_a_ListConstructor(p, st, inuse, target, bounded, rval)
 
 end
 
+# record a_ListComprehension( expr )
+procedure ir_a_ListComprehension(p, st, inuse, target, bounded, rval)
+    local tmp, v
+
+    \p.coord | runerr(500, p)
+    ir_init(p)
+
+    tmp := ir_tmp(st, inuse)
+    v := ir_tmp(st, inuse)
+
+    suspend ir(p.expr, st, inuse, tmp, &null, "rval")
+
+    suspend ir_chunk(p.ir.start, [ 
+        ir_MakeList(ir_coord(p.coord), v, []),
+        ir_Goto(ir_coord(p.coord), p.expr.ir.start)
+	])
+    /bounded & suspend ir_chunk(p.ir.resume, [ ir_Goto(ir_coord(p.coord), p.ir.failure) ])
+    suspend ir_chunk(p.expr.ir.success, [ 
+        ir_opfn(ir_coord(p.coord), &null, &null, ir_operator("put", 2, rval), [ v, tmp ], p.ir.failure),
+        ir_Goto(ir_coord(p.coord), p.expr.ir.resume)
+	])
+    suspend ir_chunk(p.expr.ir.failure, [ 
+	ir_Move(ir_coord(p.coord), target, v),
+        ir_Goto(ir_coord(p.coord), p.ir.success)
+	])
+
+end
+
 procedure ir_outer(p)
     case type(p) of {
     "a_ProcDecl" : suspend ir_a_ProcDecl(p)
@@ -1441,6 +1469,8 @@ procedure ir(p, st, inuse, target, bounded, rval)
     "a_Mutual" : suspend ir_a_Mutual(p, st, inuse, target, bounded, rval)
     "a_Compound" : suspend ir_a_Compound(p, st, inuse, target, bounded, rval)
     "a_ListConstructor" : suspend ir_a_ListConstructor(p, st, inuse, target,
+                                                   bounded, rval)
+    "a_ListComprehension" : suspend ir_a_ListComprehension(p, st, inuse, target,
                                                    bounded, rval)
     "a_Key" : suspend ir_a_Key(p, st, inuse, target, bounded, rval)
     "a_Arglist" : suspend ir_a_Arglist(p, st, inuse, target, bounded, rval)
