@@ -104,7 +104,7 @@ type ir_Key struct {
 	Coord     ir_coordinate
 	Lhs       ir_Tmp
 	Name      string
-	FailLabel string
+	FailLabel ir_Label
 }
 type ir_IntLit struct {
 	Coord ir_coordinate
@@ -135,28 +135,28 @@ type ir_operator struct {
 }
 type ir_MakeClosure struct {
 	Coord ir_coordinate
-	Lhs   ir_Tmp
+	Lhs   interface{}
 	Name  string
 }
 type ir_Move struct {
 	Coord ir_coordinate
 	Lhs   ir_Tmp
-	Rhs   interface{}
+	Rhs   ir_Tmp
 }
 type ir_MoveLabel struct {
 	Coord ir_coordinate
-	Lhs   ir_Tmp
+	Lhs   ir_TmpLabel
 	Label ir_Label
 }
 type ir_Deref struct {
 	Coord ir_coordinate
 	Lhs   ir_Tmp
-	Value string
+	Value ir_Tmp
 }
 type ir_Assign struct {
 	Coord  ir_coordinate
-	Target interface{}
-	Value  string
+	Target ir_Tmp
+	Value  ir_Tmp
 }
 type ir_MakeList struct {
 	Coord     ir_coordinate
@@ -166,31 +166,31 @@ type ir_MakeList struct {
 type ir_Field struct {
 	Coord     ir_coordinate
 	Lhs       ir_Tmp
-	Expr      interface{}
+	Expr      ir_Tmp
 	Field     string
-	FailLabel string
+	FailLabel ir_Label
 }
 type ir_OpFunction struct {
 	Coord      ir_coordinate
 	Lhs        ir_Tmp
-	Lhsclosure interface{}
-	Fn         interface{}
+	Lhsclosure ir_TmpClosure
+	Fn         ir_operator
 	ArgList    []interface{} // heterogeneous
 	FailLabel  ir_Label
 }
 type ir_Call struct {
 	Coord      ir_coordinate
 	Lhs        ir_Tmp
-	Lhsclosure interface{}
-	Fn         interface{}
+	Lhsclosure ir_TmpClosure
+	Fn         ir_Tmp
 	ArgList    []interface{} // heterogeneous
 	FailLabel  ir_Label
 }
 type ir_ResumeValue struct {
 	Coord      ir_coordinate
 	Lhs        ir_Tmp
-	Lhsclosure interface{}
-	Closure    interface{}
+	Lhsclosure interface{} // ir_Tmp or ir_TmpClosure
+	Closure    interface{} // ir_Label or ir_TmpClosure
 	FailLabel  ir_Label
 }
 type ir_EnterInit struct {
@@ -203,11 +203,11 @@ type ir_Goto struct {
 }
 type ir_IndirectGoto struct {
 	Coord          ir_coordinate
-	TargetTmpLabel ir_Label
+	TargetTmpLabel ir_TmpLabel
 }
 type ir_Succeed struct {
 	Coord       ir_coordinate
-	Expr        interface{}
+	Expr        ir_Tmp
 	ResumeLabel ir_Label
 }
 type ir_Fail struct {
@@ -220,16 +220,16 @@ type ir_Create struct {
 }
 type ir_CoRet struct {
 	Coord       ir_coordinate
-	Value       string
-	ResumeLabel ir_Label
+	Value       ir_Tmp
+	ResumeLabel interface{}
 }
 type ir_CoFail struct {
 	Coord ir_coordinate
 }
 type ir_ScanSwap struct {
 	Coord   ir_coordinate
-	Subject interface{}
-	Pos     interface{}
+	Subject ir_Tmp
+	Pos     ir_Tmp
 }
 type ir_Unreachable struct {
 	Coord ir_coordinate
