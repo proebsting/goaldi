@@ -15,12 +15,13 @@ build:
 
 test:
 	go test
+	cd itests; $(MAKE)
 
 format:	
 	go fmt *.go
 	for D in terp test*; do go fmt $$D/*.go; done
 
-tests:	build test
+mains:					# early test drivers
 	$$GOPATH/bin/test1
 	$$GOPATH/bin/test2
 	$$GOPATH/bin/test3
@@ -31,4 +32,5 @@ bundle:
 
 clean:
 	go clean -i $(PKG) $(PROGS)
-	cd tran; make clean
+	cd tran; $(MAKE) clean
+	cd itests; $(MAKE) clean

@@ -1,8 +1,10 @@
 # Files for Git to ignore
 .DS_Store
-*.u[12]
-*.out
 *.tmp
+*.out
+*.err
+*.gir
+*.u[12]
 tran/do_ops.icn
 tran/interface.icn
 tran/interfacegen
