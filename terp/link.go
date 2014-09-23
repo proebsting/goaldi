@@ -61,6 +61,10 @@ func dumptree(indent string, x interface{}) {
 		for _, v := range t {
 			dumptree(indent, v)
 		}
+	case []ir_chunk:
+		for _, v := range t {
+			dumptree(indent, v)
+		}
 	case ir_Function:
 		fmt.Printf("\n%sproc %s  %v  start %v\n",
 			indent, t.Name, t.Coord,

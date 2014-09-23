@@ -47,9 +47,6 @@ var irlist = [...]interface{}{
 //  intermediate representation struct definitions
 //  all fields must be capitalized for access by the reflection package
 
-//  #%#% field types are only partially defined
-//  #%#% n.b. jfix can't handle slices of other than string or interface{}
-
 type ir_Invocable struct {
 	Coord    ir_coordinate
 	NameList []string
@@ -75,7 +72,7 @@ type ir_Function struct {
 	Accumulate interface{}
 	LocalList  []string
 	StaticList []string
-	CodeList   []interface{} //#%#% []ir_chunk
+	CodeList   []ir_chunk
 	CodeStart  ir_Label
 	Lvalset    []string
 }

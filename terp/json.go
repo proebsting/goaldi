@@ -95,7 +95,6 @@ func structFor(m map[string]interface{}) interface{} {
 }
 
 //  setField -- set field in struct
-//#%#%  can't handle destination slices other than []string and []interface{}
 func setField(f reflect.Value, key string, val interface{}) {
 	if key == "Tag" || val == nil {
 		return // nothing to do
@@ -110,12 +109,9 @@ func setField(f reflect.Value, key string, val interface{}) {
 	}
 	// we have to make a typed slice and copy in the elements
 	resultp := reflect.New(t)
-	//#%#% fmt.Printf("%T %v\n", resultp, resultp)
-	result := *(resultp.Interface().(*[]string))
-	//#%#% fmt.Printf("%T %v\n", result, result)
+	result := resultp.Elem()
 	for _, v := range val.([]interface{}) {
-		//#%#% fmt.Printf("%T %v\n", v, v)
-		result = append(result, v.(string))
+		result = reflect.Append(result, reflect.ValueOf(v))
 	}
-	f.Set(reflect.ValueOf(result))
+	f.Set(result)
 }
