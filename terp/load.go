@@ -11,7 +11,7 @@ import (
 )
 
 //  load -- read a single JSON-encoded IR file as a tree of objects
-func load(fname string) UNKNOWN {
+func load(fname string) []interface{} {
 
 	babble("loading %s", fname)
 
@@ -37,12 +37,12 @@ func load(fname string) UNKNOWN {
 
 	//  load the JSON-encoded program
 	jd := json.NewDecoder(gcode)
-	var jtree interface{}
+	var jtree []interface{}
 	jd.Decode(&jtree)
 	if opt_jdump {
 		jdump(jtree)
 	}
-	jtree = jstructs(jtree)
+	jtree = jstructs(jtree).([]interface{})
 	dumptree("", jtree) //#%#%#%
 	return jtree
 }
