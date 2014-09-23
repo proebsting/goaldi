@@ -365,6 +365,8 @@ procedure parse_expr11suffix(lhs)
         parse_eat_token()
         if member(expr11suffix_set1, parse_tok_rec) then {
             l := parse_pdcolist()
+        } else {
+            l := []
         }
         parse_match_token(lex_RBRACE)
         return a_Call(lhs, a_CoexpList(l), coord)
