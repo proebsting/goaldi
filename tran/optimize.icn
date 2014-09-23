@@ -189,7 +189,8 @@ procedure optim_rewrite(p, rename)
     "ir_Succeed" :   { p.expr := optim_rename(p.expr, rename);
             p.resumeLabel := optim_rename(\p.resumeLabel, rename); }
     "ir_Fail" :  { }
-    "ir_ResumeValue" :    { p.value := optim_rename(p.value, rename);
+    "ir_ResumeValue" :    { 
+            # p.closure := optim_rename(p.closure, rename);
             p.failLabel := optim_rename(\p.failLabel, rename);
             p.lhs := optim_rename(\p.lhs, rename); }
     "ir_MakeList" :  { p.lhs := optim_rename(\p.lhs, rename);

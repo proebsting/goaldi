@@ -59,7 +59,7 @@ procedure json(p)
 		"list": return json_list(p)
 		"set": return json_list(p)
 		"string": return image(p)
-		"integer": return image(string(p))
+		"cset" | "real" | "integer": return image(string(p))
 		default: runerr(500, p)
 		}
 	}
