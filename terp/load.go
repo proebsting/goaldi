@@ -38,7 +38,7 @@ func load(fname string) []interface{} {
 	//  load the JSON-encoded program
 	jd := json.NewDecoder(gcode)
 	var jtree []interface{}
-	jd.Decode(&jtree)
+	checkError(jd.Decode(&jtree))
 	if opt_jdump {
 		jdump(jtree)
 	}
