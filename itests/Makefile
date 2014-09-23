@@ -3,7 +3,7 @@
 default:  runall
 
 runall:
-	runtest.sh
+	./runtest.sh
 
 clean:
 	rm -f *.gir *.out *.err
