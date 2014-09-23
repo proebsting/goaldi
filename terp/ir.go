@@ -2,6 +2,10 @@
 
 package main
 
+import (
+	"reflect"
+)
+
 //  list of IR struct examples for use by JSON input converter
 var irlist = [...]interface{}{
 	ir_Invocable{},
@@ -42,6 +46,16 @@ var irlist = [...]interface{}{
 	ir_ScanSwap{},
 	ir_Unreachable{},
 	ir_coordinate{},
+}
+
+//  struct table indexed by type names
+var irtable = make(map[string]reflect.Type)
+
+func init() {
+	for _, ir := range irlist {
+		t := reflect.TypeOf(ir)
+		irtable[t.Name()] = t
+	}
 }
 
 //  intermediate representation struct definitions

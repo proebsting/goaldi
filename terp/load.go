@@ -1,13 +1,82 @@
-//  json.go -- JSON manipulation
+//  load.go -- read intermediate representation from JSON file
 
 package main
 
 import (
+	"bufio"
+	"encoding/json"
 	"fmt"
+	"os"
 	"reflect"
 )
 
-//  jdump -- print contents of generic JSON data tree
+//  load -- read a single JSON-encoded IR file as a tree of objects
+func load(fname string) UNKNOWN {
+
+	babble("loading %s", fname)
+
+	//  open the file
+	var gfile *os.File
+	var err error
+	if fname == "-" {
+		gfile = os.Stdin
+	} else {
+		gfile, err = os.Open(fname)
+		checkError(err)
+	}
+	gcode := bufio.NewReader(gfile)
+
+	//  skip initial comment lines (e.g. #!/usr/bin/env gdx...)
+	for {
+		b, e := gcode.Peek(1)
+		if e != nil || b[0] != '#' {
+			break
+		}
+		gcode.ReadBytes('\n')
+	}
+
+	//  load the JSON-encoded program
+	jd := json.NewDecoder(gcode)
+	var jtree interface{}
+	jd.Decode(&jtree)
+	if opt_jdump {
+		jdump(jtree)
+	}
+	jtree = jstructs(jtree)
+	dumptree("", jtree) //#%#%#%
+	return jtree
+}
+
+//  dumptree -- print a human-readable listing of the IR
+func dumptree(indent string, x interface{}) {
+	switch t := x.(type) {
+	case nil:
+		return
+	case []interface{}:
+		for _, v := range t {
+			dumptree(indent, v)
+		}
+	case []ir_chunk:
+		for _, v := range t {
+			dumptree(indent, v)
+		}
+	case ir_Function:
+		fmt.Printf("\n%sproc %s  %v  start %v\n",
+			indent, t.Name, t.Coord,
+			t.CodeStart.Value)
+		fmt.Printf("%s   param %v\n", indent, t.ParamList)
+		fmt.Printf("%s   local %v\n", indent, t.LocalList)
+		fmt.Printf("%s   static %v\n", indent, t.StaticList)
+		dumptree(indent, t.CodeList)
+	case ir_chunk:
+		fmt.Printf("%s%s:\n", indent, t.Label.Value)
+		dumptree(indent+"   ", t.InsnList)
+	default:
+		fmt.Printf("%s%T %v\n", indent, x, x)
+	}
+}
+
+//  jdump -- print the contents of a generic JSON data tree
 //  (does not recurse into arrays inside typed structs)
 func jdump(jtree interface{}) {
 	tally := make(map[string]int)
@@ -46,33 +115,23 @@ func jdu(indent string, jtree interface{}, tally map[string]int) {
 	}
 }
 
-//  jfix -- replace maps by IR structs in Json tree
-func jfix(jtree interface{}) interface{} {
+//  jstructs -- replace maps by IR structs in Json tree
+func jstructs(jtree interface{}) interface{} {
 	switch x := jtree.(type) {
 	case []interface{}:
 		for i, v := range x {
-			x[i] = jfix(v)
+			x[i] = jstructs(v)
 		}
 		return x
 	case map[string]interface{}:
 		for k, v := range x {
-			x[k] = jfix(v)
+			x[k] = jstructs(v)
 		}
 		return structFor(x)
 	default:
 		return jtree
 	}
 }
-
-//  initialize IR mapping table
-func init() {
-	for _, ir := range irlist {
-		t := reflect.TypeOf(ir)
-		irtable[t.Name()] = t
-	}
-}
-
-var irtable = make(map[string]reflect.Type)
 
 //  structFor -- return IR struct equivalent to map
 func structFor(m map[string]interface{}) interface{} {
