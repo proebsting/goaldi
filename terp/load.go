@@ -45,6 +45,7 @@ func load(fname string) []interface{} {
 	jtree = jstructs(jtree).([]interface{})
 	if opt_adump {
 		dumptree("", jtree)
+		fmt.Println()
 	}
 	return jtree
 }
