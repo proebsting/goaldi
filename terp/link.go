@@ -40,7 +40,6 @@ func gdecl1(decl interface{}) {
 		}
 	case ir_Function:
 		regUndecl(x)
-
 	case ir_Record:
 		//#%#%#%# TBD
 	case ir_Invocable, ir_Link:
@@ -78,9 +77,9 @@ func regUndecl(p ir_Function) {
 func gdecl2(decl interface{}) {
 	switch x := decl.(type) {
 	case ir_Global:
-
+		// nothing to do
 	case ir_Function:
-
+		regProc(x)
 	case ir_Record:
 		//#%#%#%# TBD
 	case ir_Invocable, ir_Link:
@@ -88,4 +87,22 @@ func gdecl2(decl interface{}) {
 	default:
 		panic(fmt.Sprintf("gdecl2: %#v", x))
 	}
+}
+
+//  regProc(p) -- register procedure p in globals
+func regProc(p ir_Function) {
+	gv := GlobalDict[p.Name]
+	if gv == nil {
+		// not declared as global, and not seen before:
+		// create global with unmodifiable procedure value
+		GlobalDict[p.Name] = irProcedure(p)
+	} else if t, ok := gv.(*g.VTrapped); ok && t.Target == g.Value(g.NIL) {
+		// uninitialized declared global:
+		// initialize global trapped variable with procedure value
+		*t.Target = irProcedure(p) //#%#% TEST THIS!
+	} else {
+		// duplicate global: fatal error
+		fatal("duplicate global declaration: " + p.Name)
+	}
+	Undeclared[p.Name] = false
 }

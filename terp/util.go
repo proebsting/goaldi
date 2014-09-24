@@ -14,12 +14,12 @@ import (
 //  checkError aborts if error value e is not nil.
 func checkError(e error) {
 	if e != nil {
-		fatal(e)
+		abort(e)
 	}
 }
 
-//  fatal issues an error message and aborts.
-func fatal(e interface{}) {
+//  abort issues an error message and aborts.
+func abort(e interface{}) {
 	fmt.Fprintln(os.Stderr, e)
 	os.Exit(1)
 }
