@@ -30,9 +30,9 @@ for F in $*; do
     rm -f $F.gir $F.out $F.err
     printf "%-12s" $F:
     if jtran $F.icn >$F.gir 2>$F.err; then
-	if $TERP $F.gir >$F.out 2>$F.err; then
+	if $TERP $F.gir >$F.out 2>>$F.err; then
 	    echo "ok"
-	    rm $F.err
+	    test -z $F.err && rm $F.err
 	else
 	    echo "terp failed"
 	    TFAIL="$TFAIL $F"

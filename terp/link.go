@@ -14,6 +14,7 @@ func link(parts [][]interface{}) UNKNOWN {
 	walkTree(parts, gdecl1) // pass 1: declared globals
 	walkTree(parts, gdecl2) // pass 2: declared procedures
 	stdProcs()              // standard library
+	walkTree(parts, undecl) // report undeclared identifiers
 	return nil
 }
 
@@ -29,7 +30,6 @@ func walkTree(parts [][]interface{}, f func(interface{})) {
 //  gdecl1 -- global dictionary, pass1
 //	install declared global variables in global dictionary
 //	note references to undeclared identifiers
-//	note declared procedures
 func gdecl1(decl interface{}) {
 	switch x := decl.(type) {
 	case ir_Global:
@@ -40,7 +40,16 @@ func gdecl1(decl interface{}) {
 			}
 		}
 	case ir_Function:
-		regUndecl(x)
+		lset := localSet(x)
+		for _, chunk := range x.CodeList {
+			for _, insn := range chunk.InsnList {
+				if i, ok := insn.(ir_Var); ok {
+					if !lset[i.Name] {
+						Undeclared[i.Name] = true
+					}
+				}
+			}
+		}
 	case ir_Record:
 		//#%#%#%# TBD
 	case ir_Invocable, ir_Link:
@@ -50,31 +59,8 @@ func gdecl1(decl interface{}) {
 	}
 }
 
-//  regUndecl(p) -- register undeclared variables in procedure p
-func regUndecl(p ir_Function) {
-	localDict := make(map[string]bool)
-	for _, name := range p.ParamList {
-		localDict[name] = true
-	}
-	for _, name := range p.LocalList {
-		localDict[name] = true
-	}
-	for _, name := range p.StaticList {
-		localDict[name] = true
-	}
-	for _, chunk := range p.CodeList {
-		for _, insn := range chunk.InsnList {
-			if i, ok := insn.(ir_Var); ok {
-				if !localDict[i.Name] {
-					Undeclared[i.Name] = true
-				}
-			}
-		}
-	}
-}
-
 //  gdecl2 -- global dictionary, pass 2
-//	satisfy undeclared IDs with declared and stdlib procedures as constants
+//	satisfy undeclared IDs with declared procedures as constants
 func gdecl2(decl interface{}) {
 	switch x := decl.(type) {
 	case ir_Global:
@@ -121,4 +107,41 @@ func stdProcs() {
 			}
 		}
 	}
+}
+
+//  undecl -- report undeclared identifiers
+func undecl(decl interface{}) {
+	p, ok := decl.(ir_Function)
+	if !ok { // if not a procedure declaration
+		return
+	}
+	lset := localSet(p)
+	for _, chunk := range p.CodeList {
+		for _, insn := range chunk.InsnList {
+			if i, ok := insn.(ir_Var); ok {
+				if !lset[i.Name] && Undeclared[i.Name] {
+					//%#% warn now, later fatal
+					warning(fmt.Sprintf("%v %s undeclared",
+						i.Coord, i.Name))
+					// inhibit repeated warnings
+					Undeclared[i.Name] = false
+				}
+			}
+		}
+	}
+}
+
+//  localSet(p) -- return set of locally declared ids
+func localSet(p ir_Function) map[string]bool {
+	lset := make(map[string]bool)
+	for _, name := range p.ParamList {
+		lset[name] = true
+	}
+	for _, name := range p.LocalList {
+		lset[name] = true
+	}
+	for _, name := range p.StaticList {
+		lset[name] = true
+	}
+	return lset
 }

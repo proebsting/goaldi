@@ -13,7 +13,8 @@ type UNKNOWN interface{} // temporary designation for type TBD
 var GlobalDict = make(map[string]g.Value)
 var Undeclared = make(map[string]bool)
 
-var nFatals = 0 // count of fatal errors
+var nFatals = 0   // count of fatal errors
+var nWarnings = 0 // count of nonfatal errors
 
 //  main is the overall supervisor.
 func main() {
@@ -38,26 +39,29 @@ func main() {
 				fmt.Print("()")
 			}
 		}
-		fmt.Printf("\nUNDECLARED:")
-		for name, isUndeclared := range Undeclared {
-			if isUndeclared {
-				fmt.Printf(" %s", name)
-			}
-		}
 		fmt.Printf("\n")
 	}
 
 	if nFatals > 0 {
-		os.Exit(0)
+		os.Exit(1)
 	}
 
-	os.Exit(0) //#%#%#%#%#%#%#%
-	run(prog, args)
-	showInterval("execution")
+	//#%#%#% to be continued...
+	_ = prog
+	_ = args
+	return
+	// run(prog, args)
+	// showInterval("execution")
+}
+
+//  warning -- report nonfatal error and continue
+func warning(s string) {
+	nWarnings++
+	fmt.Fprintf(os.Stderr, "warning: %s\n", s)
 }
 
 //  fatal -- report fatal error (but continue)
 func fatal(s string) {
 	nFatals++
-	fmt.Fprintln(os.Stderr, s)
+	fmt.Fprintf(os.Stderr, "fatal:   %s\n", s)
 }
