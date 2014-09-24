@@ -132,6 +132,7 @@ func undecl(decl interface{}) {
 }
 
 //  localSet(p) -- return set of locally declared ids
+//  #%#%#% does not handle references to parent from nested procedure
 func localSet(p ir_Function) map[string]bool {
 	lset := make(map[string]bool)
 	for _, name := range p.ParamList {
