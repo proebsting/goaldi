@@ -11,8 +11,8 @@ type Procedure func(...Value) (Value, *Closure)
 
 //  Procedure value
 type VProcedure struct {
-	name  string
-	entry Procedure
+	Name  string
+	Entry Procedure
 }
 
 //  NewProcedure(name, func) -- construct a procedure value
@@ -22,7 +22,7 @@ func NewProcedure(name string, entry Procedure) *VProcedure {
 
 //  VProcedure.String -- return "procname()"
 func (v *VProcedure) String() string {
-	return v.name + "()"
+	return v.Name + "()"
 }
 
 //  VProcedure.Type -- return "procedure"
@@ -37,7 +37,7 @@ type ICall interface {
 
 //  VProcedure.Call(args) -- invoke a procedure
 func (v *VProcedure) Call(args ...Value) (Value, *Closure) {
-	return v.entry(args...)
+	return v.Entry(args...)
 }
 
 var type_procedure = NewString("procedure")

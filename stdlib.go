@@ -15,9 +15,9 @@ import (
 var StdLib = []*VProcedure{
 
 	GoProcedure("abs", math.Abs),
-	GoProcedure("min", math.Min),
-	GoProcedure("max", math.Max),
-	GoProcedure("log", math.Log),
+	GoProcedure("min", math.Min), // not like Icon: only 2 args
+	GoProcedure("max", math.Max), // not like Icon: only 2 args
+	GoProcedure("log", math.Log), // not like Icon: no 2nd arg
 	GoProcedure("sqrt", math.Sqrt),
 
 	GoProcedure("intn", rand.Intn),
@@ -35,6 +35,8 @@ var StdLib = []*VProcedure{
 	GoProcedure("fprint", fmt.Fprint),
 	GoProcedure("fprintln", fmt.Fprintln),
 	GoProcedure("fprintf", fmt.Fprintf),
+	GoProcedure("write", fmt.Println), // not like Icon: no file, spacing
+	GoProcedure("writes", fmt.Print),  // not like Icon: no file, spacing
 
 	GoProcedure("exit", os.Exit),
 	GoProcedure("remove", os.Remove),

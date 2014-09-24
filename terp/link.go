@@ -11,8 +11,9 @@ import (
 func link(parts [][]interface{}) UNKNOWN {
 	babble("linking")
 
-	walkTree(parts, gdecl1)
-	walkTree(parts, gdecl2)
+	walkTree(parts, gdecl1) // pass 1: declared globals
+	walkTree(parts, gdecl2) // pass 2: declared procedures
+	stdProcs()              // standard library
 	return nil
 }
 
@@ -105,4 +106,19 @@ func regProc(p ir_Function) {
 		fatal("duplicate global declaration: " + p.Name)
 	}
 	Undeclared[p.Name] = false
+}
+
+//  stdProcs() -- add referenced stdlib procedures to globals
+func stdProcs() {
+	for _, p := range g.StdLib {
+		if Undeclared[p.Name] {
+			if GlobalDict[p.Name] != nil {
+				panic("undeclared but present: " + p.Name)
+			}
+			GlobalDict[p.Name] = p
+			if Undeclared[p.Name] {
+				Undeclared[p.Name] = false
+			}
+		}
+	}
 }
