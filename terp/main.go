@@ -30,17 +30,22 @@ func main() {
 	prog := link(parts)
 	showInterval("linking")
 
-	fmt.Printf("\nGLOBALS:")
-	for name, _ := range GlobalDict {
-		fmt.Printf(" %s", name)
-	}
-	fmt.Printf("\nUNDECLARED:")
-	for name, isUndeclared := range Undeclared {
-		if isUndeclared {
+	if opt_verbose {
+		fmt.Printf("\nGLOBALS:")
+		for name, value := range GlobalDict {
 			fmt.Printf(" %s", name)
+			if _, ok := value.(*g.VProcedure); ok {
+				fmt.Print("()")
+			}
 		}
+		fmt.Printf("\nUNDECLARED:")
+		for name, isUndeclared := range Undeclared {
+			if isUndeclared {
+				fmt.Printf(" %s", name)
+			}
+		}
+		fmt.Printf("\n")
 	}
-	fmt.Printf("\n")
 
 	if nFatals > 0 {
 		os.Exit(0)
