@@ -20,28 +20,28 @@ var ProcTable = make(map[string]*pr_Info)
 
 //  declareProc initializes and returns a procedure info structure
 func declareProc(ir *ir_Function) *pr_Info {
-	info := &pr_Info{}
-	info.name = ir.Name
-	info.ir = ir
-	info.lset = make(map[string]bool)
+	pr := &pr_Info{}
+	pr.name = ir.Name
+	pr.ir = ir
+	pr.lset = make(map[string]bool)
 	for _, name := range ir.ParamList {
-		info.lset[name] = true
+		pr.lset[name] = true
 	}
 	for _, name := range ir.LocalList {
-		info.lset[name] = true
+		pr.lset[name] = true
 	}
 	for _, name := range ir.StaticList {
-		info.lset[name] = true
+		pr.lset[name] = true
 	}
-	ProcTable[ir.Name] = info
-	return info
+	ProcTable[ir.Name] = pr
+	return pr
 }
 
 //  irProcedure makes a runtime procedure from a procedure info structure
-func irProcedure(p *pr_Info) *g.VProcedure {
-	return g.GoProcedure(p.name,
+func irProcedure(pr *pr_Info) *g.VProcedure {
+	return g.GoProcedure(pr.name,
 		func(args ...g.Value) (g.Value, *g.Closure) {
-			//#%#% return interpMe(p, args, ...) ??
+			//#%#% return interpMe(pr, args, ...) ??
 			return nil, nil
 		})
 }
@@ -50,16 +50,21 @@ func irProcedure(p *pr_Info) *g.VProcedure {
 //	#%#% TODO: create LocalDict for finding variables
 //	report undeclared identifiers
 //	#%#% TODO: handle nested procedures
-func setupProc(p *pr_Info) {
-	for _, chunk := range p.ir.CodeList {
+func setupProc(pr *pr_Info) {
+	undeclared(pr)
+}
+
+//  undeclared reports such identifiers
+func undeclared(pr *pr_Info) {
+	for _, chunk := range pr.ir.CodeList {
 		for _, insn := range chunk.InsnList {
 			if i, ok := insn.(ir_Var); ok {
-				if !p.lset[i.Name] && Undeclared[i.Name] {
+				if !pr.lset[i.Name] && Undeclared[i.Name] {
 					//%#% warn now, later fatal
 					warning(fmt.Sprintf("%v %s undeclared",
 						i.Coord, i.Name))
 					// inhibit repeated warnings
-					delete(Undeclared, p.name)
+					delete(Undeclared, pr.name)
 				}
 			}
 		}

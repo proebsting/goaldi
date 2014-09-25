@@ -20,16 +20,16 @@ func link(parts [][]interface{}) UNKNOWN {
 	}
 
 	//  register procedures in global namespace
-	for _, info := range ProcTable {
-		registerProc(info)
+	for _, pr := range ProcTable {
+		registerProc(pr)
 	}
 
 	//  add standard library procedures for names not yet found
 	stdProcs()
 
 	// set up procedures and report undeclared identifiers
-	for _, info := range ProcTable {
-		setupProc(info)
+	for _, pr := range ProcTable {
+		setupProc(pr)
 	}
 
 	return nil
@@ -68,22 +68,22 @@ func irDecl(decl interface{}) {
 	}
 }
 
-//  registerProc(p) -- register procedure p in globals
-func registerProc(p *pr_Info) {
-	gv := GlobalDict[p.name]
+//  registerProc(pr) -- register procedure pr in globals
+func registerProc(pr *pr_Info) {
+	gv := GlobalDict[pr.name]
 	if gv == nil {
 		// not declared as global, and not seen before:
 		// create global with unmodifiable procedure value
-		GlobalDict[p.name] = irProcedure(p)
+		GlobalDict[pr.name] = irProcedure(pr)
 	} else if t, ok := gv.(*g.VTrapped); ok && t.Target == g.Value(g.NIL) {
 		// uninitialized declared global:
 		// initialize global trapped variable with procedure value
-		*t.Target = irProcedure(p) //#%#% TEST THIS!
+		*t.Target = irProcedure(pr) //#%#% TEST THIS!
 	} else {
 		// duplicate global: fatal error
-		fatal("duplicate global declaration: " + p.name)
+		fatal("duplicate global declaration: " + pr.name)
 	}
-	delete(Undeclared, p.name)
+	delete(Undeclared, pr.name)
 }
 
 //  stdProcs() -- add referenced stdlib procedures to globals
