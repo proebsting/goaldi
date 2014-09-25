@@ -9,21 +9,31 @@ import (
 
 //  info about a procedure
 type pr_Info struct {
-	name  string                 // procedure name
-	outer *pr_Info               // immediate parent #%#% NOT YET SET
-	ir    *ir_Function           // intermediate code structure
-	lset  map[string]bool        // set of locally declared identifiers
-	dict  map[string]interface{} // map of identifiers to variables
+	name    string                 // procedure name
+	outer   *pr_Info               // immediate parent #%#% NOT YET SET
+	ir      *ir_Function           // intermediate code structure
+	nparams int                    // number of parameters
+	nlocals int                    // number of locals
+	lset    map[string]bool        // set of locally declared identifiers
+	dict    map[string]interface{} // map of identifiers to variables
 }
 
 //  global index of procedure information
 var ProcTable = make(map[string]*pr_Info)
+
+//  a local variable
+type pr_local int // value is index of this particular local
+
+//  a parameter
+type pr_param int // value is index of this particular parameter
 
 //  declareProc initializes and returns a procedure info structure
 func declareProc(ir *ir_Function) *pr_Info {
 	pr := &pr_Info{}
 	pr.name = ir.Name
 	pr.ir = ir
+	pr.nlocals = len(pr.ir.LocalList)
+	pr.nparams = len(pr.ir.ParamList)
 	pr.lset = make(map[string]bool)
 	for _, name := range ir.ParamList {
 		pr.lset[name] = true
@@ -53,25 +63,54 @@ func irProcedure(pr *pr_Info) *g.VProcedure {
 //	#%#% TODO: handle nested procedures
 func setupProc(pr *pr_Info) {
 	undeclared(pr)
-	makedict(pr)
+	pr.dict = makedict(pr)
+	if opt_verbose {
+		fmt.Printf("\n%s()  %d param  %d local  dict %d\n   ",
+			pr.name, pr.nparams, pr.nlocals, len(pr.dict))
+		for name := range sortedKeys(pr.dict) {
+			v := pr.dict[name]
+			switch x := v.(type) {
+			case pr_param:
+				fmt.Printf(" p%d:%s", int(x), name)
+			case pr_local:
+				fmt.Printf(" l%d:%s", int(x), name)
+			default:
+				fmt.Printf(" g:%s", name)
+			}
+		}
+		fmt.Println()
+	}
 }
 
 //  makedict creates the mapping from identifiers to variables within the proc
-func makedict(pr *pr_Info) {
-	pr.dict = make(map[string]interface{})
+func makedict(pr *pr_Info) map[string]interface{} {
+
+	dict := make(map[string]interface{})
+
 	// start with the globals; may overwrite some of these with locals
 	//#%#% later: start with outer proc dict to grab its statics etc
 	for name, value := range GlobalDict {
-		pr.dict[name] = value
+		dict[name] = value
 	}
+
 	// add statics
 	for _, name := range pr.ir.StaticList {
 		v := g.Value(g.Trapped(g.NewStatic()))
-		pr.dict[name] = g.Trapped(&v)
+		dict[name] = g.Trapped(&v)
 	}
 	// add outer locals
+	//#%#% TBD
+
 	// add locals
+	for i, name := range pr.ir.LocalList {
+		dict[name] = pr_local(i)
+	}
+
 	// add params
+	for i, name := range pr.ir.ParamList {
+		dict[name] = pr_param(i)
+	}
+	return dict
 }
 
 //  undeclared reports such identifiers
