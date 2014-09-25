@@ -9,10 +9,11 @@ import (
 
 //  info about a procedure
 type pr_Info struct {
-	name  string          // procedure name
-	outer *pr_Info        // immediate parent, if nested #%#% NOT YET SET
-	ir    *ir_Function    // intermediate code structure
-	lset  map[string]bool // set of locally declared identifiers
+	name  string                 // procedure name
+	outer *pr_Info               // immediate parent #%#% NOT YET SET
+	ir    *ir_Function           // intermediate code structure
+	lset  map[string]bool        // set of locally declared identifiers
+	dict  map[string]interface{} // map of identifiers to variables
 }
 
 //  global index of procedure information
@@ -52,6 +53,25 @@ func irProcedure(pr *pr_Info) *g.VProcedure {
 //	#%#% TODO: handle nested procedures
 func setupProc(pr *pr_Info) {
 	undeclared(pr)
+	makedict(pr)
+}
+
+//  makedict creates the mapping from identifiers to variables within the proc
+func makedict(pr *pr_Info) {
+	pr.dict = make(map[string]interface{})
+	// start with the globals; may overwrite some of these with locals
+	//#%#% later: start with outer proc dict to grab its statics etc
+	for name, value := range GlobalDict {
+		pr.dict[name] = value
+	}
+	// add statics
+	for _, name := range pr.ir.StaticList {
+		v := g.Value(g.Trapped(g.NewStatic()))
+		pr.dict[name] = g.Trapped(&v)
+	}
+	// add outer locals
+	// add locals
+	// add params
 }
 
 //  undeclared reports such identifiers

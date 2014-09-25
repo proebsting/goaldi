@@ -23,3 +23,10 @@ func V(x interface{}) Value {
 		panic(fmt.Sprintf("V(%T:%v)", x, x))
 	}
 }
+
+//  NewStatic() creates a new static variable, initialize to nil.
+func NewStatic() *Value {
+	v := new(Value)
+	*v = NewNil()
+	return v
+}

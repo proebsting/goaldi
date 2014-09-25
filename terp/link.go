@@ -44,8 +44,7 @@ func irDecl(decl interface{}) {
 	case ir_Global:
 		for _, name := range x.NameList {
 			if GlobalDict[name] == nil {
-				v := g.Value(g.NewNil())
-				GlobalDict[name] = g.Trapped(&v)
+				GlobalDict[name] = g.Trapped(g.NewStatic())
 			}
 		}
 	case ir_Function:
