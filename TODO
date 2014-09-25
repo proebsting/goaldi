@@ -1,0 +1,10 @@
+Goaldi Implementation To-Do List
+
+add multipurpose env parameter to procedure call interface
+
+reorganize source tree; what makes sense for a mixed-language project?
+make self-contained?  (don't build into ../../bin)
+
+more consistency in struct and procedure names
+better & more uniform func header comments
+address all the #%#% notes in the code

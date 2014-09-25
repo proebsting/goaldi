@@ -29,6 +29,7 @@ func walkTree(parts [][]interface{}, f func(interface{})) {
 
 //  gdecl1 -- global dictionary, pass1
 //	install declared global variables in global dictionary
+//	install procedures in proc info table
 //	note references to undeclared identifiers
 func gdecl1(decl interface{}) {
 	switch x := decl.(type) {
@@ -40,11 +41,11 @@ func gdecl1(decl interface{}) {
 			}
 		}
 	case ir_Function:
-		lset := localSet(x)
+		pr := pRegister(&x)
 		for _, chunk := range x.CodeList {
 			for _, insn := range chunk.InsnList {
 				if i, ok := insn.(ir_Var); ok {
-					if !lset[i.Name] {
+					if !pr.lset[i.Name] {
 						Undeclared[i.Name] = true
 					}
 				}
@@ -66,7 +67,7 @@ func gdecl2(decl interface{}) {
 	case ir_Global:
 		// nothing to do
 	case ir_Function:
-		regProc(x)
+		regProc(&x)
 	case ir_Record:
 		//#%#%#%# TBD
 	case ir_Invocable, ir_Link:
@@ -77,7 +78,7 @@ func gdecl2(decl interface{}) {
 }
 
 //  regProc(p) -- register procedure p in globals
-func regProc(p ir_Function) {
+func regProc(p *ir_Function) {
 	gv := GlobalDict[p.Name]
 	if gv == nil {
 		// not declared as global, and not seen before:
@@ -115,11 +116,11 @@ func undecl(decl interface{}) {
 	if !ok { // if not a procedure declaration
 		return
 	}
-	lset := localSet(p)
+	info := ProcTable[p.Name]
 	for _, chunk := range p.CodeList {
 		for _, insn := range chunk.InsnList {
 			if i, ok := insn.(ir_Var); ok {
-				if !lset[i.Name] && Undeclared[i.Name] {
+				if !info.lset[i.Name] && Undeclared[i.Name] {
 					//%#% warn now, later fatal
 					warning(fmt.Sprintf("%v %s undeclared",
 						i.Coord, i.Name))
@@ -129,20 +130,4 @@ func undecl(decl interface{}) {
 			}
 		}
 	}
-}
-
-//  localSet(p) -- return set of locally declared ids
-//  #%#%#% does not handle references to parent from nested procedure
-func localSet(p ir_Function) map[string]bool {
-	lset := make(map[string]bool)
-	for _, name := range p.ParamList {
-		lset[name] = true
-	}
-	for _, name := range p.LocalList {
-		lset[name] = true
-	}
-	for _, name := range p.StaticList {
-		lset[name] = true
-	}
-	return lset
 }

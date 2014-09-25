@@ -46,6 +46,13 @@ func sortedKeys(m interface{}) chan string {
 	return ch
 }
 
+//  assert panics if the test argument is false
+func assert(test bool, err string) {
+	if !test {
+		panic("assertion failed: " + err)
+	}
+}
+
 //  babble prints commentary on Stderr if opt_verbose is set.
 //  The first argument is a printf format.  A newline is added automatically.
 func babble(format string, values ...interface{}) {
