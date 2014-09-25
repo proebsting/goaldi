@@ -5,6 +5,8 @@ package main
 import (
 	"fmt"
 	"os"
+	"reflect"
+	"sort"
 	"syscall"
 	"time"
 	"unicode"
@@ -22,6 +24,26 @@ func checkError(e error) {
 func abort(e interface{}) {
 	fmt.Fprintln(os.Stderr, e)
 	os.Exit(1)
+}
+
+//  sortedKeys generates in order (over a channel) the keys of a map[string].
+//  usage:  for k := range sortedKeys(mymap) { ... }
+func sortedKeys(m interface{}) chan string {
+	vlist := reflect.ValueOf(m).MapKeys()
+	n := len(vlist)
+	slist := make([]string, n, n)
+	for i, k := range vlist {
+		slist[i] = k.String()
+	}
+	sort.Strings(slist)
+	ch := make(chan string, n)
+	go func() {
+		for _, k := range slist {
+			ch <- k
+		}
+		close(ch)
+	}()
+	return ch
 }
 
 //  babble prints commentary on Stderr if opt_verbose is set.

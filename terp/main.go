@@ -33,9 +33,9 @@ func main() {
 
 	if opt_verbose {
 		fmt.Printf("\nGLOBALS:")
-		for name, value := range GlobalDict {
+		for name := range sortedKeys(GlobalDict) {
 			fmt.Printf(" %s", name)
-			if _, ok := value.(*g.VProcedure); ok {
+			if _, ok := GlobalDict[name].(*g.VProcedure); ok {
 				fmt.Print("()")
 			}
 		}
