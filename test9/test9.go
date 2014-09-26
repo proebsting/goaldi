@@ -20,7 +20,7 @@ func main() {
 }
 
 //  procedure gmain()
-func gmain(args ...g.Value) (g.Value, *g.Closure) {
+func gmain(env *g.Env, args ...g.Value) (g.Value, *g.Closure) {
 
 	// boilerplate prologue
 	var ev interface{}
@@ -33,11 +33,11 @@ func gmain(args ...g.Value) (g.Value, *g.Closure) {
 
 	f.Println("testing panic, offending value, traceback")
 	var p g.Value = g.NewProcedure("gsubr", gsubr)
-	return p.(g.ICall).Call(g.NewNumber(23), g.NewString("skidoo"))
+	return p.(g.ICall).Call(env, g.NewNumber(23), g.NewString("skidoo"))
 }
 
 //  procedure gsubr()
-func gsubr(args ...g.Value) (g.Value, *g.Closure) {
+func gsubr(env *g.Env, args ...g.Value) (g.Value, *g.Closure) {
 
 	// boilerplate prologue
 	var ev interface{}

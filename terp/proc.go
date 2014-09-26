@@ -50,8 +50,8 @@ func declareProc(ir *ir_Function) *pr_Info {
 
 //  irProcedure makes a runtime procedure from a procedure info structure
 func irProcedure(pr *pr_Info) *g.VProcedure {
-	return g.GoProcedure(pr.name,
-		func(args ...g.Value) (g.Value, *g.Closure) {
+	return g.NewProcedure(pr.name,
+		func(env *g.Env, args ...g.Value) (g.Value, *g.Closure) {
 			//#%#% return interpMe(pr, args, ...) ??
 			assert(false, "reached "+pr.name)
 			return nil, nil
@@ -59,9 +59,9 @@ func irProcedure(pr *pr_Info) *g.VProcedure {
 }
 
 //  setupProc finishes procedure setup now that the GlobalDict is set
-//	#%#% TODO: create LocalDict for finding variables
-//	report undeclared identifiers
 //	#%#% TODO: handle nested procedures
+//	report undeclared identifiers
+//	create combined dictionary of global + local variables
 func setupProc(pr *pr_Info) {
 	undeclared(pr)
 	pr.dict = makedict(pr)

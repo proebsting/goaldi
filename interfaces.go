@@ -28,6 +28,7 @@ type ICore interface {
 var _ ICore = NewNil()       // confirm implementation by VNil
 var _ ICore = NewNumber(1)   // confirm implementation by VNumber
 var _ ICore = NewString("a") // confirm implementation by VString
+var _ ICore = &VProcedure{}  // confirm implementation by VProcedure
 
 //  IVariable -- assignable trapped variable
 type IVariable interface {

@@ -6,9 +6,6 @@ import (
 	"reflect"
 )
 
-//  Procedure function prototype
-type Procedure func(...Value) (Value, *Closure)
-
 //  Procedure value
 type VProcedure struct {
 	Name  string
@@ -30,17 +27,23 @@ func (v *VProcedure) Type() Value {
 	return type_procedure
 }
 
+var type_procedure = NewString("procedure")
+
+//  VProcedure.Export returns the underlying function
+//  (#%#% at least for now. should we wrap it somehow?)
+func (v *VProcedure) Export() interface{} {
+	return v.Entry
+}
+
 //  ICall interface
 type ICall interface {
-	Call(...Value) (Value, *Closure)
+	Call(*Env, ...Value) (Value, *Closure)
 }
 
 //  VProcedure.Call(args) -- invoke a procedure
-func (v *VProcedure) Call(args ...Value) (Value, *Closure) {
-	return v.Entry(args...)
+func (v *VProcedure) Call(env *Env, args ...Value) (Value, *Closure) {
+	return v.Entry(env, args...)
 }
-
-var type_procedure = NewString("procedure")
 
 //  GoProcedure(name, func) -- construct a procedure from a Go function
 func GoProcedure(name string, f interface{}) *VProcedure {
@@ -68,7 +71,7 @@ func GoProcedure(name string, f interface{}) *VProcedure {
 	}
 
 	//  define a func to convert arguments and call the underlying func
-	pfun := func(args ...Value) (Value, *Closure) {
+	pfun := func(env *Env, args ...Value) (Value, *Closure) {
 		//  convert fixed arguments from Goaldi values to needed Go type
 		in := make([]reflect.Value, 0, len(args))
 		for i := 0; i < nfixed; i++ {

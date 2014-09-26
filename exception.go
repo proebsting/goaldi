@@ -16,6 +16,11 @@ type RunErr struct {
 	offv Value  // offending value
 }
 
+//  RunErr.String() returns a string form of a RunErr
+func (e *RunErr) String() string {
+	return fmt.Sprintf("RunErr: %s (%v)", e.msg, e.offv)
+}
+
 //  CallFrame records one frame of traceback information
 type CallFrame struct {
 	cause interface{} // underlying panic call
@@ -37,7 +42,7 @@ func Run(p Procedure) {
 			os.Exit(1)
 		}
 	}()
-	p(nil)
+	p(nil, nil)
 	fmt.Println("[--------------------- end ---------------------]")
 }
 

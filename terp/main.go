@@ -63,6 +63,7 @@ func main() {
 	//#%#% TBD
 
 	// find and execute main()
+	env := &g.Env{}
 	arglist := make([]g.Value, 0)
 	for _, s := range args {
 		arglist = append(arglist, g.NewString(s))
@@ -74,7 +75,7 @@ func main() {
 	if gv, ok := gmain.(g.IVariable); ok {
 		gmain = gv.Deref()
 	}
-	val, _ := gmain.(g.ICall).Call(arglist...)
+	val, _ := gmain.(g.ICall).Call(env, arglist...)
 
 	// exit
 	showInterval("execution")

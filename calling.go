@@ -1,4 +1,4 @@
-//  closure.go -- struct for returning a function continuation on suspension
+//  calling.go -- procedure call / suspension / resumption interface
 //
 //  In the Go implementation, a Goaldi procedure or operation result
 //  is the pair (Value, *Closure) with this meaning:
@@ -11,11 +11,22 @@
 
 package goaldi
 
-type Resumer func() (Value, *Closure) // a resumption function
+//  execution environment
+type Env struct {
+	//#%#% to be determined
+	//#%#% dynamic variables?
+	//#%#% thread id for monitoring?
+}
 
 type Closure struct {
 	Go Resumer // start or resumption function, depending on context
 }
+
+//  Procedure function prototype
+type Procedure func(env *Env, args ...Value) (Value, *Closure)
+
+//  Procedure resumption prototype
+type Resumer func() (Value, *Closure)
 
 //  Resume() executes the entry point in a Closure to produce the next result.
 //  If the pointer is nil, failure is produced.

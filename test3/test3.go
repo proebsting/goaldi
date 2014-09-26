@@ -13,7 +13,7 @@ func main() {
 }
 
 //  procedure gmain()
-func gmain(args ...Value) (Value, *Closure) {
+func gmain(env *Env, args ...Value) (Value, *Closure) {
 
 	fmt.Println("testing calls of Go library functions")
 
@@ -33,26 +33,26 @@ func gmain(args ...Value) (Value, *Closure) {
 	var Printf Value = GoProcedure("Printf", fmt.Printf)
 
 	// call them and print results (value,closure)
-	fmt.Println(Sqrt, r(Sqrt.(ICall).Call(NewNumber(2))))
-	fmt.Println(Max, r(Max.(ICall).Call(NewNumber(7), NewNumber(5))))
-	fmt.Println(NaN, r(NaN.(ICall).Call()))
-	fmt.Println(IsNaN, r(IsNaN.(ICall).Call(NewNumber(33))))
-	fmt.Println(IsNaN, r(IsNaN.(ICall).Call(ZERO.Div(ZERO))))
-	fmt.Println(Intn, r(Intn.(ICall).Call(NewNumber(10000))))
-	fmt.Println(Intn, r(Intn.(ICall).Call(NewNumber(10000))))
-	fmt.Println(Seed, r(Seed.(ICall).Call(NewNumber(1))))
-	fmt.Println(Intn, r(Intn.(ICall).Call(NewNumber(10000))))
-	fmt.Println(ToUpper, r(ToUpper.(ICall).Call(NewString("WasMixed"))))
-	fmt.Println(Replace, r(Replace.(ICall).Call( // example from GoDoc
+	fmt.Println(Sqrt, r(Sqrt.(ICall).Call(env, NewNumber(2))))
+	fmt.Println(Max, r(Max.(ICall).Call(env, NewNumber(7), NewNumber(5))))
+	fmt.Println(NaN, r(NaN.(ICall).Call(env)))
+	fmt.Println(IsNaN, r(IsNaN.(ICall).Call(env, NewNumber(33))))
+	fmt.Println(IsNaN, r(IsNaN.(ICall).Call(env, ZERO.Div(ZERO))))
+	fmt.Println(Intn, r(Intn.(ICall).Call(env, NewNumber(10000))))
+	fmt.Println(Intn, r(Intn.(ICall).Call(env, NewNumber(10000))))
+	fmt.Println(Seed, r(Seed.(ICall).Call(env, NewNumber(1))))
+	fmt.Println(Intn, r(Intn.(ICall).Call(env, NewNumber(10000))))
+	fmt.Println(ToUpper, r(ToUpper.(ICall).Call(env, NewString("WasMixed"))))
+	fmt.Println(Replace, r(Replace.(ICall).Call(env, // example from GoDoc
 		V("oink oink oink"), V("k"), V("ky"), V(2))))
-	fmt.Println(Trim, r(Trim.(ICall).Call(
+	fmt.Println(Trim, r(Trim.(ICall).Call(env,
 		NewString("  a b c  "), NewString(" "))))
-	fmt.Println(EqualFold, r(EqualFold.(ICall).Call(
+	fmt.Println(EqualFold, r(EqualFold.(ICall).Call(env,
 		NewString("mixedCase"), NewString("Mixedcase"))))
-	Print.(ICall).Call(V(11), V(22), V(33))
-	Println.(ICall).Call(V(11), V(22), V(33))
-	Println.(ICall).Call(NewString("car"), NewNumber(54))
-	Printf.(ICall).Call(V("%.3s %6.4f\n"), V("cowboy"), V(3.1415926535))
+	Print.(ICall).Call(env, V(11), V(22), V(33))
+	Println.(ICall).Call(env, V(11), V(22), V(33))
+	Println.(ICall).Call(env, NewString("car"), NewNumber(54))
+	Printf.(ICall).Call(env, V("%.3s %6.4f\n"), V("cowboy"), V(3.1415926535))
 	return Fail()
 }
 
