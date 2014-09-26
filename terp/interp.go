@@ -45,6 +45,14 @@ func interp(env *g.Env, pr *pr_Info, args ...g.Value) (g.Value, *g.Closure) {
 			switch i := insn.(type) {
 			default:
 				panic(i) // unrecognized or unimplemented
+			case ir_Fail:
+				return nil, nil
+			case ir_IntLit:
+				temps[i.Lhs.Name] = g.NewString(i.Val).ToNumber()
+			case ir_RealLit:
+				temps[i.Lhs.Name] = g.NewString(i.Val).ToNumber()
+			case ir_StrLit:
+				temps[i.Lhs.Name] = g.NewString(i.Val)
 			case ir_Var:
 				v := pr.dict[i.Name]
 				switch t := v.(type) {
@@ -58,30 +66,53 @@ func interp(env *g.Env, pr *pr_Info, args ...g.Value) (g.Value, *g.Closure) {
 					// global or static: already trapped
 				}
 				temps[i.Lhs.Name] = v
-			case ir_IntLit:
-				temps[i.Lhs.Name] = g.NewString(i.Val).ToNumber()
-			case ir_RealLit:
-				temps[i.Lhs.Name] = g.NewString(i.Val).ToNumber()
-			case ir_StrLit:
-				temps[i.Lhs.Name] = g.NewString(i.Val)
-			case ir_Call:
-				proc := temps[i.Fn.Name]
-				argl := make([]g.Value, 0)
-				for _, a := range i.ArgList {
+			case ir_OpFunction:
+				n := len(i.ArgList)
+				argl := make([]g.Value, n, n)
+				for j, a := range i.ArgList {
 					switch t := a.(type) {
 					case ir_Tmp:
-						argl = append(argl, temps[t.Name])
-					default: //#%#%#%
-						argl = append(argl, g.Deref(a))
+						argl[j] = temps[t.Name]
+					default:
+						argl[j] = g.Deref(a) //#%#%
+					}
+				}
+				v, c := opFunc(i.Fn, argl)
+				if v == nil && i.FailLabel.Value != "" {
+					label = i.FailLabel.Value
+					break
+				}
+				temps[i.Lhs.Name] = v
+				temps[i.Lhsclosure.Name] = c
+			case ir_Call:
+				//#%#% combine shared code with OpFunction
+				proc := temps[i.Fn.Name]
+				n := len(i.ArgList)
+				argl := make([]g.Value, n, n)
+				for j, a := range i.ArgList {
+					switch t := a.(type) {
+					case ir_Tmp:
+						argl[j] = temps[t.Name]
+					default:
+						argl[j] = g.Deref(a) //#%#%
 					}
 				}
 				temps[i.Lhs.Name], temps[i.Lhsclosure.Name] =
 					proc.(g.ICall).Call(env, argl...)
-			case ir_Fail:
-				return nil, nil
 			}
 		}
 	}
 	_ = temps
 	return nil, nil
+}
+
+//  opFunc -- implement operator function
+func opFunc(o ir_operator, a []g.Value) (g.Value, *g.Closure) {
+	op := o.Arity + o.Name
+	switch op {
+	default:
+		panic("unimplemented operator: " + op)
+	case "2+":
+		return a[0].(g.IAdd).Add(a[1]), nil
+	}
 }
