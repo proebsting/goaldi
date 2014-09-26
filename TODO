@@ -3,6 +3,7 @@ Goaldi Implementation To-Do List
 add multipurpose env parameter to procedure call interface
 
 reorganize source tree; what makes sense for a mixed-language project?
+straighten out goaldi vs goaldi/terp: what goes where?
 make self-contained?  (don't build into ../../bin)
 
 more consistency in struct and procedure names

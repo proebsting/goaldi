@@ -20,7 +20,11 @@ var nWarnings = 0 // count of nonfatal errors
 
 //  main is the overall supervisor.
 func main() {
+
+	// handle command line
 	files, args := options()
+
+	// load the IR code
 	parts := make([][]interface{}, 0)
 	if len(files) == 0 {
 		parts = append(parts, load("-"))
@@ -30,9 +34,15 @@ func main() {
 		}
 	}
 	showInterval("loading")
-	prog := link(parts)
-	showInterval("linking")
 
+	// link everything together
+	link(parts)
+	showInterval("linking")
+	if nFatals > 0 {
+		os.Exit(1)
+	}
+
+	// list the globals
 	if opt_verbose {
 		fmt.Printf("\nGLOBALS:")
 		for name := range sortedKeys(GlobalDict) {
@@ -44,16 +54,35 @@ func main() {
 		fmt.Printf("\n")
 	}
 
-	if nFatals > 0 {
-		os.Exit(1)
+	// quit now if -c was given
+	if opt_noexec {
+		os.Exit(0)
 	}
 
-	//#%#%#% to be continued...
-	_ = prog
-	_ = args
-	return
-	// run(prog, args)
-	// showInterval("execution")
+	// set up recovery code
+	//#%#% TBD
+
+	// find and execute main()
+	arglist := make([]g.Value, 0)
+	for _, s := range args {
+		arglist = append(arglist, g.NewString(s))
+	}
+	gmain := GlobalDict["main"]
+	if gmain == nil {
+		abort("no main procedure")
+	}
+	if gv, ok := gmain.(g.IVariable); ok {
+		gmain = gv.Deref()
+	}
+	val, _ := gmain.(g.ICall).Call(arglist...)
+
+	// exit
+	showInterval("execution")
+	if val == nil {
+		os.Exit(1) // main failed
+	} else {
+		os.Exit(0) // main returned
+	}
 }
 
 //  warning -- report nonfatal error and continue

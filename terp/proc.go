@@ -53,6 +53,7 @@ func irProcedure(pr *pr_Info) *g.VProcedure {
 	return g.GoProcedure(pr.name,
 		func(args ...g.Value) (g.Value, *g.Closure) {
 			//#%#% return interpMe(pr, args, ...) ??
+			assert(false, "reached "+pr.name)
 			return nil, nil
 		})
 }

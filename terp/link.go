@@ -8,7 +8,7 @@ import (
 )
 
 //  link combines IR files to make a complete program.
-func link(parts [][]interface{}) UNKNOWN {
+func link(parts [][]interface{}) {
 
 	babble("linking")
 
@@ -31,8 +31,6 @@ func link(parts [][]interface{}) UNKNOWN {
 	for _, pr := range ProcTable {
 		setupProc(pr)
 	}
-
-	return nil
 }
 
 //  irDecl -- process IR file declaration
