@@ -35,6 +35,7 @@ func link(parts [][]interface{}) {
 
 //  irDecl -- process IR file declaration
 //	install declared global variables in global dictionary
+//		#%#% as trapped variables; is that really the best way?
 //	install procedures in proc info table
 //	note references to undeclared identifiers
 func irDecl(decl interface{}) {
