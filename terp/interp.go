@@ -52,10 +52,16 @@ func interp(env *g.Env, pr *pr_Info, args ...g.Value) (g.Value, *g.Closure) {
 					v = g.Trapped(&locals[int(t)])
 				case pr_param:
 					v = g.Trapped(&params[int(t)])
+				case nil:
+					panic("nil in ir_Var; undeclared?")
 				default:
 					// global or static: already trapped
 				}
 				temps[i.Lhs.Name] = v
+			case ir_IntLit:
+				temps[i.Lhs.Name] = g.NewString(i.Val).ToNumber()
+			case ir_RealLit:
+				temps[i.Lhs.Name] = g.NewString(i.Val).ToNumber()
 			case ir_StrLit:
 				temps[i.Lhs.Name] = g.NewString(i.Val)
 			case ir_Call:
