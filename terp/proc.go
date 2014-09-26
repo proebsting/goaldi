@@ -9,13 +9,14 @@ import (
 
 //  info about a procedure
 type pr_Info struct {
-	name    string                 // procedure name
-	outer   *pr_Info               // immediate parent #%#% NOT YET SET
-	ir      *ir_Function           // intermediate code structure
-	nparams int                    // number of parameters
-	nlocals int                    // number of locals
-	lset    map[string]bool        // set of locally declared identifiers
-	dict    map[string]interface{} // map of identifiers to variables
+	name    string                   // procedure name
+	outer   *pr_Info                 // immediate parent #%#% NOT YET SET
+	ir      *ir_Function             // intermediate code structure
+	nparams int                      // number of parameters
+	nlocals int                      // number of locals
+	lset    map[string]bool          // set of locally declared identifiers
+	dict    map[string]interface{}   // map from identifiers to variables
+	insns   map[string][]interface{} // map from labels to IR code chunks
 }
 
 //  global index of procedure information
@@ -52,9 +53,7 @@ func declareProc(ir *ir_Function) *pr_Info {
 func irProcedure(pr *pr_Info) *g.VProcedure {
 	return g.NewProcedure(pr.name,
 		func(env *g.Env, args ...g.Value) (g.Value, *g.Closure) {
-			//#%#% return interpMe(pr, args, ...) ??
-			assert(false, "reached "+pr.name)
-			return nil, nil
+			return interp(env, pr, args...)
 		})
 }
 
@@ -62,29 +61,18 @@ func irProcedure(pr *pr_Info) *g.VProcedure {
 //	#%#% TODO: handle nested procedures
 //	report undeclared identifiers
 //	create combined dictionary of global + local variables
+//	create chunk table indexed by labels
 func setupProc(pr *pr_Info) {
 	undeclared(pr)
-	pr.dict = makedict(pr)
+	pr.dict = makeDict(pr)
+	pr.insns = getInsns(pr)
 	if opt_verbose {
-		fmt.Printf("\n%s()  %d param  %d local  dict %d\n   ",
-			pr.name, pr.nparams, pr.nlocals, len(pr.dict))
-		for name := range sortedKeys(pr.dict) {
-			v := pr.dict[name]
-			switch x := v.(type) {
-			case pr_param:
-				fmt.Printf(" p%d:%s", int(x), name)
-			case pr_local:
-				fmt.Printf(" l%d:%s", int(x), name)
-			default:
-				fmt.Printf(" g:%s", name)
-			}
-		}
-		fmt.Println()
+		showProc(pr)
 	}
 }
 
-//  makedict creates the mapping from identifiers to variables within the proc
-func makedict(pr *pr_Info) map[string]interface{} {
+//  makeDict creates the mapping from identifiers to variables within the proc
+func makeDict(pr *pr_Info) map[string]interface{} {
 
 	dict := make(map[string]interface{})
 
@@ -114,7 +102,16 @@ func makedict(pr *pr_Info) map[string]interface{} {
 	return dict
 }
 
-//  undeclared reports such identifiers
+//  getInsns creates the index of IR code chunks
+func getInsns(pr *pr_Info) map[string][]interface{} {
+	insns := make(map[string][]interface{})
+	for _, ch := range pr.ir.CodeList {
+		insns[ch.Label.Value] = ch.InsnList
+	}
+	return insns
+}
+
+//  undeclared reports identifiers never declared anywhere
 func undeclared(pr *pr_Info) {
 	for _, chunk := range pr.ir.CodeList {
 		for _, insn := range chunk.InsnList {
@@ -129,4 +126,22 @@ func undeclared(pr *pr_Info) {
 			}
 		}
 	}
+}
+
+//  showProc prints information about the procedure in verbose mode
+func showProc(pr *pr_Info) {
+	fmt.Printf("\n%s()  %d param  %d local  dict %d\n   ",
+		pr.name, pr.nparams, pr.nlocals, len(pr.dict))
+	for name := range sortedKeys(pr.dict) {
+		v := pr.dict[name]
+		switch x := v.(type) {
+		case pr_param:
+			fmt.Printf(" p%d:%s", int(x), name)
+		case pr_local:
+			fmt.Printf(" l%d:%s", int(x), name)
+		default:
+			fmt.Printf(" g:%s", name)
+		}
+	}
+	fmt.Println()
 }
