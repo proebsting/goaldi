@@ -34,6 +34,15 @@ func (t *VTrapped) Assign(v Value) IVariable {
 	return t
 }
 
+//  Deref(v) -- dereference a value only if it implements IVariable
+func Deref(v Value) Value {
+	if d, ok := v.(IVariable); ok {
+		return d.Deref()
+	} else {
+		return v
+	}
+}
+
 //  RevAssign -- implment reversible assignment (<-)
 func RevAssign(e1 Value, e2 Value) (IVariable, *Closure) {
 	v1 := e1.(IVariable)
