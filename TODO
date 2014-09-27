@@ -1,8 +1,7 @@
 Goaldi Implementation To-Do List
 
 reorganize source tree; what makes sense for a mixed-language project?
-straighten out goaldi vs goaldi/terp: what goes where?
-make self-contained?  (don't build into ../../bin)
+straighten out goaldi vs goaldi/gexec: what goes where?
 
 more consistency in struct and procedure names
 better & more uniform func header comments

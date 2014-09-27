@@ -6,17 +6,18 @@
 #  does not check for correct output.
 
 #  check for necessary binaries
-JTRAN=../tran/jtran
-TERP=${GOPATH%%:*}/bin/terp
-ls -l $JTRAN $TERP || exit
+GOBIN=${GOPATH%%:*}/bin
+GTRAN=$GOBIN/gtran
+GEXEC=$GOBIN/gexec
+ls -l $GTRAN $GEXEC || exit
 
-#  define terp arguments
+#  define gexec arguments
 TARGS="-c -v -A"
 
 #  define jtran arguments
 export COEXPSIZE=300000		# need 250000 for v9/ipl/farb.icn!
 jtran() {
-    $JTRAN preproc $1 : yylex : parse : ast2ir : optim -O : json_File : stdout
+    $GTRAN preproc $1 : yylex : parse : ast2ir : optim -O : json_File : stdout
 };
 
 #  if no test files specified, run them all
@@ -33,11 +34,11 @@ for F in $*; do
     rm -f $F.gir $F.out $F.err
     printf "%-12s" $F:
     if jtran $F.icn >$F.gir 2>$F.err; then
-	if $TERP $TARGS $F.gir >$F.out 2>>$F.err; then
+	if $GEXEC $TARGS $F.gir >$F.out 2>>$F.err; then
 	    echo "ok"
 	    test -z $F.err && rm $F.err
 	else
-	    echo "terp failed"
+	    echo "gexec failed"
 	    TFAIL="$TFAIL $F"
 	fi
     else
@@ -52,8 +53,8 @@ if [ "x$TFAIL$JFAIL" = "x" ]; then
    echo ""
    exit 0
 else
-   echo "jtran failed: $JFAIL"
-   echo "terp failed:  $TFAIL"
+   echo "gtran failed: $JFAIL"
+   echo "gexec failed:  $TFAIL"
    echo ""
    exit 1
 fi

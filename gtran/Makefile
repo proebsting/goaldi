@@ -64,7 +64,7 @@ all:	jtran jlink
 
 jtran:	$(TRANOBJ)
 	$(ICONT) -o jtran $(TRANOBJ)
-	# cp jtran ../bin
+	cp jtran $${GOPATH%%:*}/bin/gtran
 
 jlink:	$(LINKOBJ)
 	$(ICONT) -o jlink $(LINKOBJ)

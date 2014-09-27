@@ -5,9 +5,9 @@
 *.err
 *.gir
 *.u[12]
-tran/do_ops.icn
-tran/interface.icn
-tran/interfacegen
-tran/jlink
-tran/jtran
-tran/oplexgen
+gtran/do_ops.icn
+gtran/interface.icn
+gtran/interfacegen
+gtran/jlink
+gtran/jtran
+gtran/oplexgen
