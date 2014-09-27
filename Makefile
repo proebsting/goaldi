@@ -12,12 +12,13 @@ default:  build test
 build:
 	go install $(PROGS)
 	cd gtran; $(MAKE)
+	cp goaldi.sh $(GOBIN)/goaldi
 
 test:
 	go test
 	cd itests; $(MAKE)
 
-format:	
+format:
 	go fmt *.go
 	for D in exec test*; do go fmt $$D/*.go; done
 
@@ -31,7 +32,11 @@ bundle:
 	@bundle *.go */*.go
 
 clean:
-	rm -f $(GOBIN)/gtran
-	go clean -i $(PKG) $(PROGS)
+	go clean $(PKG) $(PROGS)
+	go clean -i $(TESTS)
 	cd gtran; $(MAKE) clean
 	cd itests; $(MAKE) clean
+
+uninstall:
+	rm -f $(GOBIN)/gtran $(GOBIN)/gexec $(GOBIN)/goaldi
+	go clean -i $(PKG) $(PROGS)
