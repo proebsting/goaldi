@@ -7,7 +7,7 @@
 
 #  check for necessary binaries
 JTRAN=../tran/jtran
-TERP=$GOPATH/bin/terp
+TERP=${GOPATH%%:*}/bin/terp
 ls -l $JTRAN $TERP || exit
 
 #  define terp arguments

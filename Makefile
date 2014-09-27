@@ -5,7 +5,7 @@ PKG = goaldi
 MAIN = $(PKG)/terp
 TESTS = $(PKG)/test1 $(PKG)/test2 $(PKG)/test3 $(PKG)/test9
 PROGS = $(MAIN) $(TESTS)
-GOBIN = $$GOPATH/bin
+GOBIN = $${GOPATH%%:*}/bin
 
 default:  build test
 
@@ -22,10 +22,10 @@ format:
 	for D in terp test*; do go fmt $$D/*.go; done
 
 mains:					# early test drivers
-	$$GOPATH/bin/test1
-	$$GOPATH/bin/test2
-	$$GOPATH/bin/test3
-	$$GOPATH/bin/test9
+	$(GOBIN)/test1
+	$(GOBIN)/test2
+	$(GOBIN)/test3
+	$(GOBIN)/test9
 
 bundle:
 	@bundle *.go */*.go
