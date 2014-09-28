@@ -1,5 +1,9 @@
 #  Goaldi Makefile
-#  (a work in progress -- expect drastic changes and reorganizations)
+#
+#  Assumptions:
+#	go is in search path (typically located in /usr/local/go/bin)
+#	$GOPATH is set  
+#	$GOPATH/bin (first GOPATH component) is destination for built programs
 
 PKG = goaldi
 MAIN = $(PKG)/gexec
