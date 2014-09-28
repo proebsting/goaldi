@@ -20,6 +20,9 @@ build:
 
 test:
 	go test
+	cd gtests; $(MAKE)
+
+itest:
 	cd itests; $(MAKE)
 
 format:
@@ -39,6 +42,7 @@ clean:
 	go clean $(PKG) $(PROGS)
 	go clean -i $(TESTS)
 	cd gtran; $(MAKE) clean
+	cd gtests; $(MAKE) clean
 	cd itests; $(MAKE) clean
 
 uninstall:

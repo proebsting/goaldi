@@ -49,7 +49,7 @@ done
 
 echo ""
 if [ "x$TFAIL$JFAIL" = "x" ]; then
-   echo "All tests passed."
+   echo "itests: all tests passed"
    echo ""
    exit 0
 else

@@ -1,0 +1,6 @@
+procedure main()
+	print("hello ")
+	println(1,2,3,4)
+	printf("%.2f %.2f\n", 3.14159, 2.7183)
+	exit(0)
+end
