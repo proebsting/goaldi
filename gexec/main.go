@@ -75,15 +75,10 @@ func main() {
 	if gv, ok := gmain.(g.IVariable); ok {
 		gmain = gv.Deref()
 	}
-	val, _ := gmain.(g.ICall).Call(env, arglist...)
+	gmain.(g.ICall).Call(env, arglist...)
 
 	// exit
 	showInterval("execution")
-	if val == nil {
-		os.Exit(1) // main failed
-	} else {
-		os.Exit(0) // main returned
-	}
 }
 
 //  warning -- report nonfatal error and continue
