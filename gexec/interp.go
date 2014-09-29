@@ -7,6 +7,15 @@ import (
 	g "goaldi"
 )
 
+//  procedure frame
+type pr_frame struct {
+	env    *g.Env
+	info   *pr_Info
+	params []g.Value
+	locals []g.Value
+	temps  map[string]g.Value
+}
+
 //  interp -- interpret one procedure
 func interp(env *g.Env, pr *pr_Info, args ...g.Value) (g.Value, *g.Closure) {
 
@@ -14,19 +23,22 @@ func interp(env *g.Env, pr *pr_Info, args ...g.Value) (g.Value, *g.Closure) {
 		fmt.Printf("P: %s\n", pr.name)
 	}
 
-	// initialize params, locals, temps
-	temps := make(map[string]g.Value)
-	params := make([]g.Value, pr.nparams, pr.nparams)
-	locals := make([]g.Value, pr.nlocals, pr.nlocals)
-	for i := 0; i < len(params); i++ {
+	// initialize procedure frame: params, locals, temps
+	var f pr_frame
+	f.env = env
+	f.info = pr
+	f.temps = make(map[string]g.Value)
+	f.params = make([]g.Value, pr.nparams, pr.nparams)
+	f.locals = make([]g.Value, pr.nlocals, pr.nlocals)
+	for i := 0; i < len(f.params); i++ {
 		if i < len(args) {
-			params[i] = args[i]
+			f.params[i] = args[i]
 		} else {
-			params[i] = g.NewNil()
+			f.params[i] = g.NewNil()
 		}
 	}
-	for i := 0; i < len(locals); i++ {
-		locals[i] = g.NewNil()
+	for i := 0; i < len(f.locals); i++ {
+		f.locals[i] = g.NewNil()
 	}
 
 	//#%#%#% defer recover ...
@@ -48,31 +60,34 @@ func interp(env *g.Env, pr *pr_Info, args ...g.Value) (g.Value, *g.Closure) {
 			case ir_Fail:
 				return nil, nil
 			case ir_IntLit:
-				temps[i.Lhs.Name] = g.NewString(i.Val).ToNumber()
+				f.temps[i.Lhs.Name] =
+					g.NewString(i.Val).ToNumber()
 			case ir_RealLit:
-				temps[i.Lhs.Name] = g.NewString(i.Val).ToNumber()
+				f.temps[i.Lhs.Name] =
+					g.NewString(i.Val).ToNumber()
 			case ir_StrLit:
-				temps[i.Lhs.Name] = g.NewString(i.Val)
+				f.temps[i.Lhs.Name] =
+					g.NewString(i.Val)
 			case ir_Var:
 				v := pr.dict[i.Name]
 				switch t := v.(type) {
 				case pr_local:
-					v = g.Trapped(&locals[int(t)])
+					v = g.Trapped(&f.locals[int(t)])
 				case pr_param:
-					v = g.Trapped(&params[int(t)])
+					v = g.Trapped(&f.params[int(t)])
 				case nil:
 					panic("nil in ir_Var; undeclared?")
 				default:
 					// global or static: already trapped
 				}
-				temps[i.Lhs.Name] = v
+				f.temps[i.Lhs.Name] = v
 			case ir_OpFunction:
 				n := len(i.ArgList)
 				argl := make([]g.Value, n, n)
 				for j, a := range i.ArgList {
 					switch t := a.(type) {
 					case ir_Tmp:
-						argl[j] = temps[t.Name]
+						argl[j] = f.temps[t.Name]
 					default:
 						argl[j] = g.Deref(a) //#%#%
 					}
@@ -82,27 +97,26 @@ func interp(env *g.Env, pr *pr_Info, args ...g.Value) (g.Value, *g.Closure) {
 					label = i.FailLabel.Value
 					break
 				}
-				temps[i.Lhs.Name] = v
-				temps[i.Lhsclosure.Name] = c
+				f.temps[i.Lhs.Name] = v
+				f.temps[i.Lhsclosure.Name] = c
 			case ir_Call:
 				//#%#% combine shared code with OpFunction
-				proc := temps[i.Fn.Name]
+				proc := f.temps[i.Fn.Name]
 				n := len(i.ArgList)
 				argl := make([]g.Value, n, n)
 				for j, a := range i.ArgList {
 					switch t := a.(type) {
 					case ir_Tmp:
-						argl[j] = temps[t.Name]
+						argl[j] = f.temps[t.Name]
 					default:
 						argl[j] = g.Deref(a) //#%#%
 					}
 				}
-				temps[i.Lhs.Name], temps[i.Lhsclosure.Name] =
+				f.temps[i.Lhs.Name], f.temps[i.Lhsclosure.Name] =
 					proc.(g.ICall).Call(env, argl...)
 			}
 		}
 	}
-	_ = temps
 	return nil, nil
 }
 
