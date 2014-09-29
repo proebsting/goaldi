@@ -24,7 +24,8 @@ for F in $*; do
     if goaldi $F.gdi >$F.out 2>$F.err; then
 	if cmp -s $F.std $F.out; then
 	    echo "ok"
-	    test -z $F.err && rm $F.err
+	    rm $F.out
+	    test -s $F.err || rm $F.err
 	else
 	    echo "output differs"
 	    FAILURES="$FAILURES $F"
