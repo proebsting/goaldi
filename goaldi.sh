@@ -2,20 +2,20 @@
 #
 #  goaldi [options] file [arg...] -- compile and execute Goaldi program
 #
-#  Options -c -t -v -A -J -T are passed along to the interpreter.
+#  Options -l -t -v -A -J -T are passed along to the interpreter.
 #
 #  Assumes that gtran and gexec are in the search path.
 
-XFLAGS=ctvAJT
+XFLAGS=ltvAJT
 USAGE="usage: $0 [-$XFLAGS] file [arg...]"
 
 #  process options
 XOPTS=
 while getopts $XFLAGS C; do
     case $C in
-    	[ctvAJT]) XOPTS="$XOPTS -$C";;
+	[ltvAJT]) XOPTS="$XOPTS -$C";;
     ?)
-    	echo 1>&2 $USAGE; exit 1;;
+	echo 1>&2 $USAGE; exit 1;;
     esac
 done
 shift $(($OPTIND - 1))
