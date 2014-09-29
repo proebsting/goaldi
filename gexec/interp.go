@@ -82,16 +82,7 @@ func interp(env *g.Env, pr *pr_Info, args ...g.Value) (g.Value, *g.Closure) {
 				}
 				f.temps[i.Lhs.Name] = v
 			case ir_OpFunction:
-				n := len(i.ArgList)
-				argl := make([]g.Value, n, n)
-				for j, a := range i.ArgList {
-					switch t := a.(type) {
-					case ir_Tmp:
-						argl[j] = f.temps[t.Name]
-					default:
-						argl[j] = g.Deref(a) //#%#%
-					}
-				}
+				argl := getArgs(&f, i.ArgList)
 				v, c := opFunc(i.Fn, argl)
 				if v == nil && i.FailLabel.Value != "" {
 					label = i.FailLabel.Value
@@ -100,24 +91,34 @@ func interp(env *g.Env, pr *pr_Info, args ...g.Value) (g.Value, *g.Closure) {
 				f.temps[i.Lhs.Name] = v
 				f.temps[i.Lhsclosure.Name] = c
 			case ir_Call:
-				//#%#% combine shared code with OpFunction
 				proc := f.temps[i.Fn.Name]
-				n := len(i.ArgList)
-				argl := make([]g.Value, n, n)
-				for j, a := range i.ArgList {
-					switch t := a.(type) {
-					case ir_Tmp:
-						argl[j] = f.temps[t.Name]
-					default:
-						argl[j] = g.Deref(a) //#%#%
-					}
+				argl := getArgs(&f, i.ArgList)
+				v, c := proc.(g.ICall).Call(env, argl...)
+				if v == nil && i.FailLabel.Value != "" {
+					label = i.FailLabel.Value
+					break
 				}
-				f.temps[i.Lhs.Name], f.temps[i.Lhsclosure.Name] =
-					proc.(g.ICall).Call(env, argl...)
+				f.temps[i.Lhs.Name] = v
+				f.temps[i.Lhsclosure.Name] = c
 			}
 		}
 	}
 	return nil, nil
+}
+
+//  getArgs -- load values from heterogeneous ArgList slice field
+func getArgs(f *pr_frame, arglist []interface{}) []g.Value {
+	n := len(arglist)
+	argl := make([]g.Value, n, n)
+	for i, a := range arglist {
+		switch t := a.(type) {
+		case ir_Tmp:
+			argl[i] = f.temps[t.Name]
+		default:
+			argl[i] = g.Deref(a)
+		}
+	}
+	return argl
 }
 
 //  opFunc -- implement operator function

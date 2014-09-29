@@ -27,7 +27,7 @@ itest:
 
 format:
 	go fmt *.go
-	for D in exec test*; do go fmt $$D/*.go; done
+	for D in gexec test*; do go fmt $$D/*.go; done
 
 mains:					# early test drivers
 	$(GOBIN)/test1
