@@ -20,7 +20,12 @@ type pr_frame struct {
 
 //  catchf -- annotate a panic value with procedure frame information
 func catchf(p interface{}, f *pr_frame, args []g.Value) *g.CallFrame {
-	return g.Catch(p, f.offv, f.coord.File, f.coord.Line, f.info.name, args)
+	if f.coord != nil {
+		return g.Catch(p, f.offv,
+			f.coord.File, f.coord.Line, f.info.name, args)
+	} else {
+		return g.Catch(p, f.offv, "file ?", "?", f.info.name, args)
+	}
 }
 
 //  interp -- interpret one procedure
