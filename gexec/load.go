@@ -166,7 +166,15 @@ func setField(f reflect.Value, key string, val interface{}) {
 	}
 	t := f.Type()
 	if t.Kind() != reflect.Slice || t.Elem().Kind() == reflect.Interface {
-		f.Set(reflect.ValueOf(val))
+		v := reflect.ValueOf(val)
+		if f.Kind() == reflect.Ptr && v.Kind() != reflect.Ptr {
+			// we have a value but need a pointer;
+			// copy the value to get an assignable pointer
+			p := reflect.New(v.Type())
+			p.Elem().Set(v)
+			v = p
+		}
+		f.Set(v)
 		return
 	}
 	// we have to make a typed slice and copy in the elements

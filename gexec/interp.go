@@ -107,7 +107,7 @@ func interp(env *g.Env, pr *pr_Info, args ...g.Value) (g.Value, *g.Closure) {
 }
 
 //  opFunc -- implement operator function
-func opFunc(o ir_operator, a []g.Value) (g.Value, *g.Closure) {
+func opFunc(o *ir_operator, a []g.Value) (g.Value, *g.Closure) {
 	op := o.Arity + o.Name
 	switch op {
 	default:
