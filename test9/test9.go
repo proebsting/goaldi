@@ -16,7 +16,7 @@ func (v *MyValue) String() string {
 }
 
 func main() {
-	g.Run(gmain)
+	g.Run(g.NewProcedure("main", gmain), nil)
 }
 
 //  procedure gmain()
@@ -24,7 +24,7 @@ func gmain(env *g.Env, args ...g.Value) (g.Value, *g.Closure) {
 
 	// boilerplate prologue
 	var ev interface{}
-	var ln = 100
+	var ln = "100"
 	defer func() {
 		if p := recover(); p != nil {
 			panic(g.Catch(p, ev, "test.gdi", ln, "gmain", args))
@@ -41,7 +41,7 @@ func gsubr(env *g.Env, args ...g.Value) (g.Value, *g.Closure) {
 
 	// boilerplate prologue
 	var ev interface{}
-	var ln = 200
+	var ln = "200"
 	defer func() {
 		if p := recover(); p != nil {
 			panic(g.Catch(p, ev, "test.gdi", ln, "gsubr", args))
@@ -53,7 +53,7 @@ func gsubr(env *g.Env, args ...g.Value) (g.Value, *g.Closure) {
 	v.(*MyValue).value = 19
 	f.Println(v)
 	f.Println("Expect PANIC:")
-	ln = 222
+	ln = "222"
 	ev = v
 	v.(g.IAdd).Add(g.NewNumber(23)) // Add not impl by MyValue
 	return g.Fail()

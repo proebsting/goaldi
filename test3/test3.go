@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	Run(gmain)
+	Run(NewProcedure("main", gmain), nil)
 }
 
 //  procedure gmain()

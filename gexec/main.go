@@ -59,11 +59,7 @@ func main() {
 		os.Exit(0)
 	}
 
-	// set up recovery code
-	//#%#% TBD
-
 	// find and execute main()
-	env := &g.Env{}
 	arglist := make([]g.Value, 0)
 	for _, s := range args {
 		arglist = append(arglist, g.NewString(s))
@@ -75,7 +71,7 @@ func main() {
 	if gv, ok := gmain.(g.IVariable); ok {
 		gmain = gv.Deref()
 	}
-	gmain.(g.ICall).Call(env, arglist...)
+	g.Run(gmain, arglist)
 
 	// exit
 	showInterval("execution")

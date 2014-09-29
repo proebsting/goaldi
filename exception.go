@@ -26,28 +26,26 @@ type CallFrame struct {
 	cause interface{} // underlying panic call
 	offv  Value       // offending value
 	fname string      // source filename
-	ln    int         // source line number
+	ln    string      // source line number
 	pname string      // procedure name
 	args  []Value     // procedure arguments
 }
 
-//  Run wraps a Goaldi procedure in an exception catcher, and calls it from Go
-func Run(p Procedure) {
-	fmt.Println("[-------------------- begin --------------------]")
+//  Run wraps a Goaldi procedure in an environment and an exception catcher,
+//  and calls it from Go
+func Run(p Value, arglist []Value) {
+	env := &Env{}
 	defer func() {
 		if x := recover(); x != nil {
-			fmt.Fprintln(os.Stderr,
-				"[-------------------- PANIC --------------------]")
 			Diagnose(os.Stderr, x)
 			os.Exit(1)
 		}
 	}()
-	p(nil, nil)
-	fmt.Println("[--------------------- end ---------------------]")
+	p.(ICall).Call(env, arglist...)
 }
 
 //  Catch annotates a caught panic value with traceback information
-func Catch(p interface{}, ev Value, fname string, ln int,
+func Catch(p interface{}, ev Value, fname string, ln string,
 	procname string, arglist []Value) *CallFrame {
 	return &CallFrame{p, ev, fname, ln, procname, arglist}
 }
@@ -60,7 +58,7 @@ func Diagnose(f io.Writer, v Value) {
 		if _, ok := x.cause.(*runtime.TypeAssertionError); ok {
 			fmt.Fprintf(f, "Offending value: %v\n", x.offv)
 		}
-		fmt.Fprintf(f, "Called by %s(%v) at %s line %d\n",
+		fmt.Fprintf(f, "Called by %s(%v) at %s line %s\n",
 			x.pname, x.args, x.fname, x.ln)
 	case *RunErr:
 		fmt.Fprintln(f, x.msg)

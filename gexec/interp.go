@@ -9,11 +9,18 @@ import (
 
 //  procedure frame
 type pr_frame struct {
-	env    *g.Env
-	info   *pr_Info
-	params []g.Value
-	locals []g.Value
-	temps  map[string]g.Value
+	env    *g.Env             // dynamic execution enviromment
+	info   *pr_Info           // static procedure information
+	params []g.Value          // parameters
+	locals []g.Value          // locals
+	temps  map[string]g.Value // temporaries
+	coord  *ir_coordinate     // last known source location
+	offv   g.Value            // offending value for traceback
+}
+
+//  catchf -- annotate a panic value with procedure frame information
+func catchf(p interface{}, f *pr_frame, args []g.Value) *g.CallFrame {
+	return g.Catch(p, f.offv, f.coord.File, f.coord.Line, f.info.name, args)
 }
 
 //  interp -- interpret one procedure
@@ -41,7 +48,12 @@ func interp(env *g.Env, pr *pr_Info, args ...g.Value) (g.Value, *g.Closure) {
 		f.locals[i] = g.NewNil()
 	}
 
-	//#%#%#% defer recover ...
+	// set up tracback recovery
+	defer func() {
+		if p := recover(); p != nil {
+			panic(catchf(p, &f, args))
+		}
+	}()
 
 	// interpret the IR code
 	label := pr.ir.CodeStart.Value
@@ -54,6 +66,8 @@ func interp(env *g.Env, pr *pr_Info, args ...g.Value) (g.Value, *g.Closure) {
 			if opt_trace {
 				fmt.Printf("I: %T %v\n", insn, insn)
 			}
+			f.coord = nil //#%#% prudent, but should not be needed
+			f.offv = nil  //#%#% prudent, but should not be needed
 			switch i := insn.(type) {
 			default:
 				panic(i) // unrecognized or unimplemented
@@ -82,8 +96,10 @@ func interp(env *g.Env, pr *pr_Info, args ...g.Value) (g.Value, *g.Closure) {
 				}
 				f.temps[i.Lhs.Name] = v
 			case ir_OpFunction:
+				f.coord = i.Coord
 				argl := getArgs(&f, i.ArgList)
-				v, c := opFunc(i.Fn, argl)
+				f.offv = argl[0]
+				v, c := opFunc(&f, i.Fn, argl)
 				if v == nil && i.FailLabel.Value != "" {
 					label = i.FailLabel.Value
 					break
@@ -91,8 +107,10 @@ func interp(env *g.Env, pr *pr_Info, args ...g.Value) (g.Value, *g.Closure) {
 				f.temps[i.Lhs.Name] = v
 				f.temps[i.Lhsclosure.Name] = c
 			case ir_Call:
+				f.coord = i.Coord
 				proc := f.temps[i.Fn.Name]
 				argl := getArgs(&f, i.ArgList)
+				f.offv = proc
 				v, c := proc.(g.ICall).Call(env, argl...)
 				if v == nil && i.FailLabel.Value != "" {
 					label = i.FailLabel.Value
@@ -122,7 +140,7 @@ func getArgs(f *pr_frame, arglist []interface{}) []g.Value {
 }
 
 //  opFunc -- implement operator function
-func opFunc(o *ir_operator, a []g.Value) (g.Value, *g.Closure) {
+func opFunc(f *pr_frame, o *ir_operator, a []g.Value) (g.Value, *g.Closure) {
 	op := o.Arity + o.Name
 	switch op {
 	default:
