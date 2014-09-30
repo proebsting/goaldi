@@ -110,7 +110,9 @@ func interp(env *g.Env, pr *pr_Info, args ...g.Value) (g.Value, *g.Closure) {
 					break
 				}
 				f.temps[i.Lhs.Name] = v
-				f.temps[i.Lhsclosure.Name] = c
+				if i.Lhsclosure != nil {
+					f.temps[i.Lhsclosure.Name] = c
+				}
 			case ir_Call:
 				f.coord = i.Coord
 				proc := f.temps[i.Fn.Name]
