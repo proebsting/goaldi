@@ -76,7 +76,8 @@ func interp(env *g.Env, pr *pr_Info, args ...g.Value) (g.Value, *g.Closure) {
 			f.offv = nil  //#%#% prudent, but should not be needed
 			switch i := insn.(type) {
 			default:
-				panic(i) // unrecognized or unimplemented
+				panic(&g.RunErr{"Unrecognized IR",
+					fmt.Sprintf("%#v", i)})
 			case ir_Fail:
 				return nil, nil
 			case ir_IntLit:

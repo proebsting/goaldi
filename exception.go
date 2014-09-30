@@ -13,13 +13,13 @@ import (
 
 //  RunErr records a Goaldi runtime error
 type RunErr struct {
-	msg  string // explanatory message
-	offv Value  // offending value
+	Msg  string // explanatory message
+	Offv Value  // offending value
 }
 
 //  RunErr.String() returns a string form of a RunErr
 func (e *RunErr) String() string {
-	return fmt.Sprintf("RunErr: %s (%v)", e.msg, e.offv)
+	return fmt.Sprintf("RunErr: %s (%v)", e.Msg, e.Offv)
 }
 
 //  CallFrame records one frame of traceback information
@@ -68,9 +68,9 @@ func Diagnose(f io.Writer, v Value) bool {
 			x.pname, x.args, x.fname, x.ln)
 		return rv
 	case *RunErr:
-		fmt.Fprintln(f, x.msg)
-		if x.offv != nil {
-			fmt.Fprintf(f, "Offending value: %v\n", x.offv)
+		fmt.Fprintln(f, x.Msg)
+		if x.Offv != nil {
+			fmt.Fprintf(f, "Offending value: %v\n", x.Offv)
 		}
 		return true
 	case *runtime.TypeAssertionError:
