@@ -106,6 +106,10 @@ func interp(env *g.Env, pr *pr_Info, args ...g.Value) (g.Value, *g.Closure) {
 			case ir_Goto:
 				label = i.TargetLabel.Value
 				break Chunk
+			case ir_IndirectGoto:
+				label = i.TargetTmpLabel.Name
+				label = f.temps[label].(string)
+				break Chunk
 			case ir_OpFunction:
 				f.coord = i.Coord
 				argl := getArgs(&f, i.ArgList)
