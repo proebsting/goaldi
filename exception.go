@@ -77,11 +77,10 @@ func Diagnose(f io.Writer, v Value) bool {
 		s := fmt.Sprintf("%#v", x)
 		conc := extract(s, "concreteString")
 		asst := extract(s, "assertedString")
-		fmt.Fprintf(f, "Type %s does not implement %s\n",
-			conc, asst)
+		fmt.Fprintf(f, "Type %s does not implement %s\n", conc, asst)
 		return true
 	default:
-		fmt.Fprintf(f, "%#v\n", x)
+		fmt.Fprintln(f, x)
 		return false
 	}
 }
