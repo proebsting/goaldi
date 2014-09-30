@@ -7,6 +7,7 @@ import (
 	"io"
 	"os"
 	"runtime"
+	"runtime/debug"
 	"strings"
 )
 
@@ -37,7 +38,11 @@ func Run(p Value, arglist []Value) {
 	env := &Env{}
 	defer func() {
 		if x := recover(); x != nil {
-			Diagnose(os.Stderr, x)
+			r := Diagnose(os.Stderr, x) // write Goaldi stack trace
+			if !r {                     // if unrecognized
+				fmt.Fprintf(os.Stderr, "Go stack:\n%s\n",
+					debug.Stack()) // write Go stack trace
+			}
 			os.Exit(1)
 		}
 	}()
@@ -51,28 +56,33 @@ func Catch(p interface{}, ev Value, fname string, ln string,
 }
 
 //  Diagnose handles traceback for a panic caught by Run()
-func Diagnose(f io.Writer, v Value) {
+//  It returns true for an "expected" (recognized) error.
+func Diagnose(f io.Writer, v Value) bool {
 	switch x := v.(type) {
 	case *CallFrame:
-		Diagnose(f, x.cause)
+		rv := Diagnose(f, x.cause)
 		if _, ok := x.cause.(*runtime.TypeAssertionError); ok {
 			fmt.Fprintf(f, "Offending value: %v\n", x.offv)
 		}
 		fmt.Fprintf(f, "Called by %s(%v) at %s line %s\n",
 			x.pname, x.args, x.fname, x.ln)
+		return rv
 	case *RunErr:
 		fmt.Fprintln(f, x.msg)
 		if x.offv != nil {
 			fmt.Fprintf(f, "Offending value: %v\n", x.offv)
 		}
+		return true
 	case *runtime.TypeAssertionError:
 		s := fmt.Sprintf("%#v", x)
 		conc := extract(s, "concreteString")
 		asst := extract(s, "assertedString")
 		fmt.Fprintf(f, "Type %s does not implement %s\n",
 			conc, asst)
+		return true
 	default:
 		fmt.Fprintf(f, "%#v\n", x)
+		return false
 	}
 }
 
