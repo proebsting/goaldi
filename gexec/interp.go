@@ -66,7 +66,8 @@ func interp(env *g.Env, pr *pr_Info, args ...g.Value) (g.Value, *g.Closure) {
 		if opt_trace {
 			fmt.Printf("L: %s\n", label)
 		}
-		ilist := pr.insns[label]     // look up label
+		ilist := pr.insns[label] // look up label
+	Chunk:
 		for _, insn := range ilist { // execute insns in chunk
 			if opt_trace {
 				fmt.Printf("I: %T %v\n", insn, insn)
@@ -100,6 +101,11 @@ func interp(env *g.Env, pr *pr_Info, args ...g.Value) (g.Value, *g.Closure) {
 					// global or static: already trapped
 				}
 				f.temps[i.Lhs.Name] = v
+			case ir_MoveLabel:
+				f.temps[i.Lhs.Name] = i.Label.Value
+			case ir_Goto:
+				label = i.TargetLabel.Value
+				break Chunk
 			case ir_OpFunction:
 				f.coord = i.Coord
 				argl := getArgs(&f, i.ArgList)
@@ -107,7 +113,7 @@ func interp(env *g.Env, pr *pr_Info, args ...g.Value) (g.Value, *g.Closure) {
 				v, c := opFunc(&f, i.Fn, argl)
 				if v == nil && i.FailLabel.Value != "" {
 					label = i.FailLabel.Value
-					break
+					break Chunk
 				}
 				f.temps[i.Lhs.Name] = v
 				if i.Lhsclosure != nil {
@@ -121,10 +127,27 @@ func interp(env *g.Env, pr *pr_Info, args ...g.Value) (g.Value, *g.Closure) {
 				v, c := proc.(g.ICall).Call(env, argl...)
 				if v == nil && i.FailLabel.Value != "" {
 					label = i.FailLabel.Value
-					break
+					break Chunk
 				}
 				f.temps[i.Lhs.Name] = v
 				f.temps[i.Lhsclosure.Name] = c
+			case ir_ResumeValue:
+				f.coord = i.Coord
+				var v g.Value
+				c := f.temps[i.Closure.Name].(*g.Closure)
+				if c != nil {
+					v, c = c.Go()
+				}
+				if v == nil && i.FailLabel.Value != "" {
+					label = i.FailLabel.Value
+					break Chunk
+				}
+				if i.Lhs != nil {
+					f.temps[i.Lhs.Name] = v
+				}
+				if i.Lhsclosure != nil {
+					f.temps[i.Lhsclosure.Name] = c
+				}
 			}
 		}
 	}
