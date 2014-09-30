@@ -60,6 +60,8 @@ LINKZIP = $(LINKSRC:.icn=.zip)
 
 # usual versions built by icont
 
+default:  jtran
+
 all:	jtran jlink
 
 jtran:	$(TRANOBJ)
