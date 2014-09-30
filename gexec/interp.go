@@ -181,5 +181,7 @@ func opFunc(f *pr_frame, o *ir_operator, a []g.Value) (g.Value, *g.Closure) {
 		panic("unimplemented operator: " + op)
 	case "2+":
 		return a[0].(g.IAdd).Add(a[1]), nil
+	case "3...":
+		return g.ToBy(a[0], a[1], a[2])
 	}
 }
