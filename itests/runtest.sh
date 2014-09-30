@@ -12,7 +12,7 @@ GEXEC=$GOBIN/gexec
 ls -l $GTRAN $GEXEC || exit
 
 #  define gexec arguments
-TARGS="-c -v -A"
+TARGS="-l -v -A"
 
 #  define jtran arguments
 export COEXPSIZE=300000		# need 250000 for v9/ipl/farb.icn!
