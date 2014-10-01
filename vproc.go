@@ -74,16 +74,27 @@ func GoProcedure(name string, f interface{}) *VProcedure {
 	pfun := func(env *Env, args ...Value) (Value, *Closure) {
 		//  convert fixed arguments from Goaldi values to needed Go type
 		in := make([]reflect.Value, 0, len(args))
+		var v reflect.Value
 		for i := 0; i < nfixed; i++ {
+			a := Value(NIL)
 			if i < len(args) {
-				in = append(in, passer[i](args[i]))
-			} else {
-				in = append(in, passer[i](NIL))
+				a = args[i]
 			}
+			v = passer[i](a)
+			if !v.IsValid() {
+				panic(&RunErr{"Cannot convert argument",
+					args[i]})
+			}
+			in = append(in, v)
 		}
 		//  convert additional variadic arguments to final type
 		for i := nfixed; i < len(args); i++ {
-			in = append(in, passer[nfixed](args[i]))
+			v = passer[nfixed](args[i])
+			if !v.IsValid() {
+				panic(&RunErr{"Cannot convert argument",
+					args[i]})
+			}
+			in = append(in, v)
 		}
 		//  call the Go function
 		out := fval.Call(in)
