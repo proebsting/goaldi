@@ -138,3 +138,111 @@ func (v1 *VString) Power(v2 Value) Value {
 func (v1 *VNumber) Power(v2 Value) Value {
 	return NewNumber(math.Pow(float64(*v1), fval(v2)))
 }
+
+//------------------------------------  NumLT:  e1 < e2
+
+type INumLT interface {
+	NumLT(Value) (Value, *Closure)
+}
+
+func (v1 *VString) NumLT(v2 Value) (Value, *Closure) {
+	return v1.ToNumber().NumLT(v2)
+}
+
+func (v1 *VNumber) NumLT(v2 Value) (Value, *Closure) {
+	if float64(*v1) < fval(v2) {
+		return Return(v2)
+	} else {
+		return Fail()
+	}
+}
+
+//------------------------------------  NumLE:  e1 <= e2
+
+type INumLE interface {
+	NumLE(Value) (Value, *Closure)
+}
+
+func (v1 *VString) NumLE(v2 Value) (Value, *Closure) {
+	return v1.ToNumber().NumLE(v2)
+}
+
+func (v1 *VNumber) NumLE(v2 Value) (Value, *Closure) {
+	if float64(*v1) <= fval(v2) {
+		return Return(v2)
+	} else {
+		return Fail()
+	}
+}
+
+//------------------------------------  NumEQ:  e1 = e2
+
+type INumEQ interface {
+	NumEQ(Value) (Value, *Closure)
+}
+
+func (v1 *VString) NumEQ(v2 Value) (Value, *Closure) {
+	return v1.ToNumber().NumEQ(v2)
+}
+
+func (v1 *VNumber) NumEQ(v2 Value) (Value, *Closure) {
+	if float64(*v1) == fval(v2) {
+		return Return(v2)
+	} else {
+		return Fail()
+	}
+}
+
+//------------------------------------  NumNE:  e1 ~= e2
+
+type INumNE interface {
+	NumNE(Value) (Value, *Closure)
+}
+
+func (v1 *VString) NumNE(v2 Value) (Value, *Closure) {
+	return v1.ToNumber().NumNE(v2)
+}
+
+func (v1 *VNumber) NumNE(v2 Value) (Value, *Closure) {
+	if float64(*v1) != fval(v2) {
+		return Return(v2)
+	} else {
+		return Fail()
+	}
+}
+
+//------------------------------------  NumGE:  e1 >= e2
+
+type INumGE interface {
+	NumGE(Value) (Value, *Closure)
+}
+
+func (v1 *VString) NumGE(v2 Value) (Value, *Closure) {
+	return v1.ToNumber().NumGE(v2)
+}
+
+func (v1 *VNumber) NumGE(v2 Value) (Value, *Closure) {
+	if float64(*v1) >= fval(v2) {
+		return Return(v2)
+	} else {
+		return Fail()
+	}
+}
+
+//------------------------------------  NumGT:  e1 > e2
+
+type INumGT interface {
+	NumGT(Value) (Value, *Closure)
+}
+
+func (v1 *VString) NumGT(v2 Value) (Value, *Closure) {
+	return v1.ToNumber().NumGT(v2)
+}
+
+func (v1 *VNumber) NumGT(v2 Value) (Value, *Closure) {
+	if float64(*v1) > fval(v2) {
+		return Return(v2)
+	} else {
+		return Fail()
+	}
+}

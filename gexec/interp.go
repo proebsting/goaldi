@@ -95,6 +95,15 @@ func interp(env *g.Env, pr *pr_Info, args ...g.Value) (g.Value, *g.Closure) {
 						label = i.ResumeLabel.Value
 						return v, self
 					}
+				case ir_Key: //#%#% handles failure; needed?
+					v := keyword(i.Name)
+					if v == nil && i.FailLabel != nil {
+						label = i.FailLabel.Value
+						break Chunk
+					}
+					if i.Lhs != nil {
+						f.temps[i.Lhs.Name] = v
+					}
 				case ir_IntLit:
 					f.temps[i.Lhs.Name] =
 						g.NewString(i.Val).ToNumber()
@@ -214,7 +223,7 @@ func opFunc(f *pr_frame, o *ir_operator, argList []interface{}) (g.Value, *g.Clo
 
 	switch op {
 	default:
-		panic("unimplemented operator: " + op)
+		panic(&g.RunErr{"Unimplemented operator", g.NewString(op)})
 	case "1/":
 		v := g.Deref(a[0])
 		if v == g.NilVal {
@@ -229,10 +238,46 @@ func opFunc(f *pr_frame, o *ir_operator, argList []interface{}) (g.Value, *g.Clo
 		} else {
 			return g.Fail()
 		}
-	case "2+":
-		return a[0].(g.IAdd).Add(a[1]), nil
 	case "2:=":
 		return a[0].(g.IVariable).Assign(a[1]), nil
+
+	// string operations
+	case "1*":
+		return a[0].(g.ISize).Size(), nil
+	case "2||":
+		return a[0].(g.IConcat).Concat(a[1]), nil
+
+	// numeric operations
+	case "1+":
+		return a[0].(g.INumerate).Numerate(), nil
+	case "1-":
+		return a[0].(g.INegate).Negate(), nil
+	case "2+":
+		return a[0].(g.IAdd).Add(a[1]), nil
+	case "2-":
+		return a[0].(g.ISub).Sub(a[1]), nil
+	case "2*":
+		return a[0].(g.IMul).Mul(a[1]), nil
+	case "2/":
+		return a[0].(g.IDiv).Div(a[1]), nil
+	case "2//":
+		return a[0].(g.IDivt).Divt(a[1]), nil
+	case "2%":
+		return a[0].(g.IMod).Mod(a[1]), nil
+	case "2^":
+		return a[0].(g.IPower).Power(a[1]), nil
+	case "2<":
+		return a[0].(g.INumLT).NumLT(a[1])
+	case "2<=":
+		return a[0].(g.INumLE).NumLE(a[1])
+	case "2=":
+		return a[0].(g.INumEQ).NumEQ(a[1])
+	case "2~=":
+		return a[0].(g.INumNE).NumNE(a[1])
+	case "2>=":
+		return a[0].(g.INumGE).NumGE(a[1])
+	case "2>":
+		return a[0].(g.INumGT).NumGT(a[1])
 	case "3...":
 		return g.ToBy(a[0], a[1], a[2])
 	}
@@ -247,4 +292,14 @@ func init() {
 	nonDeref["2<-"] = 1
 	nonDeref["2:=:"] = 2
 	nonDeref["2<->"] = 2
+}
+
+//  keyword -- return keyword value
+func keyword(name string) g.Value {
+	switch name {
+	default:
+		panic(&g.RunErr{"Unrecognized keyword", g.NewString(name)})
+	case "null":
+		return g.NilVal
+	}
 }
