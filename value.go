@@ -24,7 +24,7 @@ func V(x interface{}) Value {
 	}
 }
 
-//  NewStatic() creates a new static variable, initialize to nil.
+//  NewStatic() creates a new static variable, initialized to nil.
 func NewStatic() *Value {
 	v := new(Value)
 	*v = NewNil()
