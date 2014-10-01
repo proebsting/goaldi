@@ -79,8 +79,18 @@ func (v *VString) ToString() *VString {
 	return v
 }
 
-//  VString.Number -- return conversion to VNumber, or nil for failure
+//  VString.ToNumber -- return conversion to VNumber, or issue RunErr
 func (v *VString) ToNumber() *VNumber {
+	n := v.TryNumber()
+	if n == nil {
+		panic(&RunErr{"Cannot convert to number", v})
+	}
+	return n
+}
+
+//  VString.TryNumber -- return conversion to VNumber, or nil for failure
+//#%#% this could probably be improved and should allow trailing spaces
+func (v *VString) TryNumber() *VNumber {
 	var f float64
 	var b byte
 	if v.high != nil { // if has exotic characters //#%#% bogus test?
