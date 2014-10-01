@@ -5,6 +5,7 @@ procedure main()
    write(p1())
    every write(p1())
    every write(p2())
+   p3(11,12,13)
 end
 
 procedure p1()
@@ -13,4 +14,8 @@ end
 
 procedure p2()
    suspend 7 | 8 | 9
+end
+
+procedure p3(a,b,c)
+   write(a,b,c)
 end

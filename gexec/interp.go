@@ -187,7 +187,7 @@ func getArgs(f *pr_frame, arglist []interface{}) []g.Value {
 	for i, a := range arglist {
 		switch t := a.(type) {
 		case ir_Tmp:
-			argl[i] = f.temps[t.Name]
+			argl[i] = g.Deref(f.temps[t.Name])
 		default:
 			argl[i] = g.Deref(a)
 		}
