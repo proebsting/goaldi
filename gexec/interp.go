@@ -133,7 +133,7 @@ func interp(env *g.Env, pr *pr_Info, args ...g.Value) (g.Value, *g.Closure) {
 					argl := getArgs(&f, i.ArgList)
 					f.offv = argl[0]
 					v, c := opFunc(&f, i.Fn, argl)
-					if v == nil && i.FailLabel.Value != "" {
+					if v == nil && i.FailLabel != nil {
 						label = i.FailLabel.Value
 						break Chunk
 					}
@@ -147,7 +147,7 @@ func interp(env *g.Env, pr *pr_Info, args ...g.Value) (g.Value, *g.Closure) {
 					argl := getArgs(&f, i.ArgList)
 					f.offv = proc
 					v, c := proc.(g.ICall).Call(env, argl...)
-					if v == nil && i.FailLabel.Value != "" {
+					if v == nil && i.FailLabel != nil {
 						label = i.FailLabel.Value
 						break Chunk
 					}
@@ -160,7 +160,7 @@ func interp(env *g.Env, pr *pr_Info, args ...g.Value) (g.Value, *g.Closure) {
 					if c != nil {
 						v, c = c.Go()
 					}
-					if v == nil && i.FailLabel.Value != "" {
+					if v == nil && i.FailLabel != nil {
 						label = i.FailLabel.Value
 						break Chunk
 					}
