@@ -31,7 +31,7 @@ func (v *VNil) Type() Value {
 
 var type_nil = NewString("nil")
 
-//  VNil.Export returns a nil
+//  VNil.Export returns a Go nil
 func (v *VNil) Export() interface{} {
 	return nil
 }
