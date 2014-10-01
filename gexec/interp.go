@@ -215,6 +215,20 @@ func opFunc(f *pr_frame, o *ir_operator, argList []interface{}) (g.Value, *g.Clo
 	switch op {
 	default:
 		panic("unimplemented operator: " + op)
+	case "1/":
+		v := g.Deref(a[0])
+		if v == g.NilVal {
+			return g.Return(a[0]) // NOT dereferenced!
+		} else {
+			return g.Fail()
+		}
+	case "1\\":
+		v := g.Deref(a[0])
+		if v != g.NilVal {
+			return g.Return(a[0]) // NOT dereferenced!
+		} else {
+			return g.Fail()
+		}
 	case "2+":
 		return a[0].(g.IAdd).Add(a[1]), nil
 	case "2:=":
@@ -227,6 +241,8 @@ func opFunc(f *pr_frame, o *ir_operator, argList []interface{}) (g.Value, *g.Clo
 var nonDeref = make(map[string]int)
 
 func init() {
+	nonDeref["1/"] = 1
+	nonDeref["1\\"] = 1
 	nonDeref["2:="] = 1
 	nonDeref["2<-"] = 1
 	nonDeref["2:=:"] = 2
