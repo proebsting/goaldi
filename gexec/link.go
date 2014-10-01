@@ -27,6 +27,11 @@ func link(parts [][]interface{}) {
 	//  add standard library procedures for names not yet found
 	stdProcs()
 
+	//  remove globals from "Undeclared" list
+	for name := range GlobalDict {
+		delete(Undeclared, name)
+	}
+
 	// set up procedures and report undeclared identifiers
 	for _, pr := range ProcTable {
 		setupProc(pr)

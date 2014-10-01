@@ -58,10 +58,10 @@ func irProcedure(pr *pr_Info) *g.VProcedure {
 }
 
 //  setupProc finishes procedure setup now that the GlobalDict is set
-//	#%#% TODO: handle nested procedures
 //	report undeclared identifiers
 //	create combined dictionary of global + local variables
 //	create chunk table indexed by labels
+//	#%#% TODO: handle nested procedures
 func setupProc(pr *pr_Info) {
 	undeclared(pr)
 	pr.dict = makeDict(pr)
@@ -121,7 +121,7 @@ func undeclared(pr *pr_Info) {
 					warning(fmt.Sprintf("%v %s undeclared",
 						i.Coord, i.Name))
 					// inhibit repeated warnings
-					delete(Undeclared, pr.name)
+					delete(Undeclared, i.Name)
 				}
 			}
 		}
