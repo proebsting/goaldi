@@ -130,29 +130,33 @@ func interp(env *g.Env, pr *pr_Info, args ...g.Value) (g.Value, *g.Closure) {
 					break Chunk
 				case ir_OpFunction:
 					f.coord = i.Coord
-					argl := getArgs(&f, i.ArgList)
-					f.offv = argl[0]
-					v, c := opFunc(&f, i.Fn, argl)
+					v, c := opFunc(&f, i.Fn, i.ArgList)
 					if v == nil && i.FailLabel != nil {
 						label = i.FailLabel.Value
 						break Chunk
 					}
-					f.temps[i.Lhs.Name] = v
+					if i.Lhs != nil {
+						f.temps[i.Lhs.Name] = v
+					}
 					if i.Lhsclosure != nil {
 						f.temps[i.Lhsclosure.Name] = c
 					}
 				case ir_Call:
 					f.coord = i.Coord
 					proc := f.temps[i.Fn.Name]
-					argl := getArgs(&f, i.ArgList)
+					argl := getArgs(&f, 0, i.ArgList)
 					f.offv = proc
 					v, c := proc.(g.ICall).Call(env, argl...)
 					if v == nil && i.FailLabel != nil {
 						label = i.FailLabel.Value
 						break Chunk
 					}
-					f.temps[i.Lhs.Name] = v
-					f.temps[i.Lhsclosure.Name] = c
+					if i.Lhs != nil {
+						f.temps[i.Lhs.Name] = v
+					}
+					if i.Lhsclosure != nil {
+						f.temps[i.Lhsclosure.Name] = c
+					}
 				case ir_ResumeValue:
 					f.coord = i.Coord
 					var v g.Value
@@ -181,14 +185,20 @@ func interp(env *g.Env, pr *pr_Info, args ...g.Value) (g.Value, *g.Closure) {
 }
 
 //  getArgs -- load values from heterogeneous ArgList slice field
-func getArgs(f *pr_frame, arglist []interface{}) []g.Value {
+//  nd is the number of leading arguments that should *not* be dereferenced
+func getArgs(f *pr_frame, nd int, arglist []interface{}) []g.Value {
 	n := len(arglist)
 	argl := make([]g.Value, n, n)
 	for i, a := range arglist {
 		switch t := a.(type) {
 		case ir_Tmp:
-			argl[i] = g.Deref(f.temps[t.Name])
+			a = f.temps[t.Name]
 		default:
+			// nothing to do: use entry as is
+		}
+		if i < nd {
+			argl[i] = a
+		} else {
 			argl[i] = g.Deref(a)
 		}
 	}
@@ -196,14 +206,29 @@ func getArgs(f *pr_frame, arglist []interface{}) []g.Value {
 }
 
 //  opFunc -- implement operator function
-func opFunc(f *pr_frame, o *ir_operator, a []g.Value) (g.Value, *g.Closure) {
+func opFunc(f *pr_frame, o *ir_operator, argList []interface{}) (g.Value, *g.Closure) {
 	op := o.Arity + o.Name
+	nd := nonDeref[op]
+	a := getArgs(f, nd, argList)
+	f.offv = a[0]
+
 	switch op {
 	default:
 		panic("unimplemented operator: " + op)
 	case "2+":
 		return a[0].(g.IAdd).Add(a[1]), nil
+	case "2:=":
+		return a[0].(g.IVariable).Assign(a[1]), nil
 	case "3...":
 		return g.ToBy(a[0], a[1], a[2])
 	}
+}
+
+var nonDeref = make(map[string]int)
+
+func init() {
+	nonDeref["2:="] = 1
+	nonDeref["2<-"] = 1
+	nonDeref["2:=:"] = 2
+	nonDeref["2<->"] = 2
 }
