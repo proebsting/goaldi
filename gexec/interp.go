@@ -53,111 +53,131 @@ func interp(env *g.Env, pr *pr_Info, args ...g.Value) (g.Value, *g.Closure) {
 		f.locals[i] = g.NewNil()
 	}
 
-	// set up tracback recovery
-	defer func() {
-		if p := recover(); p != nil {
-			panic(catchf(p, &f, args))
-		}
-	}()
-
-	// interpret the IR code
+	// set starting point
 	label := pr.ir.CodeStart.Value
-	for {
-		if opt_trace {
-			fmt.Printf("L: %s\n", label)
-		}
-		ilist := pr.insns[label] // look up label
-	Chunk:
-		for _, insn := range ilist { // execute insns in chunk
+
+	// create re-entrant interpreter
+	var self *g.Closure
+	self = &g.Closure{func() (g.Value, *g.Closure) {
+
+		// set up tracback recovery
+		defer func() {
+			if p := recover(); p != nil {
+				panic(catchf(p, &f, args))
+			}
+		}()
+
+		// interpret the IR code
+		for {
 			if opt_trace {
-				fmt.Printf("I: %T %v\n", insn, insn)
+				fmt.Printf("L: %s\n", label)
 			}
-			f.coord = nil //#%#% prudent, but should not be needed
-			f.offv = nil  //#%#% prudent, but should not be needed
-			switch i := insn.(type) {
-			default:
-				panic(&g.RunErr{
-					"Unrecognized interpreter instruction",
-					fmt.Sprintf("%#v", i)})
-			case ir_Fail:
-				return nil, nil
-			case ir_IntLit:
-				f.temps[i.Lhs.Name] =
-					g.NewString(i.Val).ToNumber()
-			case ir_RealLit:
-				f.temps[i.Lhs.Name] =
-					g.NewString(i.Val).ToNumber()
-			case ir_StrLit:
-				f.temps[i.Lhs.Name] =
-					g.NewString(i.Val)
-			case ir_Var:
-				v := pr.dict[i.Name]
-				switch t := v.(type) {
-				case pr_local:
-					v = g.Trapped(&f.locals[int(t)])
-				case pr_param:
-					v = g.Trapped(&f.params[int(t)])
-				case nil:
-					panic("nil in ir_Var; undeclared?")
+			ilist := pr.insns[label] // look up label
+		Chunk:
+			for _, insn := range ilist { // execute insns in chunk
+				if opt_trace {
+					fmt.Printf("I: %T %v\n", insn, insn)
+				}
+				f.coord = nil //#%#% prudent, but s/n/b needed
+				f.offv = nil  //#%#% prudent, but s/n/b needed
+				switch i := insn.(type) {
 				default:
-					// global or static: already trapped
-				}
-				f.temps[i.Lhs.Name] = v
-			case ir_MoveLabel:
-				f.temps[i.Lhs.Name] = i.Label.Value
-			case ir_Goto:
-				label = i.TargetLabel.Value
-				break Chunk
-			case ir_IndirectGoto:
-				label = i.TargetTmpLabel.Name
-				label = f.temps[label].(string)
-				break Chunk
-			case ir_OpFunction:
-				f.coord = i.Coord
-				argl := getArgs(&f, i.ArgList)
-				f.offv = argl[0]
-				v, c := opFunc(&f, i.Fn, argl)
-				if v == nil && i.FailLabel.Value != "" {
-					label = i.FailLabel.Value
-					break Chunk
-				}
-				f.temps[i.Lhs.Name] = v
-				if i.Lhsclosure != nil {
-					f.temps[i.Lhsclosure.Name] = c
-				}
-			case ir_Call:
-				f.coord = i.Coord
-				proc := f.temps[i.Fn.Name]
-				argl := getArgs(&f, i.ArgList)
-				f.offv = proc
-				v, c := proc.(g.ICall).Call(env, argl...)
-				if v == nil && i.FailLabel.Value != "" {
-					label = i.FailLabel.Value
-					break Chunk
-				}
-				f.temps[i.Lhs.Name] = v
-				f.temps[i.Lhsclosure.Name] = c
-			case ir_ResumeValue:
-				f.coord = i.Coord
-				var v g.Value
-				c := f.temps[i.Closure.Name].(*g.Closure)
-				if c != nil {
-					v, c = c.Go()
-				}
-				if v == nil && i.FailLabel.Value != "" {
-					label = i.FailLabel.Value
-					break Chunk
-				}
-				if i.Lhs != nil {
+					panic(&g.RunErr{
+						"Unrecognized interpreter instruction",
+						fmt.Sprintf("%#v", i)})
+				case ir_Fail:
+					return nil, nil
+				case ir_Succeed:
+					v := f.temps[i.Expr.Name]
+					if i.ResumeLabel == nil {
+						return v, nil
+					} else {
+						label = i.ResumeLabel.Value
+						return v, self
+					}
+				case ir_IntLit:
+					f.temps[i.Lhs.Name] =
+						g.NewString(i.Val).ToNumber()
+				case ir_RealLit:
+					f.temps[i.Lhs.Name] =
+						g.NewString(i.Val).ToNumber()
+				case ir_StrLit:
+					f.temps[i.Lhs.Name] =
+						g.NewString(i.Val)
+				case ir_Var:
+					v := pr.dict[i.Name]
+					switch t := v.(type) {
+					case pr_local:
+						v = g.Trapped(&f.locals[int(t)])
+					case pr_param:
+						v = g.Trapped(&f.params[int(t)])
+					case nil:
+						panic("nil in ir_Var; undeclared?")
+					default:
+						// global or static: already trapped
+					}
 					f.temps[i.Lhs.Name] = v
-				}
-				if i.Lhsclosure != nil {
+				case ir_Move:
+					f.temps[i.Lhs.Name] = f.temps[i.Rhs.Name]
+				case ir_MoveLabel:
+					f.temps[i.Lhs.Name] = i.Label.Value
+				case ir_Goto:
+					label = i.TargetLabel.Value
+					break Chunk
+				case ir_IndirectGoto:
+					label = i.TargetTmpLabel.Name
+					label = f.temps[label].(string)
+					break Chunk
+				case ir_OpFunction:
+					f.coord = i.Coord
+					argl := getArgs(&f, i.ArgList)
+					f.offv = argl[0]
+					v, c := opFunc(&f, i.Fn, argl)
+					if v == nil && i.FailLabel.Value != "" {
+						label = i.FailLabel.Value
+						break Chunk
+					}
+					f.temps[i.Lhs.Name] = v
+					if i.Lhsclosure != nil {
+						f.temps[i.Lhsclosure.Name] = c
+					}
+				case ir_Call:
+					f.coord = i.Coord
+					proc := f.temps[i.Fn.Name]
+					argl := getArgs(&f, i.ArgList)
+					f.offv = proc
+					v, c := proc.(g.ICall).Call(env, argl...)
+					if v == nil && i.FailLabel.Value != "" {
+						label = i.FailLabel.Value
+						break Chunk
+					}
+					f.temps[i.Lhs.Name] = v
 					f.temps[i.Lhsclosure.Name] = c
+				case ir_ResumeValue:
+					f.coord = i.Coord
+					var v g.Value
+					c := f.temps[i.Closure.Name].(*g.Closure)
+					if c != nil {
+						v, c = c.Go()
+					}
+					if v == nil && i.FailLabel.Value != "" {
+						label = i.FailLabel.Value
+						break Chunk
+					}
+					if i.Lhs != nil {
+						f.temps[i.Lhs.Name] = v
+					}
+					if i.Lhsclosure != nil {
+						f.temps[i.Lhsclosure.Name] = c
+					}
 				}
 			}
 		}
-	}
-	return nil, nil
+		return nil, nil
+	}}
+
+	// start up the interpreter
+	return self.Resume()
 }
 
 //  getArgs -- load values from heterogeneous ArgList slice field
