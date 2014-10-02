@@ -81,7 +81,7 @@ func interp(env *g.Env, pr *pr_Info, args ...g.Value) (g.Value, *g.Closure) {
 				f.coord = nil //#%#% prudent, but s/n/b needed
 				f.offv = nil  //#%#% prudent, but s/n/b needed
 				switch i := insn.(type) {
-				default:
+				default: // incl ScanSwap, Assign, Deref, Unreachable
 					panic(&g.RunErr{
 						"Unrecognized interpreter instruction",
 						fmt.Sprintf("%#v", i)})
