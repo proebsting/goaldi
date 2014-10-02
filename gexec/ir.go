@@ -65,7 +65,7 @@ func init() {
 type ir_Invocable struct {
 	Coord    *ir_coordinate
 	NameList []string
-	All      interface{}
+	All      string
 }
 
 type ir_Link struct {
@@ -88,7 +88,7 @@ type ir_Function struct {
 	Coord      *ir_coordinate
 	Name       string
 	ParamList  []string
-	Accumulate interface{}
+	Accumulate string // may be nil -> ""
 	LocalList  []string
 	StaticList []string
 	CodeList   []ir_chunk
@@ -141,7 +141,7 @@ type ir_Var struct {
 
 type ir_Key struct {
 	Coord     *ir_coordinate
-	Lhs       *ir_Tmp
+	Lhs       *ir_Tmp // may be nil
 	Name      string
 	FailLabel *ir_Label
 }
@@ -175,7 +175,7 @@ type ir_CsetLit struct {
 type ir_operator struct {
 	Name  string
 	Arity string
-	Rval  interface{}
+	Rval  string // may be nil
 }
 
 func (i ir_operator) String() string {
@@ -184,7 +184,7 @@ func (i ir_operator) String() string {
 
 type ir_MakeClosure struct {
 	Coord *ir_coordinate
-	Lhs   interface{}
+	Lhs   *ir_Tmp
 	Name  string
 }
 
@@ -220,7 +220,7 @@ type ir_MakeList struct {
 
 type ir_Field struct {
 	Coord     *ir_coordinate
-	Lhs       *ir_Tmp
+	Lhs       *ir_Tmp // may be nil
 	Expr      *ir_Tmp
 	Field     string
 	FailLabel *ir_Label
@@ -228,11 +228,11 @@ type ir_Field struct {
 
 type ir_OpFunction struct {
 	Coord      *ir_coordinate
-	Lhs        *ir_Tmp
-	Lhsclosure *ir_TmpClosure
+	Lhs        *ir_Tmp        // may be nil
+	Lhsclosure *ir_TmpClosure // may be nil
 	Fn         *ir_operator
 	ArgList    []interface{} // heterogeneous
-	FailLabel  *ir_Label
+	FailLabel  *ir_Label     // may be nil
 }
 
 type ir_Call struct {
@@ -241,15 +241,15 @@ type ir_Call struct {
 	Lhsclosure *ir_TmpClosure
 	Fn         *ir_Tmp
 	ArgList    []interface{} // heterogeneous
-	FailLabel  *ir_Label
+	FailLabel  *ir_Label     // may be nil
 }
 
 type ir_ResumeValue struct {
 	Coord      *ir_coordinate
-	Lhs        *ir_Tmp
-	Lhsclosure *ir_TmpClosure //#%#% ir_Tmp also seen?
-	Closure    *ir_TmpClosure //#%#% ir_Label also seen?
-	FailLabel  *ir_Label
+	Lhs        *ir_Tmp // may be nil
+	Lhsclosure *ir_TmpClosure
+	Closure    *ir_TmpClosure
+	FailLabel  *ir_Label // may be nil
 }
 
 type ir_EnterInit struct {
@@ -270,7 +270,7 @@ type ir_IndirectGoto struct {
 type ir_Succeed struct {
 	Coord       *ir_coordinate
 	Expr        *ir_Tmp
-	ResumeLabel *ir_Label
+	ResumeLabel *ir_Label // may be nil
 }
 
 type ir_Fail struct {
@@ -286,7 +286,7 @@ type ir_Create struct {
 type ir_CoRet struct {
 	Coord       *ir_coordinate
 	Value       *ir_Tmp
-	ResumeLabel interface{}
+	ResumeLabel *ir_Label
 }
 
 type ir_CoFail struct {
