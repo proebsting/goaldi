@@ -95,12 +95,9 @@ func interp(env *g.Env, pr *pr_Info, args ...g.Value) (g.Value, *g.Closure) {
 						label = i.ResumeLabel.Value
 						return v, self
 					}
-				case ir_Key: //#%#% handles failure; needed?
+				case ir_Key:
 					v := keyword(i.Name)
-					if v == nil && i.FailLabel != nil {
-						label = i.FailLabel.Value
-						break Chunk
-					}
+					//#%#% ignoring failure and FailLabel
 					if i.Lhs != nil {
 						f.temps[i.Lhs.Name] = v
 					}
@@ -140,31 +137,34 @@ func interp(env *g.Env, pr *pr_Info, args ...g.Value) (g.Value, *g.Closure) {
 				case ir_OpFunction:
 					f.coord = i.Coord
 					v, c := opFunc(&f, i.Fn, i.ArgList)
-					if v == nil && i.FailLabel != nil {
+					if v != nil {
+						if i.Lhs != nil {
+							f.temps[i.Lhs.Name] = v
+						}
+						if i.Lhsclosure != nil {
+							f.temps[i.Lhsclosure.Name] = c
+						}
+					} else if i.FailLabel != nil {
 						label = i.FailLabel.Value
 						break Chunk
 					}
-					if i.Lhs != nil {
-						f.temps[i.Lhs.Name] = v
-					}
-					if i.Lhsclosure != nil {
-						f.temps[i.Lhsclosure.Name] = c
-					}
+
 				case ir_Call:
 					f.coord = i.Coord
 					proc := f.temps[i.Fn.Name]
 					argl := getArgs(&f, 0, i.ArgList)
 					f.offv = proc
 					v, c := proc.(g.ICall).Call(env, argl...)
-					if v == nil && i.FailLabel != nil {
+					if v != nil {
+						if i.Lhs != nil {
+							f.temps[i.Lhs.Name] = v
+						}
+						if i.Lhsclosure != nil {
+							f.temps[i.Lhsclosure.Name] = c
+						}
+					} else if i.FailLabel != nil {
 						label = i.FailLabel.Value
 						break Chunk
-					}
-					if i.Lhs != nil {
-						f.temps[i.Lhs.Name] = v
-					}
-					if i.Lhsclosure != nil {
-						f.temps[i.Lhsclosure.Name] = c
 					}
 				case ir_ResumeValue:
 					f.coord = i.Coord
@@ -173,15 +173,16 @@ func interp(env *g.Env, pr *pr_Info, args ...g.Value) (g.Value, *g.Closure) {
 					if c != nil {
 						v, c = c.Go()
 					}
-					if v == nil && i.FailLabel != nil {
+					if v != nil {
+						if i.Lhs != nil {
+							f.temps[i.Lhs.Name] = v
+						}
+						if i.Lhsclosure != nil {
+							f.temps[i.Lhsclosure.Name] = c
+						}
+					} else if i.FailLabel != nil {
 						label = i.FailLabel.Value
 						break Chunk
-					}
-					if i.Lhs != nil {
-						f.temps[i.Lhs.Name] = v
-					}
-					if i.Lhsclosure != nil {
-						f.temps[i.Lhsclosure.Name] = c
 					}
 				}
 			}
@@ -295,6 +296,8 @@ func init() {
 }
 
 //  keyword -- return keyword value
+//  #%#% cannot handle generator keywords
+//  #%#% currently only handles &null
 func keyword(name string) g.Value {
 	switch name {
 	default:
