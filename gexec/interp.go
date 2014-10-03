@@ -241,6 +241,10 @@ func opFunc(f *pr_frame, o *ir_operator, argList []interface{}) (g.Value, *g.Clo
 		} else {
 			return g.Fail()
 		}
+	case "2===":
+		return g.Identical(a[0], a[1]), nil
+	case "2~===":
+		return g.NotIdentical(a[0], a[1]), nil
 	case "2:=":
 		return a[0].(g.IVariable).Assign(a[1]), nil
 
