@@ -255,6 +255,14 @@ func opFunc(f *pr_frame, o *ir_operator, argList []interface{}) (g.Value, *g.Clo
 			// dereference and then index
 			return g.Deref(a[0]).(g.IIndex).Index(a[1])
 		}
+	case "3[:]":
+		if v, ok := a[0].(g.ISlice); ok && o.Rval == "" {
+			// index without dereferencing
+			return v.Slice(a[1], a[2])
+		} else {
+			// dereference and then index
+			return g.Deref(a[0]).(g.ISlice).Slice(a[1], a[2])
+		}
 
 	// string operations
 	case "2||":
@@ -306,6 +314,7 @@ func init() {
 	nonDeref["2:=:"] = 2
 	nonDeref["2<->"] = 2
 	nonDeref["2[]"] = 1
+	nonDeref["3[:]"] = 1
 }
 
 //  keyword -- return keyword value

@@ -53,3 +53,7 @@ type ISize interface {
 type IIndex interface {
 	Index(Value) (Value, *Closure)
 }
+
+type ISlice interface {
+	Slice(Value, Value) (Value, *Closure)
+}

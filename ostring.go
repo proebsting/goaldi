@@ -50,8 +50,38 @@ func (s *VString) Index(x Value) (Value, *Closure) {
 	} else {
 		i = n + i // count backwards from end
 	}
-	if i >= 0 || i > n {
+	if i >= 0 && i < n {
 		return Return(s.slice(i, i+1)) // return 1-char slice
+	} else {
+		return Fail() // subscript out of range
+	}
+}
+
+//------------------------------------  Slice:  e1[e2:e3]
+
+func (s *VNumber) Slice(x Value, y Value) (Value, *Closure) {
+	return s.ToString().Slice(x, y)
+}
+
+func (s *VString) Slice(x Value, y Value) (Value, *Closure) {
+	i := int(x.(Numerable).ToNumber().val())
+	j := int(y.(Numerable).ToNumber().val())
+	n := s.length()
+	if i > 0 {
+		i-- // convert to zero-based
+	} else {
+		i = n + i // count backwards from end
+	}
+	if j > 0 {
+		j-- // convert to zero-based
+	} else {
+		j = n + j // count backwards from end
+	}
+	if i > j {
+		i, j = j, i // indexing was backwards
+	}
+	if i >= 0 && j < n {
+		return Return(s.slice(i, j)) // return slice
 	} else {
 		return Fail() // subscript out of range
 	}

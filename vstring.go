@@ -136,7 +136,7 @@ func (s *VString) length() int {
 }
 
 //  VString.slice -- return substring given Go-style zero-based limits
-func (s *VString) slice(i, j int) *VString {
+func (s *VString) slice(i int, j int) *VString {
 	r := &VString{s.low[i:j], nil}
 	if s.high != nil {
 		r.high = s.high[i:j]
