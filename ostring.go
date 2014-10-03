@@ -11,7 +11,7 @@ func sval(v Value) *VString {
 	}
 }
 
-//------------------------------------  Size:  *e1
+//------------------------------------  Size:  *e
 
 func (s *VNumber) Size() Value {
 	return s.ToString().Size()
@@ -19,6 +19,27 @@ func (s *VNumber) Size() Value {
 
 func (s *VString) Size() Value {
 	return NewNumber(float64(s.length()))
+}
+
+//------------------------------------  Dispense:  !e
+
+func (s *VNumber) Dispense() (Value, *Closure) {
+	return s.ToString().Dispense()
+}
+
+func (s *VString) Dispense() (Value, *Closure) {
+	i := -1
+	n := s.length()
+	var f *Closure
+	f = &Closure{func() (Value, *Closure) {
+		i++
+		if i < n {
+			return s.slice(i, i+1), f
+		} else {
+			return nil, nil
+		}
+	}}
+	return f.Resume()
 }
 
 //------------------------------------  Concat:  e1 || e2

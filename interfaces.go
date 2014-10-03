@@ -50,6 +50,10 @@ type ISize interface {
 	Size() Value
 }
 
+type IDispense interface {
+	Dispense() (Value, *Closure)
+}
+
 type IIndex interface {
 	Index(Value) Value
 }

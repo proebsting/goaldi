@@ -247,6 +247,8 @@ func opFunc(f *pr_frame, o *ir_operator, argList []interface{}) (g.Value, *g.Clo
 	// multi-type operations
 	case "1*":
 		return a[0].(g.ISize).Size(), nil
+	case "1!":
+		return a[0].(g.IDispense).Dispense() //#%#% rvalues only for now
 	case "2[]":
 		if v, ok := a[0].(g.IIndex); ok && o.Rval == "" {
 			// index without dereferencing
