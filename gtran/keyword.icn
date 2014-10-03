@@ -11,5 +11,6 @@ procedure key_generator(name)
 		    "storage"
 		    ])
     }
+    fail # not going to support keywords that return multiple values in Goaldi
     return member(t, name)
 end
