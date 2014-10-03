@@ -137,7 +137,13 @@ func passfunc(t reflect.Type) func(Value) reflect.Value {
 		}
 	case reflect.Interface: //#%#% assuming interface{}
 		return func(v Value) reflect.Value {
-			return reflect.ValueOf(Export(v)) // default conversion
+			var inil interface{}
+			x := Export(v) // default conversion
+			if x == nil {
+				return reflect.ValueOf(&inil).Elem() // nil is tricky
+			} else {
+				return reflect.ValueOf(x) // anything else
+			}
 		}
 	default:
 		panic(&RunErr{"Unimpl paramkind", t})
