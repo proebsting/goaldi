@@ -108,16 +108,116 @@ func (s *VString) Slice(x Value, y Value) Value {
 	}
 }
 
-//------------------------------------  LEqual:  e1 == e2
+//------------------------------------  StrLT:  e1 << e2
 
-//#%#%#% incomplete. need num version, interface, 5more oprs, etc
+type IStrLT interface {
+	StrLT(Value) Value
+}
 
-func (s *VString) LEqual(x Value) Value {
+func (s *VNumber) StrLT(x Value) Value {
+	return s.ToString().StrLT(x)
+}
+
+func (s *VString) StrLT(x Value) Value {
+	if s.compare(sval(x)) < 0 {
+		return x
+	} else {
+		return nil
+	}
+}
+
+//------------------------------------  StrLE:  e1 <<= e2
+
+type IStrLE interface {
+	StrLE(Value) Value
+}
+
+func (s *VNumber) StrLE(x Value) Value {
+	return s.ToString().StrLE(x)
+}
+
+func (s *VString) StrLE(x Value) Value {
+	if s.compare(sval(x)) <= 0 {
+		return x
+	} else {
+		return nil
+	}
+}
+
+//------------------------------------  StrEQ:  e1 == e2
+
+type IStrEQ interface {
+	StrEQ(Value) Value
+}
+
+func (s *VNumber) StrEQ(x Value) Value {
+	return s.ToString().StrEQ(x)
+}
+
+func (s *VString) StrEQ(x Value) Value {
 	t := sval(x)
 	if s.length() != t.length() {
 		return nil // can't match if lengths differ
 	}
 	if s.compare(t) == 0 {
+		return x
+	} else {
+		return nil
+	}
+}
+
+//------------------------------------  StrNE:  e1 ~== e2
+
+type IStrNE interface {
+	StrNE(Value) Value
+}
+
+func (s *VNumber) StrNE(x Value) Value {
+	return s.ToString().StrNE(x)
+}
+
+func (s *VString) StrNE(x Value) Value {
+	t := sval(x)
+	if s.length() != t.length() {
+		return x // can't be equal if lengths differ
+	}
+	if s.compare(t) != 0 {
+		return x
+	} else {
+		return nil
+	}
+}
+
+//------------------------------------  StrGE:  e1 >>= e2
+
+type IStrGE interface {
+	StrGE(Value) Value
+}
+
+func (s *VNumber) StrGE(x Value) Value {
+	return s.ToString().StrGE(x)
+}
+
+func (s *VString) StrGE(x Value) Value {
+	if s.compare(sval(x)) >= 0 {
+		return x
+	} else {
+		return nil
+	}
+}
+
+//------------------------------------  StrGT:  e1 >> e2
+
+type IStrGT interface {
+	StrGT(Value) Value
+}
+
+func (s *VNumber) StrGT(x Value) Value {
+	return s.ToString().StrGT(x)
+}
+
+func (s *VString) StrGT(x Value) Value {
+	if s.compare(sval(x)) > 0 {
 		return x
 	} else {
 		return nil

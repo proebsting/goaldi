@@ -269,6 +269,18 @@ func opFunc(f *pr_frame, o *ir_operator, argList []interface{}) (g.Value, *g.Clo
 	// string operations
 	case "2||":
 		return a[0].(g.IConcat).Concat(a[1]), nil
+	case "2<<":
+		return a[0].(g.IStrLT).StrLT(a[1]), nil
+	case "2<<=":
+		return a[0].(g.IStrLE).StrLE(a[1]), nil
+	case "2==":
+		return a[0].(g.IStrEQ).StrEQ(a[1]), nil
+	case "2~==":
+		return a[0].(g.IStrNE).StrNE(a[1]), nil
+	case "2>>=":
+		return a[0].(g.IStrGE).StrGE(a[1]), nil
+	case "2>>":
+		return a[0].(g.IStrGT).StrGT(a[1]), nil
 
 	// numeric operations
 	case "1+":

@@ -119,7 +119,7 @@ func (s *VString) Identical(x Value) Value {
 	} else if s == t {
 		return t
 	} else {
-		return s.LEqual(t)
+		return s.StrEQ(t)
 	}
 }
 
