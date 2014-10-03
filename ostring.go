@@ -13,10 +13,6 @@ func sval(v Value) *VString {
 
 //------------------------------------  Size:  *e1
 
-type ISize interface {
-	Size() Value
-}
-
 func (s *VNumber) Size() Value {
 	return s.ToString().Size()
 }
@@ -38,6 +34,27 @@ func (s *VNumber) Concat(t Value) Value {
 func (s *VString) Concat(x Value) Value {
 	t := sval(x)
 	return scat(s, 0, s.length(), t, 0, t.length(), EMPTY, 0, 0)
+}
+
+//------------------------------------  Index:  e1[e2]
+
+func (s *VNumber) Index(x Value) (Value, *Closure) {
+	return s.ToString().Index(x)
+}
+
+func (s *VString) Index(x Value) (Value, *Closure) {
+	i := int(x.(Numerable).ToNumber().val())
+	n := s.length()
+	if i > 0 {
+		i-- // convert to zero-based
+	} else {
+		i = n + i // count backwards from end
+	}
+	if i >= 0 || i > n {
+		return Return(s.slice(i, i+1)) // return 1-char slice
+	} else {
+		return Fail() // subscript out of range
+	}
 }
 
 //------------------------------------  LEqual:  e1 == e2

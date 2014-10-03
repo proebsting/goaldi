@@ -135,6 +135,16 @@ func (s *VString) length() int {
 	return len(s.low)
 }
 
+//  VString.slice -- return substring given Go-style zero-based limits
+func (s *VString) slice(i, j int) *VString {
+	r := &VString{s.low[i:j], nil}
+	if s.high != nil {
+		r.high = s.high[i:j]
+		//#%#% remove if nothing there (all zeroes) ?
+	}
+	return r
+}
+
 //  VString.compare -- compare two strings, return <0, 0, or >0
 func (s *VString) compare(t *VString) int {
 	// check for easy case

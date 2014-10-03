@@ -225,6 +225,8 @@ func opFunc(f *pr_frame, o *ir_operator, argList []interface{}) (g.Value, *g.Clo
 	switch op {
 	default:
 		panic(&g.RunErr{"Unimplemented operator", g.NewString(op)})
+
+	// fundamental operations
 	case "1/":
 		v := g.Deref(a[0])
 		if v == g.NilVal {
@@ -242,9 +244,19 @@ func opFunc(f *pr_frame, o *ir_operator, argList []interface{}) (g.Value, *g.Clo
 	case "2:=":
 		return a[0].(g.IVariable).Assign(a[1]), nil
 
-	// string operations
+	// multi-type operations
 	case "1*":
 		return a[0].(g.ISize).Size(), nil
+	case "2[]":
+		if v, ok := a[0].(g.IIndex); ok && o.Rval == "" {
+			// index without dereferencing
+			return v.Index(a[1])
+		} else {
+			// dereference and then index
+			return g.Deref(a[0]).(g.IIndex).Index(a[1])
+		}
+
+	// string operations
 	case "2||":
 		return a[0].(g.IConcat).Concat(a[1]), nil
 
@@ -293,6 +305,7 @@ func init() {
 	nonDeref["2<-"] = 1
 	nonDeref["2:=:"] = 2
 	nonDeref["2<->"] = 2
+	nonDeref["2[]"] = 1
 }
 
 //  keyword -- return keyword value

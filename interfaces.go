@@ -43,3 +43,13 @@ var _ IVariable = &VTrapped{} // confirm implementation by VTrapped
 type IExternal interface {
 	ExternalType() string // return type name for external value
 }
+
+//  Interfaces implemented by multiple types
+
+type ISize interface {
+	Size() Value
+}
+
+type IIndex interface {
+	Index(Value) (Value, *Closure)
+}
