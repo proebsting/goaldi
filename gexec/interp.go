@@ -250,18 +250,18 @@ func opFunc(f *pr_frame, o *ir_operator, argList []interface{}) (g.Value, *g.Clo
 	case "2[]":
 		if v, ok := a[0].(g.IIndex); ok && o.Rval == "" {
 			// index without dereferencing
-			return v.Index(a[1])
+			return v.Index(a[1]), nil
 		} else {
 			// dereference and then index
-			return g.Deref(a[0]).(g.IIndex).Index(a[1])
+			return g.Deref(a[0]).(g.IIndex).Index(a[1]), nil
 		}
 	case "3[:]":
 		if v, ok := a[0].(g.ISlice); ok && o.Rval == "" {
 			// index without dereferencing
-			return v.Slice(a[1], a[2])
+			return v.Slice(a[1], a[2]), nil
 		} else {
 			// dereference and then index
-			return g.Deref(a[0]).(g.ISlice).Slice(a[1], a[2])
+			return g.Deref(a[0]).(g.ISlice).Slice(a[1], a[2]), nil
 		}
 
 	// string operations

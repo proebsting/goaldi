@@ -38,11 +38,11 @@ func (s *VString) Concat(x Value) Value {
 
 //------------------------------------  Index:  e1[e2]
 
-func (s *VNumber) Index(x Value) (Value, *Closure) {
+func (s *VNumber) Index(x Value) Value {
 	return s.ToString().Index(x)
 }
 
-func (s *VString) Index(x Value) (Value, *Closure) {
+func (s *VString) Index(x Value) Value {
 	i := int(x.(Numerable).ToNumber().val())
 	n := s.length()
 	if i > 0 {
@@ -51,19 +51,19 @@ func (s *VString) Index(x Value) (Value, *Closure) {
 		i = n + i // count backwards from end
 	}
 	if i >= 0 && i < n {
-		return Return(s.slice(i, i+1)) // return 1-char slice
+		return s.slice(i, i+1) // return 1-char slice
 	} else {
-		return Fail() // subscript out of range
+		return nil // subscript out of range
 	}
 }
 
 //------------------------------------  Slice:  e1[e2:e3]
 
-func (s *VNumber) Slice(x Value, y Value) (Value, *Closure) {
+func (s *VNumber) Slice(x Value, y Value) Value {
 	return s.ToString().Slice(x, y)
 }
 
-func (s *VString) Slice(x Value, y Value) (Value, *Closure) {
+func (s *VString) Slice(x Value, y Value) Value {
 	i := int(x.(Numerable).ToNumber().val())
 	j := int(y.(Numerable).ToNumber().val())
 	n := s.length()
@@ -81,9 +81,9 @@ func (s *VString) Slice(x Value, y Value) (Value, *Closure) {
 		i, j = j, i // indexing was backwards
 	}
 	if i >= 0 && j < n {
-		return Return(s.slice(i, j)) // return slice
+		return s.slice(i, j) // return slice
 	} else {
-		return Fail() // subscript out of range
+		return nil // subscript out of range
 	}
 }
 
