@@ -101,7 +101,7 @@ func (s *VString) Slice(x Value, y Value) Value {
 	if i > j {
 		i, j = j, i // indexing was backwards
 	}
-	if i >= 0 && j < n {
+	if i >= 0 && j <= n {
 		return s.slice(i, j) // return slice
 	} else {
 		return nil // subscript out of range
