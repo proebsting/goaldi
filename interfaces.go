@@ -44,20 +44,42 @@ type IExternal interface {
 	ExternalType() string // return type name for external value
 }
 
-//  Interfaces implemented by multiple types
+//  Interfaces with variants for both value and variable results
 
-type ISize interface {
-	Size() Value
+type IChoose interface {
+	Choose() Value
+}
+
+type IChooseV interface {
+	ChooseV(IVariable) Value
 }
 
 type IDispense interface {
 	Dispense() (Value, *Closure)
 }
 
+type IDispenseV interface {
+	DispenseV(IVariable) (Value, *Closure)
+}
+
 type IIndex interface {
 	Index(Value) Value
 }
 
+type IIndexV interface {
+	IndexV(IVariable, Value) Value
+}
+
 type ISlice interface {
 	Slice(Value, Value) Value
+}
+
+type ISliceV interface {
+	SliceV(IVariable, Value, Value) Value
+}
+
+//  Other interfaces implemented by multiple types
+
+type ISize interface {
+	Size() Value
 }

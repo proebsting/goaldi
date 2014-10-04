@@ -251,23 +251,41 @@ func opFunc(f *pr_frame, o *ir_operator, argList []interface{}) (g.Value, *g.Clo
 	// multi-type operations
 	case "1*":
 		return a[0].(g.ISize).Size(), nil
-	case "1!":
-		return a[0].(g.IDispense).Dispense() //#%#% rvalues only for now
-	case "2[]":
-		if v, ok := a[0].(g.IIndex); ok && o.Rval == "" {
-			// index without dereferencing
-			return v.Index(a[1]), nil
+	case "1?":
+		dv := g.Deref(a[0])
+		if v, ok := dv.(g.IChooseV); ok && o.Rval == "" {
+			// generate variables
+			return v.ChooseV(a[0].(g.IVariable)), nil
 		} else {
-			// dereference and then index
-			return g.Deref(a[0]).(g.IIndex).Index(a[1]), nil
+			// generate values
+			return dv.(g.IChoose).Choose(), nil
+		}
+	case "1!":
+		dv := g.Deref(a[0])
+		if v, ok := dv.(g.IDispenseV); ok && o.Rval == "" {
+			// generate variables
+			return v.DispenseV(a[0].(g.IVariable))
+		} else {
+			// generate values
+			return dv.(g.IDispense).Dispense()
+		}
+	case "2[]":
+		dv := g.Deref(a[0])
+		if v, ok := dv.(g.IIndexV); ok && o.Rval == "" {
+			// return variable slice
+			return v.IndexV(a[0].(g.IVariable), a[1]), nil
+		} else {
+			// return slice value
+			return dv.(g.IIndex).Index(a[1]), nil
 		}
 	case "3[:]":
-		if v, ok := a[0].(g.ISlice); ok && o.Rval == "" {
-			// index without dereferencing
-			return v.Slice(a[1], a[2]), nil
+		dv := g.Deref(a[0])
+		if v, ok := dv.(g.ISliceV); ok && o.Rval == "" {
+			// return variable slice
+			return v.SliceV(a[0].(g.IVariable), a[1], a[2]), nil
 		} else {
-			// dereference and then index
-			return g.Deref(a[0]).(g.ISlice).Slice(a[1], a[2]), nil
+			// return slice value
+			return dv.(g.ISlice).Slice(a[1], a[2]), nil
 		}
 
 	// string operations
@@ -327,6 +345,8 @@ var nonDeref = make(map[string]int)
 func init() {
 	nonDeref["1/"] = 1
 	nonDeref["1\\"] = 1
+	nonDeref["1?"] = 1
+	nonDeref["1!"] = 1
 	nonDeref["2:="] = 1
 	nonDeref["2<-"] = 1
 	nonDeref["2:=:"] = 2
