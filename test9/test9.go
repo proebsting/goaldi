@@ -24,10 +24,10 @@ func gmain(env *g.Env, args ...g.Value) (g.Value, *g.Closure) {
 
 	// boilerplate prologue
 	var ev interface{}
-	var ln = "100"
+	var coord = "test.gdi:100:00"
 	defer func() {
 		if p := recover(); p != nil {
-			panic(g.Catch(p, ev, "test.gdi", ln, "gmain", args))
+			panic(g.Catch(p, ev, coord, "gmain", args))
 		}
 	}()
 
@@ -41,10 +41,10 @@ func gsubr(env *g.Env, args ...g.Value) (g.Value, *g.Closure) {
 
 	// boilerplate prologue
 	var ev interface{}
-	var ln = "200"
+	var coord = "test.gdi:200:00"
 	defer func() {
 		if p := recover(); p != nil {
-			panic(g.Catch(p, ev, "test.gdi", ln, "gsubr", args))
+			panic(g.Catch(p, ev, coord, "gsubr", args))
 		}
 	}()
 
@@ -53,7 +53,7 @@ func gsubr(env *g.Env, args ...g.Value) (g.Value, *g.Closure) {
 	v.(*MyValue).value = 19
 	f.Println(v)
 	f.Println("Expect PANIC:")
-	ln = "222"
+	coord = "test.gdi:222:22"
 	ev = v
 	v.(g.IAdd).Add(g.NewNumber(23)) // Add not impl by MyValue
 	return g.Fail()

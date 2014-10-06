@@ -14,18 +14,13 @@ type pr_frame struct {
 	params []g.Value          // parameters
 	locals []g.Value          // locals
 	temps  map[string]g.Value // temporaries
-	coord  *ir_coordinate     // last known source location
+	coord  string             // last known source location
 	offv   g.Value            // offending value for traceback
 }
 
 //  catchf -- annotate a panic value with procedure frame information
 func catchf(p interface{}, f *pr_frame, args []g.Value) *g.CallFrame {
-	if f.coord != nil {
-		return g.Catch(p, f.offv,
-			f.coord.File, f.coord.Line, f.info.name, args)
-	} else {
-		return g.Catch(p, f.offv, "file ?", "?", f.info.name, args)
-	}
+	return g.Catch(p, f.offv, f.coord, f.info.name, args)
 }
 
 //  interp -- interpret one procedure
@@ -54,7 +49,7 @@ func interp(env *g.Env, pr *pr_Info, args ...g.Value) (g.Value, *g.Closure) {
 	}
 
 	// set starting point
-	label := pr.ir.CodeStart.Value
+	label := pr.ir.CodeStart
 
 	// create re-entrant interpreter
 	var self *g.Closure
@@ -78,8 +73,8 @@ func interp(env *g.Env, pr *pr_Info, args ...g.Value) (g.Value, *g.Closure) {
 				if opt_trace {
 					fmt.Printf("I: %T %v\n", insn, insn)
 				}
-				f.coord = nil //#%#% prudent, but s/n/b needed
-				f.offv = nil  //#%#% prudent, but s/n/b needed
+				f.coord = "" //#%#% prudent, but s/n/b needed
+				f.offv = nil //#%#% prudent, but s/n/b needed
 				switch i := insn.(type) {
 				default: // incl ScanSwap, Assign, Deref, Unreachable
 					panic(&g.RunErr{
@@ -88,27 +83,27 @@ func interp(env *g.Env, pr *pr_Info, args ...g.Value) (g.Value, *g.Closure) {
 				case ir_Fail:
 					return nil, nil
 				case ir_Succeed:
-					v := f.temps[i.Expr.Name]
-					if i.ResumeLabel == nil {
+					v := f.temps[i.Expr]
+					if i.ResumeLabel == "" {
 						return v, nil
 					} else {
-						label = i.ResumeLabel.Value
+						label = i.ResumeLabel
 						return v, self
 					}
 				case ir_Key:
 					v := keyword(i.Name)
 					//#%#% ignoring failure and FailLabel
-					if i.Lhs != nil {
-						f.temps[i.Lhs.Name] = v
+					if i.Lhs != "" {
+						f.temps[i.Lhs] = v
 					}
 				case ir_IntLit:
-					f.temps[i.Lhs.Name] =
+					f.temps[i.Lhs] =
 						g.NewString(i.Val).ToNumber()
 				case ir_RealLit:
-					f.temps[i.Lhs.Name] =
+					f.temps[i.Lhs] =
 						g.NewString(i.Val).ToNumber()
 				case ir_StrLit:
-					f.temps[i.Lhs.Name] =
+					f.temps[i.Lhs] =
 						g.NewString(i.Val)
 				case ir_Var:
 					v := pr.dict[i.Name]
@@ -122,66 +117,66 @@ func interp(env *g.Env, pr *pr_Info, args ...g.Value) (g.Value, *g.Closure) {
 					default:
 						// global or static: already trapped
 					}
-					f.temps[i.Lhs.Name] = v
+					f.temps[i.Lhs] = v
 				case ir_Move:
-					f.temps[i.Lhs.Name] = f.temps[i.Rhs.Name]
+					f.temps[i.Lhs] = f.temps[i.Rhs]
 				case ir_MoveLabel:
-					f.temps[i.Lhs.Name] = i.Label.Value
+					f.temps[i.Lhs] = i.Label
 				case ir_Goto:
-					label = i.TargetLabel.Value
+					label = i.TargetLabel
 					break Chunk
 				case ir_IndirectGoto:
-					label = i.TargetTmpLabel.Name
+					label = i.TargetTmpLabel
 					label = f.temps[label].(string)
 					break Chunk
 				case ir_OpFunction:
 					f.coord = i.Coord
 					v, c := opFunc(&f, i.Fn, i.ArgList)
 					if v != nil {
-						if i.Lhs != nil {
-							f.temps[i.Lhs.Name] = v
+						if i.Lhs != "" {
+							f.temps[i.Lhs] = v
 						}
-						if i.Lhsclosure != nil {
-							f.temps[i.Lhsclosure.Name] = c
+						if i.Lhsclosure != "" {
+							f.temps[i.Lhsclosure] = c
 						}
-					} else if i.FailLabel != nil {
-						label = i.FailLabel.Value
+					} else if i.FailLabel != "" {
+						label = i.FailLabel
 						break Chunk
 					}
 
 				case ir_Call:
 					f.coord = i.Coord
-					proc := f.temps[i.Fn.Name]
+					proc := f.temps[i.Fn]
 					argl := getArgs(&f, 0, i.ArgList)
 					f.offv = proc
 					v, c := proc.(g.ICall).Call(env, argl...)
 					if v != nil {
-						if i.Lhs != nil {
-							f.temps[i.Lhs.Name] = v
+						if i.Lhs != "" {
+							f.temps[i.Lhs] = v
 						}
-						if i.Lhsclosure != nil {
-							f.temps[i.Lhsclosure.Name] = c
+						if i.Lhsclosure != "" {
+							f.temps[i.Lhsclosure] = c
 						}
-					} else if i.FailLabel != nil {
-						label = i.FailLabel.Value
+					} else if i.FailLabel != "" {
+						label = i.FailLabel
 						break Chunk
 					}
 				case ir_ResumeValue:
 					f.coord = i.Coord
 					var v g.Value
-					c := f.temps[i.Closure.Name].(*g.Closure)
+					c := f.temps[i.Closure].(*g.Closure)
 					if c != nil {
 						v, c = c.Go()
 					}
 					if v != nil {
-						if i.Lhs != nil {
-							f.temps[i.Lhs.Name] = v
+						if i.Lhs != "" {
+							f.temps[i.Lhs] = v
 						}
-						if i.Lhsclosure != nil {
-							f.temps[i.Lhsclosure.Name] = c
+						if i.Lhsclosure != "" {
+							f.temps[i.Lhsclosure] = c
 						}
-					} else if i.FailLabel != nil {
-						label = i.FailLabel.Value
+					} else if i.FailLabel != "" {
+						label = i.FailLabel
 						break Chunk
 					}
 				}
@@ -201,8 +196,8 @@ func getArgs(f *pr_frame, nd int, arglist []interface{}) []g.Value {
 	argl := make([]g.Value, n, n)
 	for i, a := range arglist {
 		switch t := a.(type) {
-		case ir_Tmp:
-			a = f.temps[t.Name]
+		case string:
+			a = f.temps[t]
 		default:
 			// nothing to do: use entry as is
 		}
