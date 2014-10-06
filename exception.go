@@ -27,8 +27,7 @@ func (e *RunErr) String() string {
 type CallFrame struct {
 	cause interface{} // underlying panic call
 	offv  Value       // offending value
-	fname string      // source filename
-	ln    string      // source line number
+	coord string      // source coords (file:line:colm)
 	pname string      // procedure name
 	args  []Value     // procedure arguments
 }
@@ -52,9 +51,9 @@ func Run(p Value, arglist []Value) {
 }
 
 //  Catch annotates a caught panic value with traceback information
-func Catch(p interface{}, ev Value, fname string, ln string,
+func Catch(p interface{}, ev Value, coord string,
 	procname string, arglist []Value) *CallFrame {
-	return &CallFrame{p, ev, fname, ln, procname, arglist}
+	return &CallFrame{p, ev, coord, procname, arglist}
 }
 
 //  Diagnose handles traceback for a panic caught by Run()
@@ -66,8 +65,8 @@ func Diagnose(f io.Writer, v Value) bool {
 		if _, ok := x.cause.(*runtime.TypeAssertionError); ok {
 			fmt.Fprintf(f, "Offending value: %v\n", x.offv)
 		}
-		fmt.Fprintf(f, "Called by %s(%v) at %s line %s\n",
-			x.pname, x.args, x.fname, x.ln)
+		fmt.Fprintf(f, "Called by %s(%v) at %s\n",
+			x.pname, x.args, x.coord)
 		return rv
 	case *RunErr:
 		fmt.Fprintln(f, x.Msg)

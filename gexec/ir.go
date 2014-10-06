@@ -42,7 +42,6 @@ var irlist = [...]interface{}{
 	&ir_CoFail{},
 	&ir_ScanSwap{},
 	&ir_Unreachable{},
-	&ir_coordinate{},
 }
 
 //  struct table indexed by type names
@@ -59,29 +58,29 @@ func init() {
 //  all fields must be capitalized for access by the reflection package
 
 type ir_Invocable struct {
-	Coord    *ir_coordinate
+	Coord    string
 	NameList []string
 	All      string
 }
 
 type ir_Link struct {
-	Coord    *ir_coordinate
+	Coord    string
 	NameList []string
 }
 
 type ir_Record struct {
-	Coord     *ir_coordinate
+	Coord     string
 	Name      string
 	FieldList []string
 }
 
 type ir_Global struct {
-	Coord    *ir_coordinate
+	Coord    string
 	NameList []string
 }
 
 type ir_Function struct {
-	Coord      *ir_coordinate
+	Coord      string
 	Name       string
 	ParamList  []string
 	Accumulate string // may be nil
@@ -98,39 +97,39 @@ type ir_chunk struct {
 }
 
 type ir_Var struct {
-	Coord *ir_coordinate
+	Coord string
 	Lhs   string
 	Name  string
 }
 
 type ir_Key struct {
-	Coord     *ir_coordinate
+	Coord     string
 	Lhs       string // may be nil
 	Name      string
 	FailLabel string // may be nil
 }
 
 type ir_IntLit struct {
-	Coord *ir_coordinate
+	Coord string
 	Lhs   string
 	Val   string
 }
 
 type ir_RealLit struct {
-	Coord *ir_coordinate
+	Coord string
 	Lhs   string
 	Val   string
 }
 
 type ir_StrLit struct {
-	Coord *ir_coordinate
+	Coord string
 	Lhs   string
 	Len   string
 	Val   string
 }
 
 type ir_CsetLit struct {
-	Coord *ir_coordinate
+	Coord string
 	Lhs   string
 	Len   string
 	Val   string
@@ -147,43 +146,43 @@ func (i ir_operator) String() string {
 }
 
 type ir_MakeClosure struct {
-	Coord *ir_coordinate
+	Coord string
 	Lhs   string
 	Name  string
 }
 
 type ir_Move struct {
-	Coord *ir_coordinate
+	Coord string
 	Lhs   string
 	Rhs   string
 }
 
 type ir_MoveLabel struct {
-	Coord *ir_coordinate
+	Coord string
 	Lhs   string
 	Label string
 }
 
 type ir_Deref struct {
-	Coord *ir_coordinate
+	Coord string
 	Lhs   string
 	Value string
 }
 
 type ir_Assign struct {
-	Coord  *ir_coordinate
+	Coord  string
 	Target string
 	Value  string
 }
 
 type ir_MakeList struct {
-	Coord     *ir_coordinate
+	Coord     string
 	Lhs       string
 	ValueList []interface{} // heterogeneous
 }
 
 type ir_Field struct {
-	Coord     *ir_coordinate
+	Coord     string
 	Lhs       string // may be nil
 	Expr      string
 	Field     string
@@ -191,7 +190,7 @@ type ir_Field struct {
 }
 
 type ir_OpFunction struct {
-	Coord      *ir_coordinate
+	Coord      string
 	Lhs        string // may be nil
 	Lhsclosure string // may be nil
 	Fn         *ir_operator
@@ -200,7 +199,7 @@ type ir_OpFunction struct {
 }
 
 type ir_Call struct {
-	Coord      *ir_coordinate
+	Coord      string
 	Lhs        string
 	Lhsclosure string
 	Fn         string
@@ -209,7 +208,7 @@ type ir_Call struct {
 }
 
 type ir_ResumeValue struct {
-	Coord      *ir_coordinate
+	Coord      string
 	Lhs        string // may be nil
 	Lhsclosure string
 	Closure    string
@@ -217,62 +216,52 @@ type ir_ResumeValue struct {
 }
 
 type ir_EnterInit struct {
-	Coord      *ir_coordinate
+	Coord      string
 	StartLabel string
 }
 
 type ir_Goto struct {
-	Coord       *ir_coordinate
+	Coord       string
 	TargetLabel string
 }
 
 type ir_IndirectGoto struct {
-	Coord          *ir_coordinate
+	Coord          string
 	TargetTmpLabel string
 }
 
 type ir_Succeed struct {
-	Coord       *ir_coordinate
+	Coord       string
 	Expr        string
 	ResumeLabel string // may be nil
 }
 
 type ir_Fail struct {
-	Coord *ir_coordinate
+	Coord string
 }
 
 type ir_Create struct {
-	Coord      *ir_coordinate
+	Coord      string
 	Lhs        string
 	CoexpLabel string
 }
 
 type ir_CoRet struct {
-	Coord       *ir_coordinate
+	Coord       string
 	Value       string
 	ResumeLabel string
 }
 
 type ir_CoFail struct {
-	Coord *ir_coordinate
+	Coord string
 }
 
 type ir_ScanSwap struct {
-	Coord   *ir_coordinate
+	Coord   string
 	Subject string
 	Pos     string
 }
 
 type ir_Unreachable struct {
-	Coord *ir_coordinate
-}
-
-type ir_coordinate struct {
-	File   string
-	Line   string
-	Column string
-}
-
-func (i ir_coordinate) String() string {
-	return fmt.Sprintf("%s:%s:%s", i.File, i.Line, i.Column)
+	Coord string
 }

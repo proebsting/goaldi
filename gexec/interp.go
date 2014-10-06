@@ -14,18 +14,13 @@ type pr_frame struct {
 	params []g.Value          // parameters
 	locals []g.Value          // locals
 	temps  map[string]g.Value // temporaries
-	coord  *ir_coordinate     // last known source location
+	coord  string             // last known source location
 	offv   g.Value            // offending value for traceback
 }
 
 //  catchf -- annotate a panic value with procedure frame information
 func catchf(p interface{}, f *pr_frame, args []g.Value) *g.CallFrame {
-	if f.coord != nil {
-		return g.Catch(p, f.offv,
-			f.coord.File, f.coord.Line, f.info.name, args)
-	} else {
-		return g.Catch(p, f.offv, "file ?", "?", f.info.name, args)
-	}
+	return g.Catch(p, f.offv, f.coord, f.info.name, args)
 }
 
 //  interp -- interpret one procedure
@@ -78,8 +73,8 @@ func interp(env *g.Env, pr *pr_Info, args ...g.Value) (g.Value, *g.Closure) {
 				if opt_trace {
 					fmt.Printf("I: %T %v\n", insn, insn)
 				}
-				f.coord = nil //#%#% prudent, but s/n/b needed
-				f.offv = nil  //#%#% prudent, but s/n/b needed
+				f.coord = "" //#%#% prudent, but s/n/b needed
+				f.offv = nil //#%#% prudent, but s/n/b needed
 				switch i := insn.(type) {
 				default: // incl ScanSwap, Assign, Deref, Unreachable
 					panic(&g.RunErr{
