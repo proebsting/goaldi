@@ -43,7 +43,7 @@ procedure ir_a_Field(p, st, inuse, target, bounded, rval)
     suspend ir_chunk(p.ir.start, [ ir_Goto(ir_coord(p.coord), p.expr.ir.start) ])
     suspend ir_chunk(p.ir.resume, [ ir_Goto(ir_coord(p.coord), p.expr.ir.resume) ])
     suspend ir_chunk(p.expr.ir.success, [
-        ir_Field(ir_coord(p.coord), target, t, p.field.id, p.expr.ir.resume),
+        ir_Field(ir_coord(p.coord), target, t, p.field.id, rval, p.expr.ir.resume),
         ir_Goto(ir_coord(p.coord), p.ir.success)
         ])
     suspend ir_chunk(p.expr.ir.failure, [ ir_Goto(ir_coord(p.coord), p.ir.failure) ])
@@ -1492,10 +1492,12 @@ procedure ir_opfn(coord, lhs, lhsclsr, op, args, failLabel)
         ])
         neverfail[3] := set([ ])
     }
+
+    op.arity = *args | runerr(500, op)
     if \ir_noerror2failure & member(neverfail[op.arity],op.name) then {
         failLabel := &null
     }
-    return ir_OpFunction(coord, lhs, lhsclsr, op, args, failLabel)
+    return ir_OpFunction(coord, lhs, lhsclsr, op.name, args, op.rval, failLabel)
 end
 
 procedure ir_init(p)
