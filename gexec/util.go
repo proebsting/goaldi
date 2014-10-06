@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"os"
 	"reflect"
+	"runtime/pprof"
 	"sort"
 	"syscall"
 	"time"
@@ -23,6 +24,7 @@ func checkError(e error) {
 //  abort issues an error message and aborts.
 func abort(e interface{}) {
 	fmt.Fprintln(os.Stderr, e)
+	pprof.StopCPUProfile()
 	os.Exit(1)
 }
 

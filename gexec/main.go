@@ -6,6 +6,7 @@ import (
 	"fmt"
 	g "goaldi"
 	"os"
+	"runtime/pprof"
 )
 
 type UNKNOWN interface{} // temporary designation for type TBD
@@ -24,6 +25,14 @@ func main() {
 	// handle command line
 	files, args := options()
 
+	// start profiling if requested
+	if opt_profile {
+		pfile, err := os.Create("PROFILE")
+		checkError(err)
+		pprof.StartCPUProfile(pfile)
+		defer pprof.StopCPUProfile()
+	}
+
 	// load the IR code
 	parts := make([][]interface{}, 0)
 	if len(files) == 0 {
@@ -39,6 +48,7 @@ func main() {
 	link(parts)
 	showInterval("linking")
 	if nFatals > 0 {
+		pprof.StopCPUProfile()
 		os.Exit(1)
 	}
 
@@ -56,6 +66,7 @@ func main() {
 
 	// quit now if -c was given
 	if opt_noexec {
+		pprof.StopCPUProfile()
 		os.Exit(0)
 	}
 

@@ -8,6 +8,7 @@ import (
 	"os"
 	"runtime"
 	"runtime/debug"
+	"runtime/pprof"
 	"strings"
 )
 
@@ -43,6 +44,7 @@ func Run(p Value, arglist []Value) {
 				fmt.Fprintf(os.Stderr, "Go stack:\n%s\n",
 					debug.Stack()) // write Go stack trace
 			}
+			pprof.StopCPUProfile()
 			os.Exit(1)
 		}
 	}()

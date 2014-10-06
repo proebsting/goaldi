@@ -4,11 +4,11 @@
 #
 #  -c	compile only, producing IR on file.gir (interpreter options ignored)
 #
-#  Options -l -t -v -A -J -T are passed along to the interpreter.
+#  Options -l -t -v -A -J -P -T are passed along to the interpreter.
 #
 #  Assumes that gtran and gexec are in the search path.
 
-FLAGS=cltvAJT
+FLAGS=cltvAJPT
 USAGE="usage: $0 [-$FLAGS] file [arg...]"
 
 #  process options
@@ -17,7 +17,7 @@ CFLAG=
 while getopts $FLAGS C; do
     case $C in
 	c)		CFLAG=$C;;
-	[ltvAJT])	XOPTS="$XOPTS -$C";;
+	[ltvAJPT])	XOPTS="$XOPTS -$C";;
 	?)		echo 1>&2 $USAGE; exit 1;;
     esac
 done

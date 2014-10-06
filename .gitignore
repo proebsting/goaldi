@@ -5,6 +5,7 @@
 *.err
 *.gir
 *.u[12]
+PROFILE
 gtran/do_ops.icn
 gtran/interface.icn
 gtran/interfacegen
