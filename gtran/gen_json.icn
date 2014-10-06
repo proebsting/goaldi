@@ -4,37 +4,39 @@ procedure json_File(irgen, flagList)
     local p, flag, s
 
     flag := &null
-    s := "["
+    s := "[\n"
     while p := @irgen do {
-        if \flag then s ||:= ", "
+        if \flag then s ||:= ",\n"
 	flag := "true"
 
-	s ||:= json(p)
+	s ||:= json(p, "")
     }
-    s ||:= "]"
+    s ||:= "\n]"
     return s
 end
 
-procedure json_list(p)
+procedure json_list(p, indent)
 	local s, flag, i
 
 	s := "["
 	flag := &null
 	every i := !p do {
-		if \flag then s ||:= ", "
+		if \flag then {
+			s ||:= ","
+		}
 		flag := "true"
-		s ||:= json(i)
+		s ||:= "\n" || indent || "\t" || json(i, indent || "\t")
 	}
-	s ||:= "]"
+	s ||:= "\n" || indent || "]"
 	return s
 end
 
-procedure json_record(p)
+procedure json_record(p, indent)
 	local s, i, t
 
-	s := "{ \"tag\" : " || image(type(p))
+	s := "{\n" || indent || "\t\"tag\" : " || image(type(p))
 	every i := 1 to *p do {
-		s ||:= ", "
+		s ||:= ",\n" || indent || "\t"
 		name(p[i]) ? {
 			tab(upto('.'))
 			move(1)
@@ -42,14 +44,14 @@ procedure json_record(p)
 		}
 		s ||:= image(t)
 		s ||:= " : "
-		s ||:= json(p[i])
+		s ||:= json(p[i], indent || "\t")
 	}
-	s ||:= "}"
+	s ||:= "\n" || indent || "}"
 	return s
 	
 end
 
-procedure json(p)
+procedure json(p, indent)
 	if /p then {
 		return "null"
 	}
@@ -60,11 +62,11 @@ procedure json(p)
 	}
 
 	if match("record", image(p)) & type(p) ~== "string" then {
-		return json_record(p)
+		return json_record(p, indent)
 	} else {
 		case type(p) of {
-		"list": return json_list(p)
-		"set": return json_list(p)
+		"list": return json_list(p, indent)
+		"set": return json_list(p, indent)
 		"cset" | "string": return json_image(string(p))
 		"real" | "integer": return image(string(p))
 		default: runerr(500, p)
