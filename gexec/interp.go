@@ -131,7 +131,7 @@ func interp(env *g.Env, pr *pr_Info, args ...g.Value) (g.Value, *g.Closure) {
 					break Chunk
 				case ir_OpFunction:
 					f.coord = i.Coord
-					v, c := opFunc(&f, i.Fn, i.ArgList)
+					v, c := opFunc(&f, &i)
 					if v != nil {
 						if i.Lhs != "" {
 							f.temps[i.Lhs] = v
@@ -211,10 +211,9 @@ func getArgs(f *pr_frame, nd int, arglist []interface{}) []g.Value {
 }
 
 //  opFunc -- implement operator function
-func opFunc(f *pr_frame, o *ir_operator, argList []interface{}) (g.Value, *g.Closure) {
-	op := o.Arity + o.Name
-	nd := nonDeref[op]
-	a := getArgs(f, nd, argList)
+func opFunc(f *pr_frame, i *ir_OpFunction) (g.Value, *g.Closure) {
+	op := string('0'+len(i.ArgList)) + i.Fn
+	a := getArgs(f, nonDeref[op], i.ArgList)
 	f.offv = a[0]
 
 	switch op {
@@ -248,7 +247,7 @@ func opFunc(f *pr_frame, o *ir_operator, argList []interface{}) (g.Value, *g.Clo
 		return a[0].(g.ISize).Size(), nil
 	case "1?":
 		dv := g.Deref(a[0])
-		if v, ok := dv.(g.IChooseV); ok && o.Rval == "" {
+		if v, ok := dv.(g.IChooseV); ok && i.Rval == "" {
 			// generate variables
 			return v.ChooseV(a[0].(g.IVariable)), nil
 		} else {
@@ -257,7 +256,7 @@ func opFunc(f *pr_frame, o *ir_operator, argList []interface{}) (g.Value, *g.Clo
 		}
 	case "1!":
 		dv := g.Deref(a[0])
-		if v, ok := dv.(g.IDispenseV); ok && o.Rval == "" {
+		if v, ok := dv.(g.IDispenseV); ok && i.Rval == "" {
 			// generate variables
 			return v.DispenseV(a[0].(g.IVariable))
 		} else {
@@ -266,7 +265,7 @@ func opFunc(f *pr_frame, o *ir_operator, argList []interface{}) (g.Value, *g.Clo
 		}
 	case "2[]":
 		dv := g.Deref(a[0])
-		if v, ok := dv.(g.IIndexV); ok && o.Rval == "" {
+		if v, ok := dv.(g.IIndexV); ok && i.Rval == "" {
 			// return variable slice
 			return v.IndexV(a[0].(g.IVariable), a[1]), nil
 		} else {
@@ -275,7 +274,7 @@ func opFunc(f *pr_frame, o *ir_operator, argList []interface{}) (g.Value, *g.Clo
 		}
 	case "3[:]":
 		dv := g.Deref(a[0])
-		if v, ok := dv.(g.ISliceV); ok && o.Rval == "" {
+		if v, ok := dv.(g.ISliceV); ok && i.Rval == "" {
 			// return variable slice
 			return v.SliceV(a[0].(g.IVariable), a[1], a[2]), nil
 		} else {

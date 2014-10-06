@@ -3,7 +3,6 @@
 package main
 
 import (
-	"fmt"
 	"reflect"
 )
 
@@ -21,7 +20,6 @@ var irlist = [...]interface{}{
 	&ir_RealLit{},
 	&ir_StrLit{},
 	&ir_CsetLit{},
-	&ir_operator{},
 	&ir_MakeClosure{},
 	&ir_Move{},
 	&ir_MoveLabel{},
@@ -135,16 +133,6 @@ type ir_CsetLit struct {
 	Val   string
 }
 
-type ir_operator struct {
-	Name  string
-	Arity string
-	Rval  string // may be nil
-}
-
-func (i ir_operator) String() string {
-	return fmt.Sprintf("%s%s %v", i.Arity, i.Name, i.Rval)
-}
-
 type ir_MakeClosure struct {
 	Coord string
 	Lhs   string
@@ -186,6 +174,7 @@ type ir_Field struct {
 	Lhs       string // may be nil
 	Expr      string
 	Field     string
+	Rval      string // may be nil
 	FailLabel string
 }
 
@@ -193,8 +182,9 @@ type ir_OpFunction struct {
 	Coord      string
 	Lhs        string // may be nil
 	Lhsclosure string // may be nil
-	Fn         *ir_operator
+	Fn         string
 	ArgList    []interface{} // heterogeneous
+	Rval       string        // may be nil
 	FailLabel  string        // may be nil
 }
 
