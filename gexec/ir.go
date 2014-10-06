@@ -15,10 +15,6 @@ var irlist = [...]interface{}{
 	&ir_Global{},
 	&ir_Function{},
 	&ir_chunk{},
-	&ir_Tmp{},
-	&ir_TmpLabel{},
-	&ir_TmpClosure{},
-	&ir_Label{},
 	&ir_Var{},
 	&ir_Key{},
 	&ir_IntLit{},
@@ -88,86 +84,54 @@ type ir_Function struct {
 	Coord      *ir_coordinate
 	Name       string
 	ParamList  []string
-	Accumulate string // may be nil -> ""
+	Accumulate string // may be nil
 	LocalList  []string
 	StaticList []string
 	CodeList   []ir_chunk
-	CodeStart  *ir_Label
+	CodeStart  string
 	Lvalset    []string
 }
 
 type ir_chunk struct {
-	Label    *ir_Label
+	Label    string
 	InsnList []interface{} // heterogeneous
-}
-
-type ir_Tmp struct {
-	Name string
-}
-
-func (i ir_Tmp) String() string {
-	return fmt.Sprintf("%s", i.Name)
-}
-
-type ir_TmpLabel struct {
-	Name string
-}
-
-func (i ir_TmpLabel) String() string {
-	return fmt.Sprintf("%s", i.Name)
-}
-
-type ir_TmpClosure struct {
-	Name string
-}
-
-func (i ir_TmpClosure) String() string {
-	return fmt.Sprintf("%s", i.Name)
-}
-
-type ir_Label struct {
-	Value string
-}
-
-func (i ir_Label) String() string {
-	return fmt.Sprintf("%s", i.Value)
 }
 
 type ir_Var struct {
 	Coord *ir_coordinate
-	Lhs   *ir_Tmp
+	Lhs   string
 	Name  string
 }
 
 type ir_Key struct {
 	Coord     *ir_coordinate
-	Lhs       *ir_Tmp // may be nil
+	Lhs       string // may be nil
 	Name      string
-	FailLabel *ir_Label
+	FailLabel string // may be nil
 }
 
 type ir_IntLit struct {
 	Coord *ir_coordinate
-	Lhs   *ir_Tmp
+	Lhs   string
 	Val   string
 }
 
 type ir_RealLit struct {
 	Coord *ir_coordinate
-	Lhs   *ir_Tmp
+	Lhs   string
 	Val   string
 }
 
 type ir_StrLit struct {
 	Coord *ir_coordinate
-	Lhs   *ir_Tmp
+	Lhs   string
 	Len   string
 	Val   string
 }
 
 type ir_CsetLit struct {
 	Coord *ir_coordinate
-	Lhs   *ir_Tmp
+	Lhs   string
 	Len   string
 	Val   string
 }
@@ -184,93 +148,93 @@ func (i ir_operator) String() string {
 
 type ir_MakeClosure struct {
 	Coord *ir_coordinate
-	Lhs   *ir_Tmp
+	Lhs   string
 	Name  string
 }
 
 type ir_Move struct {
 	Coord *ir_coordinate
-	Lhs   *ir_Tmp
-	Rhs   *ir_Tmp
+	Lhs   string
+	Rhs   string
 }
 
 type ir_MoveLabel struct {
 	Coord *ir_coordinate
-	Lhs   *ir_TmpLabel
-	Label *ir_Label
+	Lhs   string
+	Label string
 }
 
 type ir_Deref struct {
 	Coord *ir_coordinate
-	Lhs   *ir_Tmp
-	Value *ir_Tmp
+	Lhs   string
+	Value string
 }
 
 type ir_Assign struct {
 	Coord  *ir_coordinate
-	Target *ir_Tmp
-	Value  *ir_Tmp
+	Target string
+	Value  string
 }
 
 type ir_MakeList struct {
 	Coord     *ir_coordinate
-	Lhs       *ir_Tmp
+	Lhs       string
 	ValueList []interface{} // heterogeneous
 }
 
 type ir_Field struct {
 	Coord     *ir_coordinate
-	Lhs       *ir_Tmp // may be nil
-	Expr      *ir_Tmp
+	Lhs       string // may be nil
+	Expr      string
 	Field     string
-	FailLabel *ir_Label
+	FailLabel string
 }
 
 type ir_OpFunction struct {
 	Coord      *ir_coordinate
-	Lhs        *ir_Tmp        // may be nil
-	Lhsclosure *ir_TmpClosure // may be nil
+	Lhs        string // may be nil
+	Lhsclosure string // may be nil
 	Fn         *ir_operator
 	ArgList    []interface{} // heterogeneous
-	FailLabel  *ir_Label     // may be nil
+	FailLabel  string        // may be nil
 }
 
 type ir_Call struct {
 	Coord      *ir_coordinate
-	Lhs        *ir_Tmp
-	Lhsclosure *ir_TmpClosure
-	Fn         *ir_Tmp
+	Lhs        string
+	Lhsclosure string
+	Fn         string
 	ArgList    []interface{} // heterogeneous
-	FailLabel  *ir_Label     // may be nil
+	FailLabel  string        // may be nil
 }
 
 type ir_ResumeValue struct {
 	Coord      *ir_coordinate
-	Lhs        *ir_Tmp // may be nil
-	Lhsclosure *ir_TmpClosure
-	Closure    *ir_TmpClosure
-	FailLabel  *ir_Label // may be nil
+	Lhs        string // may be nil
+	Lhsclosure string
+	Closure    string
+	FailLabel  string // may be nil
 }
 
 type ir_EnterInit struct {
 	Coord      *ir_coordinate
-	StartLabel *ir_Label
+	StartLabel string
 }
 
 type ir_Goto struct {
 	Coord       *ir_coordinate
-	TargetLabel *ir_Label
+	TargetLabel string
 }
 
 type ir_IndirectGoto struct {
 	Coord          *ir_coordinate
-	TargetTmpLabel *ir_TmpLabel
+	TargetTmpLabel string
 }
 
 type ir_Succeed struct {
 	Coord       *ir_coordinate
-	Expr        *ir_Tmp
-	ResumeLabel *ir_Label // may be nil
+	Expr        string
+	ResumeLabel string // may be nil
 }
 
 type ir_Fail struct {
@@ -279,14 +243,14 @@ type ir_Fail struct {
 
 type ir_Create struct {
 	Coord      *ir_coordinate
-	Lhs        *ir_Tmp
-	CoexpLabel *ir_Label
+	Lhs        string
+	CoexpLabel string
 }
 
 type ir_CoRet struct {
 	Coord       *ir_coordinate
-	Value       *ir_Tmp
-	ResumeLabel *ir_Label
+	Value       string
+	ResumeLabel string
 }
 
 type ir_CoFail struct {
@@ -295,8 +259,8 @@ type ir_CoFail struct {
 
 type ir_ScanSwap struct {
 	Coord   *ir_coordinate
-	Subject *ir_Tmp
-	Pos     *ir_Tmp
+	Subject string
+	Pos     string
 }
 
 type ir_Unreachable struct {

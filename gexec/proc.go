@@ -105,7 +105,7 @@ func makeDict(pr *pr_Info) map[string]interface{} {
 func getInsns(pr *pr_Info) map[string][]interface{} {
 	insns := make(map[string][]interface{})
 	for _, ch := range pr.ir.CodeList {
-		insns[ch.Label.Value] = ch.InsnList
+		insns[ch.Label] = ch.InsnList
 	}
 	return insns
 }

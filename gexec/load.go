@@ -65,14 +65,13 @@ func dumptree(indent string, x interface{}) {
 		}
 	case ir_Function:
 		fmt.Printf("\n%sproc %s  %v  start %v\n",
-			indent, t.Name, t.Coord,
-			t.CodeStart.Value)
+			indent, t.Name, t.Coord, t.CodeStart)
 		fmt.Printf("%s   param %v\n", indent, t.ParamList)
 		fmt.Printf("%s   local %v\n", indent, t.LocalList)
 		fmt.Printf("%s   static %v\n", indent, t.StaticList)
 		dumptree(indent, t.CodeList)
 	case ir_chunk:
-		fmt.Printf("%s%s:\n", indent, t.Label.Value)
+		fmt.Printf("%s%s:\n", indent, t.Label)
 		dumptree(indent+"   ", t.InsnList)
 	default:
 		fmt.Printf("%s%T %v\n", indent, x, x)
