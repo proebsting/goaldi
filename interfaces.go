@@ -57,22 +57,12 @@ type IDispense interface {
 	Dispense(IVariable) (Value, *Closure)
 }
 
-// #%#% redo the following
-
 type IIndex interface {
-	Index(Value) Value
-}
-
-type IIndexV interface {
-	IndexV(IVariable, Value) Value
+	Index(IVariable, Value) Value
 }
 
 type ISlice interface {
-	Slice(Value, Value) Value
-}
-
-type ISliceV interface {
-	SliceV(IVariable, Value, Value) Value
+	Slice(IVariable, Value, Value) Value
 }
 
 //  Other interfaces implemented by multiple types

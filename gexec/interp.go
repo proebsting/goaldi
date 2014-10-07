@@ -263,22 +263,22 @@ func opFunc(f *pr_frame, i *ir_OpFunction) (g.Value, *g.Closure) {
 			return v.(g.IDispense).Dispense(a[0].(g.IVariable))
 		}
 	case "2[]":
-		dv := g.Deref(a[0])
-		if v, ok := dv.(g.IIndexV); ok && i.Rval == "" {
-			// return variable slice
-			return v.IndexV(a[0].(g.IVariable), a[1]), nil
-		} else {
+		v := g.Deref(a[0])
+		if i.Rval != "" {
 			// return slice value
-			return dv.(g.IIndex).Index(a[1]), nil
+			return v.(g.IIndex).Index(nil, a[1]), nil
+		} else {
+			// return variable slice
+			return v.(g.IIndex).Index(a[0].(g.IVariable), a[1]), nil
 		}
 	case "3[:]":
-		dv := g.Deref(a[0])
-		if v, ok := dv.(g.ISliceV); ok && i.Rval == "" {
-			// return variable slice
-			return v.SliceV(a[0].(g.IVariable), a[1], a[2]), nil
-		} else {
+		v := g.Deref(a[0])
+		if i.Rval != "" {
 			// return slice value
-			return dv.(g.ISlice).Slice(a[1], a[2]), nil
+			return v.(g.ISlice).Slice(nil, a[1], a[2]), nil
+		} else {
+			// return variable slice
+			return v.(g.ISlice).Slice(a[0].(g.IVariable), a[1], a[2]), nil
 		}
 
 	// string operations
