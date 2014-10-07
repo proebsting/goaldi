@@ -213,7 +213,11 @@ func getArgs(f *pr_frame, nd int, arglist []interface{}) []g.Value {
 func opFunc(f *pr_frame, i *ir_OpFunction) (g.Value, *g.Closure) {
 	op := string('0'+len(i.ArgList)) + i.Fn
 	a := getArgs(f, nonDeref[op], i.ArgList)
-	f.offv = a[0]
+	f.offv = a[0]                 // save offending value
+	lval, _ := a[0].(g.IVariable) // lvalue for some operators
+	if i.Rval != "" {
+		lval = nil // clear lvalue if this is rvalue context
+	}
 
 	switch op {
 	default:
@@ -246,40 +250,13 @@ func opFunc(f *pr_frame, i *ir_OpFunction) (g.Value, *g.Closure) {
 		return a[0].(g.ISize).Size(), nil
 	case "1?":
 		v := g.Deref(a[0])
-		if i.Rval != "" {
-			// produce value
-			return v.(g.IChoose).Choose(nil), nil
-		} else {
-			// produce variable
-			return v.(g.IChoose).Choose(a[0].(g.IVariable)), nil
-		}
+		return v.(g.IChoose).Choose(lval), nil
 	case "1!":
-		v := g.Deref(a[0])
-		if i.Rval != "" {
-			// generate values
-			return v.(g.IDispense).Dispense(nil)
-		} else {
-			// generate variables
-			return v.(g.IDispense).Dispense(a[0].(g.IVariable))
-		}
+		return g.Deref(a[0]).(g.IDispense).Dispense(lval)
 	case "2[]":
-		v := g.Deref(a[0])
-		if i.Rval != "" {
-			// return slice value
-			return v.(g.IIndex).Index(nil, a[1]), nil
-		} else {
-			// return variable slice
-			return v.(g.IIndex).Index(a[0].(g.IVariable), a[1]), nil
-		}
+		return g.Deref(a[0]).(g.IIndex).Index(lval, a[1]), nil
 	case "3[:]":
-		v := g.Deref(a[0])
-		if i.Rval != "" {
-			// return slice value
-			return v.(g.ISlice).Slice(nil, a[1], a[2]), nil
-		} else {
-			// return variable slice
-			return v.(g.ISlice).Slice(a[0].(g.IVariable), a[1], a[2]), nil
-		}
+		return g.Deref(a[0]).(g.ISlice).Slice(lval, a[1], a[2]), nil
 
 	// string operations
 	case "2||":
@@ -346,6 +323,8 @@ func init() {
 	nonDeref["2<->"] = 2
 	nonDeref["2[]"] = 1
 	nonDeref["3[:]"] = 1
+	nonDeref["3[+:]"] = 1
+	nonDeref["3[-:]"] = 1
 }
 
 //  keyword -- return keyword value
