@@ -23,10 +23,6 @@ func (s *VString) Size() Value {
 
 //------------------------------------  Dispense:  !e
 
-func (s *VNumber) Dispense() (Value, *Closure) {
-	return s.ToString().Dispense()
-}
-
 func (s *VString) Dispense() (Value, *Closure) {
 	i := -1
 	n := s.length()

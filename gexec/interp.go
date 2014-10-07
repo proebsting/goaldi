@@ -143,7 +143,6 @@ func interp(env *g.Env, pr *pr_Info, args ...g.Value) (g.Value, *g.Closure) {
 						label = i.FailLabel
 						break Chunk
 					}
-
 				case ir_Call:
 					f.coord = i.Coord
 					proc := f.temps[i.Fn]
