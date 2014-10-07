@@ -151,8 +151,9 @@ func (ss *vSubStr) Assign(v Value) IVariable {
 	ins := v.(Stringable).ToString()
 	//#%#% check that i & j are still valid?
 	snew := scat(src, 0, ss.i, ins, 0, ins.length(), src, ss.j, src.length())
-	ss.target.Assign(snew)
-	return &vSubStr{ss.target, ss.i, ss.i + ins.length()}
+	ss.target = ss.target.Assign(snew)
+	ss.j = ss.i + ins.length()
+	return ss
 }
 
 //  -------------------------- internal functions ---------------------
