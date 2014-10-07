@@ -2,6 +2,10 @@
 
 package goaldi
 
+import (
+	"math/rand"
+)
+
 //  sval -- extract VString value from arbitrary Value, or panic
 func sval(v Value) *VString {
 	if n, ok := v.(Stringable); ok {
@@ -21,16 +25,27 @@ func (s *VString) Size() Value {
 	return NewNumber(float64(s.length()))
 }
 
+//------------------------------------  Choose:  ?e
+
+func (s *VString) Choose(lval IVariable) Value {
+	n := s.length()
+	if n == 0 {
+		return nil // fail
+	}
+	i := rand.Intn(n)
+	return s.slice(lval, i, i+1)
+}
+
 //------------------------------------  Dispense:  !e
 
-func (s *VString) Dispense() (Value, *Closure) {
+func (s *VString) Dispense(lval IVariable) (Value, *Closure) {
 	i := -1
 	n := s.length()
 	var f *Closure
 	f = &Closure{func() (Value, *Closure) {
 		i++
 		if i < n {
-			return s.slice(i, i+1), f
+			return s.slice(lval, i, i+1), f
 		} else {
 			return nil, nil
 		}
@@ -68,7 +83,7 @@ func (s *VString) Index(x Value) Value {
 		i = n + i // count backwards from end
 	}
 	if i >= 0 && i < n {
-		return s.slice(i, i+1) // return 1-char slice
+		return s.slice(nil, i, i+1) // return 1-char slice
 	} else {
 		return nil // subscript out of range
 	}
@@ -98,7 +113,7 @@ func (s *VString) Slice(x Value, y Value) Value {
 		i, j = j, i // indexing was backwards
 	}
 	if i >= 0 && j <= n {
-		return s.slice(i, j) // return slice
+		return s.slice(nil, i, j) // return slice
 	} else {
 		return nil // subscript out of range
 	}

@@ -245,22 +245,22 @@ func opFunc(f *pr_frame, i *ir_OpFunction) (g.Value, *g.Closure) {
 	case "1*":
 		return a[0].(g.ISize).Size(), nil
 	case "1?":
-		dv := g.Deref(a[0])
-		if v, ok := dv.(g.IChooseV); ok && i.Rval == "" {
-			// generate variables
-			return v.ChooseV(a[0].(g.IVariable)), nil
+		v := g.Deref(a[0])
+		if i.Rval != "" {
+			// produce value
+			return v.(g.IChoose).Choose(nil), nil
 		} else {
-			// generate values
-			return dv.(g.IChoose).Choose(), nil
+			// produce variable
+			return v.(g.IChoose).Choose(a[0].(g.IVariable)), nil
 		}
 	case "1!":
-		dv := g.Deref(a[0])
-		if v, ok := dv.(g.IDispenseV); ok && i.Rval == "" {
-			// generate variables
-			return v.DispenseV(a[0].(g.IVariable))
-		} else {
+		v := g.Deref(a[0])
+		if i.Rval != "" {
 			// generate values
-			return dv.(g.IDispense).Dispense()
+			return v.(g.IDispense).Dispense(nil)
+		} else {
+			// generate variables
+			return v.(g.IDispense).Dispense(a[0].(g.IVariable))
 		}
 	case "2[]":
 		dv := g.Deref(a[0])

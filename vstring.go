@@ -128,6 +128,33 @@ func (v *VString) Export() interface{} {
 	return v.ToUTF8()
 }
 
+//  -------------------------- trapped substrings ---------------------
+
+type vSubStr struct {
+	target IVariable // pointer to target
+	i, j   int       // original subscripts
+}
+
+//  vSubStr.Deref() -- extract value of for use as an rvalue
+func (ss *vSubStr) Deref() Value {
+	return Deref(ss.target).(*VString).slice(nil, ss.i, ss.j)
+}
+
+//  vSubStr.String() -- show string representation: produces v[i:j]
+func (ss *vSubStr) String() string {
+	return fmt.Sprintf("(&%v[%d:%d])", ss.target, ss.i, ss.j)
+}
+
+//  vSubStr.Assign -- store value in target variable
+func (ss *vSubStr) Assign(v Value) IVariable {
+	src := Deref(ss.target).(*VString)
+	ins := v.(Stringable).ToString()
+	//#%#% check that i & j are still valid?
+	snew := scat(src, 0, ss.i, ins, 0, ins.length(), src, ss.j, src.length())
+	ss.target.Assign(snew)
+	return &vSubStr{ss.target, ss.i, ss.i + ins.length()}
+}
+
 //  -------------------------- internal functions ---------------------
 
 //  VString.length -- return string length as int
@@ -136,9 +163,14 @@ func (s *VString) length() int {
 }
 
 //  VString.slice -- return substring given Go-style zero-based limits
-func (s *VString) slice(i int, j int) *VString {
+//  If lval is non-null, generates a trapped slice reference.
+func (s *VString) slice(lval IVariable, i int, j int) Value {
+	if lval != nil {
+		return &vSubStr{lval, i, j} // produce variable
+	}
+	// produce value
 	r := &VString{s.low[i:j], nil}
-	if s.high != nil {
+	if s.high != nil && j > i {
 		r.high = s.high[i:j]
 		//#%#% remove if nothing there (all zeroes) ?
 	}

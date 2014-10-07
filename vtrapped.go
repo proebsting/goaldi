@@ -22,7 +22,7 @@ func (t *VTrapped) Deref() Value {
 	return *t.Target
 }
 
-//  VTrapped.String() -- show string representation: produces [[value]]
+//  VTrapped.String() -- show string representation: produces (&value)
 //  #%#% should make this smarter
 func (t *VTrapped) String() string {
 	return fmt.Sprintf("(&%v)", (*(t.Target)))

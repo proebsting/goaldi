@@ -44,23 +44,20 @@ type IExternal interface {
 	ExternalType() string // return type name for external value
 }
 
-//  Interfaces with variants for both value and variable results
+//  Interfaces for indexing operations that can produce variables
+//  If the IVariable argument is nil, a value is wanted.
+//  If not, it is just a flag for most datatypes but is the actual
+//  underlying value to be replaced by substring assignment.
 
 type IChoose interface {
-	Choose() Value
-}
-
-type IChooseV interface {
-	ChooseV(IVariable) Value
+	Choose(IVariable) Value
 }
 
 type IDispense interface {
-	Dispense() (Value, *Closure)
+	Dispense(IVariable) (Value, *Closure)
 }
 
-type IDispenseV interface {
-	DispenseV(IVariable) (Value, *Closure)
-}
+// #%#% redo the following
 
 type IIndex interface {
 	Index(Value) Value
