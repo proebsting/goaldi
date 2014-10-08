@@ -54,9 +54,9 @@ func testUniString(t *testing.T, len int, u1, u2, u3 string) {
 		t.Error("there-and-back error", u1, uu1, u2, uu2, u3, uu3)
 	}
 	lenf := float64(len)
-	z1 := s1.Size().(*VNumber).val()
-	z2 := s2.Size().(*VNumber).val()
-	z3 := s3.Size().(*VNumber).val()
+	z1 := s1.Size().(*VNumber).Val()
+	z2 := s2.Size().(*VNumber).Val()
+	z3 := s3.Size().(*VNumber).Val()
 	if z1 != lenf || z2 != lenf || z3 != lenf {
 		t.Error("expected length", lenf, " but got ", z1, z2, z3)
 	}

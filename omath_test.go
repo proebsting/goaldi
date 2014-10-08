@@ -47,7 +47,7 @@ func nspair(t *testing.T, v float64) (*VNumber, *VString) {
 	s1 := NewString(fmt.Sprintf("%g", v))
 	n2 := s1.ToNumber()
 	s2 := n2.ToString()
-	if n1.val() != n2.val() {
+	if n1.Val() != n2.Val() {
 		t.Errorf("numbers %v != %v", n1, n2)
 	}
 	if s1.String() != s2.String() {
@@ -59,10 +59,10 @@ func nspair(t *testing.T, v float64) (*VNumber, *VString) {
 //  ck4n -- check four numeric values for equality with expected value
 func ck4n(t *testing.T, label string, n0 float64, v1, v2, v3, v4 Value) {
 	t.Log("testing", label)
-	n1 := v1.(*VNumber).val()
-	n2 := v2.(*VNumber).val()
-	n3 := v3.(*VNumber).val()
-	n4 := v4.(*VNumber).val()
+	n1 := v1.(*VNumber).Val()
+	n2 := v2.(*VNumber).Val()
+	n3 := v3.(*VNumber).Val()
+	n4 := v4.(*VNumber).Val()
 	if n0 != n1 || n1 != n2 || n2 != n3 || n3 != n4 {
 		t.Errorf("Expected %g, got %g %g %g %g", n0, n1, n2, n3, n4)
 	}

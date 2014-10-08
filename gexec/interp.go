@@ -257,6 +257,10 @@ func opFunc(f *pr_frame, i *ir_OpFunction) (g.Value, *g.Closure) {
 		return g.Deref(a[0]).(g.IIndex).Index(lval, a[1]), nil
 	case "3[:]":
 		return g.Deref(a[0]).(g.ISlice).Slice(lval, a[1], a[2]), nil
+	case "3[+:]":
+		return deltaSlice(lval, a, +1)
+	case "3[-:]":
+		return deltaSlice(lval, a, -1)
 
 	// string operations
 	case "2||":
@@ -325,6 +329,17 @@ func init() {
 	nonDeref["3[:]"] = 1
 	nonDeref["3[+:]"] = 1
 	nonDeref["3[-:]"] = 1
+}
+
+//  deltaSlice handles x[i+:k] or x[i-:k] by calling x[i:j]
+func deltaSlice(lval g.IVariable, a []g.Value, sign int) (g.Value, *g.Closure) {
+	x := g.Deref(a[0]).(g.ISlice)
+	i := int(a[1].(g.Numerable).ToNumber().Val())
+	j := i + sign*int(a[2].(g.Numerable).ToNumber().Val())
+	if (i > 0 && j <= 0) || (i <= 0 && j > 0) { // if wraparound
+		return nil, nil // fail
+	}
+	return x.Slice(lval, g.NewNumber(float64(i)), g.NewNumber(float64(j))), nil
 }
 
 //  keyword -- return keyword value

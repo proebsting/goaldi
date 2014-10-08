@@ -118,17 +118,17 @@ func passfunc(t reflect.Type) func(Value) reflect.Value {
 	case reflect.Int:
 		return func(v Value) reflect.Value {
 			return reflect.ValueOf(
-				int(v.(Numerable).ToNumber().val()))
+				int(v.(Numerable).ToNumber().Val()))
 		}
 	case reflect.Int64:
 		return func(v Value) reflect.Value {
 			return reflect.ValueOf(
-				int64(v.(Numerable).ToNumber().val()))
+				int64(v.(Numerable).ToNumber().Val()))
 		}
 	case reflect.Float64:
 		return func(v Value) reflect.Value {
 			return reflect.ValueOf(
-				float64(v.(Numerable).ToNumber().val()))
+				float64(v.(Numerable).ToNumber().Val()))
 		}
 	case reflect.String:
 		return func(v Value) reflect.Value {

@@ -21,8 +21,8 @@ var (
 	MAX_EXACT = 1 << 53 // beyond 9e15, integers are noncontiguous
 )
 
-//  VNumber.val -- return underlying float64 value
-func (v *VNumber) val() float64 {
+//  VNumber.Val -- return underlying float64 value
+func (v *VNumber) Val() float64 {
 	return float64(*v)
 }
 
@@ -51,7 +51,7 @@ var type_number = NewString("number")
 //  VNumber.Identical -- check equality for === operator
 func (a *VNumber) Identical(x Value) Value {
 	b, ok := x.(*VNumber)
-	if ok && a.val() == b.val() {
+	if ok && a.Val() == b.Val() {
 		return x
 	} else {
 		return nil

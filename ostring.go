@@ -75,7 +75,7 @@ func (s *VNumber) Index(lval IVariable, x Value) Value {
 }
 
 func (s *VString) Index(lval IVariable, x Value) Value {
-	i := int(x.(Numerable).ToNumber().val())
+	i := int(x.(Numerable).ToNumber().Val())
 	n := s.length()
 	if i > 0 {
 		i-- // convert to zero-based
@@ -96,8 +96,8 @@ func (s *VNumber) Slice(lval IVariable, x Value, y Value) Value {
 }
 
 func (s *VString) Slice(lval IVariable, x Value, y Value) Value {
-	i := int(x.(Numerable).ToNumber().val())
-	j := int(y.(Numerable).ToNumber().val())
+	i := int(x.(Numerable).ToNumber().Val())
+	j := int(y.(Numerable).ToNumber().Val())
 	n := s.length()
 	if i > 0 {
 		i-- // convert to zero-based

@@ -2,6 +2,8 @@
 
 # string subscripting test
 
+#  note that Goaldi follows Jcon (not Icon) in failing on wraparound for [+:]
+
 procedure main()
    local i, j, k, s, t
 
@@ -11,9 +13,9 @@ procedure main()
    every write("B. ", !s)
    every i := 0 to 6 do write("C ", i, ". ", s[i] | "--")
    every i := 0 to -6 by -1 do write("D ", i, ". ", s[i] | "--")
-#   every i := -10 to 10 do write("E ", i, ". ", s[3:i] | "--")
-#   every i := -10 to 5 do write("F ", i, ". ", s[3+:i] | "--") #some SHOULD fail
-#   every i := -5 to 10 do write("G ", i, ". ", s[3-:i] | "--") #some SHOULD fail
+   every i := -10 to 10 do write("E ", i, ". ", s[3:i] | "--")
+   every i := -10 to 5 do write("F ", i, ". ", s[3+:i] | "--") #some SHOULD fail
+   every i := -5 to 10 do write("G ", i, ". ", s[3-:i] | "--") #some SHOULD fail
 
    !s := "X"
    write("H. ", s)
