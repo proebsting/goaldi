@@ -213,10 +213,10 @@ func getArgs(f *pr_frame, nd int, arglist []interface{}) []g.Value {
 func opFunc(f *pr_frame, i *ir_OpFunction) (g.Value, *g.Closure) {
 	op := string('0'+len(i.ArgList)) + i.Fn
 	a := getArgs(f, nonDeref[op], i.ArgList)
-	f.offv = a[0]                 // save offending value
-	lval, _ := a[0].(g.IVariable) // lvalue for some operators
-	if i.Rval != "" {
-		lval = nil // clear lvalue if this is rvalue context
+	f.offv = a[0]        // save offending value
+	var lval g.IVariable // lvalue for some operators
+	if i.Rval == "" {    // set it if warranted
+		lval, _ = a[0].(g.IVariable) // and if possible
 	}
 
 	switch op {
