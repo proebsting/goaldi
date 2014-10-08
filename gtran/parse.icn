@@ -848,12 +848,17 @@ procedure parse_program()
                             lex_RECORD])
     }
 
-    while member(program_set, parse_tok_rec) do {
-        d := parse_decl()
-        suspend d
-    }
-    if parse_tok_rec ~=== lex_EOFX then {
-        parse_error("\""||parse_tok_rec.str||"\": invalid parse_declaration")
+    while parse_tok_rec ~=== lex_EOFX do {
+        if \d then {
+            parse_match_token(lex_SEMICOL)
+	}
+        if member(program_set, parse_tok_rec) then {
+            d := parse_decl()
+            suspend d
+        } else {
+            d := parse_expr()
+            # suspend d
+        }
     }
 end
 
