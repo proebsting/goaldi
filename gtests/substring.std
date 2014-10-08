@@ -338,6 +338,28 @@ L 6 6 3. abcde  [failed]
 L 6 6 4. abcde  [failed]
 L 6 6 5. abcde  [failed]
 L 6 6 6. abcde  [failed]
+M  -bcde
+M  a-cde
+M  ab-de
+M  abc-e
+M  abcd-
+N  -bcde
+N  a-cde
+N  ab-de
+N  abc-e
+N  abcd-
+O  --abcde
+O  a--bcde
+O  ab--cde
+O  abc--de
+O  abcd--e
+O  abcde--
+O  --abcde
+O  a--bcde
+O  ab--cde
+O  abc--de
+O  abcd--e
+O  abcde--
 P  a1de
 P  a2de
 P  a3de

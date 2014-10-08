@@ -224,6 +224,8 @@ func opFunc(f *pr_frame, i *ir_OpFunction) (g.Value, *g.Closure) {
 		panic(&g.RunErr{"Unimplemented operator", g.NewString(op)})
 
 	// fundamental operations
+	case "1.":
+		return g.Return(a[0]) // was dereferenced by getArgs
 	case "1/":
 		v := g.Deref(a[0])
 		if v == g.NilVal {
@@ -242,8 +244,16 @@ func opFunc(f *pr_frame, i *ir_OpFunction) (g.Value, *g.Closure) {
 		return g.Identical(a[0], a[1]), nil
 	case "2~===":
 		return g.NotIdentical(a[0], a[1]), nil
+
+	// assignment
 	case "2:=":
 		return a[0].(g.IVariable).Assign(a[1]), nil
+	case "2<-":
+		return g.RevAssign(a[0], a[1])
+	case "2:=:":
+		return g.Return(g.Swap(a[0], a[1]))
+	case "2<->":
+		return g.RevSwap(a[0], a[1])
 
 	// multi-type operations
 	case "1*":

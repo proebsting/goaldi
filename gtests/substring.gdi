@@ -55,9 +55,9 @@ procedure main()
       }
 
    s := "abcde"
-#   every !s <- "-" do write("M ", s)
-#   every s [1 to 5] <- "-" do write("N ", s)
-#   every s [(-5 to 6) +: 0] <- "--" do write("O ", s)
+   every !s <- "-" do write("M ", s)
+   every s [1 to 5] <- "-" do write("N ", s)
+   every s [(-5 to 6) +: 0] <- "--" do write("O ", s)
 
    s := "abcde"
    every s[2:4] := !"123" do write("P ", s)
