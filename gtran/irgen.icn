@@ -20,7 +20,6 @@ record ir_stacks(tmp, lab)
 global ir_loop_stack, ir_scan_stack
 
 global ir_tmptable, ir_loctable, ir_closuretable
-global ir_start
 
 # record a_NoOp( )
 procedure ir_a_NoOp(p, st, inuse, target, bounded, rval)
@@ -805,7 +804,7 @@ procedure ir_a_ProcDecl(p, st, inuse, target, bounded, rval)
 
     return ir_Function(ir_coord(p.ident.coord), p.ident.id, params,
 		      p.accumulate, locals, statics, code,
-                      ir_start, ir_LvalSet)
+                      p.code.ir.start, ir_LvalSet)
 end
 
 # record a_ProcBody( nexprList )
@@ -848,7 +847,6 @@ procedure ir_a_ProcCode(p, st, inuse, target, bounded, rval)
     suspend ir(p.init, ir_stacks(0,0), inuse, &null, "always bounded", "rval")
     suspend ir(p.body, ir_stacks(0,0), inuse, &null, "always bounded", "rval")
 
-    ir_start := p.ir.start
     suspend ir_chunk(p.ir.start, [
         ir_EnterInit(ir_coord(p.coord), p.body.ir.start),
         ir_Goto(ir_coord(p.coord), p.init.ir.start)
