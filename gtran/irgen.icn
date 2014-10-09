@@ -2,7 +2,6 @@
 
 global ir_current_proc
 
-global ir_noerror2failure
 global ir_createflag
 
 global ir_LvalSet
@@ -1492,7 +1491,7 @@ procedure ir_opfn(coord, lhs, lhsclsr, op, args, failLabel)
     }
 
     op.arity = *args | runerr(500, op)
-    if \ir_noerror2failure & member(neverfail[op.arity],op.name) then {
+    if member(neverfail[op.arity],op.name) then {
         failLabel := &null
     }
     return ir_OpFunction(coord, lhs, lhsclsr, op.name, args, op.rval, failLabel)
@@ -1622,17 +1621,6 @@ end
 
 procedure ast2ir(parse, flagList)
     local p, k
-
-    ir_noerror2failure := 1
-    every k := !flagList do {
-        k ? {
-            if ="-f" then {
-		if upto('aden') then {
-                    ir_noerror2failure := &null
-                }
-            }
-        }
-    }
 
     ir_declare_set := set([])
     ir_deferred := []
