@@ -65,8 +65,11 @@ func Diagnose(f io.Writer, v Value) bool {
 		if _, ok := x.cause.(*runtime.TypeAssertionError); ok {
 			fmt.Fprintf(f, "Offending value: %v\n", x.offv)
 		}
-		fmt.Fprintf(f, "Called by %s(%v) at %s\n",
-			x.pname, x.args, x.coord)
+		fmt.Fprintf(f, "Called by %s(%v)", x.pname, x.args)
+		if x.coord != "" {
+			fmt.Fprintf(f, " at %s", x.coord)
+		}
+		fmt.Fprintln(f)
 		return rv
 	case *RunErr:
 		fmt.Fprintln(f, x.Msg)
