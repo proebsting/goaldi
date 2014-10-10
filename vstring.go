@@ -89,14 +89,13 @@ func (v *VString) ToNumber() *VNumber {
 }
 
 //  VString.TryNumber -- return conversion to VNumber, or nil for failure
-//#%#% this could probably be improved and should allow trailing spaces
 func (v *VString) TryNumber() *VNumber {
 	var f float64
 	var b byte
 	if v.high != nil { // if has exotic characters //#%#% bogus test?
 		return nil // it can't be valid
 	}
-	n, _ := fmt.Sscanf(string(v.low), "%f%c", &f, &b)
+	n, _ := fmt.Sscanf(string(v.low), "%f %c", &f, &b)
 	if n == 1 {
 		return NewNumber(f)
 	} else {
