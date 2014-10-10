@@ -2,7 +2,10 @@
 
 package goaldi
 
-import "math"
+import (
+	"math"
+	"math/rand"
+)
 
 //  extract float64 value from arbitrary Value, or panic
 func fval(v Value) float64 {
@@ -11,6 +14,25 @@ func fval(v Value) float64 {
 	} else {
 		panic(&RunErr{"Not a number", v})
 	}
+}
+
+//------------------------------------  Choose:  ?e
+
+func (v1 *VNumber) Choose(unused IVariable) Value {
+	n := v1.Val()
+	if n < 0 {
+		panic(&RunErr{"!n < 0", v1})
+	} else if n == 0 {
+		return NewNumber(rand.Float64())
+	} else /* n > 0 */ {
+		return NewNumber(float64(int(n * rand.Float64())))
+	}
+}
+
+//------------------------------------  Dispense:  !e
+
+func (v1 *VNumber) Dispense(unused IVariable) (Value, *Closure) {
+	return ToBy(ONE, v1, ONE)
 }
 
 //------------------------------------  Numerate:  +e
