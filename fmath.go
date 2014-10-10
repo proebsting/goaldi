@@ -14,8 +14,8 @@ func init() {
 	LibGoFunc("abs", math.Abs)
 	LibGoFunc("ceil", math.Ceil)
 	LibGoFunc("floor", math.Floor)
-	LibGoFunc("min", math.Min) // not like Icon: only 2 args
-	LibGoFunc("max", math.Max) // not like Icon: only 2 args
+	LibProcedure("min", min)
+	LibProcedure("max", max)
 
 	LibGoFunc("log", log)
 	LibGoFunc("sqrt", math.Sqrt)
@@ -63,4 +63,36 @@ func log(r1 float64, x2 interface{}) float64 {
 	default:
 		return log(r1, x2.(Numerable).ToNumber().Val())
 	}
+}
+
+//  min(n1, ...) -- return numeric minimum
+func min(env *Env, a ...Value) (Value, *Closure) {
+	n := len(a)
+	if n == 0 {
+		panic(&RunErr{"min(): no arguments", nil})
+	}
+	v := a[0].(Numerable).ToNumber().Val()
+	for i := 1; i < n; i++ {
+		vi := a[i].(Numerable).ToNumber().Val()
+		if vi < v {
+			v = vi
+		}
+	}
+	return Return(v)
+}
+
+//  max(n1, ...) -- return numeric maximum
+func max(env *Env, a ...Value) (Value, *Closure) {
+	n := len(a)
+	if n == 0 {
+		panic(&RunErr{"max(): no arguments", nil})
+	}
+	v := a[0].(Numerable).ToNumber().Val()
+	for i := 1; i < n; i++ {
+		vi := a[i].(Numerable).ToNumber().Val()
+		if vi > v {
+			v = vi
+		}
+	}
+	return Return(v)
 }

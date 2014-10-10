@@ -13,6 +13,11 @@ import (
 //  StdLib is the set of procedures available at link time
 var StdLib = make(map[string]*VProcedure)
 
+//  LibProcedure registers a standard library procedure taking Goaldi arguments.
+func LibProcedure(name string, p Procedure) {
+	StdLib[name] = NewProcedure(name, p)
+}
+
 //  LibGoFunc registers a Go function as a standard library procedure.
 //  This must be done before linking (e.g. via init func) to be effective.
 func LibGoFunc(name string, f interface{}) {
