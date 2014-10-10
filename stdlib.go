@@ -1,4 +1,4 @@
-//  stdlib.go -- definition of standard library
+//  stdlib.go -- standard library and miscellaneous functions
 
 //  #%#% this initial set is for testing and illustration; it is NOT final!
 
@@ -6,8 +6,6 @@ package goaldi
 
 import (
 	"fmt"
-	"math"
-	"math/rand"
 	"os"
 	"strings"
 )
@@ -23,15 +21,6 @@ func LibProc(name string, f interface{}) {
 
 //  This init function adds a set of Go functions to the standard library
 func init() {
-
-	LibProc("abs", math.Abs)
-	LibProc("min", math.Min) // not like Icon: only 2 args
-	LibProc("max", math.Max) // not like Icon: only 2 args
-	LibProc("log", math.Log) // not like Icon: no 2nd arg
-	LibProc("sqrt", math.Sqrt)
-
-	LibProc("intn", rand.Intn)
-	LibProc("seed", rand.Seed)
 
 	LibProc("equalfold", strings.EqualFold)
 	LibProc("replace", strings.Replace)
