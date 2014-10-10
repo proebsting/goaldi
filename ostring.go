@@ -77,12 +77,8 @@ func (s *VNumber) Index(lval IVariable, x Value) Value {
 func (s *VString) Index(lval IVariable, x Value) Value {
 	i := int(x.(Numerable).ToNumber().Val())
 	n := s.length()
-	if i > 0 {
-		i-- // convert to zero-based
-	} else {
-		i = n + i // count backwards from end
-	}
-	if i >= 0 && i < n {
+	i = GoIndex(i, n)
+	if i < n {
 		return s.slice(lval, i, i+1) // return 1-char slice
 	} else {
 		return nil // subscript out of range
@@ -99,24 +95,15 @@ func (s *VString) Slice(lval IVariable, x Value, y Value) Value {
 	i := int(x.(Numerable).ToNumber().Val())
 	j := int(y.(Numerable).ToNumber().Val())
 	n := s.length()
-	if i > 0 {
-		i-- // convert to zero-based
-	} else {
-		i = n + i // count backwards from end
-	}
-	if j > 0 {
-		j-- // convert to zero-based
-	} else {
-		j = n + j // count backwards from end
+	i = GoIndex(i, n)
+	j = GoIndex(j, n)
+	if i > n || j > n {
+		return nil // subscript out of range
 	}
 	if i > j {
 		i, j = j, i // indexing was backwards
 	}
-	if i >= 0 && j <= n {
-		return s.slice(lval, i, j) // return slice
-	} else {
-		return nil // subscript out of range
-	}
+	return s.slice(lval, i, j) // return slice
 }
 
 //------------------------------------  StrLT:  e1 << e2

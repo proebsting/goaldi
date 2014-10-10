@@ -83,7 +83,7 @@ func interp(env *g.Env, pr *pr_Info, args ...g.Value) (g.Value, *g.Closure) {
 				case ir_Fail:
 					return nil, nil
 				case ir_Succeed:
-					v := f.temps[i.Expr]
+					v := g.Deref(f.temps[i.Expr])
 					if i.ResumeLabel == "" {
 						return v, nil
 					} else {
@@ -145,7 +145,7 @@ func interp(env *g.Env, pr *pr_Info, args ...g.Value) (g.Value, *g.Closure) {
 					}
 				case ir_Call:
 					f.coord = i.Coord
-					proc := f.temps[i.Fn]
+					proc := g.Deref(f.temps[i.Fn])
 					argl := getArgs(&f, 0, i.ArgList)
 					f.offv = proc
 					v, c := proc.(g.ICall).Call(env, argl...)
