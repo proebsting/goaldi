@@ -11,23 +11,23 @@ import (
 
 func init() {
 
-	LibProc("abs", math.Abs)
-	LibProc("ceil", math.Ceil)
-	LibProc("floor", math.Floor)
-	LibProc("min", math.Min) // not like Icon: only 2 args
-	LibProc("max", math.Max) // not like Icon: only 2 args
+	LibGoFunc("abs", math.Abs)
+	LibGoFunc("ceil", math.Ceil)
+	LibGoFunc("floor", math.Floor)
+	LibGoFunc("min", math.Min) // not like Icon: only 2 args
+	LibGoFunc("max", math.Max) // not like Icon: only 2 args
 
-	LibProc("log", log)
-	LibProc("sqrt", math.Sqrt)
+	LibGoFunc("log", log)
+	LibGoFunc("sqrt", math.Sqrt)
 
-	LibProc("sin", math.Sin)
-	LibProc("cos", math.Cos)
-	LibProc("tan", math.Tan)
-	LibProc("asin", math.Asin)
-	LibProc("acos", math.Acos)
-	LibProc("atan", atan)
+	LibGoFunc("sin", math.Sin)
+	LibGoFunc("cos", math.Cos)
+	LibGoFunc("tan", math.Tan)
+	LibGoFunc("asin", math.Asin)
+	LibGoFunc("acos", math.Acos)
+	LibGoFunc("atan", atan)
 
-	LibProc("seed", rand.Seed)
+	LibGoFunc("seed", rand.Seed)
 }
 
 //  atan(r1, r2) -- arctangent(r1/r2), default r2 = 1.0
