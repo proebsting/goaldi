@@ -5,7 +5,6 @@
 package goaldi
 
 import (
-	"fmt"
 	"os"
 	"strings"
 )
@@ -32,15 +31,6 @@ func init() {
 	LibGoFunc("toupper", strings.ToUpper)
 	LibGoFunc("tolower", strings.ToLower)
 	LibGoFunc("trim", strings.Trim)
-
-	LibGoFunc("print", fmt.Print)
-	LibGoFunc("println", fmt.Println)
-	LibGoFunc("printf", fmt.Printf)
-	LibGoFunc("fprint", fmt.Fprint)
-	LibGoFunc("fprintln", fmt.Fprintln)
-	LibGoFunc("fprintf", fmt.Fprintf)
-	LibGoFunc("write", fmt.Println) // not like Icon: no file, spacing
-	LibGoFunc("writes", fmt.Print)  // not like Icon: no file, spacing
 
 	LibGoFunc("exit", os.Exit)
 	LibGoFunc("remove", os.Remove)

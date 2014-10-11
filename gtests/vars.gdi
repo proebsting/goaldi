@@ -7,13 +7,13 @@ procedure main()
 	q()
 	p()
 	q()
-	write("m:", a, g)
+	println("m:", a, g)
 end
 
 procedure p()
 	local a
 	static s
-	write("p:", \a | "--", g, \s | "--")
+	println("p:", \a | "--", g, \s | "--")
 	a := "Ain't gonna see this"
 	g := "Gorgonzola"
 	s := "Sarasota"
@@ -23,7 +23,7 @@ procedure q()
 	local a
 	static t
 	a := "Asparagus"
-	write("q:", a, g, \t | "--")
+	println("q:", a, g, \t | "--")
 	a := "Ain't gonna see this either"
 	g := "Gouda"
 	t := "Turnip"

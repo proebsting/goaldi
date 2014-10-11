@@ -1,6 +1,6 @@
 procedure main()
    local i
-   write("hello", 47, 3.14159)
+   println("hello", 47, 3.14159)
    every write (1 | 2 | 3)
    every write (4 to 6)
    write(p1())

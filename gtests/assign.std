@@ -1,8 +1,8 @@
 
-1  algebra   botany   civics 
-2  botany   algebra   civics 
-3  civics   botany   algebra 
-4  algebra   algebra   algebra 
-5  civics   botany   algebra 
-6  algebra   civics   botany 
-7  civics   botany   algebra 
+1 algebra  botany  civics 
+2 botany  algebra  civics 
+3 civics  botany  algebra 
+4 algebra  algebra  algebra 
+5 civics  botany  algebra 
+6 algebra  civics  botany 
+7 civics  botany  algebra 

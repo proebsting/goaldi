@@ -69,8 +69,13 @@ func (v *VString) ToBinary() []byte {
 	return []byte(v.low)
 }
 
-//  VString.String -- return image of string, quoted, as a Go string
+//  VString.String -- return string as a Go string
 func (v *VString) String() string {
+	return v.ToUTF8()
+}
+
+//  VString.GoString -- return quoted string contents for image() or printf(%#v)
+func (v *VString) GoString() string {
 	return `"` + v.ToUTF8() + `"`
 }
 
