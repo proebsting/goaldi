@@ -53,7 +53,7 @@ func (v *VNumber) Val() float64 {
 
 //  VNumber.String -- convert to Go string
 func (v *VNumber) String() string {
-	return fmt.Sprintf("%g", float64(*v))
+	return fmt.Sprintf("%.4g", float64(*v))
 }
 
 //  VNumber.ToString -- convert to Goaldi string
