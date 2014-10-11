@@ -38,7 +38,7 @@ func println(env *Env, a ...Value) (Value, *Closure) {
 func wrt(between []byte, atEnd []byte, a []Value) (Value, *Closure) {
 	f := os.Stdout //#%#% should eventually use a buffered version?
 	//#%#% if a[0] is a file, switch files, adjust "between" handling
-	r := NilVal
+	r := NilValue
 	for i, v := range a {
 		if i > 0 {
 			f.Write(between)

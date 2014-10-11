@@ -11,8 +11,8 @@ type VNil struct {
 //  NIL is the one Goaldi nil value
 var NIL = &VNil{}
 
-//  NilVal is the same thing but of type Value
-var NilVal Value = NIL
+//  NilValue is the same thing but of type Value
+var NilValue Value = NIL
 
 //  NewNil returns the singleton Goaldi nil value
 func NewNil() *VNil {

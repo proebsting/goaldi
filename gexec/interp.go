@@ -228,14 +228,14 @@ func opFunc(f *pr_frame, i *ir_OpFunction) (g.Value, *g.Closure) {
 		return g.Return(a[0]) // was dereferenced by getArgs
 	case "1/":
 		v := g.Deref(a[0])
-		if v == g.NilVal {
+		if v == g.NilValue {
 			return g.Return(a[0]) // NOT dereferenced!
 		} else {
 			return g.Fail()
 		}
 	case "1\\":
 		v := g.Deref(a[0])
-		if v != g.NilVal {
+		if v != g.NilValue {
 			return g.Return(a[0]) // NOT dereferenced!
 		} else {
 			return g.Fail()
@@ -360,6 +360,6 @@ func keyword(name string) g.Value {
 	default:
 		panic(&g.RunErr{"Unrecognized keyword", g.NewString(name)})
 	case "null":
-		return g.NilVal
+		return g.NilValue
 	}
 }
