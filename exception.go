@@ -23,6 +23,11 @@ func (e *RunErr) String() string {
 	return fmt.Sprintf("RunErr: %s (%v)", e.Msg, e.Offv)
 }
 
+//  RunErr.Error() implements the interface that makes a RunErr a Go "error"
+func (e *RunErr) Error() string {
+	return e.String()
+}
+
 //  CallFrame records one frame of traceback information
 type CallFrame struct {
 	cause interface{} // underlying panic call

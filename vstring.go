@@ -81,25 +81,14 @@ func (v *VString) ToString() *VString {
 
 //  VString.ToNumber -- return conversion to VNumber, or issue RunErr
 func (v *VString) ToNumber() *VNumber {
-	n := v.TryNumber()
-	if n == nil {
-		panic(&RunErr{"Cannot convert to number", v})
-	}
-	return n
-}
-
-//  VString.TryNumber -- return conversion to VNumber, or nil for failure
-func (v *VString) TryNumber() *VNumber {
-	var f float64
-	var b byte
 	if v.high != nil { // if has exotic characters //#%#% bogus test?
 		return nil // it can't be valid
 	}
-	n, _ := fmt.Sscanf(string(v.low), "%f %c", &f, &b)
-	if n == 1 {
+	f, e := ParseNumber(string(v.low))
+	if e == nil {
 		return NewNumber(f)
 	} else {
-		return nil
+		panic(&RunErr{"Cannot convert to number", v})
 	}
 }
 

@@ -30,6 +30,8 @@ func init() {
 	LibGoFunc("seed", rand.Seed)
 }
 
+//------------------------------------  functions with Go interface
+
 //  atan(r1, r2) -- arctangent(r1/r2), default r2 = 1.0
 func atan(r1 float64, x2 interface{}) float64 {
 	switch r2 := x2.(type) {
@@ -38,7 +40,7 @@ func atan(r1 float64, x2 interface{}) float64 {
 	case float64:
 		return math.Atan2(r1, r2)
 	case string:
-		return math.Atan2(r1, NewString(r2).ToNumber().Val())
+		return math.Atan2(r1, MustParseNum(r2))
 	default:
 		return atan(r1, x2.(Numerable).ToNumber().Val())
 	}
@@ -59,11 +61,13 @@ func log(r1 float64, x2 interface{}) float64 {
 			return math.Log(r1) / math.Log(r2)
 		}
 	case string:
-		return log(r1, NewString(r2).ToNumber().Val())
+		return log(r1, MustParseNum(r2))
 	default:
 		return log(r1, x2.(Numerable).ToNumber().Val())
 	}
 }
+
+//------------------------------------  procedures with Goaldi interface
 
 //  min(n1, ...) -- return numeric minimum
 func min(env *Env, a ...Value) (Value, *Closure) {

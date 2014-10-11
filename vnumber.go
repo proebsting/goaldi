@@ -4,14 +4,39 @@ package goaldi
 
 import (
 	"fmt"
+	"math"
 )
 
 type VNumber float64
 
-//  NewNumber -- construct a Goaldi number
+//  NewNumber -- construct a Goaldi number from a float value
 func NewNumber(n float64) *VNumber {
 	vn := VNumber(n)
 	return &vn
+}
+
+//  ParseNumber -- standard string-to-number conversion for Goaldi
+//  Currently allows only Go standard format, plus leading and trailing spaces.
+func ParseNumber(s string) (float64, error) {
+	var f float64
+	var b byte
+	n, _ := fmt.Sscanf(s, "%f %c", &f, &b)
+	if n == 1 {
+		return f, nil
+	} else {
+		return math.NaN(), &RunErr{"Not a number", s}
+	}
+
+}
+
+//  MustParseNum -- make a float from a string, or throw a RunErr
+func MustParseNum(s string) float64 {
+	f, e := ParseNumber(s)
+	if e != nil {
+		panic(e)
+	} else {
+		return f
+	}
 }
 
 // predefined constants
