@@ -2,6 +2,10 @@
 
 package goaldi
 
+import (
+	"fmt"
+)
+
 //  Any Go value can be a Goaldi value.
 //  Use of this interface is intended to designate a Goaldi value context.
 type Value interface{}
@@ -14,12 +18,12 @@ type IExternal interface {
 
 //  ICore -- interfaces required of all Goaldi types
 type ICore interface {
-	String() string // default conversion for printing (fmt.Stringer)
-	IType           // for "Type()"
-	IExport         // for passing to a Go function as universal interface{} value
+	fmt.Stringer   // for printing (v.String())
+	fmt.GoStringer // for image() and printf("%#v") (v.GoString())
+	IType          // for "Type()"
+	IExport        // for passing to a Go function as interface{} value
 	// optional:  Numerable and Stringable, if implicitly convertible
 	// optional:  IIdentical, if === requires more than pointer comparison
-	// optional:  GoString(), for use by image() and printf("%#v")
 }
 
 var _ ICore = NewNil()       // confirm implementation by VNil

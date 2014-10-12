@@ -19,9 +19,14 @@ func NewNil() *VNil {
 	return NIL
 }
 
-//  VNil.String returns "nil" as a Go string
+//  VNil.String -- default conversion to Go string returns "~"
 func (v *VNil) String() string {
-	return "nil"
+	return "~" //#%#% ??
+}
+
+//  VNil.GoString -- convert to string "%nil" for image() and printf("%#v")
+func (v *VNil) GoString() string {
+	return "%nil" //#%#% ??
 }
 
 //  VNil.Type returns "nil"

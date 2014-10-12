@@ -31,7 +31,4 @@ func init() {
 	LibGoFunc("toupper", strings.ToUpper)
 	LibGoFunc("tolower", strings.ToLower)
 	LibGoFunc("trim", strings.Trim)
-
-	LibGoFunc("exit", os.Exit)
-	LibGoFunc("remove", os.Remove)
 }

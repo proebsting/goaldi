@@ -51,9 +51,14 @@ func (v *VNumber) Val() float64 {
 	return float64(*v)
 }
 
-//  VNumber.String -- convert to Go string
+//  VNumber.String -- default conversion to Go string
 func (v *VNumber) String() string {
 	return fmt.Sprintf("%.4g", float64(*v))
+}
+
+//  VNumber.GoString -- convert to Go string for image() and printf("%#v")
+func (v *VNumber) GoString() string {
+	return fmt.Sprintf("%g", float64(*v))
 }
 
 //  VNumber.ToString -- convert to Goaldi string

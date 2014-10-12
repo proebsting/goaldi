@@ -17,9 +17,14 @@ func NewProcedure(name string, entry Procedure) *VProcedure {
 	return &VProcedure{name, entry}
 }
 
-//  VProcedure.String -- return "procname()"
+//  VProcedure.String -- default conversion to Go string returns "procname()"
 func (v *VProcedure) String() string {
-	return v.Name + "()"
+	return v.Name + "()" //#%#%??
+}
+
+//  VProcedure.GoString -- convert to string for image() and printf("%#v")
+func (v *VProcedure) GoString() string {
+	return v.Name + "()" //#%#%??
 }
 
 //  VProcedure.Type -- return "procedure"

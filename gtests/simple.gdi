@@ -1,6 +1,15 @@
 procedure main()
-   local i
+   local i, s, n, p, x
+
    println("hello", 47, 3.14159)
+
+    i := sqrt(2)
+    s := "abc"
+    n := &null
+    p := main
+    every x := i | s | n | p do
+    	println(x, type(x), image(x))
+
    every write (1 | 2 | 3)
    every write (4 to 6)
    write(p1())
