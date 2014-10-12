@@ -2,27 +2,24 @@
 
 package goaldi
 
-import (
-	"fmt"
-)
-
-//  A Value can now be anything
-//  Use of this interface is intended to designate a Goaldi value
+//  Any Go value can be a Goaldi value.
+//  Use of this interface is intended to designate a Goaldi value context.
 type Value interface{}
 
-//  Interfaces for implicitly convertible values
-type Stringable interface {
-	ToString() *VString
-}
-type Numerable interface {
-	ToNumber() *VNumber
+//  IExternal -- declares an external type to be a Goaldi external
+//  (i.e. tells Goaldi to keeps hands off even it it looks convertible)
+type IExternal interface {
+	ExternalType() string // return type name for external value
 }
 
-//  ICore -- should be implemented by all Goaldi types
+//  ICore -- interfaces required of all Goaldi types
 type ICore interface {
-	fmt.Stringer // i.e. v.String() -> string
-	IType
-	IExport
+	String() string // default conversion for printing (fmt.Stringer)
+	IType           // for "Type()"
+	IExport         // for passing to a Go function as universal interface{} value
+	// optional:  Numerable and Stringable, if implicitly convertible
+	// optional:  IIdentical, if === requires more than pointer comparison
+	// optional:  GoString(), for use by image() and printf("%#v")
 }
 
 var _ ICore = NewNil()       // confirm implementation by VNil
@@ -30,19 +27,37 @@ var _ ICore = NewNumber(1)   // confirm implementation by VNumber
 var _ ICore = NewString("a") // confirm implementation by VString
 var _ ICore = &VProcedure{}  // confirm implementation by VProcedure
 
-//  IVariable -- assignable trapped variable
+type IType interface {
+	Type() Value // return name of type for type()
+}
+
+type IExport interface {
+	Export() interface{} // return value for export to Go function
+}
+
+//  Interfaces for implicit conversion (also requires operator methods)
+type Stringable interface {
+	ToString() *VString // if implicitly convertible to string
+}
+type Numerable interface {
+	ToNumber() *VNumber // if implicitly convertible to number
+}
+
+//  IIdentical -- needed for types where === is not just a pointer match
+type IIdentical interface {
+	Identical(Value) Value
+}
+
+var _ IIdentical = NewNumber(1)   // confirm implementation by VNumber
+var _ IIdentical = NewString("a") // confirm implementation by VString
+
+//  IVariable -- an assignable trapped variable (simple or subscripted)
 type IVariable interface {
 	Deref() Value           // return dereferenced value
 	Assign(Value) IVariable // assign value
 }
 
 var _ IVariable = &VTrapped{} // confirm implementation by VTrapped
-
-//  IExternal -- declares an external type to be a Goaldi external
-//  (i.e. tells Goaldi to keeps hands off even it it looks convertible)
-type IExternal interface {
-	ExternalType() string // return type name for external value
-}
 
 //  Interfaces for indexing operations that can produce variables
 //  If the IVariable argument is nil, a value is wanted.

@@ -54,10 +54,6 @@ func Import(x interface{}) Value {
 	}
 }
 
-type IExport interface {
-	Export() interface{}
-}
-
 //  Export(v) returns the default Go representation of a Goaldi value
 func Export(v Value) interface{} {
 	switch e := v.(type) {

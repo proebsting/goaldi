@@ -2,19 +2,24 @@
 
 package goaldi
 
-//  GoIndex(i, n) -- return Go index for i into length n, or n+1 if out of range
-//  i is a 1-based index and may be nonpositive.  i==n or i==0 is in range.
-//  The caller may want to check for result<n or result<=n depending on context.
-func GoIndex(i int, n int) int {
-	if i > 0 {
-		i-- // convert to zero-based
+//  Identical(a,b) implements the === operator.
+//  NotIdentical(a,b) implements the ~=== operator.
+//  Both call a.Identical(b) if implemented (interface IIdentical).
+func Identical(a, b Value) Value {
+	if _, ok := a.(IIdentical); ok {
+		return a.(IIdentical).Identical(b)
+	} else if a == b {
+		return b
 	} else {
-		i = n + i // count backwards from end
+		return nil
 	}
-	if i >= 0 && i <= n {
-		return i // index is valid
+}
+
+func NotIdentical(a, b Value) Value {
+	if Identical(b, a) != nil {
+		return nil
 	} else {
-		return n + 1 // index is out of range
+		return b
 	}
 }
 
@@ -59,4 +64,20 @@ func ToBy(e1 Value, e2 Value, e3 Value) (Value, *Closure) {
 		}
 	}}
 	return f.Resume()
+}
+
+//  GoIndex(i, n) -- return Go index for i into length n, or n+1 if out of range
+//  i is a 1-based index and may be nonpositive.  i==n or i==0 is in range.
+//  The caller may want to check for result<n or result<=n depending on context.
+func GoIndex(i int, n int) int {
+	if i > 0 {
+		i-- // convert to zero-based
+	} else {
+		i = n + i // count backwards from end
+	}
+	if i >= 0 && i <= n {
+		return i // index is valid
+	} else {
+		return n + 1 // index is out of range
+	}
 }
