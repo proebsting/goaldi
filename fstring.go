@@ -13,4 +13,19 @@ func init() {
 	LibGoFunc("toupper", strings.ToUpper)
 	LibGoFunc("tolower", strings.ToLower)
 	LibGoFunc("trim", strings.Trim)
+	LibProcedure("reverse", Reverse)
+}
+
+//  Reverse(s) -- return mirror image of string
+func Reverse(env *Env, a ...Value) (Value, *Closure) {
+	v := NilValue
+	if len(a) > 0 {
+		v = a[0]
+	}
+	r := v.(Stringable).ToString().ToRunes()
+	n := len(r)
+	for i := 0; i < n/2; i++ {
+		r[i], r[n-1-i] = r[n-1-i], r[i]
+	}
+	return Return(RuneString(r))
 }

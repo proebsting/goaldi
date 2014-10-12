@@ -1,0 +1,5 @@
+procedure main()
+	every write("reverse: ", reverse("abcde"[1+:(0 to 6)]) | "--")
+	every write("tolower: ", tolower("AbCdE"))
+	every write("toupper: ", toupper("AbCdE"))
+end

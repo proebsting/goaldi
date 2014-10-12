@@ -1,0 +1,9 @@
+reverse: 
+reverse: a
+reverse: ba
+reverse: cba
+reverse: dcba
+reverse: edcba
+reverse: --
+tolower: abcde
+toupper: ABCDE

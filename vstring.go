@@ -15,7 +15,8 @@ var (
 	EMPTY = NewString("") // the empty string
 )
 
-//  A string is encoded by one (usually) or two parallel slices
+//  A string is encoded by one (usually) or two parallel slices.
+//  The representation may change; access only via Capitalized functions below.
 type VString struct {
 	low  []uint8  // required: low-order 8 bits of each rune
 	high []uint16 // optional: high-order 13 bits of each rune
@@ -23,22 +24,25 @@ type VString struct {
 
 //  NewString -- construct a Goaldi string from a Go UTF8 string
 func NewString(s string) *VString {
-	n := len(s)
+	return RuneString([]rune(s))
+}
+
+//  RuneString -- construct a Goaldi string from a slice of Go runes
+func RuneString(r []rune) *VString {
+	n := len(r)
 	low := make([]uint8, n, n)
 	high := make([]uint16, n, n)
 	h := '\000'
-	i := 0
-	for _, c := range s {
+	for i, c := range r {
 		h |= c
 		low[i] = uint8(c)
 		high[i] = uint16(c >> 8)
 		i++
 	}
-	// #%#% could copy now to smaller underlying arrays if warranted
 	if (h >> 8) == 0 {
-		return &VString{low[:i], nil}
+		return &VString{low, nil}
 	} else {
-		return &VString{low[:i], high[:i]}
+		return &VString{low, high}
 	}
 }
 
@@ -62,6 +66,20 @@ func (v *VString) ToUTF8() string {
 		b = append(b, p[:n]...)
 	}
 	return string(b)
+}
+
+//  VString.ToRunes() -- convert Goaldi Unicode string to array of Go runes
+func (v *VString) ToRunes() []rune {
+	n := len(v.low)
+	r := make([]rune, n, n)
+	for i := 0; i < n; i++ {
+		c := rune(v.low[i])
+		if v.high != nil {
+			c |= rune(v.high[i]) << 8
+		}
+		r[i] = c
+	}
+	return r
 }
 
 //  VString.ToBinary -- convert Goaldi Unicode to 8-bit bytes by truncation
