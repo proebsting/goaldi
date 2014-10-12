@@ -30,21 +30,23 @@ func init() {
 	LibProcedure("type", Type)
 }
 
+//  ProcArg(a,i,d) -- return procedure argument a[i], defaulting to d
+func ProcArg(a []Value, i int, d Value) Value {
+	if i < len(a) && a[i] != NilValue {
+		return a[i]
+	} else {
+		return d
+	}
+}
+
 //  Image(v) -- return string image of value v
 func Image(env *Env, a ...Value) (Value, *Closure) {
-	v := NilValue
-	if len(a) > 0 {
-		v = a[0]
-	}
-	return Return(NewString(fmt.Sprintf("%#v", v)))
+	return Return(NewString(fmt.Sprintf("%#v", ProcArg(a, 0, NilValue))))
 }
 
 //  Type(v) -- return the name of v's type, as a string
 func Type(env *Env, a ...Value) (Value, *Closure) {
-	v := NilValue
-	if len(a) > 0 {
-		v = a[0]
-	}
+	v := ProcArg(a, 0, NilValue)
 	switch t := v.(type) {
 	case IExternal:
 		return Return(NewString(t.ExternalType()))

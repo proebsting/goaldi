@@ -71,12 +71,8 @@ func Log(r1 float64, x2 interface{}) float64 {
 
 //  Min(n1, ...) -- return numeric minimum
 func Min(env *Env, a ...Value) (Value, *Closure) {
-	n := len(a)
-	if n == 0 {
-		panic(&RunErr{"min(): no arguments", nil})
-	}
-	v := a[0].(Numerable).ToNumber().Val()
-	for i := 1; i < n; i++ {
+	v := ProcArg(a, 0, NilValue).(Numerable).ToNumber().Val()
+	for i := 1; i < len(a); i++ {
 		vi := a[i].(Numerable).ToNumber().Val()
 		if vi < v {
 			v = vi
@@ -87,12 +83,8 @@ func Min(env *Env, a ...Value) (Value, *Closure) {
 
 //  Max(n1, ...) -- return numeric maximum
 func Max(env *Env, a ...Value) (Value, *Closure) {
-	n := len(a)
-	if n == 0 {
-		panic(&RunErr{"max(): no arguments", nil})
-	}
-	v := a[0].(Numerable).ToNumber().Val()
-	for i := 1; i < n; i++ {
+	v := ProcArg(a, 0, NilValue).(Numerable).ToNumber().Val()
+	for i := 1; i < len(a); i++ {
 		vi := a[i].(Numerable).ToNumber().Val()
 		if vi > v {
 			v = vi
