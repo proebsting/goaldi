@@ -1,4 +1,4 @@
-//  omath.go -- math operations
+//  onumber.go -- operations on numbers
 
 package goaldi
 

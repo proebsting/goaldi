@@ -38,4 +38,4 @@ func ck4s(t *testing.T, label string, s0 string, v1, v2, v3, v4 Value) {
 	}
 }
 
-//  for nspair() see omath_test.go
+//  for nspair() see onumber_test.go

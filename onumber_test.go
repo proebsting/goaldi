@@ -1,4 +1,4 @@
-//  omath_test.go -- test numeric conversions and omath.go operations
+//  onumber_test.go -- test numeric conversions and onumber.go operations
 
 package goaldi
 

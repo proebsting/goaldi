@@ -1,4 +1,4 @@
-//  fmath.go -- numeric functions
+//  fnumber.go -- functions operating on numbers
 //
 //  In general, these do no error checking.
 
