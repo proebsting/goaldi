@@ -6,6 +6,7 @@ import ()
 
 //  The VNil strict contains no data
 type VNil struct {
+	unused int64 // private field discourages counterfeiting the singleton
 }
 
 //  NIL is the one Goaldi nil value
