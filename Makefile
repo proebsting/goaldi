@@ -6,9 +6,7 @@
 #	$GOPATH/bin (first GOPATH component) is destination for built programs
 
 PKG = goaldi
-GEXEC = $(PKG)/gexec
-HTESTS = $(PKG)/test1 $(PKG)/test2 $(PKG)/test3 $(PKG)/test9
-PROGS = $(GEXEC) $(HTESTS)
+PROGS = $(PKG)/gexec
 # GOBIN expands in shell to {first component of $GOPATH}/bin
 GOBIN = $${GOPATH%%:*}/bin
 
@@ -35,17 +33,10 @@ itest:
 expt:
 	test -f expt.gdi && $(GOBIN)/goaldi $$GXOPTS expt.gdi || :
 
-#  run early hand-coded test programs
-htests:
-	$(GOBIN)/test1
-	$(GOBIN)/test2
-	$(GOBIN)/test3
-	$(GOBIN)/test9
-
 #  prepare Go source for check-in by running standard Go reformatter
 format:
 	go fmt *.go
-	for D in gexec test*; do go fmt $$D/*.go; done
+	go fmt gexec/*.go
 
 #  gather together source for single-file editing; requires "bundle" util
 bundle:
@@ -54,7 +45,6 @@ bundle:
 #  remove temporary and built files from source tree
 clean:
 	go clean $(PKG) $(PROGS)
-	go clean -i $(HTESTS)
 	cd gtran; $(MAKE) clean
 	cd gtests; $(MAKE) clean
 	cd itests; $(MAKE) clean
