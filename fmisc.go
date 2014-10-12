@@ -4,6 +4,7 @@ package goaldi
 
 import (
 	"fmt"
+	"os"
 )
 
 func init() {
