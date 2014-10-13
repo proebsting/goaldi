@@ -7,3 +7,12 @@ reverse: edcba
 reverse: --
 tolower: abcde
 toupper: ABCDE
+char/ord: 0 0 0
+char/ord: 1 1 1
+char/ord: 33 33 33
+char/ord: 100 100 100
+char/ord: 200 200 200
+char/ord: 300 300 300
+char/ord: 1000 1000 1000
+char/ord: 1e+04 1e+04 1e+04
+char/ord: 1e+05 1e+05 1e+05

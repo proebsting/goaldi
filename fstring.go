@@ -4,6 +4,7 @@ package goaldi
 
 import (
 	"strings"
+	"unicode"
 )
 
 //  This init function adds a set of Go functions to the standard library
@@ -13,7 +14,29 @@ func init() {
 	LibGoFunc("toupper", strings.ToUpper)
 	LibGoFunc("tolower", strings.ToLower)
 	LibGoFunc("trim", strings.Trim)
+	LibProcedure("char", Char)
+	LibProcedure("ord", Ord)
 	LibProcedure("reverse", Reverse)
+}
+
+//  Char(i) -- return one-character string with Unicode value i
+func Char(env *Env, a ...Value) (Value, *Closure) {
+	var r [1]rune
+	i := int(ProcArg(a, 0, NilValue).(Numerable).ToNumber().Val())
+	if i < 0 || i > int(unicode.MaxRune) {
+		panic(&RunErr{"character code out of range", a[0]})
+	}
+	r[0] = rune(i)
+	return Return(RuneString(r[:]))
+}
+
+//  Ord(c) -- return Unicode value of one-character string
+func Ord(env *Env, a ...Value) (Value, *Closure) {
+	r := ProcArg(a, 0, NilValue).(Stringable).ToString().ToRunes()
+	if len(r) != 1 {
+		panic(&RunErr{"string length not 1", a[0]})
+	}
+	return Return(NewNumber(float64(r[0])))
 }
 
 //  Reverse(s) -- return mirror image of string

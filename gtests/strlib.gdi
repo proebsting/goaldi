@@ -1,5 +1,13 @@
 procedure main()
+	local i, c1, c2, n1, n2
 	every write("reverse: ", reverse("abcde"[1+:(0 to 6)]) | "--")
 	every write("tolower: ", tolower("AbCdE"))
 	every write("toupper: ", toupper("AbCdE"))
+	every i := 0 | 1 | 33 | 100 | 200 | 300 | 1000 | 10000 | 100000 do {
+		c1 := char(i)
+		n1 := ord(c1)
+		c2 := char(n1)
+		n2 := ord(c2)
+		println("char/ord:", i, n1, n2)
+	}
 end
