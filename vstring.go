@@ -7,6 +7,7 @@ package goaldi
 
 import (
 	"fmt"
+	"strconv"
 	"unicode/utf8"
 )
 
@@ -94,7 +95,7 @@ func (v *VString) String() string {
 
 //  VString.GoString -- convert to Go string for image() and printf("%#v")
 func (v *VString) GoString() string {
-	return `"` + v.ToUTF8() + `"`
+	return strconv.Quote(v.ToUTF8()) // quoted Go literal with escapes
 }
 
 //  VString.ToString -- for a Goaldi string, this just returns self

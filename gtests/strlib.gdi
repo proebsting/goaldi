@@ -8,6 +8,6 @@ procedure main()
 		n1 := ord(c1)
 		c2 := char(n1)
 		n2 := ord(c2)
-		println("char/ord:", i, n1, n2)
+		println("char/ord:", i, image(c1), n1, image(c2), n2)
 	}
 end

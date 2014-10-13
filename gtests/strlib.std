@@ -7,12 +7,12 @@ reverse: edcba
 reverse: --
 tolower: abcde
 toupper: ABCDE
-char/ord: 0 0 0
-char/ord: 1 1 1
-char/ord: 33 33 33
-char/ord: 100 100 100
-char/ord: 200 200 200
-char/ord: 300 300 300
-char/ord: 1000 1000 1000
-char/ord: 10000 10000 10000
-char/ord: 100000 100000 100000
+char/ord: 0 "\x00" 0 "\x00" 0
+char/ord: 1 "\x01" 1 "\x01" 1
+char/ord: 33 "!" 33 "!" 33
+char/ord: 100 "d" 100 "d" 100
+char/ord: 200 "È" 200 "È" 200
+char/ord: 300 "Ĭ" 300 "Ĭ" 300
+char/ord: 1000 "Ϩ" 1000 "Ϩ" 1000
+char/ord: 10000 "✐" 10000 "✐" 10000
+char/ord: 100000 "\U000186a0" 100000 "\U000186a0" 100000
