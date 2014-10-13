@@ -44,6 +44,9 @@ func MustParseNum(s string) float64 {
 var (
 	ZERO      = NewNumber(0)
 	ONE       = NewNumber(1)
+	E         = NewNumber(math.E)
+	PI        = NewNumber(math.Pi)
+	PHI       = NewNumber(math.Phi)
 	MAX_EXACT = 1 << 53 // beyond 9e15, integers are noncontiguous
 )
 

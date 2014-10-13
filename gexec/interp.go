@@ -354,12 +354,18 @@ func deltaSlice(lval g.IVariable, a []g.Value, sign int) (g.Value, *g.Closure) {
 
 //  keyword -- return keyword value
 //  #%#% cannot handle generator keywords
-//  #%#% currently only handles &null
+//  #%#% currently only handles a small set of constants
 func keyword(name string) g.Value {
 	switch name {
 	default:
 		panic(&g.RunErr{"Unrecognized keyword", g.NewString(name)})
 	case "null":
 		return g.NilValue
+	case "e":
+		return g.E
+	case "pi":
+		return g.PI
+	case "phi":
+		return g.PHI
 	}
 }
