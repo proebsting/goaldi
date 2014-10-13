@@ -5,6 +5,7 @@ package goaldi
 import (
 	"fmt"
 	"math"
+	"strconv"
 )
 
 type VNumber float64
@@ -53,12 +54,25 @@ func (v *VNumber) Val() float64 {
 
 //  VNumber.String -- default conversion to Go string
 func (v *VNumber) String() string {
-	return fmt.Sprintf("%.4g", float64(*v))
+	f := float64(*v)
+	i := int64(f)
+	if float64(i) == f {
+		return strconv.FormatInt(i, 10) // if exact integer
+	} else {
+		return fmt.Sprintf("%.4g", f) // if has fractional bits
+	}
 }
 
 //  VNumber.GoString -- convert to Go string for image() and printf("%#v")
+//  The difference vs String() is that all significant digits are returned
 func (v *VNumber) GoString() string {
-	return fmt.Sprintf("%g", float64(*v))
+	f := float64(*v)
+	i := int64(f)
+	if float64(i) == f {
+		return strconv.FormatInt(i, 10) // if exact integer
+	} else {
+		return fmt.Sprintf("%g", f) // if has fractional bits
+	}
 }
 
 //  VNumber.ToString -- convert to Goaldi string
