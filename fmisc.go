@@ -24,10 +24,10 @@ func LibGoFunc(name string, f interface{}) {
 
 //  Miscellaneous standard library procedures
 func init() {
-	LibGoFunc("exit", os.Exit)
 	LibGoFunc("remove", os.Remove)
 	LibProcedure("image", Image)
 	LibProcedure("type", Type)
+	LibProcedure("exit", Exit)
 }
 
 //  ProcArg(a,i,d) -- return procedure argument a[i], defaulting to d
@@ -58,3 +58,9 @@ func Type(env *Env, a ...Value) (Value, *Closure) {
 }
 
 var type_external = NewString("external")
+
+//  Exit(n) -- terminate program
+func Exit(env *Env, a ...Value) (Value, *Closure) {
+	Shutdown(int(ProcArg(a, 0, ZERO).(Numerable).ToNumber().Val()))
+	return Fail() // NOTREACHED
+}
