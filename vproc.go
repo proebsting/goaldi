@@ -109,7 +109,9 @@ func GoProcedure(name string, f interface{}) *VProcedure {
 		}
 		//  call the Go function
 		out := fval.Call(in)
-		//  return the result   #%#% returns first result only!!!
+		//  return the result
+		//  #%#% in the case of multiple return values, returns only the first!
+		//  #%#% should at least panic if the second is type error and non-nil
 		if nrtn >= 1 {
 			return Import(out[0].Interface()), nil
 		} else {
@@ -126,6 +128,7 @@ func GoProcedure(name string, f interface{}) *VProcedure {
 func passfunc(t reflect.Type) func(Value) reflect.Value {
 	k := t.Kind()
 	switch k {
+	// #%#% is there a need for other types such as rune, int32, etc?
 	case reflect.Int:
 		return func(v Value) reflect.Value {
 			return reflect.ValueOf(
@@ -157,6 +160,7 @@ func passfunc(t reflect.Type) func(Value) reflect.Value {
 			}
 		}
 	default:
+		// #%#% convert using reflection?
 		panic(&RunErr{"Unimpl paramkind", t})
 	}
 }
