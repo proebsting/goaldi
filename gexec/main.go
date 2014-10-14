@@ -86,6 +86,7 @@ func main() {
 
 	// exit
 	showInterval("execution")
+	g.Shutdown(0)
 }
 
 //  warning -- report nonfatal error and continue

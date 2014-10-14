@@ -91,11 +91,20 @@ func (v *VFile) Write(p []byte) (int, error) {
 	}
 }
 
+//  VFile.Flush() flushes the output stream if possible.
+func (v *VFile) Flush() error {
+	if b, ok := v.Actor.(*bufio.Writer); ok {
+		return b.Flush()
+	} else {
+		return nil
+	}
+}
+
 //  VFile.Close() marks the file as closed and calls io.Close().
 func (v *VFile) Close() error {
-	a := v.Actor
-	if b, ok := a.(bufio.Writer); ok {
-		b.Flush()
+	err := v.Flush()
+	if err != nil {
+		return err
 	}
 	v.Actor = nil
 	v.Flags = "-"

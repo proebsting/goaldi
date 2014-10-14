@@ -48,11 +48,18 @@ func Run(p Value, arglist []Value) {
 				fmt.Fprintf(os.Stderr, "Go stack:\n%s\n",
 					debug.Stack()) // write Go stack trace
 			}
-			pprof.StopCPUProfile()
-			os.Exit(1)
+			Shutdown(1)
 		}
 	}()
 	p.(ICall).Call(env, arglist...)
+}
+
+//  Shutdown terminates execution with the given exit code.
+func Shutdown(e int) {
+	STDOUT.Flush()
+	STDERR.Flush()
+	pprof.StopCPUProfile()
+	os.Exit(e)
 }
 
 //  Catch annotates a caught panic value with traceback information

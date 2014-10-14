@@ -29,6 +29,7 @@ func init() {
 	LibProcedure("writes", Writes)
 	LibProcedure("print", Print)
 	LibProcedure("println", Println)
+	LibProcedure("stop", Stop)
 	LibGoFunc("printf", fmt.Printf)   // Go library function
 	LibGoFunc("fprintf", fmt.Fprintf) // Go library function
 }
@@ -51,13 +52,13 @@ func Open(env *Env, a ...Value) (Value, *Closure) {
 
 //  Flush(f) -- flush output on a Goaldi file
 func Flush(env *Env, a ...Value) (Value, *Closure) {
-	ProcArg(a, 0, STDOUT).(*VFile).Actor.(*bufio.Writer).Flush()
+	Ock(0, ProcArg(a, 0, NilValue).(*VFile).Flush())
 	return Return(a[0])
 }
 
 //  Close(f) -- close a Goaldi file
 func Close(env *Env, a ...Value) (Value, *Closure) {
-	ProcArg(a, 0, NilValue).(*VFile).Close()
+	Ock(0, ProcArg(a, 0, NilValue).(*VFile).Close())
 	return Return(a[0])
 }
 
@@ -80,27 +81,33 @@ func Read(env *Env, a ...Value) (Value, *Closure) {
 
 //  Write(x,...)
 func Write(env *Env, a ...Value) (Value, *Closure) {
-	return Wrt(noBytes, nlByte, a)
+	return Wrt(STDOUT, noBytes, nlByte, a)
 }
 
 //  Writes(x,...)
 func Writes(env *Env, a ...Value) (Value, *Closure) {
-	return Wrt(noBytes, noBytes, a)
+	return Wrt(STDOUT, noBytes, noBytes, a)
 }
 
 //  Print(x,...)
 func Print(env *Env, a ...Value) (Value, *Closure) {
-	return Wrt(spByte, noBytes, a)
+	return Wrt(STDOUT, spByte, noBytes, a)
 }
 
 //  Println(x,...)
 func Println(env *Env, a ...Value) (Value, *Closure) {
-	return Wrt(spByte, nlByte, a)
+	return Wrt(STDOUT, spByte, nlByte, a)
 }
 
-//  Wrt(between, atEnd, x[]) -- implement write/writes/print/println
-func Wrt(between []byte, atEnd []byte, a []Value) (Value, *Closure) {
-	f := STDOUT
+//  Stop(x,...):
+func Stop(env *Env, a ...Value) (Value, *Closure) {
+	Wrt(STDERR, spByte, nlByte, a)
+	Shutdown(1) // does not return
+	return Fail()
+}
+
+//  Wrt(file, between, atEnd, x[]) -- implement write/writes/print/println
+func Wrt(f *VFile, between []byte, atEnd []byte, a []Value) (Value, *Closure) {
 	if len(a) > 0 { // if there is a first argument
 		if altf, ok := a[0].(*VFile); ok { // and it's a file
 			f = altf  // use that as the output file
@@ -116,9 +123,7 @@ func Wrt(between []byte, atEnd []byte, a []Value) (Value, *Closure) {
 		r = v
 	}
 	Ock(f.Write(atEnd))
-	if b, ok := f.Actor.(*bufio.Writer); ok {
-		Ock(0, b.Flush()) // #%#% why is this flush needed?
-	}
+	Ock(0, f.Flush()) // #%#% seems necessary; should it be?
 	return Return(r)
 }
 
