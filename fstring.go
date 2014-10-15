@@ -14,9 +14,16 @@ func init() {
 	LibGoFunc("toupper", strings.ToUpper)
 	LibGoFunc("tolower", strings.ToLower)
 	LibGoFunc("trim", strings.Trim)
+	LibProcedure("string", String)
 	LibProcedure("char", Char)
 	LibProcedure("ord", Ord)
 	LibProcedure("reverse", Reverse)
+}
+
+//  String(x) -- return argument converted to string
+func String(env *Env, a ...Value) (Value, *Closure) {
+	defer Traceback("string", a)
+	return Return(ProcArg(a, 0, NilValue).(Stringable).ToString())
 }
 
 //  Char(i) -- return one-character string with Unicode value i

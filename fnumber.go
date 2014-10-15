@@ -14,6 +14,8 @@ func init() {
 	LibGoFunc("abs", math.Abs)
 	LibGoFunc("ceil", math.Ceil)
 	LibGoFunc("floor", math.Floor)
+
+	LibProcedure("number", Number)
 	LibProcedure("min", Min)
 	LibProcedure("max", Max)
 
@@ -68,6 +70,12 @@ func Log(r1 float64, x2 interface{}) float64 {
 }
 
 //------------------------------------  procedures with Goaldi interface
+
+//  Number(x) -- return argument converted to number
+func Number(env *Env, a ...Value) (Value, *Closure) {
+	defer Traceback("number", a)
+	return Return(ProcArg(a, 0, NilValue).(Numerable).ToNumber())
+}
 
 //  Min(n1, ...) -- return numeric minimum
 func Min(env *Env, a ...Value) (Value, *Closure) {
