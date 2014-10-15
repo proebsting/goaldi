@@ -12,6 +12,7 @@ type pr_Info struct {
 	name    string                   // procedure name
 	outer   *pr_Info                 // immediate parent #%#% NOT YET SET
 	ir      *ir_Function             // intermediate code structure
+	accum   bool                     // true if last param is [] #%#% NYET IMPL
 	nparams int                      // number of parameters
 	nlocals int                      // number of locals
 	lset    map[string]bool          // set of locally declared identifiers
@@ -33,6 +34,7 @@ func declareProc(ir *ir_Function) *pr_Info {
 	pr := &pr_Info{}
 	pr.name = ir.Name
 	pr.ir = ir
+	pr.accum = (ir.Accumulate != "")
 	pr.nlocals = len(pr.ir.LocalList)
 	pr.nparams = len(pr.ir.ParamList)
 	pr.lset = make(map[string]bool)

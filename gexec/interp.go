@@ -44,6 +44,7 @@ func interp(env *g.Env, pr *pr_Info, args ...g.Value) (g.Value, *g.Closure) {
 			f.params[i] = g.NewNil()
 		}
 	}
+	// #%#%# need to check accum flag and make list of trailing params
 	for i := 0; i < len(f.locals); i++ {
 		f.locals[i] = g.NewNil()
 	}
