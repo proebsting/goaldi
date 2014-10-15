@@ -19,6 +19,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"strings"
 )
 
 func init() {
@@ -26,8 +27,10 @@ func init() {
 	LibProcedure("flush", Flush)
 	LibProcedure("close", Close)
 	LibProcedure("read", Read)
+	LibProcedure("readb", Readb)
 	LibProcedure("write", Write)
 	LibProcedure("writes", Writes)
+	LibProcedure("writeb", Writeb)
 	LibProcedure("print", Print)
 	LibProcedure("println", Println)
 	LibProcedure("stop", Stop)
@@ -40,14 +43,20 @@ var spByte = []byte(" ")
 var nlByte = []byte("\n")
 
 //  Open(name,flags) -- open a file, or fail
-//  #%#%#% currently ignores all flags and opens for sequential buffered reading
+//  #%#%#% currently ignores most flags and opens for reading only
+//	flags:
+//		f	fail (instead of panicking) if unsuccessful
 func Open(env *Env, a ...Value) (Value, *Closure) {
 	defer Traceback("open", a)
 	name := ProcArg(a, 0, NilValue).(Stringable).ToString().String()
 	flags := ProcArg(a, 1, EMPTY).(Stringable).ToString().String()
 	f, e := os.Open(name)
 	if e != nil {
-		return Fail()
+		if strings.Contains(flags, "f") {
+			return Fail()
+		} else {
+			panic(e)
+		}
 	}
 	return Return(NewFile(name, flags, f, bufio.NewReader(f), nil))
 }
@@ -69,6 +78,7 @@ func Close(env *Env, a ...Value) (Value, *Closure) {
 }
 
 //  Read(f) -- return next line from file
+//  Fails at EOF when no more data is available.
 func Read(env *Env, a ...Value) (Value, *Closure) {
 	defer Traceback("read", a)
 	r := ProcArg(a, 0, STDIN).(*VFile).Reader
@@ -84,6 +94,35 @@ func Read(env *Env, a ...Value) (Value, *Closure) {
 		panic(e) // other error
 	}
 	return Return(NewString(s[:len(s)-1])) // trim \n and return
+}
+
+//  Readb(f,n) -- read next n binary bytes from file
+//  Reads up to n bytes into individual characters without decoding as UTF-8.
+//  Useful for reading binary files.
+//  Fails at EOF when no more data is available.
+func Readb(env *Env, a ...Value) (Value, *Closure) {
+	defer Traceback("readb", a)
+	r := ProcArg(a, 0, STDIN).(*VFile).Reader
+	n := int(ProcArg(a, 1, ONE).(Numerable).ToNumber().Val())
+	b := make([]byte, n, n)
+	n, err := r.Read(b)
+	if err == io.EOF {
+		return Fail()
+	} else if err != nil {
+		panic(err)
+	} else {
+		return Return(BinaryString(b[:n]))
+	}
+}
+
+//  Writeb(f,s) -- write string s as bytes
+//  Writes the low 8 bits of each character of s to file f.
+func Writeb(env *Env, a ...Value) (Value, *Closure) {
+	defer Traceback("writeb", a)
+	w := ProcArg(a, 0, STDIN).(*VFile).Writer
+	s := ProcArg(a, 1, NilValue).(Stringable).ToString()
+	Ock(w.Write(s.ToBinary()))
+	return Return(s)
 }
 
 //  Write(x,...)

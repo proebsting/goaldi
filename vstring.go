@@ -49,9 +49,9 @@ func RuneString(r []rune) *VString {
 
 //  BinaryString -- construct a Goaldi string from Go Latin1 bytes
 func BinaryString(s []byte) *VString {
-	b := make([]uint8, len(s), len(s))
-	copy(b, s)
-	return &VString{b, nil}
+	low := make([]uint8, len(s), len(s))
+	copy(low, s)
+	return &VString{low, nil}
 }
 
 //  VString.ToUTF8 -- convert Goaldi Unicode string to Go UTF8 string
@@ -85,7 +85,9 @@ func (v *VString) ToRunes() []rune {
 
 //  VString.ToBinary -- convert Goaldi Unicode to 8-bit bytes by truncation
 func (v *VString) ToBinary() []byte {
-	return []byte(v.low)
+	b := make([]byte, len(v.low), len(v.low))
+	copy(b, v.low)
+	return b
 }
 
 //  VString.String -- default conversion to Go string
