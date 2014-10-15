@@ -30,6 +30,7 @@ type Resumer func() (Value, *Closure)
 
 //  Resume() executes the entry point in a Closure to produce the next result.
 //  If the pointer is nil, failure is produced.
+//  But watch out for nils that aren't.
 func (c *Closure) Resume() (Value, *Closure) {
 	if c == nil {
 		return Fail()

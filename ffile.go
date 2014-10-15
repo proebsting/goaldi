@@ -81,19 +81,13 @@ func Close(env *Env, a ...Value) (Value, *Closure) {
 //  Fails at EOF when no more data is available.
 func Read(env *Env, a ...Value) (Value, *Closure) {
 	defer Traceback("read", a)
-	r := ProcArg(a, 0, STDIN).(*VFile).Reader
-	s, e := r.ReadString('\n')
-	if e == io.EOF {
-		if s != "" {
-			return Return(NewString(s)) // unterminated by \n at EOF
-		} else {
-			return Fail() // read EOF
-		}
+	r := ProcArg(a, 0, STDIN).(*VFile)
+	s := r.ReadLine()
+	if s == nil {
+		return Fail()
+	} else {
+		return Return(s)
 	}
-	if e != nil {
-		panic(e) // other error
-	}
-	return Return(NewString(s[:len(s)-1])) // trim \n and return
 }
 
 //  Readb(f,n) -- read next n binary bytes from file

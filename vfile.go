@@ -72,6 +72,20 @@ func (v *VFile) Read(p []byte) (int, error) {
 	}
 }
 
+//  VFile.ReadLine() returns the next line from this file, or nil at EOF.
+func (v *VFile) ReadLine() *VString {
+	s, e := v.Reader.ReadString('\n')
+	if e == nil {
+		return NewString(s[:len(s)-1]) // trim \n and return
+	} else if e != io.EOF {
+		panic(e) // actual error
+	} else if s != "" {
+		return NewString(s) // unterminated by \n at EOF
+	} else {
+		return nil // hit EOF with no more data
+	}
+}
+
 //  VFile.Write() calls io.Write().
 func (v *VFile) Write(p []byte) (int, error) {
 	if v.Writer != nil {
@@ -105,4 +119,18 @@ func (v *VFile) Close() error {
 	v.Reader = nil
 	v.Writer = nil
 	return f.Close()
+}
+
+//  VFile.Dispense() implements the !f operator
+func (f *VFile) Dispense(unused IVariable) (Value, *Closure) {
+	var c *Closure
+	c = &Closure{func() (Value, *Closure) {
+		s := f.ReadLine()
+		if s != nil {
+			return s, c
+		} else {
+			return Fail()
+		}
+	}}
+	return c.Resume()
 }
