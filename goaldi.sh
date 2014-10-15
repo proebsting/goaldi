@@ -32,5 +32,5 @@ export COEXPSIZE=300000
 if [ -n "$CFLAG" ]; then
     exec $TRAN >${I%.*}.gir
 else
-    exec $TRAN | gexec $XOPTS "$@"
+    exec $TRAN | gexec $XOPTS - "$@"
 fi

@@ -31,8 +31,8 @@ func init() {
 	LibProcedure("print", Print)
 	LibProcedure("println", Println)
 	LibProcedure("stop", Stop)
-	LibGoFunc("printf", fmt.Printf)   // Go library function
-	LibGoFunc("fprintf", fmt.Fprintf) // Go library function
+	LibGoFunc("printf", fmt.Printf)   // Go library function; don't use %d
+	LibGoFunc("fprintf", fmt.Fprintf) // Go library function; don't use %d
 }
 
 var noBytes = []byte("")
