@@ -92,6 +92,9 @@ func (v *VFile) Flush() error {
 
 //  VFile.Close() marks the file as closed and calls io.Close().
 func (v *VFile) Close() error {
+	if v.File == nil {
+		panic(&RunErr{"File not open", v})
+	}
 	err := v.Flush()
 	if err != nil {
 		return err

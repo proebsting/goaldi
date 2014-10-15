@@ -41,11 +41,13 @@ func ProcArg(a []Value, i int, d Value) Value {
 
 //  Image(v) -- return string image of value v
 func Image(env *Env, a ...Value) (Value, *Closure) {
+	defer Traceback("image", a)
 	return Return(NewString(fmt.Sprintf("%#v", ProcArg(a, 0, NilValue))))
 }
 
 //  Type(v) -- return the name of v's type, as a string
 func Type(env *Env, a ...Value) (Value, *Closure) {
+	defer Traceback("type", a)
 	v := ProcArg(a, 0, NilValue)
 	switch t := v.(type) {
 	case IExternal:
@@ -61,6 +63,7 @@ var type_external = NewString("external")
 
 //  Exit(n) -- terminate program
 func Exit(env *Env, a ...Value) (Value, *Closure) {
+	defer Traceback("exit", a)
 	Shutdown(int(ProcArg(a, 0, ZERO).(Numerable).ToNumber().Val()))
 	return Fail() // NOTREACHED
 }

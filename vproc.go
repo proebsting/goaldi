@@ -78,11 +78,7 @@ func GoProcedure(name string, f interface{}) *VProcedure {
 	//  define a func to convert arguments and call the underlying func
 	pfun := func(env *Env, args ...Value) (Value, *Closure) {
 		//  set up traceback recovery
-		defer func() {
-			if p := recover(); p != nil {
-				panic(Catch(p, nil, "", name, args))
-			}
-		}()
+		defer Traceback(name, args)
 		//  convert fixed arguments from Goaldi values to needed Go type
 		in := make([]reflect.Value, 0, len(args))
 		var v reflect.Value

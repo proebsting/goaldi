@@ -2,6 +2,7 @@
 //
 //  #%#% TO DO:
 //  implement flags for open(), including new ones:
+//		f   fail, don't panic, on open failure
 //		m	memory file, implies r/w, buffer in memory (not on disk)
 //		s	scratch file, implies r/w, alter name randomly, delete after open
 //  add
@@ -41,6 +42,7 @@ var nlByte = []byte("\n")
 //  Open(name,flags) -- open a file, or fail
 //  #%#%#% currently ignores all flags and opens for sequential buffered reading
 func Open(env *Env, a ...Value) (Value, *Closure) {
+	defer Traceback("open", a)
 	name := ProcArg(a, 0, NilValue).(Stringable).ToString().String()
 	flags := ProcArg(a, 1, EMPTY).(Stringable).ToString().String()
 	f, e := os.Open(name)
@@ -52,6 +54,7 @@ func Open(env *Env, a ...Value) (Value, *Closure) {
 
 //  Flush(f) -- flush output on a Goaldi file
 func Flush(env *Env, a ...Value) (Value, *Closure) {
+	defer Traceback("flush", a)
 	f := ProcArg(a, 0, STDOUT)
 	Ock(0, f.(*VFile).Flush())
 	return Return(f)
@@ -59,6 +62,7 @@ func Flush(env *Env, a ...Value) (Value, *Closure) {
 
 //  Close(f) -- close a Goaldi file
 func Close(env *Env, a ...Value) (Value, *Closure) {
+	defer Traceback("close", a)
 	f := ProcArg(a, 0, NilValue)
 	Ock(0, f.(*VFile).Close())
 	return Return(f)
@@ -66,6 +70,7 @@ func Close(env *Env, a ...Value) (Value, *Closure) {
 
 //  Read(f) -- return next line from file
 func Read(env *Env, a ...Value) (Value, *Closure) {
+	defer Traceback("read", a)
 	r := ProcArg(a, 0, STDIN).(*VFile).Reader
 	s, e := r.ReadString('\n')
 	if e == io.EOF {
@@ -83,26 +88,31 @@ func Read(env *Env, a ...Value) (Value, *Closure) {
 
 //  Write(x,...)
 func Write(env *Env, a ...Value) (Value, *Closure) {
+	defer Traceback("write", a)
 	return Wrt(STDOUT, noBytes, nlByte, a)
 }
 
 //  Writes(x,...)
 func Writes(env *Env, a ...Value) (Value, *Closure) {
+	defer Traceback("writes", a)
 	return Wrt(STDOUT, noBytes, noBytes, a)
 }
 
 //  Print(x,...)
 func Print(env *Env, a ...Value) (Value, *Closure) {
+	defer Traceback("print", a)
 	return Wrt(STDOUT, spByte, noBytes, a)
 }
 
 //  Println(x,...)
 func Println(env *Env, a ...Value) (Value, *Closure) {
+	defer Traceback("println", a)
 	return Wrt(STDOUT, spByte, nlByte, a)
 }
 
 //  Stop(x,...):
 func Stop(env *Env, a ...Value) (Value, *Closure) {
+	defer Traceback("stop", a)
 	Wrt(STDERR, spByte, nlByte, a)
 	Shutdown(1) // does not return
 	return Fail()

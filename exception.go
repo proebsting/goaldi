@@ -62,6 +62,13 @@ func Shutdown(e int) {
 	os.Exit(e)
 }
 
+//  Traceback is called as a deferred function to catch and annotate a panic
+func Traceback(procname string, arglist []Value) {
+	if p := recover(); p != nil {
+		panic(Catch(p, nil, "", procname, arglist))
+	}
+}
+
 //  Catch annotates a caught panic value with traceback information
 func Catch(p interface{}, ev Value, coord string,
 	procname string, arglist []Value) *CallFrame {

@@ -21,6 +21,7 @@ func init() {
 
 //  Char(i) -- return one-character string with Unicode value i
 func Char(env *Env, a ...Value) (Value, *Closure) {
+	defer Traceback("char", a)
 	var r [1]rune
 	i := int(ProcArg(a, 0, NilValue).(Numerable).ToNumber().Val())
 	if i < 0 || i > int(unicode.MaxRune) {
@@ -32,6 +33,7 @@ func Char(env *Env, a ...Value) (Value, *Closure) {
 
 //  Ord(c) -- return Unicode value of one-character string
 func Ord(env *Env, a ...Value) (Value, *Closure) {
+	defer Traceback("ord", a)
 	r := ProcArg(a, 0, NilValue).(Stringable).ToString().ToRunes()
 	if len(r) != 1 {
 		panic(&RunErr{"string length not 1", a[0]})
@@ -41,6 +43,7 @@ func Ord(env *Env, a ...Value) (Value, *Closure) {
 
 //  Reverse(s) -- return mirror image of string
 func Reverse(env *Env, a ...Value) (Value, *Closure) {
+	defer Traceback("reverse", a)
 	r := ProcArg(a, 0, NilValue).(Stringable).ToString().ToRunes()
 	n := len(r)
 	for i := 0; i < n/2; i++ {
