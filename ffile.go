@@ -118,7 +118,7 @@ func Stop(env *Env, a ...Value) (Value, *Closure) {
 	return Fail()
 }
 
-//  Wrt(file, between, atEnd, x[]) -- implement write/writes/print/println
+//  Wrt(file, between, atEnd, x[]) -- implement write/writes/print/println/stop
 func Wrt(f *VFile, between []byte, atEnd []byte, a []Value) (Value, *Closure) {
 	if len(a) > 0 { // if there is a first argument
 		if altf, ok := a[0].(*VFile); ok { // and it's a file
