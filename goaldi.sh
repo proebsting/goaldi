@@ -10,6 +10,7 @@
 
 FLAGS=cltvAJPT
 USAGE="usage: $0 [-$FLAGS] file [arg...]"
+TMP=/tmp/gdi.$$.gir
 
 #  process options
 XOPTS=
@@ -31,6 +32,7 @@ shift
 export COEXPSIZE=300000
 if [ -n "$CFLAG" ]; then
     exec $TRAN >${I%.*}.gir
-else
-    exec $TRAN | gexec $XOPTS - "$@"
 fi
+
+trap 'rm -f $TMP; exit' 0 1 2 15
+$TRAN >$TMP && exec gexec $XOPTS $TMP "$@"
