@@ -47,24 +47,26 @@ func Open(env *Env, a ...Value) (Value, *Closure) {
 	if e != nil {
 		return Fail()
 	}
-	return Return(NewFile(name, flags, bufio.NewReader(f), f))
+	return Return(NewFile(name, flags, f, bufio.NewReader(f), nil))
 }
 
 //  Flush(f) -- flush output on a Goaldi file
 func Flush(env *Env, a ...Value) (Value, *Closure) {
-	Ock(0, ProcArg(a, 0, NilValue).(*VFile).Flush())
-	return Return(a[0])
+	f := ProcArg(a, 0, STDOUT)
+	Ock(0, f.(*VFile).Flush())
+	return Return(f)
 }
 
 //  Close(f) -- close a Goaldi file
 func Close(env *Env, a ...Value) (Value, *Closure) {
-	Ock(0, ProcArg(a, 0, NilValue).(*VFile).Close())
-	return Return(a[0])
+	f := ProcArg(a, 0, NilValue)
+	Ock(0, f.(*VFile).Close())
+	return Return(f)
 }
 
 //  Read(f) -- return next line from file
 func Read(env *Env, a ...Value) (Value, *Closure) {
-	r := ProcArg(a, 0, STDIN).(*VFile).Actor.(*bufio.Reader)
+	r := ProcArg(a, 0, STDIN).(*VFile).Reader
 	s, e := r.ReadString('\n')
 	if e == io.EOF {
 		if s != "" {

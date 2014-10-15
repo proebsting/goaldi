@@ -3,6 +3,7 @@ Goaldi Implementation To-Do List
 reorganize source tree; what makes sense for a mixed-language project?
 straighten out goaldi vs goaldi/gexec: what goes where?
 
+include Go-written procedures in traceback
 more consistency in struct and procedure names
 better & more uniform func header comments
 review all errors for consistency

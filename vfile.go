@@ -22,33 +22,23 @@ var _ io.ReadWriteCloser = &VFile{}
 
 //  standard files
 var (
-	STDIN  = NewFile("%stdin", "", bufio.NewReader(os.Stdin), os.Stdin)
-	STDOUT = NewFile("%stdout", "", bufio.NewWriter(os.Stdout), os.Stdout)
-	STDERR = NewFile("%stderr", "", io.Writer(os.Stderr), os.Stderr)
+	STDIN  = NewFile("%stdin", "r", os.Stdin, bufio.NewReader(os.Stdin), nil)
+	STDOUT = NewFile("%stdout", "w", os.Stdout, nil, bufio.NewWriter(os.Stdout))
+	STDERR = NewFile("%stderr", "w", os.Stderr, nil, io.Writer(os.Stderr))
 )
 
 type VFile struct {
-	Name  string      // name when opened
-	Flags string      // attributes when opened
-	Actor interface{} // an io.Reader or io.Writer (or both)
-	File  *os.File    // underlying file (needed for close etc.)
+	Name   string        // name when opened
+	Flags  string        // attributes when opened
+	File   *os.File      // underlying file (needed for close etc.)
+	Reader *bufio.Reader // underlying reader, if open for read
+	Writer io.Writer     // underlying writer, if open for write
 }
 
-//  NewFile(name, flags, actor) -- construct new Goaldi file
-//  flags are from "open", EXCLUDING "r" and "w"
-//  actor is an io.Reader or io.Writer
-func NewFile(name string, flags string, actor interface{}, f *os.File) *VFile {
-	a := ""
-	if _, ok := actor.(io.Reader); ok {
-		a = a + "r"
-	}
-	if _, ok := actor.(io.Writer); ok {
-		a = a + "w"
-	}
-	if a == "" {
-		panic(&RunErr{"Neither reader nor writer", actor})
-	}
-	return &VFile{name, a + flags, actor, f}
+//  NewFile(name, flags, file, reader, writer) -- construct new Goaldi file
+func NewFile(name string, flags string, file *os.File,
+	reader *bufio.Reader, writer io.Writer) *VFile {
+	return &VFile{name, flags, file, reader, writer}
 }
 
 //  VFile.String -- conversion to Go string returns "file(name)"
@@ -68,15 +58,15 @@ func (v *VFile) Type() Value {
 
 var type_file = NewString("file")
 
-//  VFile.Export returns the underlying io.Reader / io.Writer
+//  VFile.Export returns the file, which is a ReadWriteCloser
 func (v *VFile) Export() interface{} {
-	return v.Actor
+	return v
 }
 
 //  VFile.Read() calls io.Read().
 func (v *VFile) Read(p []byte) (int, error) {
-	if r, ok := v.Actor.(io.Reader); ok {
-		return r.Read(p)
+	if v.Reader != nil {
+		return v.Reader.Read(p)
 	} else {
 		panic(&RunErr{"Not open for reading", v})
 	}
@@ -84,8 +74,8 @@ func (v *VFile) Read(p []byte) (int, error) {
 
 //  VFile.Write() calls io.Write().
 func (v *VFile) Write(p []byte) (int, error) {
-	if w, ok := v.Actor.(io.Writer); ok {
-		return w.Write(p)
+	if v.Writer != nil {
+		return v.Writer.Write(p)
 	} else {
 		panic(&RunErr{"Not open for writing", v})
 	}
@@ -93,7 +83,7 @@ func (v *VFile) Write(p []byte) (int, error) {
 
 //  VFile.Flush() flushes the output stream if possible.
 func (v *VFile) Flush() error {
-	if b, ok := v.Actor.(*bufio.Writer); ok {
+	if b, ok := v.Writer.(*bufio.Writer); ok {
 		return b.Flush()
 	} else {
 		return nil
@@ -106,7 +96,10 @@ func (v *VFile) Close() error {
 	if err != nil {
 		return err
 	}
-	v.Actor = nil
+	f := v.File
 	v.Flags = "-"
-	return v.File.Close()
+	v.File = nil
+	v.Reader = nil
+	v.Writer = nil
+	return f.Close()
 }
