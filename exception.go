@@ -82,18 +82,25 @@ func Diagnose(f io.Writer, v Value) bool {
 	case *CallFrame:
 		rv := Diagnose(f, x.cause)
 		if _, ok := x.cause.(*runtime.TypeAssertionError); ok {
-			fmt.Fprintf(f, "Offending value: %v\n", x.offv)
+			fmt.Fprintf(f, "Offending value: %#v\n", x.offv)
 		}
-		fmt.Fprintf(f, "Called by %s(%v)", x.pname, x.args)
+		fmt.Fprintf(f, "Called by %s(", x.pname)
+		for i, a := range x.args {
+			if i > 0 {
+				fmt.Fprintf(f, ",")
+			}
+			fmt.Fprintf(f, "%#v", a)
+		}
 		if x.coord != "" {
-			fmt.Fprintf(f, " at %s", x.coord)
+			fmt.Fprintf(f, ") at %s\n", x.coord)
+		} else {
+			fmt.Fprintf(f, ")\n")
 		}
-		fmt.Fprintln(f)
 		return rv
 	case *RunErr:
 		fmt.Fprintln(f, x.Msg)
 		if x.Offv != nil {
-			fmt.Fprintf(f, "Offending value: %v\n", x.Offv)
+			fmt.Fprintf(f, "Offending value: %#v\n", x.Offv)
 		}
 		return true
 	case *runtime.TypeAssertionError:
