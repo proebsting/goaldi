@@ -110,7 +110,7 @@ func Diagnose(f io.Writer, v Value) bool {
 		fmt.Fprintf(f, "Type %s does not implement %s\n", conc, asst)
 		return true
 	default:
-		fmt.Fprintln(f, x)
+		fmt.Fprintf(f, "%T: %v\n", x, x)
 		return false
 	}
 }
