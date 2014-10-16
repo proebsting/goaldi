@@ -5,7 +5,6 @@
 //		m	memory file, implies r/w, buffer in memory (not on disk)
 //		s	scratch file, implies r/w, alter name randomly, delete after open
 //  add
-//	    reads(), readb(), writeb()
 //	    implement methods???
 //
 //  In general:  Files can be passed to Go I/O functions.
@@ -14,7 +13,6 @@
 package goaldi
 
 import (
-	"bufio"
 	"fmt"
 	"io"
 	"os"
@@ -40,40 +38,81 @@ func init() {
 var noBytes = []byte("")
 var spByte = []byte(" ")
 var nlByte = []byte("\n")
+var dflt_open = NewString("r")
 
-//  Open(name,flags) -- open a file, or fail
-//  #%#%#% currently ignores most flags
-//  #%#%#% files are opened with buffering but there is no auto flush on exit!
+//  Open(name,flags) -- open a file
 //	flags:
-//		w	open for writing (instead of reading)
-//		f	fail (instead of panicking) if unsuccessful
+//		r	open for reading
+//		w	open for writing
+//      a	open for appending
+//		f	fail on error (instead of panicking)  #%#% new
+//  #%#% no flag "b": use "rw"
+//  #%#% no flag "c": implied by "w"
+//  #%#% no flag "t" or "u": done differently (see readb/writeb)
+//  #%#% no flag "p": to be considered
 func Open(env *Env, a ...Value) (Value, *Closure) {
 	defer Traceback("open", a)
+
 	name := ProcArg(a, 0, NilValue).(Stringable).ToString().String()
-	flags := ProcArg(a, 1, EMPTY).(Stringable).ToString().String()
-	if strings.Contains(flags, "w") {
-		// open for writing
-		f, e := os.Create(name)
-		if e != nil {
-			if strings.Contains(flags, "f") {
-				return Fail()
-			} else {
-				panic(e)
-			}
+	flags := ProcArg(a, 1, dflt_open).(Stringable).ToString().String()
+	fail := false
+	read := false
+	write := false
+	append := false
+
+	// scan flags
+	for _, f := range flags {
+		switch f {
+		case 'r':
+			read = true
+		case 'w':
+			write = true
+		case 'a':
+			write = true
+			append = true
+		case 'f':
+			fail = true
+		default:
+			panic(&RunErr{"Unrecognized flag", string([]rune{f})})
 		}
-		return Return(NewFile(name, flags, f, nil, bufio.NewWriter(f)))
-	} else {
-		// open for reading
-		f, e := os.Open(name)
-		if e != nil {
-			if strings.Contains(flags, "f") {
-				return Fail()
-			} else {
-				panic(e)
-			}
-		}
-		return Return(NewFile(name, flags, f, bufio.NewReader(f), nil))
 	}
+	flags = strings.Replace(flags, "f", "", -1) // remove "f" from flags
+
+	// deduce access mode and flags
+	amode := 0
+	if !write {
+		amode = os.O_RDONLY // "r" or unspecified
+	} else if read {
+		amode = os.O_CREATE | os.O_RDWR // "rw"
+	} else {
+		amode = os.O_CREATE | os.O_WRONLY // "w" or "a"
+	}
+	if append {
+		amode |= os.O_APPEND
+	} else if write {
+		amode |= os.O_TRUNC
+	}
+
+	// open the file
+	f, e := os.OpenFile(name, amode, 0666) // umask modifies 0666
+	if e != nil {                          // if error
+		if fail {
+			return Fail()
+		} else {
+			panic(e)
+		}
+	}
+
+	// construct Goaldi file value
+	reader := io.Reader(f)
+	writer := io.Writer(f)
+	if !read {
+		reader = nil
+	}
+	if !write {
+		writer = nil
+	}
+	return Return(NewFile(name, flags, f, reader, writer))
 }
 
 //  Flush(f) -- flush output on a Goaldi file
@@ -161,7 +200,7 @@ func Println(env *Env, a ...Value) (Value, *Closure) {
 //  Stop(x,...):
 func Stop(env *Env, a ...Value) (Value, *Closure) {
 	defer Traceback("stop", a)
-	Wrt(STDERR, spByte, nlByte, a)
+	Wrt(STDERR, noBytes, nlByte, a)
 	Shutdown(1) // does not return
 	return Fail()
 }
