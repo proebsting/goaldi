@@ -22,7 +22,7 @@ var _ io.ReadWriteCloser = &VFile{}
 
 //  standard files
 var (
-	STDIN  = NewFile("%stdin", "r", os.Stdin, bufio.NewReader(os.Stdin), nil)
+	STDIN  = NewFile("%stdin", "r", os.Stdin, io.Reader(os.Stdin), nil)
 	STDOUT = NewFile("%stdout", "w", os.Stdout, nil, bufio.NewWriter(os.Stdout))
 	STDERR = NewFile("%stderr", "w", os.Stderr, nil, io.Writer(os.Stderr))
 )
@@ -37,8 +37,11 @@ type VFile struct {
 
 //  NewFile(name, flags, file, reader, writer) -- construct new Goaldi file
 func NewFile(name string, flags string, file *os.File,
-	reader *bufio.Reader, writer io.Writer) *VFile {
-	return &VFile{name, flags, file, reader, writer}
+	reader io.Reader, writer io.Writer) *VFile {
+	if _, ok := reader.(*bufio.Reader); !ok {
+		reader = bufio.NewReader(reader)
+	}
+	return &VFile{name, flags, file, reader.(*bufio.Reader), writer}
 }
 
 //  VFile.String -- conversion to Go string returns "file(name)"
