@@ -76,7 +76,12 @@ func (v *VFile) Read(p []byte) (int, error) {
 func (v *VFile) ReadLine() *VString {
 	s, e := v.Reader.ReadString('\n')
 	if e == nil {
-		return NewString(s[:len(s)-1]) // trim \n and return
+		n := len(s) - 1              // position of trailing \n
+		if n > 0 && s[n-1] == '\r' { // if preceded by \r
+			return NewString(s[:n-1]) // trim CRLF and return
+		} else {
+			return NewString(s[:n]) // trim \n and return
+		}
 	} else if e != io.EOF {
 		panic(e) // actual error
 	} else if s != "" {
