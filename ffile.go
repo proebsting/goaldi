@@ -2,7 +2,6 @@
 //
 //  #%#% TO DO:
 //  implement flags for open(), including new ones:
-//		f   fail, don't panic, on open failure
 //		m	memory file, implies r/w, buffer in memory (not on disk)
 //		s	scratch file, implies r/w, alter name randomly, delete after open
 //  add
@@ -43,22 +42,38 @@ var spByte = []byte(" ")
 var nlByte = []byte("\n")
 
 //  Open(name,flags) -- open a file, or fail
-//  #%#%#% currently ignores most flags and opens for reading only
+//  #%#%#% currently ignores most flags
+//  #%#%#% files are opened with buffering but there is no auto flush on exit!
 //	flags:
+//		w	open for writing (instead of reading)
 //		f	fail (instead of panicking) if unsuccessful
 func Open(env *Env, a ...Value) (Value, *Closure) {
 	defer Traceback("open", a)
 	name := ProcArg(a, 0, NilValue).(Stringable).ToString().String()
 	flags := ProcArg(a, 1, EMPTY).(Stringable).ToString().String()
-	f, e := os.Open(name)
-	if e != nil {
-		if strings.Contains(flags, "f") {
-			return Fail()
-		} else {
-			panic(e)
+	if strings.Contains(flags, "w") {
+		// open for writing
+		f, e := os.Create(name)
+		if e != nil {
+			if strings.Contains(flags, "f") {
+				return Fail()
+			} else {
+				panic(e)
+			}
 		}
+		return Return(NewFile(name, flags, f, nil, bufio.NewWriter(f)))
+	} else {
+		// open for reading
+		f, e := os.Open(name)
+		if e != nil {
+			if strings.Contains(flags, "f") {
+				return Fail()
+			} else {
+				panic(e)
+			}
+		}
+		return Return(NewFile(name, flags, f, bufio.NewReader(f), nil))
 	}
-	return Return(NewFile(name, flags, f, bufio.NewReader(f), nil))
 }
 
 //  Flush(f) -- flush output on a Goaldi file
