@@ -1,14 +1,18 @@
 //  ffile.go -- I/O functions
 //
+//  In general:  Files can be passed to Go I/O functions.
+//  Goaldi I/O functions panic on error; Go functions return a status code.
+//
 //  #%#% TO DO:
+//
+//  add random I/O  (same as Icon? including seek/where offsets?)
+//  add directory reading?
+//
 //  implement flags for open(), including new ones:
 //		m	memory file, implies r/w, buffer in memory (not on disk)
 //		s	scratch file, implies r/w, alter name randomly, delete after open
-//  add
-//	    implement methods???
 //
-//  In general:  Files can be passed to Go I/O functions.
-//  Goaldi I/O functions panic on error; Go functions return a status code.
+//  add methods???
 
 package goaldi
 
