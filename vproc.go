@@ -127,23 +127,19 @@ func passfunc(t reflect.Type) func(Value) reflect.Value {
 	// #%#% is there a need for other types such as rune, int32, etc?
 	case reflect.Int:
 		return func(v Value) reflect.Value {
-			return reflect.ValueOf(
-				int(v.(Numerable).ToNumber().Val()))
+			return reflect.ValueOf(int(v.(Numerable).ToNumber().Val()))
 		}
 	case reflect.Int64:
 		return func(v Value) reflect.Value {
-			return reflect.ValueOf(
-				int64(v.(Numerable).ToNumber().Val()))
+			return reflect.ValueOf(int64(v.(Numerable).ToNumber().Val()))
 		}
 	case reflect.Float64:
 		return func(v Value) reflect.Value {
-			return reflect.ValueOf(
-				float64(v.(Numerable).ToNumber().Val()))
+			return reflect.ValueOf(float64(v.(Numerable).ToNumber().Val()))
 		}
 	case reflect.String:
 		return func(v Value) reflect.Value {
-			return reflect.ValueOf(
-				v.(Stringable).ToString().ToUTF8())
+			return reflect.ValueOf(v.(Stringable).ToString().ToUTF8())
 		}
 	case reflect.Interface: //#%#% assuming interface{}
 		return func(v Value) reflect.Value {
@@ -156,7 +152,23 @@ func passfunc(t reflect.Type) func(Value) reflect.Value {
 			}
 		}
 	default:
-		// #%#% convert using reflection?
-		panic(&RunErr{"Unimpl paramkind", t})
+		// check if convertible from numeric
+		if reflect.TypeOf(1.0).ConvertibleTo(t) {
+			return func(v Value) reflect.Value {
+				return reflect.ValueOf(
+					v.(Numerable).ToNumber().Val()).Convert(t)
+			}
+		}
+		// otherwise, check if convertible from string
+		if reflect.TypeOf("abc").ConvertibleTo(t) {
+			return func(v Value) reflect.Value {
+				return reflect.ValueOf(
+					v.(Stringable).ToString().ToUTF8()).Convert(t)
+			}
+		}
+		// otherwise, try passing unconverted
+		return func(v Value) reflect.Value {
+			return reflect.ValueOf(v)
+		}
 	}
 }
