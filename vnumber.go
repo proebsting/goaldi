@@ -49,8 +49,6 @@ var (
 	PHI  = NewNumber(math.Phi)
 )
 
-const MAX_EXACT = 1 << 53 // beyond 9e15, integers are noncontiguous
-
 //  VNumber.Val -- return underlying float64 value
 func (v *VNumber) Val() float64 {
 	return float64(*v)
@@ -58,24 +56,22 @@ func (v *VNumber) Val() float64 {
 
 //  VNumber.String -- default conversion to Go string
 func (v *VNumber) String() string {
-	f := float64(*v)
-	i := int64(f)
-	if float64(i) == f && i <= MAX_EXACT && i >= -MAX_EXACT {
+	i := int64(*v)
+	if v.IsExactInt(i) {
 		return strconv.FormatInt(i, 10) // if exact integer
 	} else {
-		return fmt.Sprintf("%.4g", f) // if has fractional bits
+		return fmt.Sprintf("%.4g", float64(*v)) // if has fractional bits
 	}
 }
 
 //  VNumber.GoString -- convert to Go string for image() and printf("%#v")
 //  The difference vs String() is that all significant digits are returned
 func (v *VNumber) GoString() string {
-	f := float64(*v)
-	i := int64(f)
-	if float64(i) == f {
+	i := int64(*v)
+	if v.IsExactInt(i) {
 		return strconv.FormatInt(i, 10) // if exact integer
 	} else {
-		return fmt.Sprintf("%g", f) // if has fractional bits
+		return fmt.Sprintf("%g", float64(*v)) // if has fractional bits
 	}
 }
 
@@ -110,3 +106,10 @@ func (a *VNumber) Identical(x Value) Value {
 func (v *VNumber) Export() interface{} {
 	return float64(*v)
 }
+
+//  VNumber.IsExactInt returns true if this VNumber represents int i exactly
+func (v *VNumber) IsExactInt(i int64) bool {
+	return float64(i) == float64(*v) && i <= MAX_EXACT && i >= -MAX_EXACT
+}
+
+const MAX_EXACT = 1 << 53 // beyond 9e15, integers are noncontiguous
