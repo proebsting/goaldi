@@ -92,6 +92,7 @@ func interp(env *g.Env, pr *pr_Info, args ...g.Value) (g.Value, *g.Closure) {
 						return v, self
 					}
 				case ir_Key:
+					f.coord = i.Coord
 					v := keyword(i.Name)
 					//#%#% ignoring failure and FailLabel
 					if i.Lhs != "" {
@@ -114,6 +115,7 @@ func interp(env *g.Env, pr *pr_Info, args ...g.Value) (g.Value, *g.Closure) {
 					case pr_param:
 						v = g.Trapped(&f.params[int(t)])
 					case nil:
+						f.coord = i.Coord
 						panic(&g.RunErr{"Undeclared identifier", i.Name})
 					default:
 						// global or static: already trapped
