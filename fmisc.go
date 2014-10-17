@@ -77,7 +77,7 @@ func Sleep(env *Env, a ...Value) (Value, *Closure) {
 	n := ProcArg(a, 0, ONE).(Numerable).ToNumber().Val()
 	d := time.Duration(n * float64(time.Second))
 	time.Sleep(d)
-	return Return(NilValue)
+	return Return(n)
 }
 
 //  Exit(n) -- terminate program
