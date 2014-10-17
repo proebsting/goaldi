@@ -114,7 +114,7 @@ func interp(env *g.Env, pr *pr_Info, args ...g.Value) (g.Value, *g.Closure) {
 					case pr_param:
 						v = g.Trapped(&f.params[int(t)])
 					case nil:
-						panic("nil in ir_Var; undeclared?")
+						panic(&g.RunErr{"Undeclared identifier", i.Name})
 					default:
 						// global or static: already trapped
 					}
