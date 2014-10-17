@@ -39,8 +39,8 @@ func load(fname string) []interface{} {
 	jd := json.NewDecoder(gcode)
 	var jtree []interface{}
 	checkError(jd.Decode(&jtree))
-	if opt_jdump {
-		jdump(jtree)
+	if opt_jdump || opt_tally {
+		jwalk(jtree)
 	}
 	jtree = jstructs(jtree).([]interface{})
 	if opt_adump {
@@ -78,30 +78,41 @@ func dumptree(indent string, x interface{}) {
 	}
 }
 
-//  jdump -- print the contents of a generic JSON data tree
+//  jwalk -- walk json tree for printing and/or tallying
 //  (does not recurse into arrays inside typed structs)
-func jdump(jtree interface{}) {
+func jwalk(jtree interface{}) {
 	tally := make(map[string]int)
-	fmt.Printf("JSON data:")
-	jdu("", jtree, tally)
-	fmt.Printf("\n\nStruct field types:\n")
-	for k, v := range tally {
-		fmt.Printf("field %-45s %3d\n", k, v)
+	if opt_jdump {
+		fmt.Printf("JSON data:")
+	}
+	jwa("", jtree, tally)
+	if opt_jdump {
+		fmt.Println()
+	}
+	if opt_tally {
+		fmt.Printf("\nStruct field types:\n")
+		for k, v := range tally {
+			fmt.Printf("field %-45s %3d\n", k, v)
+		}
 	}
 }
 
-func jdu(indent string, jtree interface{}, tally map[string]int) {
+func jwa(indent string, jtree interface{}, tally map[string]int) {
 	switch x := jtree.(type) {
 	case []interface{}:
 		for _, v := range x {
-			fmt.Printf("\n%s----------------------------- ",
-				indent)
-			jdu("   "+indent, v, tally)
+			if opt_jdump {
+				fmt.Printf("\n%s----------------------------- ",
+					indent)
+			}
+			jwa("   "+indent, v, tally)
 		}
 	case map[string]interface{}:
 		for k, v := range x {
-			fmt.Printf("\n%s%v: ", indent, k)
-			jdu("   "+indent, v, tally)
+			if opt_jdump {
+				fmt.Printf("\n%s%v: ", indent, k)
+			}
+			jwa("   "+indent, v, tally)
 			if submap, ok := v.(map[string]interface{}); ok {
 				tx := fmt.Sprintf("%15s.%-12s %s",
 					x["tag"], k, submap["tag"])
@@ -113,7 +124,9 @@ func jdu(indent string, jtree interface{}, tally map[string]int) {
 			}
 		}
 	default:
-		fmt.Printf("%v", x)
+		if opt_jdump {
+			fmt.Printf("%v", x)
+		}
 	}
 }
 
