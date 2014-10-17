@@ -22,12 +22,20 @@ func LibGoFunc(name string, f interface{}) {
 	StdLib[name] = GoProcedure(name, f)
 }
 
-//  Miscellaneous standard library procedures
+//  Miscellaneous library procedures
 func init() {
-	LibGoFunc("remove", os.Remove)
+	// Goaldi procedures
 	LibProcedure("image", Image)
 	LibProcedure("type", Type)
 	LibProcedure("exit", Exit)
+	// Go library functions
+	LibGoFunc("getenv", os.Getenv)
+	LibGoFunc("setenv", os.Setenv)
+	LibGoFunc("expandenv", os.ExpandEnv)
+	LibGoFunc("clearenv", os.Clearenv)
+	LibGoFunc("hostname", os.Hostname)
+	LibGoFunc("getpid", os.Getpid)
+	LibGoFunc("getppid", os.Getppid)
 }
 
 //  ProcArg(a,i,d) -- return procedure argument a[i], defaulting to d

@@ -9,15 +9,18 @@ import (
 
 //  This init function adds a set of Go functions to the standard library
 func init() {
-	LibGoFunc("equalfold", strings.EqualFold)
-	LibGoFunc("replace", strings.Replace)
-	LibGoFunc("toupper", strings.ToUpper)
-	LibGoFunc("tolower", strings.ToLower)
-	LibGoFunc("trim", strings.Trim)
+	// Goaldi procedures
 	LibProcedure("string", String)
 	LibProcedure("char", Char)
 	LibProcedure("ord", Ord)
 	LibProcedure("reverse", Reverse)
+	// Go library functions
+	LibGoFunc("equalfold", strings.EqualFold)
+	LibGoFunc("replace", strings.Replace)
+	LibGoFunc("repl", strings.Repeat)
+	LibGoFunc("toupper", strings.ToUpper)
+	LibGoFunc("tolower", strings.ToLower)
+	LibGoFunc("trim", strings.Trim)
 }
 
 //  String(x) -- return argument converted to string

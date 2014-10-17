@@ -24,6 +24,7 @@ import (
 )
 
 func init() {
+	// Goaldi procedures
 	LibProcedure("open", Open)
 	LibProcedure("flush", Flush)
 	LibProcedure("close", Close)
@@ -35,8 +36,14 @@ func init() {
 	LibProcedure("print", Print)
 	LibProcedure("println", Println)
 	LibProcedure("stop", Stop)
-	LibGoFunc("printf", fmt.Printf)   // Go library function; don't use %d
-	LibGoFunc("fprintf", fmt.Fprintf) // Go library function; don't use %d
+	// Go library functions
+	LibGoFunc("chdir", os.Chdir)
+	LibGoFunc("getwd", os.Getwd)
+	LibGoFunc("remove", os.Remove)
+	LibGoFunc("rename", os.Rename)
+	LibGoFunc("truncate", os.Truncate)
+	LibGoFunc("printf", fmt.Printf)   // use %.0f to format as integer
+	LibGoFunc("fprintf", fmt.Fprintf) // use %.0f to format as integer
 }
 
 var noBytes = []byte("")

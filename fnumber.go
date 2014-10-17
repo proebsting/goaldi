@@ -10,26 +10,24 @@ import (
 )
 
 func init() {
-
-	LibGoFunc("abs", math.Abs)
-	LibGoFunc("ceil", math.Ceil)
-	LibGoFunc("floor", math.Floor)
-
+	// Goaldi procedures
 	LibProcedure("number", Number)
 	LibProcedure("min", Min)
 	LibProcedure("max", Max)
-
+	// Goaldi procedures written using Go interface
+	LibGoFunc("atan", Atan)
 	LibGoFunc("log", Log)
+	// Go library functions
+	LibGoFunc("abs", math.Abs)
+	LibGoFunc("ceil", math.Ceil)
+	LibGoFunc("floor", math.Floor)
 	LibGoFunc("sqrt", math.Sqrt)
-
+	LibGoFunc("seed", rand.Seed)
 	LibGoFunc("sin", math.Sin)
 	LibGoFunc("cos", math.Cos)
 	LibGoFunc("tan", math.Tan)
 	LibGoFunc("asin", math.Asin)
 	LibGoFunc("acos", math.Acos)
-	LibGoFunc("atan", Atan)
-
-	LibGoFunc("seed", rand.Seed)
 }
 
 //------------------------------------  functions with Go interface
