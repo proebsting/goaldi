@@ -3,6 +3,7 @@
 package goaldi
 
 import (
+	"fmt"
 	"strings"
 	"unicode"
 )
@@ -23,10 +24,18 @@ func init() {
 	LibGoFunc("trim", strings.Trim)
 }
 
-//  String(x) -- return argument converted to string
+//  String(x) -- return argument converted to string, or fail
 func String(env *Env, a ...Value) (Value, *Closure) {
-	defer Traceback("string", a)
-	return Return(ProcArg(a, 0, NilValue).(Stringable).ToString())
+	// nonstandard entry; on panic, returns default nil values
+	defer func() { recover() }()
+	v := ProcArg(a, 0, NilValue)
+	if s, ok := v.(Stringable); ok {
+		return Return(s.ToString())
+	} else if s, ok := v.(fmt.Stringer); ok {
+		return Return(NewString(s.String()))
+	} else {
+		return Return(Import(v).(Stringable).ToString())
+	}
 }
 
 //  Char(i) -- return one-character string with Unicode value i

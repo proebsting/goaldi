@@ -31,6 +31,7 @@ func init() {
 }
 
 //------------------------------------  functions with Go interface
+//------------------------------------  (#%#% these should be converted)
 
 //  Atan(r1, r2) -- arctangent(r1/r2), default r2 = 1.0
 func Atan(r1 float64, x2 interface{}) float64 {
@@ -69,10 +70,16 @@ func Log(r1 float64, x2 interface{}) float64 {
 
 //------------------------------------  procedures with Goaldi interface
 
-//  Number(x) -- return argument converted to number
+//  Number(x) -- return argument converted to number, or fail
 func Number(env *Env, a ...Value) (Value, *Closure) {
-	defer Traceback("number", a)
-	return Return(ProcArg(a, 0, NilValue).(Numerable).ToNumber())
+	// nonstandard entry; on panic, returns default nil values
+	defer func() { recover() }()
+	v := ProcArg(a, 0, NilValue)
+	if n, ok := v.(Numerable); ok {
+		return Return(n.ToNumber())
+	} else {
+		return Return(Import(v).(Numerable).ToNumber())
+	}
 }
 
 //  Min(n1, ...) -- return numeric minimum
