@@ -42,13 +42,14 @@ func MustParseNum(s string) float64 {
 
 // predefined constants
 var (
-	ZERO      = NewNumber(0)
-	ONE       = NewNumber(1)
-	E         = NewNumber(math.E)
-	PI        = NewNumber(math.Pi)
-	PHI       = NewNumber(math.Phi)
-	MAX_EXACT = 1 << 53 // beyond 9e15, integers are noncontiguous
+	ZERO = NewNumber(0)
+	ONE  = NewNumber(1)
+	E    = NewNumber(math.E)
+	PI   = NewNumber(math.Pi)
+	PHI  = NewNumber(math.Phi)
 )
+
+const MAX_EXACT = 1 << 53 // beyond 9e15, integers are noncontiguous
 
 //  VNumber.Val -- return underlying float64 value
 func (v *VNumber) Val() float64 {
@@ -59,7 +60,7 @@ func (v *VNumber) Val() float64 {
 func (v *VNumber) String() string {
 	f := float64(*v)
 	i := int64(f)
-	if float64(i) == f {
+	if float64(i) == f && i <= MAX_EXACT && i >= -MAX_EXACT {
 		return strconv.FormatInt(i, 10) // if exact integer
 	} else {
 		return fmt.Sprintf("%.4g", f) // if has fractional bits
