@@ -39,7 +39,10 @@ func init() {
 	// Go library functions
 	LibGoFunc("chdir", os.Chdir)
 	LibGoFunc("getwd", os.Getwd)
+	LibGoFunc("chmod", os.Chmod)
 	LibGoFunc("remove", os.Remove)
+	LibGoFunc("mkdir", os.Mkdir)
+	LibGoFunc("mkdirall", os.MkdirAll)
 	LibGoFunc("rename", os.Rename)
 	LibGoFunc("truncate", os.Truncate)
 	LibGoFunc("printf", fmt.Printf)   // use %.0f to format as integer
