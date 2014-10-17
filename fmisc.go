@@ -5,6 +5,7 @@ package goaldi
 import (
 	"fmt"
 	"os"
+	"time"
 )
 
 //  StdLib is the set of procedures available at link time
@@ -28,6 +29,7 @@ func init() {
 	LibProcedure("image", Image)
 	LibProcedure("type", Type)
 	LibProcedure("exit", Exit)
+	LibProcedure("sleep", Sleep)
 	// Go library functions
 	LibGoFunc("getenv", os.Getenv)
 	LibGoFunc("setenv", os.Setenv)
@@ -68,6 +70,15 @@ func Type(env *Env, a ...Value) (Value, *Closure) {
 }
 
 var type_external = NewString("external")
+
+//  Sleep(n) -- delay execution for n seconds (may be fractional)
+func Sleep(env *Env, a ...Value) (Value, *Closure) {
+	defer Traceback("sleep", a)
+	n := ProcArg(a, 0, ONE).(Numerable).ToNumber().Val()
+	d := time.Duration(n * float64(time.Second))
+	time.Sleep(d)
+	return Return(NilValue)
+}
 
 //  Exit(n) -- terminate program
 func Exit(env *Env, a ...Value) (Value, *Closure) {
