@@ -95,13 +95,15 @@ func GoProcedure(name string, f interface{}) *VProcedure {
 			in = append(in, v)
 		}
 		//  convert additional variadic arguments to final type
-		for i := nfixed; i < len(args); i++ {
-			v = passer[nfixed](args[i])
-			if !v.IsValid() {
-				panic(&RunErr{"Cannot convert argument",
-					args[i]})
+		if nfixed < nargs {
+			for i := nfixed; i < len(args); i++ {
+				v = passer[nfixed](args[i])
+				if !v.IsValid() {
+					panic(&RunErr{"Cannot convert argument",
+						args[i]})
+				}
+				in = append(in, v)
 			}
-			in = append(in, v)
 		}
 		//  call the Go function
 		out := fval.Call(in)
