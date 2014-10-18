@@ -1,2 +1,26 @@
-hello 1 2 3 4
-3.14 2.72
+ab34ef1.618gh90kl3.142
+mn 37 qr 1.618st 25 uv 0
+543210
+     1.618 3.141592653589793 12345 abcde
+     1.618 3.141592653589793 12345 abcde
+
+strings:
+aBc: equalfold()0 repl()aBcaBcaBc toupper()ABC tolower()abc trim()aBc
+d33: equalfold()0 repl()d33d33d33 toupper()D33 tolower()d33 trim()d
+47: equalfold()0 repl()474747 toupper()47 tolower()47 trim()47
+3: equalfold()1 repl()333 toupper()3 tolower()3 trim()
+
+conversion:
+~: type()nil image()%nil number()-- string()~
+: type()string image()"" number()-- string()
+abc: type()string image()"abc" number()-- string()abc
+12: type()string image()"12" number()12 string()12
+23.4: type()string image()"23.4" number()23.4 string()23.4
+0: type()number image()0 number()0 string()0
+1: type()number image()1 number()1 string()1
+1.618: type()number image()1.618033988749895 number()1.618 string()1.618
+2.718: type()number image()2.718281828459045 number()2.718 string()2.718
+3.142: type()number image()3.141592653589793 number()3.142 string()3.142
+file(%stdin): type()file image()file(%stdin,r) number()-- string()file(%stdin)
+file(%stdout): type()file image()file(%stdout,w) number()-- string()file(%stdout)
+file(%stderr): type()file image()file(%stderr,w) number()-- string()file(%stderr)

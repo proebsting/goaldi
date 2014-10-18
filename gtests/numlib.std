@@ -1,0 +1,29 @@
+
+arithmetic:
+-1.618: abs()1.618 ceil()-1 floor()-2 log()NaN sqrt()NaN
+0: abs()0 ceil()0 floor()0 log()-Inf sqrt()0
+1: abs()1 ceil()1 floor()1 log()0 sqrt()1
+2: abs()2 ceil()2 floor()2 log()0.6931 sqrt()1.414
+2.718: abs()2.718 ceil()3 floor()2 log()1 sqrt()1.649
+3.142: abs()3.142 ceil()4 floor()3 log()1.145 sqrt()1.772
+
+trigonometry:
+-1.618: sin()-0.9989 cos()-0.04722 tan()21.15 asin()NaN acos()NaN atan()-1.017
+0: sin()0 cos()1 tan()0 asin()0 acos()1.571 atan()0
+1: sin()0.8415 cos()0.5403 tan()1.557 asin()1.571 acos()0 atan()0.7854
+2: sin()0.9093 cos()-0.4161 tan()-2.185 asin()NaN acos()NaN atan()1.107
+2.718: sin()0.4108 cos()-0.9117 tan()-0.4505 asin()NaN acos()NaN atan()1.218
+3.142: sin()1.225e-16 cos()-1 tan()-1.225e-16 asin()NaN acos()NaN atan()1.263
+
+based logarithms:
+0: log(,~)-Inf log(,2.718)-Inf log(,2)-Inf log(,4)-Inf log(,10)-Inf
+1: log(,~)0 log(,2.718)0 log(,2)0 log(,4)0 log(,10)0
+1.618: log(,~)0.4812 log(,2.718)0.4812 log(,2)0.6942 log(,4)0.3471 log(,10)0.209
+2: log(,~)0.6931 log(,2.718)0.6931 log(,2)1 log(,4)0.5 log(,10)0.301
+8: log(,~)2.079 log(,2.718)2.079 log(,2)3 log(,4)1.5 log(,10)0.9031
+32: log(,~)3.466 log(,2.718)3.466 log(,2)5 log(,4)2.5 log(,10)1.505
+100: log(,~)4.605 log(,2.718)4.605 log(,2)6.644 log(,4)3.322 log(,10)2
+1012: log(,~)6.92 log(,2.718)6.92 log(,2)9.983 log(,4)4.991 log(,10)3.005
+
+atan2:
+ (0,0)0 (0,2.718)0 (0,3.142)0 (1.618,0)1.571 (1.618,2.718)0.5369 (1.618,3.142)0.4756 (3.142,0)1.571 (3.142,2.718)0.8575 (3.142,3.142)0.7854

@@ -1,6 +1,40 @@
-procedure main()
-	print("hello ")
-	println(1,2,3,4)
-	printf("%.2f %.2f\n", 3.14159, 2.7183)
-	exit(0)
+#  stdlib.gdi -- miscellaneous library functions
+
+procedure main() 
+	testprint()
+	write("\nstrings:")
+	every teststring("aBc" | "d33" | 47 | 3)
+	write("\nconversion:")
+	every testcnv(&nil | "" | "abc" | "12" | "23.4" | 0 | 1 |
+		&phi | &e | &pi | &stdin | &stdout | &stderr)
+	exit()
+end
+
+procedure testprint()
+	writes("ab", 34, "ef", &phi)
+	write("gh", 90, "kl", &pi)
+	print("mn", 37, "qr", &phi)
+	println("st", 25, "uv", 0)
+	write(&output,"543210")
+	printf("%10.3f %g %.0f %s\n", &phi, &pi, 12345, "abcde")
+	fprintf(&output, "%10.3f %g %.0f %s\n", &phi, &pi, 12345, "abcde")
+end
+
+procedure teststring(v)
+	writes(&output, v, ":")
+	every apply(equalfold | repl | toupper | tolower | trim, v, "3")
+	write()
+	return
+end
+
+procedure testcnv(v)
+	writes(&output, v, ":")
+	every apply(type | image | number | string, v)
+	write()
+	return
+end
+
+procedure apply(p, x, y)
+	writes(" ", p, p(x, y) | "--")
+	return
 end

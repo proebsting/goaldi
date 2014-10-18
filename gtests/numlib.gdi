@@ -1,0 +1,53 @@
+#  numlib.gdi -- test numeric library functions
+
+procedure main() 
+	write("\narithmetic:")
+	every testarith(-&phi | "0" | 1.0 | 2 | &e | &pi)
+	write("\ntrigonometry:")
+	every testtrig(-&phi | "0" | 1.0 | 2 | &e | &pi)
+	write("\nbased logarithms:")
+	every testlogb(0 | 1 | &phi | 2 | 8 | 32 | 100 | 1012)
+	write("\natan2:")
+	every testa2(0 | &phi | &pi, 0 | &e | &pi)
+	write()
+end
+
+procedure testout(v)
+	writes(&output, v, ":")
+	every apply(type | image | number | string, v)
+	write()
+	return
+end
+
+procedure testarith(v)
+	writes(&output, v, ":")
+	every apply(abs | ceil | floor | log | sqrt, v)
+	write()
+	return
+end
+
+procedure testtrig(v)
+	writes(&output, v, ":")
+	every apply(sin | cos | tan | asin | acos | atan, v)
+	write()
+	return
+end
+
+procedure testlogb(v)
+	local b
+	writes(&output, v, ":")
+	every b := &nil | &e | 2 | 4 | 10 do {
+		writes(" log(,", b, ")", log(v, b))
+	}
+	write()
+	return
+end
+
+procedure testa2(x,y)
+   return writes(" (",x,",",y,")",atan(x,y))
+end
+
+procedure apply(p, x, y)
+	writes(" ", p, p(x, y) | "--")
+	return
+end
