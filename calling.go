@@ -11,13 +11,6 @@
 
 package goaldi
 
-//  execution environment
-type Env struct {
-	//#%#% to be determined
-	//#%#% dynamic variables?
-	//#%#% thread id for monitoring?
-}
-
 type Closure struct {
 	Go Resumer // start or resumption function, depending on context
 }

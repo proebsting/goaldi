@@ -40,7 +40,7 @@ type CallFrame struct {
 //  Run wraps a Goaldi procedure in an environment and an exception catcher,
 //  and calls it from Go
 func Run(p Value, arglist []Value) {
-	env := &Env{}
+	env := &Env{StdEnv}
 	defer func() {
 		if x := recover(); x != nil {
 			r := Diagnose(os.Stderr, x) // write Goaldi stack trace
@@ -56,8 +56,12 @@ func Run(p Value, arglist []Value) {
 
 //  Shutdown terminates execution with the given exit code.
 func Shutdown(e int) {
-	STDOUT.Flush()
-	STDERR.Flush()
+	if f, ok := STDOUT.(*VFile); ok {
+		f.Flush()
+	}
+	if f, ok := STDERR.(*VFile); ok {
+		f.Flush()
+	}
 	pprof.StopCPUProfile()
 	os.Exit(e)
 }

@@ -20,11 +20,11 @@ import (
 var _ ICore = &VFile{}
 var _ io.ReadWriteCloser = &VFile{}
 
-//  standard files
+//  standard files, referenced (and changeable) by keyword / dynamic variables
 var (
-	STDIN  = NewFile("%stdin", "r", os.Stdin, io.Reader(os.Stdin), nil)
-	STDOUT = NewFile("%stdout", "w", os.Stdout, nil, bufio.NewWriter(os.Stdout))
-	STDERR = NewFile("%stderr", "w", os.Stderr, nil, io.Writer(os.Stderr))
+	STDIN  Value = NewFile("%stdin", "r", os.Stdin, io.Reader(os.Stdin), nil)
+	STDOUT Value = NewFile("%stdout", "w", os.Stdout, nil, bufio.NewWriter(os.Stdout))
+	STDERR Value = NewFile("%stderr", "w", os.Stderr, nil, io.Writer(os.Stderr))
 )
 
 type VFile struct {

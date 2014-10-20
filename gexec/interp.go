@@ -92,8 +92,13 @@ func interp(env *g.Env, pr *pr_Info, args ...g.Value) (g.Value, *g.Closure) {
 						return v, self
 					}
 				case ir_Key:
+					//#%#% keywords are dynamic vars fetchetd from env
 					f.coord = i.Coord
-					v := keyword(i.Name)
+					v := env.VarMap[i.Name]
+					if v == nil {
+						panic(&g.RunErr{"Unrecognized dynamic variable",
+							"%" + i.Name})
+					}
 					//#%#% ignoring failure and FailLabel
 					if i.Lhs != "" {
 						f.temps[i.Lhs] = v
@@ -353,29 +358,4 @@ func deltaSlice(lval g.IVariable, a []g.Value, sign int) (g.Value, *g.Closure) {
 		return nil, nil // fail
 	}
 	return x.Slice(lval, g.NewNumber(float64(i)), g.NewNumber(float64(j))), nil
-}
-
-//  keyword -- return keyword value
-//  #%#% cannot handle generator keywords
-//  #%#% currently only handles a small set of constants
-//  #%#% temporarily includes some old Icon forms
-func keyword(name string) g.Value {
-	switch name {
-	default:
-		panic(&g.RunErr{"Unrecognized keyword", g.NewString(name)})
-	case "nil", "null":
-		return g.NilValue
-	case "e":
-		return g.E
-	case "pi":
-		return g.PI
-	case "phi":
-		return g.PHI
-	case "stdin", "input":
-		return g.STDIN
-	case "stdout", "output":
-		return g.STDOUT
-	case "stderr", "errout":
-		return g.STDERR
-	}
 }
