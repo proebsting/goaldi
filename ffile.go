@@ -126,7 +126,7 @@ func Open(env *Env, a ...Value) (Value, *Closure) {
 	if !write {
 		writer = nil
 	}
-	return Return(NewFile(name, flags, f, reader, writer))
+	return Return(NewFile(name, reader, writer, f))
 }
 
 //  Flush(f) -- flush output on a Goaldi file

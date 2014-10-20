@@ -22,26 +22,31 @@ var _ io.ReadWriteCloser = &VFile{}
 
 //  standard files, referenced (and changeable) by keyword / dynamic variables
 var (
-	STDIN  Value = NewFile("%stdin", "r", os.Stdin, io.Reader(os.Stdin), nil)
-	STDOUT Value = NewFile("%stdout", "w", os.Stdout, nil, bufio.NewWriter(os.Stdout))
-	STDERR Value = NewFile("%stderr", "w", os.Stderr, nil, io.Writer(os.Stderr))
+	STDIN  Value = NewFile("%stdin", bufio.NewReader(os.Stdin), nil, os.Stdin)
+	STDOUT Value = NewFile("%stdout", nil, bufio.NewWriter(os.Stdout), os.Stdout)
+	STDERR Value = NewFile("%stderr", nil, io.Writer(os.Stderr), os.Stderr)
 )
 
 type VFile struct {
 	Name   string        // name when opened
-	Flags  string        // attributes when opened
-	File   *os.File      // underlying file (needed for close etc.)
-	Reader *bufio.Reader // underlying reader, if open for read
-	Writer io.Writer     // underlying writer, if open for write
+	Reader *bufio.Reader // reader, if open for read
+	Writer io.Writer     // writer, if open for write
+	Closer io.Closer     // closer
 }
 
-//  NewFile(name, flags, file, reader, writer) -- construct new Goaldi file
-func NewFile(name string, flags string, file *os.File,
-	reader io.Reader, writer io.Writer) *VFile {
+//  NewFile(name, reader, writer, closer) -- construct new Goaldi file
+func NewFile(name string,
+	reader io.Reader, writer io.Writer, closer io.Closer) *VFile {
+	// if not for reading, nothing much to do
+	if reader == nil {
+		return &VFile{name, nil, writer, closer}
+	}
+	// if reader is not bufio.Reader, wrap it (needed for readline)
 	if _, ok := reader.(*bufio.Reader); !ok {
 		reader = bufio.NewReader(reader)
 	}
-	return &VFile{name, flags, file, reader.(*bufio.Reader), writer}
+	// create file with correctly typed buffered reader
+	return &VFile{name, reader.(*bufio.Reader), writer, closer}
 }
 
 //  VFile.String -- conversion to Go string returns "file(name)"
@@ -49,9 +54,16 @@ func (v *VFile) String() string {
 	return "file(" + v.Name + ")"
 }
 
-//  VFile.GoString -- image returns "file(name,flags)"
+//  VFile.GoString -- image returns "file(name,[r][w])"
 func (v *VFile) GoString() string {
-	return "file(" + v.Name + "," + v.Flags + ")"
+	s := "file(" + v.Name + ","
+	if v.Reader != nil {
+		s = s + "r"
+	}
+	if v.Writer != nil {
+		s = s + "w"
+	}
+	return s + ")"
 }
 
 //  VFile.Type returns "file"
@@ -114,19 +126,18 @@ func (v *VFile) Flush() error {
 
 //  VFile.Close() marks the file as closed and calls io.Close().
 func (v *VFile) Close() error {
-	if v.File == nil {
+	if v.Closer == nil {
 		panic(&RunErr{"File not open", v})
 	}
 	err := v.Flush()
 	if err != nil {
 		return err
 	}
-	f := v.File
-	v.Flags = "-"
-	v.File = nil
+	c := v.Closer
 	v.Reader = nil
 	v.Writer = nil
-	return f.Close()
+	v.Closer = nil
+	return c.Close()
 }
 
 //  VFile.Dispense() implements the !f operator
