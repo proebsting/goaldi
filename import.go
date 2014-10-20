@@ -4,6 +4,7 @@
 package goaldi
 
 import (
+	"io"
 	"reflect"
 )
 
@@ -53,6 +54,11 @@ func Import(x interface{}) Value {
 	//#%#% add other cases
 	//#%#% see golang.org/src/pkg/fmt/print.go for reflection examples
 	default:
+		// if it implements Reader or Writer, make it a Goaldi file
+		f := fileValue(x)
+		if f != nil {
+			return f
+		}
 		// unrecognized; use as is, but check for (typed) nil value
 		rv := reflect.ValueOf(v)
 		switch rv.Kind() {
@@ -67,6 +73,18 @@ func Import(x interface{}) Value {
 			return x
 		}
 	}
+}
+
+//  fileValue(x) converts x to a Goaldi file if possible, else nil
+func fileValue(x Value) *VFile {
+	r, rok := x.(io.Reader)
+	w, wok := x.(io.Writer)
+	if !rok && !wok {
+		return nil // neither Reader nor Writer
+	}
+	c, _ := x.(io.Closer)
+	name := reflect.TypeOf(x).Name() // use underlying type as name
+	return NewFile(name, r, w, c)
 }
 
 //  Export(v) returns the default Go representation of a Goaldi value
