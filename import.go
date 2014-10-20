@@ -3,6 +3,10 @@
 
 package goaldi
 
+import (
+	"reflect"
+)
+
 //  Import(x) builds a value of appropriate Goaldi type
 func Import(x interface{}) Value {
 	switch v := x.(type) {
@@ -49,8 +53,19 @@ func Import(x interface{}) Value {
 	//#%#% add other cases
 	//#%#% see golang.org/src/pkg/fmt/print.go for reflection examples
 	default:
-		// unrecognized; use as is
-		return x
+		// unrecognized; use as is, but check for (typed) nil value
+		rv := reflect.ValueOf(v)
+		switch rv.Kind() {
+		case reflect.Chan, reflect.Func, reflect.Interface,
+			reflect.Map, reflect.Ptr, reflect.Slice:
+			if rv.IsNil() {
+				return NilValue
+			} else {
+				return x
+			}
+		default:
+			return x
+		}
 	}
 }
 
