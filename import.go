@@ -13,6 +13,8 @@ func Import(x interface{}) Value {
 	switch v := x.(type) {
 	case IExternal: // labels a user type that is to stay unconverted
 		return v
+	case IImport: // user type declares its own import method
+		return v.Import()
 	case nil:
 		return NewNil()
 	case bool:

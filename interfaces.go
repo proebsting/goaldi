@@ -16,6 +16,11 @@ type IExternal interface {
 	ExternalType() string // return type name for external value
 }
 
+//  IImport -- for an external type that declares its own converter method
+type IImport interface {
+	Import() Value
+}
+
 //  ICore -- interfaces required of all Goaldi types
 type ICore interface {
 	fmt.Stringer   // for printing (v.String())
