@@ -51,6 +51,8 @@ func Import(x interface{}) Value {
 		return NewNumber(float64(v)) //#%#% check vs MAX_EXACT?
 	case uintptr:
 		return NewNumber(float64(v)) //#%#% check vs MAX_EXACT?
+	case VFile:
+		return v // stop here, don't rebuild new VFile
 	case io.Reader, io.Writer: // either reader or writer makes a file
 		r, _ := x.(io.Reader)
 		w, _ := x.(io.Writer)
