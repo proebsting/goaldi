@@ -4,6 +4,7 @@
 package goaldi
 
 import (
+	"fmt"
 	"io"
 	"reflect"
 )
@@ -59,7 +60,7 @@ func Import(x interface{}) Value {
 		r, _ := x.(io.Reader)
 		w, _ := x.(io.Writer)
 		c, _ := x.(io.Closer)
-		name := reflect.TypeOf(x).Name() // use underlying type as name
+		name := fmt.Sprintf("%T", x) // use type for name
 		return NewFile(name, r, w, c)
 	//#%#% add other cases including maps and slices
 	//#%#% see golang.org/src/pkg/fmt/print.go for reflection examples
