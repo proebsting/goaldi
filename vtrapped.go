@@ -25,7 +25,12 @@ func (t *VTrapped) Deref() Value {
 //  VTrapped.String() -- show string representation: produces (&value)
 //  #%#% should make this smarter
 func (t *VTrapped) String() string {
-	return fmt.Sprintf("(&%v)", (*(t.Target)))
+	return fmt.Sprintf("(&%v)", t.Deref())
+}
+
+//  VTrapped.GoString() -- show string representation for traceback
+func (t *VTrapped) GoString() string {
+	return t.String()
 }
 
 //  VTrapped.Assign -- store value in target variable
