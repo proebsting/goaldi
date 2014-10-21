@@ -1,0 +1,36 @@
+#  http.gdi -- demonstrate HTTP extension
+
+procedure main(url1, url2)
+	local f, r, p
+	/url1 := "http://www.cs.arizona.edu"
+	/url2 := "http://httpbin.org/post"
+
+	# url1 using htopen
+	showfile(url1, htopen(url1))
+
+	# url1 using htget
+	r := htget(url1)
+	if showfile(url1, *\r) then {
+		write(repl("-", 72))
+		write("response: ", image(r))
+		write("headers:")
+		every write("   ", !r)
+	} else {
+		showfile(url1, &nil)
+	}
+
+	# url2 using htpost
+	p := htpost(url2, "crust", "thin", "top", "pepperoni", "top", "onions")
+	showfile(url2, *\p | &nil)
+end
+
+procedure showfile(u, f)	#: show contents of file (first n lines)
+	write(repl("=",72), "\nURL: ", u)
+	write("file: ", image(f))
+	if /f then fail
+	write(repl("-", 72))
+	every write(("" ~== !f) \ 10)
+	write("   ...")
+	close(f)
+	return
+end
