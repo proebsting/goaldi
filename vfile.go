@@ -13,6 +13,7 @@ package goaldi
 import (
 	"bufio"
 	"io"
+	"io/ioutil"
 	"os"
 )
 
@@ -37,7 +38,11 @@ type VFile struct {
 //  NewFile(name, reader, writer, closer) -- construct new Goaldi file
 func NewFile(name string,
 	reader io.Reader, writer io.Writer, closer io.Closer) *VFile {
-	// if not for reading, nothing much to do
+	// if no closer, add one, because nil means file is already closed
+	if closer == nil {
+		closer = ioutil.NopCloser(reader)
+	}
+	// if file is not for reading, nothing much to do
 	if reader == nil {
 		return &VFile{name, nil, writer, closer}
 	}
