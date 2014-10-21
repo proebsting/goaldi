@@ -17,7 +17,7 @@ func Import(x interface{}) Value {
 	case IImport: // user type declares its own import method
 		return v.Import()
 	case nil:
-		return NewNil()
+		return NilValue
 	case bool:
 		if v {
 			return ONE

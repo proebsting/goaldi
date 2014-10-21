@@ -41,12 +41,12 @@ func interp(env *g.Env, pr *pr_Info, args ...g.Value) (g.Value, *g.Closure) {
 		if i < len(args) {
 			f.params[i] = args[i]
 		} else {
-			f.params[i] = g.NewNil()
+			f.params[i] = g.NilValue
 		}
 	}
 	// #%#%# need to check accum flag and make list of trailing params
 	for i := 0; i < len(f.locals); i++ {
-		f.locals[i] = g.NewNil()
+		f.locals[i] = g.NilValue
 	}
 
 	// set starting point

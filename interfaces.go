@@ -31,10 +31,10 @@ type ICore interface {
 	// optional:  IIdentical, if === requires more than pointer comparison
 }
 
-var _ ICore = NewNil()       // confirm implementation by VNil
-var _ ICore = NewNumber(1)   // confirm implementation by VNumber
-var _ ICore = NewString("a") // confirm implementation by VString
-var _ ICore = &VProcedure{}  // confirm implementation by VProcedure
+var _ ICore = NilValue.(*vnil) // confirm implementation by vnil
+var _ ICore = NewNumber(1)     // confirm implementation by VNumber
+var _ ICore = NewString("a")   // confirm implementation by VString
+var _ ICore = &VProcedure{}    // confirm implementation by VProcedure
 
 type IType interface {
 	Type() Value // return name of type for type()

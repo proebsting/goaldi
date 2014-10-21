@@ -83,7 +83,7 @@ func GoProcedure(name string, f interface{}) *VProcedure {
 		in := make([]reflect.Value, 0, len(args))
 		var v reflect.Value
 		for i := 0; i < nfixed; i++ {
-			a := Value(NIL)
+			a := NilValue
 			if i < len(args) {
 				a = args[i]
 			}
@@ -113,7 +113,7 @@ func GoProcedure(name string, f interface{}) *VProcedure {
 		if nrtn >= 1 {
 			return Import(out[0].Interface()), nil
 		} else {
-			return NIL, nil
+			return NilValue, nil
 		}
 	}
 

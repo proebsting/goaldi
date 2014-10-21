@@ -36,9 +36,9 @@ func TestCore(t *testing.T) {
 	expect(t, "3x~", n3, NotIdentical(ab, n3))
 	expect(t, "4x~", cd, NotIdentical(n2, cd))
 
-	expect(t, "1z=", NewNil(), Identical(NewNil(), NewNil()))
-	expect(t, "2z~", ab, NotIdentical(NewNil(), ab))
-	expect(t, "3z~", n3, NotIdentical(NewNil(), n3))
+	expect(t, "1z=", NilValue, Identical(NilValue, NilValue))
+	expect(t, "2z~", ab, NotIdentical(NilValue, ab))
+	expect(t, "3z~", n3, NotIdentical(NilValue, n3))
 }
 
 //  expect -- check result against expected value

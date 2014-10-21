@@ -10,7 +10,7 @@ import (
 func V(x interface{}) Value {
 	switch v := x.(type) {
 	case nil:
-		return NewNil()
+		return NilValue
 	case int:
 		return NewNumber(float64(v))
 	case float64:
@@ -27,6 +27,6 @@ func V(x interface{}) Value {
 //  NewStatic() creates a new static variable, initialized to nil.
 func NewStatic() *Value {
 	v := new(Value)
-	*v = NewNil()
+	*v = NilValue
 	return v
 }
