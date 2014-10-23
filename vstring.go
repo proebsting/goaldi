@@ -137,6 +137,11 @@ func (s *VString) Identical(x Value) Value {
 	}
 }
 
+//  VString.Import returns itself
+func (v *VString) Import() Value {
+	return v
+}
+
 //  VString.Export returns a Go string
 func (v *VString) Export() interface{} {
 	return v.ToUTF8()

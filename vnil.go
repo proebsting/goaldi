@@ -29,6 +29,11 @@ func (v *vnil) Type() Value {
 
 var type_nil = NewString("nil")
 
+//  vnil.Import returns itself
+func (v *vnil) Import() Value {
+	return v
+}
+
 //  vnil.Export returns a Go nil
 func (v *vnil) Export() interface{} {
 	return nil

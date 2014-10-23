@@ -11,23 +11,39 @@ import (
 
 //  Import(x) builds a value of appropriate Goaldi type
 func Import(x interface{}) Value {
+
+	// must check first for a typed nil
+	rv := reflect.ValueOf(x)
+	switch rv.Kind() {
+	case reflect.Chan, reflect.Func, reflect.Interface,
+		reflect.Map, reflect.Ptr, reflect.Slice:
+		if rv.IsNil() {
+			return NilValue
+		}
+	}
+
 	switch v := x.(type) {
-	case IExternal: // labels a user type that is to stay unconverted
-		return v
-	case IImport: // user type declares its own import method
-		return v.Import()
+
 	case nil:
 		return NilValue
+
+	case IImport: // type declares its own import method incl Goaldi types
+		return v.Import()
+	case IExternal: // labels a user type that is to stay unconverted
+		return v
+
 	case bool:
 		if v {
 			return ONE
 		} else {
 			return ZERO
 		}
+
 	case string:
 		return NewString(v)
 	case []byte:
 		return NewString(string(v)) //#%#%???
+
 	case float32:
 		return NewNumber(float64(v))
 	case float64:
@@ -54,30 +70,19 @@ func Import(x interface{}) Value {
 		return NewNumber(float64(v)) //#%#% check vs MAX_EXACT?
 	case uintptr:
 		return NewNumber(float64(v)) //#%#% check vs MAX_EXACT?
-	case VFile:
-		return v // stop here, don't rebuild new VFile
+
 	case io.Reader, io.Writer: // either reader or writer makes a file
 		r, _ := x.(io.Reader)
 		w, _ := x.(io.Writer)
 		c, _ := x.(io.Closer)
 		name := fmt.Sprintf("%T", x) // use type for name
 		return NewFile(name, r, w, c)
-	//#%#% add other cases including maps and slices
-	//#%#% see golang.org/src/pkg/fmt/print.go for reflection examples
+
+	//#%#% add other cases?
+
 	default:
-		// unrecognized; use as is, but check for (typed) nil value
-		rv := reflect.ValueOf(v)
-		switch rv.Kind() {
-		case reflect.Chan, reflect.Func, reflect.Interface,
-			reflect.Map, reflect.Ptr, reflect.Slice:
-			if rv.IsNil() {
-				return NilValue
-			} else {
-				return x
-			}
-		default:
-			return x
-		}
+		// #%#%#% should wrap as a "foreign" value
+		return x
 	}
 }
 

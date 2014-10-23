@@ -102,6 +102,11 @@ func (a *VNumber) Identical(x Value) Value {
 	}
 }
 
+//  VNumber.Import returns itself
+func (v *VNumber) Import() Value {
+	return v
+}
+
 //  VNumber.Export returns a float64
 func (v *VNumber) Export() interface{} {
 	return float64(*v)

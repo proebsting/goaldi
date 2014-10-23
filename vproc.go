@@ -34,6 +34,11 @@ func (v *VProcedure) Type() Value {
 
 var type_procedure = NewString("procedure")
 
+//  VProcedure.Import returns itself
+func (v *VProcedure) Import() Value {
+	return v
+}
+
 //  VProcedure.Export returns the underlying function
 //  (#%#% at least for now. should we wrap it somehow?)
 func (v *VProcedure) Export() interface{} {
@@ -126,7 +131,8 @@ func GoProcedure(name string, f interface{}) *VProcedure {
 func passfunc(t reflect.Type) func(Value) reflect.Value {
 	k := t.Kind()
 	switch k {
-	// #%#% is there a need for other types such as rune, int32, etc?
+	// #%#% are other numeric types such as rune, int32, etc handled
+	// #%#% acceptably by the default case below?
 	case reflect.Int:
 		return func(v Value) reflect.Value {
 			return reflect.ValueOf(int(v.(Numerable).ToNumber().Val()))
@@ -143,7 +149,9 @@ func passfunc(t reflect.Type) func(Value) reflect.Value {
 		return func(v Value) reflect.Value {
 			return reflect.ValueOf(v.(Stringable).ToString().ToUTF8())
 		}
-	case reflect.Interface: //#%#% assuming interface{}
+	// #%#% add File types somehow
+	case reflect.Interface:
+		// #%#% this assumes interface{}; should check
 		return func(v Value) reflect.Value {
 			var inil interface{}
 			x := Export(v) // default conversion

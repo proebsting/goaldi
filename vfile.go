@@ -78,6 +78,11 @@ func (v *VFile) Type() Value {
 
 var type_file = NewString("file")
 
+//  VFile.Import returns itself
+func (v *VFile) Import() Value {
+	return v
+}
+
 //  VFile.Export returns itself, which implements the ReadWriteCloser interface
 func (v *VFile) Export() interface{} {
 	return v

@@ -7,18 +7,13 @@ import (
 )
 
 //  Any Go value can be a Goaldi value.
-//  Use of this interface is intended to designate a Goaldi value context.
+//  This identifier is intended to designate a Goaldi value context.
 type Value interface{}
 
 //  IExternal -- declares an external type to be a Goaldi external
-//  (i.e. tells Goaldi to keeps hands off even it it looks convertible)
+//  (neither to be converted nor wrapped as "foreign", but used as is)
 type IExternal interface {
-	ExternalType() string // return type name for external value
-}
-
-//  IImport -- for an external type that declares its own converter method
-type IImport interface {
-	Import() Value
+	GoaldiExternal()
 }
 
 //  ICore -- interfaces required of all Goaldi types
@@ -26,6 +21,7 @@ type ICore interface {
 	fmt.Stringer   // for printing (v.String())
 	fmt.GoStringer // for image() and printf("%#v") (v.GoString())
 	IType          // for "Type()"
+	IImport        // for returning self to Import()
 	IExport        // for passing to a Go function as interface{} value
 	// optional:  Numerable and Stringable, if implicitly convertible
 	// optional:  IIdentical, if === requires more than pointer comparison
@@ -34,10 +30,16 @@ type ICore interface {
 var _ ICore = NilValue.(*vnil) // confirm implementation by vnil
 var _ ICore = NewNumber(1)     // confirm implementation by VNumber
 var _ ICore = NewString("a")   // confirm implementation by VString
+var _ ICore = &VFile{}         // confirm implementation by VFile
 var _ ICore = &VProcedure{}    // confirm implementation by VProcedure
 
 type IType interface {
 	Type() Value // return name of type for type()
+}
+
+//  IImport -- convert to Goaldi value
+type IImport interface {
+	Import() Value
 }
 
 type IExport interface {
