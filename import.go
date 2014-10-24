@@ -81,8 +81,7 @@ func Import(x interface{}) Value {
 	//#%#% add other cases?
 
 	default:
-		// #%#%#% should wrap as a "foreign" value
-		return x
+		return NewForeign(x)
 	}
 }
 

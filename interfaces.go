@@ -32,6 +32,7 @@ var _ ICore = NewNumber(1)     // confirm implementation by VNumber
 var _ ICore = NewString("a")   // confirm implementation by VString
 var _ ICore = &VFile{}         // confirm implementation by VFile
 var _ ICore = &VProcedure{}    // confirm implementation by VProcedure
+var _ ICore = &VForeign{}      // confirm implementation by VForeign
 
 type IType interface {
 	Type() Value // return name of type for type()

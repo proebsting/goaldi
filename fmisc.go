@@ -60,17 +60,14 @@ func Type(env *Env, a ...Value) (Value, *Closure) {
 	defer Traceback("type", a)
 	v := ProcArg(a, 0, NilValue)
 	switch t := v.(type) {
-	case IType:
-		return Return(t.Type())
 	case IExternal:
 		return Return(type_external)
 	default:
-		return Return(type_foreign)
+		return Return(t.(IType).Type()) //#%#% remove cast
 	}
 }
 
 var type_external = NewString("external")
-var type_foreign = NewString("foreign")
 
 //  Sleep(n) -- delay execution for n seconds (may be fractional)
 func Sleep(env *Env, a ...Value) (Value, *Closure) {

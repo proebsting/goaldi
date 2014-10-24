@@ -149,18 +149,9 @@ func passfunc(t reflect.Type) func(Value) reflect.Value {
 		return func(v Value) reflect.Value {
 			return reflect.ValueOf(v.(Stringable).ToString().ToUTF8())
 		}
-	// #%#% add File types somehow
-	case reflect.Interface:
-		// #%#% this assumes interface{}; should check
-		return func(v Value) reflect.Value {
-			var inil interface{}
-			x := Export(v) // default conversion
-			if x == nil {
-				return reflect.ValueOf(&inil).Elem() // nil is tricky
-			} else {
-				return reflect.ValueOf(x) // anything else
-			}
-		}
+	case reflect.Interface: // #%#% this assumes interface{}; should check
+		// use default conversion
+		break
 	default:
 		// check if convertible from numeric
 		if reflect.TypeOf(1.0).ConvertibleTo(t) {
@@ -176,9 +167,17 @@ func passfunc(t reflect.Type) func(Value) reflect.Value {
 					v.(Stringable).ToString().ToUTF8()).Convert(t)
 			}
 		}
-		// otherwise, try passing unconverted
-		return func(v Value) reflect.Value {
-			return reflect.ValueOf(v)
+		// otherwise, use default conversion
+		break
+	}
+	// default conversion
+	return func(v Value) reflect.Value {
+		var inil interface{}
+		x := Export(v) // default conversion
+		if x == nil {
+			return reflect.ValueOf(&inil).Elem() // nil is tricky
+		} else {
+			return reflect.ValueOf(x) // anything else
 		}
 	}
 }
