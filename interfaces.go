@@ -6,22 +6,18 @@ import (
 	"fmt"
 )
 
-//  Any Go value can be a Goaldi value.
-//  This identifier is intended to designate a Goaldi value context.
-type Value interface{}
-
-//  IExternal -- declares an external type to be a Goaldi external
-//  (neither to be converted nor wrapped as "foreign", but used as is)
-type IExternal interface {
-	GoaldiExternal()
+//  Anything that implements GoaldiValue() is treated as a goaldi.Value.
+//  Extensions use this to be treated as "external" (vs. "foreign") values.
+type Value interface {
+	GoaldiValue() // does nothing
 }
 
-//  ICore -- interfaces required of all Goaldi types
+//  ICore -- interfaces required of all Goaldi types  (except external)
 type ICore interface {
 	fmt.Stringer   // for printing (v.String())
 	fmt.GoStringer // for image() and printf("%#v") (v.GoString())
+	Value          // must be a Goaldi Value!
 	IType          // for "Type()"
-	IImport        // for returning self to Import()
 	IExport        // for passing to a Go function as interface{} value
 	// optional:  Numerable and Stringable, if implicitly convertible
 	// optional:  IIdentical, if === requires more than pointer comparison
@@ -40,7 +36,7 @@ type IType interface {
 
 //  IImport -- convert to Goaldi value
 type IImport interface {
-	Import() Value
+	Import() Value // return value to be imported as Goaldi value
 }
 
 type IExport interface {
@@ -65,6 +61,7 @@ var _ IIdentical = NewString("a") // confirm implementation by VString
 
 //  IVariable -- an assignable trapped variable (simple or subscripted)
 type IVariable interface {
+	Value                   // a variable is a specialized Value
 	Deref() Value           // return dereferenced value
 	Assign(Value) IVariable // assign value
 }

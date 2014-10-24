@@ -54,6 +54,9 @@ func NewFile(name string,
 	return &VFile{name, reader.(*bufio.Reader), writer, closer}
 }
 
+//  VFile.GoaldiValue -- Declare this to be a Goaldi value
+func (*VFile) GoaldiValue() {}
+
 //  VFile.String -- conversion to Go string returns "file(name)"
 func (v *VFile) String() string {
 	return "file(" + v.Name + ")"
@@ -77,11 +80,6 @@ func (v *VFile) Type() Value {
 }
 
 var type_file = NewString("file")
-
-//  VFile.Import returns itself
-func (v *VFile) Import() Value {
-	return v
-}
 
 //  VFile.Export returns itself, which implements the ReadWriteCloser interface
 func (v *VFile) Export() interface{} {

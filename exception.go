@@ -14,8 +14,8 @@ import (
 
 //  RunErr records a Goaldi runtime error
 type RunErr struct {
-	Msg  string // explanatory message
-	Offv Value  // offending value
+	Msg  string      // explanatory message
+	Offv interface{} // offending value (Goaldi or Go value)
 }
 
 //  RunErr.String() returns a string form of a RunErr
@@ -81,7 +81,7 @@ func Catch(p interface{}, ev Value, coord string,
 
 //  Diagnose handles traceback for a panic caught by Run()
 //  It returns true for an "expected" (recognized) error.
-func Diagnose(f io.Writer, v Value) bool {
+func Diagnose(f io.Writer, v interface{}) bool {
 	switch x := v.(type) {
 	case *CallFrame:
 		rv := Diagnose(f, x.cause)

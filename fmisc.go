@@ -59,11 +59,10 @@ func Image(env *Env, a ...Value) (Value, *Closure) {
 func Type(env *Env, a ...Value) (Value, *Closure) {
 	defer Traceback("type", a)
 	v := ProcArg(a, 0, NilValue)
-	switch t := v.(type) {
-	case IExternal:
+	if t, ok := v.(IType); ok {
+		return Return(t.Type())
+	} else {
 		return Return(type_external)
-	default:
-		return Return(t.(IType).Type()) //#%#% remove cast
 	}
 }
 
@@ -72,10 +71,11 @@ var type_external = NewString("external")
 //  Sleep(n) -- delay execution for n seconds (may be fractional)
 func Sleep(env *Env, a ...Value) (Value, *Closure) {
 	defer Traceback("sleep", a)
-	n := ProcArg(a, 0, ONE).(Numerable).ToNumber().Val()
+	v := ProcArg(a, 0, ONE).(Numerable).ToNumber()
+	n := v.Val()
 	d := time.Duration(n * float64(time.Second))
 	time.Sleep(d)
-	return Return(n)
+	return Return(v)
 }
 
 //  Exit(n) -- terminate program

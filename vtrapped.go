@@ -22,6 +22,9 @@ func (t *VTrapped) Deref() Value {
 	return *t.Target
 }
 
+//  VTrapped.GoaldiValue -- Declare this to be a Goaldi value
+func (*VTrapped) GoaldiValue() {}
+
 //  VTrapped.String() -- show string representation: produces (&value)
 //  #%#% should make this smarter
 func (t *VTrapped) String() string {

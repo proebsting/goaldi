@@ -49,6 +49,9 @@ var (
 	PHI  = NewNumber(math.Phi)
 )
 
+//  VNumber.GoaldiValue -- Declare this to be a Goaldi value
+func (*VNumber) GoaldiValue() {}
+
 //  VNumber.Val -- return underlying float64 value
 func (v *VNumber) Val() float64 {
 	return float64(*v)
@@ -100,11 +103,6 @@ func (a *VNumber) Identical(x Value) Value {
 	} else {
 		return nil
 	}
-}
-
-//  VNumber.Import returns itself
-func (v *VNumber) Import() Value {
-	return v
 }
 
 //  VNumber.Export returns a float64

@@ -29,7 +29,7 @@ func Import(x interface{}) Value {
 
 	case IImport: // type declares its own import method incl Goaldi types
 		return v.Import()
-	case IExternal: // labels a user type that is to stay unconverted
+	case Value: // import Goaldi value unmodified (incl type "external")
 		return v
 
 	case bool:
@@ -87,10 +87,9 @@ func Import(x interface{}) Value {
 
 //  Export(v) returns the default Go representation of a Goaldi value
 func Export(v Value) interface{} {
-	switch e := v.(type) {
-	case IExport:
-		return e.Export()
-	default:
+	if x, ok := v.(IExport); ok {
+		return x.Export()
+	} else {
 		return v
 	}
 }

@@ -9,13 +9,13 @@ import (
 
 //  procedure frame
 type pr_frame struct {
-	env    *g.Env             // dynamic execution enviromment
-	info   *pr_Info           // static procedure information
-	params []g.Value          // parameters
-	locals []g.Value          // locals
-	temps  map[string]g.Value // temporaries
-	coord  string             // last known source location
-	offv   g.Value            // offending value for traceback
+	env    *g.Env                 // dynamic execution enviromment
+	info   *pr_Info               // static procedure information
+	params []g.Value              // parameters
+	locals []g.Value              // locals
+	temps  map[string]interface{} // temporaries
+	coord  string                 // last known source location
+	offv   g.Value                // offending value for traceback
 }
 
 //  catchf -- annotate a panic value with procedure frame information
@@ -34,7 +34,7 @@ func interp(env *g.Env, pr *pr_Info, args ...g.Value) (g.Value, *g.Closure) {
 	var f pr_frame
 	f.env = env
 	f.info = pr
-	f.temps = make(map[string]g.Value)
+	f.temps = make(map[string]interface{})
 	f.params = make([]g.Value, pr.nparams, pr.nparams)
 	f.locals = make([]g.Value, pr.nlocals, pr.nlocals)
 	for i := 0; i < len(f.params); i++ {
@@ -84,7 +84,7 @@ func interp(env *g.Env, pr *pr_Info, args ...g.Value) (g.Value, *g.Closure) {
 				case ir_Fail:
 					return nil, nil
 				case ir_Succeed:
-					v := g.Deref(f.temps[i.Expr])
+					v := g.Deref(f.temps[i.Expr].(g.Value))
 					if i.ResumeLabel == "" {
 						return v, nil
 					} else {
@@ -153,7 +153,7 @@ func interp(env *g.Env, pr *pr_Info, args ...g.Value) (g.Value, *g.Closure) {
 					}
 				case ir_Call:
 					f.coord = i.Coord
-					proc := g.Deref(f.temps[i.Fn])
+					proc := g.Deref(f.temps[i.Fn].(g.Value))
 					argl := getArgs(&f, 0, i.ArgList)
 					f.offv = proc
 					v, c := proc.(g.ICall).Call(env, argl...)
@@ -209,9 +209,9 @@ func getArgs(f *pr_frame, nd int, arglist []interface{}) []g.Value {
 			// nothing to do: use entry as is
 		}
 		if i < nd {
-			argl[i] = a
+			argl[i] = a.(g.Value)
 		} else {
-			argl[i] = g.Deref(a)
+			argl[i] = g.Deref(a.(g.Value))
 		}
 	}
 	return argl

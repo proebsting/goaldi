@@ -11,11 +11,11 @@ import (
 
 type extl struct{ i int }
 
-func (*extl) GoaldiExternal() {}
+func (*extl) GoaldiValue() {}
 
 type impr struct{ i int }
 
-func (*impr) Import() Value { return 4.713 }
+func (*impr) Import() Value { return NewNumber(4.713) }
 
 func TestImport(t *testing.T) {
 
@@ -49,7 +49,7 @@ func TestImport(t *testing.T) {
 	expect(t, "stdout", "file(*bufio.Writer,w)", o)
 
 	// test external imports
-	testImp(t, &impr{1}, 4.713)
+	testImp(t, &impr{1}, NewNumber(4.713))
 	x := &extl{2}
 	testImp(t, x, x)
 	expect(t, "external", "&goaldi.extl{i:2}", fmt.Sprintf("%#v", Import(x)))

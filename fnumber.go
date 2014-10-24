@@ -92,7 +92,7 @@ func Min(env *Env, a ...Value) (Value, *Closure) {
 			v = vi
 		}
 	}
-	return Return(v)
+	return Return(NewNumber(v))
 }
 
 //  Max(n1, ...) -- return numeric maximum
@@ -105,5 +105,5 @@ func Max(env *Env, a ...Value) (Value, *Closure) {
 			v = vi
 		}
 	}
-	return Return(v)
+	return Return(NewNumber(v))
 }

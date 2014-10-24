@@ -12,6 +12,9 @@ type vnil struct {
 //  For convenience, its type is Value, not vnil.
 var NilValue Value = &vnil{}
 
+//  vnil.GoaldiValue -- Declare this to be a Goaldi value
+func (*vnil) GoaldiValue() {}
+
 //  vnil.String -- default conversion to Go string returns "~"
 func (v *vnil) String() string {
 	return "~" //#%#% ??
@@ -28,11 +31,6 @@ func (v *vnil) Type() Value {
 }
 
 var type_nil = NewString("nil")
-
-//  vnil.Import returns itself
-func (v *vnil) Import() Value {
-	return v
-}
 
 //  vnil.Export returns a Go nil
 func (v *vnil) Export() interface{} {
