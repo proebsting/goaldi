@@ -29,7 +29,7 @@ func Import(x interface{}) Value {
 
 	case IImport: // type declares its own import method incl Goaldi types
 		return v.Import()
-	case Value: // import Goaldi value unmodified (incl type "external")
+	case IExternal: // labels a user type that is to stay unconverted
 		return v
 
 	case bool:
@@ -42,7 +42,9 @@ func Import(x interface{}) Value {
 	case string:
 		return NewString(v)
 	case []byte:
-		return NewString(string(v)) //#%#%???
+		return NewString(string(v))
+	case []rune:
+		return RuneString(v)
 
 	case float32:
 		return NewNumber(float64(v))
@@ -81,7 +83,7 @@ func Import(x interface{}) Value {
 	//#%#% add other cases?
 
 	default:
-		return NewForeign(x)
+		return x // external
 	}
 }
 

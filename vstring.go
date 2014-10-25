@@ -90,9 +90,6 @@ func (v *VString) ToBinary() []byte {
 	return b
 }
 
-//  VString.GoaldiValue -- Declare this to be a Goaldi value
-func (*VString) GoaldiValue() {}
-
 //  VString.String -- default conversion to Go string
 func (v *VString) String() string {
 	return v.ToUTF8()
@@ -140,6 +137,11 @@ func (s *VString) Identical(x Value) Value {
 	}
 }
 
+//  VString.Import returns itself
+func (v *VString) Import() Value {
+	return v
+}
+
 //  VString.Export returns a Go string
 func (v *VString) Export() interface{} {
 	return v.ToUTF8()
@@ -151,9 +153,6 @@ type vSubStr struct {
 	target IVariable // pointer to target
 	i, j   int       // original subscripts
 }
-
-//  vSubStr.GoaldiValue -- Declare this to be a Goaldi value
-func (*vSubStr) GoaldiValue() {}
 
 //  vSubStr.Deref() -- extract value of for use as an rvalue
 func (ss *vSubStr) Deref() Value {

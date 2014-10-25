@@ -11,7 +11,7 @@ import (
 
 type extl struct{ i int }
 
-func (*extl) GoaldiValue() {}
+func (*extl) GoaldiExternal() {}
 
 type impr struct{ i int }
 
@@ -53,11 +53,9 @@ func TestImport(t *testing.T) {
 	x := &extl{2}
 	testImp(t, x, x)
 	expect(t, "external", "&goaldi.extl{i:2}", fmt.Sprintf("%#v", Import(x)))
-
-	// test foreign imports
 	m := make(map[int]string)
-	f := Import(&m).(*VForeign)
-	expect(t, "foreign", &m, f.GoVal)
+	f := Import(&m)
+	expect(t, "external", &m, f)
 }
 
 func testImp(t *testing.T, goval interface{}, expected Value) {

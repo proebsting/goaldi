@@ -17,9 +17,6 @@ func NewProcedure(name string, entry Procedure) *VProcedure {
 	return &VProcedure{name, entry}
 }
 
-//  VProcedure.GoaldiValue -- Declare this to be a Goaldi value
-func (*VProcedure) GoaldiValue() {}
-
 //  VProcedure.String -- default conversion to Go string returns "procname()"
 func (v *VProcedure) String() string {
 	return v.Name + "()" //#%#%??
@@ -36,6 +33,11 @@ func (v *VProcedure) Type() Value {
 }
 
 var type_procedure = NewString("procedure")
+
+//  VProcedure.Import returns itself
+func (v *VProcedure) Import() Value {
+	return v
+}
 
 //  VProcedure.Export returns the underlying function
 //  (#%#% at least for now. should we wrap it somehow?)
