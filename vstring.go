@@ -154,14 +154,14 @@ type vSubStr struct {
 	i, j   int       // original subscripts
 }
 
-//  vSubStr.Deref() -- extract value of for use as an rvalue
+//  vSubStr.Deref() -- extract value of substring for use as an rvalue
 func (ss *vSubStr) Deref() Value {
 	return Deref(ss.target).(*VString).slice(nil, ss.i, ss.j)
 }
 
-//  vSubStr.String() -- show string representation: produces v[i:j]
+//  vSubStr.String() -- show string representation: produces (v[i:j])
 func (ss *vSubStr) String() string {
-	return fmt.Sprintf("(&%v[%d:%d])", ss.target, ss.i, ss.j)
+	return fmt.Sprintf("(%v[%d:%d])", ss.target, ss.i, ss.j)
 }
 
 //  vSubStr.Assign -- store value in target variable
