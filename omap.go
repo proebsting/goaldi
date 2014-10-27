@@ -45,19 +45,36 @@ func (v *VMap) Index(lval IVariable, key Value) Value {
 	return &vMapSlot{v, key}
 }
 
-//------------------------------------  Member:  e1.member(32)
+//------------------------------------  Field:  e1.s
 
-func (v *VMap) Member(key Value) Value {
-	if v.data[MapIndex(key)] != nil {
-		return key
-	} else {
-		return nil
+func (v *VMap) Field(f string) Value {
+	//#%#% checking first for "member" and "delete",
+	//#%#% allowing any other string as a index
+	switch f {
+	case "member":
+		return MVFunc(v.Member)
+	case "delete":
+		return MVFunc(v.Delete)
+	default:
+		return &vMapSlot{v, NewString(f)}
 	}
 }
 
-//------------------------------------  Delete:  e1.delete(32)
+//------------------------------------  Member:  e1.member(e2)
 
-func (v *VMap) Delete(key Value) Value {
+func (v *VMap) Member(args ...Value) (Value, *Closure) {
+	key := args[0]
+	if v.data[MapIndex(key)] != nil {
+		return Return(key)
+	} else {
+		return Fail()
+	}
+}
+
+//------------------------------------  Delete:  e1.delete(e2)
+
+func (v *VMap) Delete(args ...Value) (Value, *Closure) {
+	key := args[0]
 	x := MapIndex(key)
 	delete(v.data, x)
 	if len(v.data) != len(v.klist) {
@@ -73,5 +90,5 @@ func (v *VMap) Delete(key Value) Value {
 	if len(v.data) != len(v.klist) {
 		panic(&RunErr{"inconsistent map", v})
 	}
-	return v
+	return Return(v)
 }

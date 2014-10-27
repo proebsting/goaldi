@@ -23,6 +23,19 @@ func NotIdentical(a, b Value) Value {
 	}
 }
 
+type IField interface {
+	Field(string) Value
+}
+
+//  Field(x,s) calls x.Field(s) or (#%#%TBD) falls back to reflection.
+func Field(x Value, s string) Value {
+	if t, ok := x.(IField); ok {
+		return t.Field(s)
+	}
+	//#%#% try looking up field in Go struct or map using reflection.
+	return nil
+}
+
 //  VNumber.ICall -- implement i(e1, e2, e3...)
 func (v *VNumber) Call(env *Env, args ...Value) (Value, *Closure) {
 	i := GoIndex(int(v.Val()), len(args))

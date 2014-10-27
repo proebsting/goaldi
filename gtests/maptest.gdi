@@ -1,4 +1,4 @@
-# bogus test of maps: depends on internals (random seq, elem ordering)
+#%#% bogus test of maps: depends on internals (random seq, elem ordering)
 
 procedure main()
 	local t, c, i, k
@@ -19,9 +19,21 @@ procedure main()
 	}
 	println("\t\t\t\t", type(t), t, *t, image(t))
 	every k := 3 | "G" | 1 | "H" | 2 | 4 | "F" | "E" do {
-		delete(t, k)
+		t.delete(k)
 		ck(t)
 	}
+	println("\t\t\t\t", type(t), t, *t, image(t))
+	#%#% we may not want to keep the following notation  (consider t.member...)
+	t.H := 9
+	ck(t)
+	t.F := 7
+	ck(t)
+	t.E := 6
+	ck(t)
+	t.G := 8
+	ck(t)
+	t.foo := 0
+	ck(t)
 	println("\t\t\t\t", type(t), t, *t, image(t))
 end
 
@@ -29,7 +41,7 @@ procedure ck(t)
 	local k
 	writes(*t, " ")
 	every k := !"1234" | !4 | !"EFGH" do {
-		writes(member(t, k) | "-")
+		writes(t.member(k) | "-")
 	}
 	every writes(" " | t[!4 | !"EFGH"])
 	writes(" ")

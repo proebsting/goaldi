@@ -151,6 +151,18 @@ func interp(env *g.Env, pr *pr_Info, args ...g.Value) (g.Value, *g.Closure) {
 						label = i.FailLabel
 						break Chunk
 					}
+				case ir_Field:
+					f.coord = i.Coord
+					x := g.Deref(f.temps[i.Expr].(g.Value))
+					v := g.Field(x, i.Field)
+					if v != nil {
+						if i.Lhs != "" {
+							f.temps[i.Lhs] = v
+						}
+					} else if i.FailLabel != "" {
+						label = i.FailLabel
+						break Chunk
+					}
 				case ir_Call:
 					f.coord = i.Coord
 					proc := g.Deref(f.temps[i.Fn].(g.Value))

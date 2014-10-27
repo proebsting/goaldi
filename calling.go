@@ -39,3 +39,12 @@ func Fail() (Value, *Closure) {
 func Return(v Value) (Value, *Closure) {
 	return v, nil
 }
+
+//  An MVFunc is a Go "method value", a function bound to an object,
+//  for example the "m.delete" part of the expression "m.delete(x)"
+type MVFunc func(...Value) (Value, *Closure)
+
+//  MVFunc.Call(args) invokes the underlying method function.
+func (f MVFunc) Call(env *Env, args ...Value) (Value, *Closure) {
+	return f(args...)
+}
