@@ -1,0 +1,24 @@
+				 map map() 0 map(0)
+0 ------------ ~~~~~~~~ ----
+1 ----1------- a~~~~~~~ 1111 1:a
+2 ----12------ ab~~~~~~ 2121 1:a 2:b
+3 ----123----- abc~~~~~ 2132 1:a 2:b 3:c
+4 ----1234---- abcd~~~~ 3213 1:a 2:b 3:c 4:d
+5 ----1234E--- abcde~~~ 2132 1:a 2:b 3:c 4:d E:e
+6 ----1234EF-- abcdef~~ F13E 1:a 2:b 3:c 4:d E:e F:f
+7 ----1234EFG- abcdefg~ 242G 1:a 2:b 3:c 4:d E:e F:f G:g
+8 ----1234EFGH abcdefgh GHF1 1:a 2:b 3:c 4:d E:e F:f G:g H:h
+8 ----1234EFGH abczefgh 4HFE 1:a 2:b 3:c 4:z E:e F:f G:g H:h
+8 ----1234EFGH abyzefgh 2HF3 1:a 2:b 3:y 4:z E:e F:f G:g H:h
+8 ----1234EFGH axyzefgh F334 1:a 2:x 3:y 4:z E:e F:f G:g H:h
+8 ----1234EFGH wxyzefgh 24GE 1:w 2:x 3:y 4:z E:e F:f G:g H:h
+				 map map() 8 map(8)
+7 ----12-4EFGH wx~zefgh GEG1 1:w 2:x H:h 4:z E:e F:f G:g
+6 ----12-4EF-H wx~zef~h 44E2 1:w 2:x H:h 4:z E:e F:f
+5 -----2-4EF-H ~x~zef~h 444F F:f 2:x H:h 4:z E:e
+4 -----2-4EF-- ~x~zef~~ 4E2F F:f 2:x E:e 4:z
+3 -------4EF-- ~~~zef~~ 4EEE F:f 4:z E:e
+2 --------EF-- ~~~~ef~~ EFEF F:f E:e
+1 --------E--- ~~~~e~~~ EEEE E:e
+0 ------------ ~~~~~~~~ ----
+				 map map() 0 map(0)
