@@ -1,82 +1,88 @@
-type:list  size:3  print:list()  image:list(3)
-	3a33   3:  - - - - - - a b 3 - a b 3 - - - - - -  :  a b 3 
 A:
 	----   0:  - - - - - - - - - - - - - - - - - - -  :  
-	dddd   1:  - - - - - - - - d - d - - - - - - - -  :  d 
-	ddde   2:  - - - - - - - d e - d e - - - - - - -  :  d e 
-	dfef   3:  - - - - - - d e f - d e f - - - - - -  :  d e f 
-	fdde   4:  - - - - - c d e f - c d e f - - - - -  :  c d e f 
-	bcee   5:  - - - - b c d e f - b c d e f - - - -  :  b c d e f 
-	dbbe   6:  - - - a b c d e f - a b c d e f - - -  :  a b c d e f 
-a : 	bbce   5:  - - - - b c d e f - b c d e f - - - -  :  b c d e f 
-f : 	eecb   4:  - - - - - b c d e - b c d e - - - - -  :  b c d e 
-b : 	cdcc   3:  - - - - - - c d e - c d e - - - - - -  :  c d e 
-	deeg   4:  - - - - - c d e g - c d e g - - - - -  :  c d e g 
-	gegh   5:  - - - - c d e g h - c d e g h - - - -  :  c d e g h 
-	dggd   6:  - - - c d e g h i - c d e g h i - - -  :  c d e g h i 
-c : 	iidd   5:  - - - - d e g h i - d e g h i - - - -  :  d e g h i 
-i : 	dghh   4:  - - - - - d e g h - d e g h - - - - -  :  d e g h 
-d : 	heee   3:  - - - - - - e g h - e g h - - - - - -  :  e g h 
-	ghhh   3:  - - - - - - e g h - e g h - - - - - -  :  e g h 
-	h321   6:  - - - 1 2 3 e g h - 1 2 3 e g h - - -  :  1 2 3 e g h 
-	9h71   9:  1 2 3 e g h 7 8 9 - 1 2 3 e g h 7 8 9  :  1 2 3 e g h 7 8 9 
-B:
-q	g897   9:  q 2 3 e g h 7 8 9 - q 2 3 e g h 7 8 9  :  q 2 3 e g h 7 8 9 
-z	8z38   9:  q z 3 e g h 7 8 9 - q z 3 e g h 7 8 9  :  q z 3 e g h 7 8 9 
-t	h9zt   9:  q z t e g h 7 8 9 - q z t e g h 7 8 9  :  q z t e g h 7 8 9 
-p	7zqg   9:  q z t p g h 7 8 9 - q z t p g h 7 8 9  :  q z t p g h 7 8 9 
-s	q8tp   9:  q z t p s h 7 8 9 - q z t p s h 7 8 9  :  q z t p s h 7 8 9 
-s	p9st   9:  q z t p s s 7 8 9 - q z t p s s 7 8 9  :  q z t p s s 7 8 9 
-p	spzp   9:  q z t p s s p 8 9 - q z t p s s p 8 9  :  q z t p s s p 8 9 
-s	s9qs   9:  q z t p s s p s 9 - q z t p s s p s 9  :  q z t p s s p s 9 
-u	spqt   9:  q z t p s s p s u - q z t p s s p s u  :  q z t p s s p s u 
-1	z1ps   9:  1 z t p s s p s u - 1 z t p s s p s u  :  1 z t p s s p s u 
-3	psss   9:  1 z 3 p s s p s u - 1 z 3 p s s p s u  :  1 z 3 p s s p s u 
-5	11ps   9:  1 z 3 p 5 s p s u - 1 z 3 p 5 s p s u  :  1 z 3 p 5 s p s u 
-7	u1su   9:  1 z 3 p 5 s 7 s u - 1 z 3 p 5 s 7 s u  :  1 z 3 p 5 s 7 s u 
-9	3177   9:  1 z 3 p 5 s 7 s 9 - 1 z 3 p 5 s 7 s 9  :  1 z 3 p 5 s 7 s 9 
-j	5sjs   9:  1 z 3 p 5 s 7 s j - 1 z 3 p 5 s 7 s j  :  1 z 3 p 5 s 7 s j 
-k	kjk5   9:  1 z k p 5 s 7 s j - 1 z k p 5 s 7 s j  :  1 z k p 5 s 7 s j 
-l	lzk5   9:  1 z k p 5 s 7 l j - 1 z k p 5 s 7 l j  :  1 z k p 5 s 7 l j 
-m	mlk5   9:  1 z k m 5 s 7 l j - 1 z k m 5 s 7 l j  :  1 z k m 5 s 7 l j 
-n	577n   9:  n z k m 5 s 7 l j - n z k m 5 s 7 l j  :  n z k m 5 s 7 l j 
-o	oolm   9:  n z k m 5 s o l j - n z k m 5 s o l j  :  n z k m 5 s o l j 
-p	jmj5   9:  p z k m 5 s o l j - p z k m 5 s o l j  :  p z k m 5 s o l j 
-C:
-z : 	k757   8:  - 6 k m 5 s o l 7 - 6 k m 5 s o l 7 -  :  6 k m 5 s o l 7 
-k : 	lo65   7:  - - 5 m 5 s o l 6 - 5 m 5 s o l 6 - -  :  5 m 5 s o l 6 
-m : 	so44   6:  - - - 4 5 s o l 5 - 4 5 s o l 5 - - -  :  4 5 s o l 5 
-5 : 	o33o   5:  - - - - 3 s o l 4 - 3 s o l 4 - - - -  :  3 s o l 4 
-s : 	o222   4:  - - - - - 2 o l 3 - 2 o l 3 - - - - -  :  2 o l 3 
-o : 	2122   3:  - - - - - - 1 l 2 - 1 l 2 - - - - - -  :  1 l 2 
-l : 	1011   2:  - - - - - - - 0 1 - 0 1 - - - - - - -  :  0 1 
+	~~~~   3:  - - - - - - ~ ~ ~ - ~ ~ ~ - - - - - -  :  ~ ~ ~ 
+	9999   5:  - - - - 9 9 9 9 9 - 9 9 9 9 9 - - - -  :  9 9 9 9 9 
 	----   0:  - - - - - - - - - - - - - - - - - - -  :  
+B:
+	type:list  size:3  print:list()  image:list(3)
+	ba3b   3:  - - - - - - a b 3 - a b 3 - - - - - -  :  a b 3 
+C:
+	----   0:  - - - - - - - - - - - - - - - - - - -  :  
+	dddd   1:  - - - - - - - - d - d - - - - - - - -  :  d 
+	eeed   2:  - - - - - - - d e - d e - - - - - - -  :  d e 
+	fdfe   3:  - - - - - - d e f - d e f - - - - - -  :  d e f 
+	fffc   4:  - - - - - c d e f - c d e f - - - - -  :  c d e f 
+	bbce   5:  - - - - b c d e f - b c d e f - - - -  :  b c d e f 
+	ffdc   6:  - - - a b c d e f - a b c d e f - - -  :  a b c d e f 
+a : 	dcbc   5:  - - - - b c d e f - b c d e f - - - -  :  b c d e f 
+f : 	cdde   4:  - - - - - b c d e - b c d e - - - - -  :  b c d e 
+b : 	dcdd   3:  - - - - - - c d e - c d e - - - - - -  :  c d e 
+	gddd   4:  - - - - - c d e g - c d e g - - - - -  :  c d e g 
+	hhcc   5:  - - - - c d e g h - c d e g h - - - -  :  c d e g h 
+	ecdi   6:  - - - c d e g h i - c d e g h i - - -  :  c d e g h i 
+c : 	edde   5:  - - - - d e g h i - d e g h i - - - -  :  d e g h i 
+i : 	gdeg   4:  - - - - - d e g h - d e g h - - - - -  :  d e g h 
+d : 	hhge   3:  - - - - - - e g h - e g h - - - - - -  :  e g h 
+	hhee   3:  - - - - - - e g h - e g h - - - - - -  :  e g h 
+	22g3   6:  - - - 1 2 3 e g h - 1 2 3 e g h - - -  :  1 2 3 e g h 
+	7182   9:  1 2 3 e g h 7 8 9 - 1 2 3 e g h 7 8 9  :  1 2 3 e g h 7 8 9 
 D:
+z	83h9   9:  z 2 3 e g h 7 8 9 - z 2 3 e g h 7 8 9  :  z 2 3 e g h 7 8 9 
+y	3g7y   9:  z y 3 e g h 7 8 9 - z y 3 e g h 7 8 9  :  z y 3 e g h 7 8 9 
+s	gez8   9:  z y s e g h 7 8 9 - z y s e g h 7 8 9  :  z y s e g h 7 8 9 
+y	ygy9   9:  z y s y g h 7 8 9 - z y s y g h 7 8 9  :  z y s y g h 7 8 9 
+w	sywy   9:  z y s y w h 7 8 9 - z y s y w h 7 8 9  :  z y s y w h 7 8 9 
+y	7yw9   9:  z y s y w y 7 8 9 - z y s y w y 7 8 9  :  z y s y w y 7 8 9 
+z	wywy   9:  z y s y w y z 8 9 - z y s y w y z 8 9  :  z y s y w y z 8 9 
+y	syzy   9:  z y s y w y z y 9 - z y s y w y z y 9  :  z y s y w y z y 9 
+u	zyww   9:  z y s y w y z y u - z y s y w y z y u  :  z y s y w y z y u 
+1	11zy   9:  1 y s y w y z y u - 1 y s y w y z y u  :  1 y s y w y z y u 
+3	u1yu   9:  1 y 3 y w y z y u - 1 y 3 y w y z y u  :  1 y 3 y w y z y u 
+5	31zz   9:  1 y 3 y 5 y z y u - 1 y 3 y 5 y z y u  :  1 y 3 y 5 y z y u 
+7	u5yu   9:  1 y 3 y 5 y 7 y u - 1 y 3 y 5 y 7 y u  :  1 y 3 y 5 y 7 y u 
+9	y339   9:  1 y 3 y 5 y 7 y 9 - 1 y 3 y 5 y 7 y 9  :  1 y 3 y 5 y 7 y 9 
+j	5yyy   9:  1 y j y 5 y 7 y 9 - 1 y j y 5 y 7 y 9  :  1 y j y 5 y 7 y 9 
+k	5yyy   9:  1 y k y 5 y 7 y 9 - 1 y k y 5 y 7 y 9  :  1 y k y 5 y 7 y 9 
+l	5157   9:  1 y l y 5 y 7 y 9 - 1 y l y 5 y 7 y 9  :  1 y l y 5 y 7 y 9 
+m	1mmm   9:  1 y l y 5 y m y 9 - 1 y l y 5 y m y 9  :  1 y l y 5 y m y 9 
+n	y19y   9:  1 y l y 5 y m n 9 - 1 y l y 5 y m n 9  :  1 y l y 5 y m n 9 
+o	551y   9:  1 y l y 5 y m n o - 1 y l y 5 y m n o  :  1 y l y 5 y m n o 
+p	y1ny   9:  1 y l y 5 p m n o - 1 y l y 5 p m n o  :  1 y l y 5 p m n o 
+E:
+y : 	67n6   8:  - 6 l y 5 p m n 7 - 6 l y 5 p m n 7 -  :  6 l y 5 p m n 7 
+l : 	m5y5   7:  - - 5 y 5 p m n 6 - 5 y 5 p m n 6 - -  :  5 y 5 p m n 6 
+y : 	544n   6:  - - - 4 5 p m n 5 - 4 5 p m n 5 - - -  :  4 5 p m n 5 
+5 : 	3p3p   5:  - - - - 3 p m n 4 - 3 p m n 4 - - - -  :  3 p m n 4 
+p : 	m23m   4:  - - - - - 2 m n 3 - 2 m n 3 - - - - -  :  2 m n 3 
+m : 	2221   3:  - - - - - - 1 n 2 - 1 n 2 - - - - - -  :  1 n 2 
+n : 	1001   2:  - - - - - - - 0 1 - 0 1 - - - - - - -  :  0 1 
+	----   0:  - - - - - - - - - - - - - - - - - - -  :  
+F:
 	----   0:  - - - - - - - - - - - - - - - - - - -  :  
 	7777   1:  - - - - - - - - 7 - 7 - - - - - - - -  :  7 
-	1351   6:  - - - 3 1 4 1 5 9 - 3 1 4 1 5 9 - - -  :  3 1 4 1 5 9 
-	5111   4:  - - - - - 1 4 1 5 - 1 4 1 5 - - - - -  :  1 4 1 5 
-	4641   6:  - - - 1 4 1 5 1 6 - 1 4 1 5 1 6 - - -  :  1 4 1 5 1 6 
-	1191   6:  - - - 3 1 4 1 5 9 - 3 1 4 1 5 9 - - -  :  3 1 4 1 5 9 
-E:
-	fdee   6:  - - - a b c d e f - a b c d e f - - -  :  a b c d e f 
--2:3	cccc   2:  - - - - - - - c d - c d - - - - - - -  :  c d 
+	1913   6:  - - - 3 1 4 1 5 9 - 3 1 4 1 5 9 - - -  :  3 1 4 1 5 9 
+	5445   4:  - - - - - 1 4 1 5 - 1 4 1 5 - - - - -  :  1 4 1 5 
+	6511   6:  - - - 1 4 1 5 1 6 - 1 4 1 5 1 6 - - -  :  1 4 1 5 1 6 
+	5454   6:  - - - 3 1 4 1 5 9 - 3 1 4 1 5 9 - - -  :  3 1 4 1 5 9 
+G:
+	edfe   6:  - - - a b c d e f - a b c d e f - - -  :  a b c d e f 
+-2:3	cdcc   2:  - - - - - - - c d - c d - - - - - - -  :  c d 
 -2:4	dddd   1:  - - - - - - - - d - d - - - - - - - -  :  d 
 -2:5	----   0:  - - - - - - - - - - - - - - - - - - -  :  
--1:3	decc   3:  - - - - - - c d e - c d e - - - - - -  :  c d e 
--1:4	deee   2:  - - - - - - - d e - d e - - - - - - -  :  d e 
+-1:3	ceed   3:  - - - - - - c d e - c d e - - - - - -  :  c d e 
+-1:4	eede   2:  - - - - - - - d e - d e - - - - - - -  :  d e 
 -1:5	eeee   1:  - - - - - - - - e - e - - - - - - - -  :  e 
-0:3	ddcd   4:  - - - - - c d e f - c d e f - - - - -  :  c d e f 
-0:4	feff   3:  - - - - - - d e f - d e f - - - - - -  :  d e f 
-0:5	eeee   2:  - - - - - - - e f - e f - - - - - - -  :  e f 
-1:3	abbb   2:  - - - - - - - a b - a b - - - - - - -  :  a b 
-1:4	cacb   3:  - - - - - - a b c - a b c - - - - - -  :  a b c 
-1:5	caca   4:  - - - - - a b c d - a b c d - - - - -  :  a b c d 
+0:3	cecc   4:  - - - - - c d e f - c d e f - - - - -  :  c d e f 
+0:4	fefd   3:  - - - - - - d e f - d e f - - - - - -  :  d e f 
+0:5	feef   2:  - - - - - - - e f - e f - - - - - - -  :  e f 
+1:3	aaaa   2:  - - - - - - - a b - a b - - - - - - -  :  a b 
+1:4	baaa   3:  - - - - - - a b c - a b c - - - - - -  :  a b c 
+1:5	abca   4:  - - - - - a b c d - a b c d - - - - -  :  a b c d 
 2:3	bbbb   1:  - - - - - - - - b - b - - - - - - - -  :  b 
-2:4	bcbb   2:  - - - - - - - b c - b c - - - - - - -  :  b c 
-2:5	bcbc   3:  - - - - - - b c d - b c d - - - - - -  :  b c d 
-F:
-	9398   6:  - - - 2 3 4 7 8 9 - 2 3 4 7 8 9 - - -  :  2 3 4 7 8 9 
-	7229   7:  - - 1 2 3 4 7 8 9 - 1 2 3 4 7 8 9 - -  :  1 2 3 4 7 8 9 
-	2999   8:  - 1 2 3 4 5 7 8 9 - 1 2 3 4 5 7 8 9 -  :  1 2 3 4 5 7 8 9 
-	9473   9:  1 2 3 4 5 5 7 8 9 - 1 2 3 4 5 5 7 8 9  :  1 2 3 4 5 5 7 8 9 
+2:4	cccb   2:  - - - - - - - b c - b c - - - - - - -  :  b c 
+2:5	cdcb   3:  - - - - - - b c d - b c d - - - - - -  :  b c d 
+H:
+	9773   6:  - - - 2 3 4 7 8 9 - 2 3 4 7 8 9 - - -  :  2 3 4 7 8 9 
+	2714   7:  - - 1 2 3 4 7 8 9 - 1 2 3 4 7 8 9 - -  :  1 2 3 4 7 8 9 
+	1117   8:  - 1 2 3 4 5 7 8 9 - 1 2 3 4 5 7 8 9 -  :  1 2 3 4 5 7 8 9 
+	8555   9:  1 2 3 4 5 5 7 8 9 - 1 2 3 4 5 5 7 8 9  :  1 2 3 4 5 5 7 8 9 
