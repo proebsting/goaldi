@@ -1,0 +1,50 @@
+			 list list() 0 list(0)
+	dddd   1:  - - - - - - - - d - d - - - - - - - -  :  d 
+	eded   2:  - - - - - - - d e - d e - - - - - - -  :  d e 
+	edfe   3:  - - - - - - d e f - d e f - - - - - -  :  d e f 
+	edce   4:  - - - - - c d e f - c d e f - - - - -  :  c d e f 
+	cbdc   5:  - - - - b c d e f - b c d e f - - - -  :  b c d e f 
+	face   6:  - - - a b c d e f - a b c d e f - - -  :  a b c d e f 
+			 list list() 6 list(6)
+a : 	ddde   5:  - - - - b c d e f - b c d e f - - - -  :  b c d e f 
+f : 	decb   4:  - - - - - b c d e - b c d e - - - - -  :  b c d e 
+b : 	eece   3:  - - - - - - c d e - c d e - - - - - -  :  c d e 
+	dgde   4:  - - - - - c d e g - c d e g - - - - -  :  c d e g 
+	gchg   5:  - - - - c d e g h - c d e g h - - - -  :  c d e g h 
+	dghh   6:  - - - c d e g h i - c d e g h i - - -  :  c d e g h i 
+c : 	ihge   5:  - - - - d e g h i - d e g h i - - - -  :  d e g h i 
+i : 	ehde   4:  - - - - - d e g h - d e g h - - - - -  :  d e g h 
+d : 	hegh   3:  - - - - - - e g h - e g h - - - - - -  :  e g h 
+	heee   3:  - - - - - - e g h - e g h - - - - - -  :  e g h 
+	g3h3   6:  - - - 1 2 3 e g h - 1 2 3 e g h - - -  :  1 2 3 e g h 
+	h321   9:  1 2 3 e g h 7 8 9 - 1 2 3 e g h 7 8 9  :  1 2 3 e g h 7 8 9 
+u	h7u2   9:  u 2 3 e g h 7 8 9 - u 2 3 e g h 7 8 9  :  u 2 3 e g h 7 8 9 
+y	897u   9:  u y 3 e g h 7 8 9 - u y 3 e g h 7 8 9  :  u y 3 e g h 7 8 9 
+p	yp8p   9:  u y p e g h 7 8 9 - u y p e g h 7 8 9  :  u y p e g h 7 8 9 
+x	9ypg   9:  u y p x g h 7 8 9 - u y p x g h 7 8 9  :  u y p x g h 7 8 9 
+y	yuyx   9:  u y p x y h 7 8 9 - u y p x y h 7 8 9  :  u y p x y h 7 8 9 
+s	8pxy   9:  u y p x y s 7 8 9 - u y p x y s 7 8 9  :  u y p x y s 7 8 9 
+p	9spy   9:  u y p x y s p 8 9 - u y p x y s p 8 9  :  u y p x y s p 8 9 
+t	xypy   9:  u y p x y s p t 9 - u y p x y s p t 9  :  u y p x y s p t 9 
+r	ruys   9:  u y p x y s p t r - u y p x y s p t r  :  u y p x y s p t r 
+1	yx1p   9:  1 y p x y s p t r - 1 y p x y s p t r  :  1 y p x y s p t r 
+3	y1xy   9:  1 y 3 x y s p t r - 1 y 3 x y s p t r  :  1 y 3 x y s p t r 
+5	ps55   9:  1 y 3 x 5 s p t r - 1 y 3 x 5 s p t r  :  1 y 3 x 5 s p t r 
+7	117t   9:  1 y 3 x 5 s 7 t r - 1 y 3 x 5 s 7 t r  :  1 y 3 x 5 s 7 t r 
+9	91t9   9:  1 y 3 x 5 s 7 t 9 - 1 y 3 x 5 s 7 t 9  :  1 y 3 x 5 s 7 t 9 
+j	1779   9:  1 y j x 5 s 7 t 9 - 1 y j x 5 s 7 t 9  :  1 y j x 5 s 7 t 9 
+k	t9sj   9:  1 y j x k s 7 t 9 - 1 y j x k s 7 t 9  :  1 y j x k s 7 t 9 
+l	9lkt   9:  1 y l x k s 7 t 9 - 1 y l x k s 7 t 9  :  1 y l x k s 7 t 9 
+m	ylkx   9:  1 y l x k s 7 m 9 - 1 y l x k s 7 m 9  :  1 y l x k s 7 m 9 
+n	mlk1   9:  1 y l n k s 7 m 9 - 1 y l n k s 7 m 9  :  1 y l n k s 7 m 9 
+o	7717   9:  1 y l n o s 7 m 9 - 1 y l n o s 7 m 9  :  1 y l n o s 7 m 9 
+p	pmn1   9:  1 y l n o s p m 9 - 1 y l n o s p m 9  :  1 y l n o s p m 9 
+y : 	766n   8:  - 6 l n o s p m 7 - 6 l n o s p m 7 -  :  6 l n o s p m 7 
+l : 	nnnm   7:  - - 5 n o s p m 6 - 5 n o s p m 6 - -  :  5 n o s p m 6 
+n : 	mpmp   6:  - - - 4 o s p m 5 - 4 o s p m 5 - - -  :  4 o s p m 5 
+o : 	3m34   5:  - - - - 3 s p m 4 - 3 s p m 4 - - - -  :  3 s p m 4 
+s : 	3mpm   4:  - - - - - 2 p m 3 - 2 p m 3 - - - - -  :  2 p m 3 
+p : 	211m   3:  - - - - - - 1 m 2 - 1 m 2 - - - - - -  :  1 m 2 
+m : 	1000   2:  - - - - - - - 0 1 - 0 1 - - - - - - -  :  0 1 
+	----   0:  - - - - - - - - - - - - - - - - - - -  :  
+			 list list() 0 list(0)

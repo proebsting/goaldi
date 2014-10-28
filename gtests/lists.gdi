@@ -1,0 +1,32 @@
+#%#% bogus list test: depends on random selection
+
+procedure main()
+	local l, c, i
+	l := list()
+	println("\t\t\t", type(l), l, *l, image(l))
+	every l.put(!"def") do show(l)
+	every l.push(!"cba") do show(l)
+	println("\t\t\t", type(l), l, *l, image(l))
+	every writes((l.get | l.pull | l.pop)(), " : ") do show(l)
+	every l.put(!"ghi") do show(l)
+	every writes((l.get | l.pull | l.pop)(), " : ") do show(l)
+	show(l)
+	l.push(3, 2, 1) & show(l)
+	l.put(7, 8, 9) & show(l)
+	every writes(!l := ?"pqrstuvwxyz") do show(l)
+	every writes(i := 1 to 9 by 2) do l[i]:= i & show(l)
+	every c := !"jklmnop" do writes(?l := c) & show(l)
+	while writes(l.get() & l.pull() & l.pop(), " : ") do
+		l.push(*l) & l.put(*l) & show(l)
+	show(l)
+	println("\t\t\t", type(l), l, *l, image(l))
+end
+
+procedure show(l)
+	local i
+	writes("\t", ?l | "-", ?l | "-", ?l | "-", ?l | "-", "   ", *l, ":  ")
+	every i := -9 to 9 do
+		writes(l[i] | "-", " ")
+	writes(" : ")
+	every writes(" ", !l | "\n")
+end
