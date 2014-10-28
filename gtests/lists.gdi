@@ -1,7 +1,7 @@
 #%#% bogus list test: depends on random selection
 
 procedure main()
-	local l, c, i, j
+	local l, l2, c, i, j
 
 	l := ["a","b","3"]
 	write("type:", type(l), "  size:", *l, "  print:", l, "  image:", image(l))
@@ -44,6 +44,14 @@ procedure main()
 		every j := 3 to 5 do
 			writes(i,":",j) & show(l[i:j])
 
+    write("F:")
+	l := [2,3,4]
+	l2 := [7,8,9]
+	show(l ||| l2)
+	show(l.push(1) ||| l2)
+	show(l ||| l2.push(5))
+	show(l.put(5) ||| l2)
+	
 end
 
 procedure show(l)

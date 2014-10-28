@@ -299,6 +299,10 @@ func opFunc(f *pr_frame, i *ir_OpFunction) (g.Value, *g.Closure) {
 	case "3[-:]":
 		return deltaSlice(lval, a, -1)
 
+	// miscellaneous operations
+	case "2|||":
+		return a[0].(g.IListCat).ListCat(a[1]), nil
+
 	// string operations
 	case "2||":
 		return a[0].(g.IConcat).Concat(a[1]), nil

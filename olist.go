@@ -66,8 +66,33 @@ func (v *VList) Slice(lval IVariable, x Value, y Value) Value {
 	if i > j {
 		i, j = j, i // indexing was backwards
 	}
-	n = j - i
-	a := make([]Value, n, n)
-	copy(a, v.data[i:j])
+	m := j - i
+	a := make([]Value, m, m)
+	if v.rev {
+		copy(a, v.data[n-j:n-i])
+		ReverseValues(a)
+	} else {
+		copy(a, v.data[i:j])
+	}
+	return InitList(a)
+}
+
+//------------------------------------  ListCat:  L1 ||| L2
+
+type IListCat interface {
+	ListCat(Value) Value
+}
+
+func (v *VList) ListCat(x Value) Value {
+	w := x.(*VList)
+	a := make([]Value, len(v.data), len(v.data)+len(w.data))
+	copy(a, v.data)
+	if v.rev {
+		ReverseValues(a)
+	}
+	a = append(a, w.data...)
+	if w.rev {
+		ReverseValues(a[len(v.data):])
+	}
 	return InitList(a)
 }
