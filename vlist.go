@@ -46,7 +46,7 @@ func (v *VList) Import() Value {
 }
 
 //  VList.Export returns a copy of the data slice.
-func (v *VList) Export() interface{} {
+func (v *VList) Export() []Value {
 	n := len(v.data)
 	r := make([]Value, n, n)
 	copy(r, v.data)

@@ -84,15 +84,5 @@ type IListCat interface {
 }
 
 func (v *VList) ListCat(x Value) Value {
-	w := x.(*VList)
-	a := make([]Value, len(v.data), len(v.data)+len(w.data))
-	copy(a, v.data)
-	if v.rev {
-		ReverseValues(a)
-	}
-	a = append(a, w.data...)
-	if w.rev {
-		ReverseValues(a[len(v.data):])
-	}
-	return InitList(a)
+	return InitList(append(v.Export(), x.(*VList).Export()...))
 }
