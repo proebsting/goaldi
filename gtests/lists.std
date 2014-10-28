@@ -60,18 +60,18 @@ D:
 	1191   6:  - - - 3 1 4 1 5 9 - 3 1 4 1 5 9 - - -  :  3 1 4 1 5 9 
 E:
 	fdee   6:  - - - a b c d e f - a b c d e f - - -  :  a b c d e f 
-	dddd   2:  - - - - - - - d c - d c - - - - - - -  :  d c 
-	cccc   1:  - - - - - - - - c - c - - - - - - - -  :  c 
-	----   0:  - - - - - - - - - - - - - - - - - - -  :  
-	cbdd   3:  - - - - - - d c b - d c b - - - - - -  :  d c b 
-	cbbb   2:  - - - - - - - c b - c b - - - - - - -  :  c b 
-	bbbb   1:  - - - - - - - - b - b - - - - - - - -  :  b 
-	ccdc   4:  - - - - - d c b a - d c b a - - - - -  :  d c b a 
-	abaa   3:  - - - - - - c b a - c b a - - - - - -  :  c b a 
-	bbbb   2:  - - - - - - - b a - b a - - - - - - -  :  b a 
-	feee   2:  - - - - - - - f e - f e - - - - - - -  :  f e 
-	dfde   3:  - - - - - - f e d - f e d - - - - - -  :  f e d 
-	dfdf   4:  - - - - - f e d c - f e d c - - - - -  :  f e d c 
-	eeee   1:  - - - - - - - - e - e - - - - - - - -  :  e 
-	edee   2:  - - - - - - - e d - e d - - - - - - -  :  e d 
-	eded   3:  - - - - - - e d c - e d c - - - - - -  :  e d c 
+-2:3	cccc   2:  - - - - - - - c d - c d - - - - - - -  :  c d 
+-2:4	dddd   1:  - - - - - - - - d - d - - - - - - - -  :  d 
+-2:5	----   0:  - - - - - - - - - - - - - - - - - - -  :  
+-1:3	decc   3:  - - - - - - c d e - c d e - - - - - -  :  c d e 
+-1:4	deee   2:  - - - - - - - d e - d e - - - - - - -  :  d e 
+-1:5	eeee   1:  - - - - - - - - e - e - - - - - - - -  :  e 
+0:3	ddcd   4:  - - - - - c d e f - c d e f - - - - -  :  c d e f 
+0:4	feff   3:  - - - - - - d e f - d e f - - - - - -  :  d e f 
+0:5	eeee   2:  - - - - - - - e f - e f - - - - - - -  :  e f 
+1:3	abbb   2:  - - - - - - - a b - a b - - - - - - -  :  a b 
+1:4	cacb   3:  - - - - - - a b c - a b c - - - - - -  :  a b c 
+1:5	caca   4:  - - - - - a b c d - a b c d - - - - -  :  a b c d 
+2:3	bbbb   1:  - - - - - - - - b - b - - - - - - - -  :  b 
+2:4	bcbb   2:  - - - - - - - b c - b c - - - - - - -  :  b c 
+2:5	bcbc   3:  - - - - - - b c d - b c d - - - - - -  :  b c d 
