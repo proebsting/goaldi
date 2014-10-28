@@ -32,6 +32,7 @@ func (v *VMap) Field(f string) Value {
 //------------------------------------  Member:  e1.member(e2)
 
 func (v *VMap) Member(args ...Value) (Value, *Closure) {
+	defer Traceback("M.member", args)
 	key := args[0]
 	if v.data[MapIndex(key)] != nil {
 		return Return(key)
@@ -43,6 +44,7 @@ func (v *VMap) Member(args ...Value) (Value, *Closure) {
 //------------------------------------  Delete:  e1.delete(e2)
 
 func (v *VMap) Delete(args ...Value) (Value, *Closure) {
+	defer Traceback("M.delete", args)
 	key := args[0]
 	x := MapIndex(key)
 	delete(v.data, x)
