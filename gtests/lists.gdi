@@ -2,28 +2,37 @@
 
 procedure main()
 	local l, c, i
+
+	l := ["a","b","3"]
+	write("type:", type(l), "  size:", *l, "  print:", l, "  image:", image(l))
+	show(l)
+
+	write("A:")
 	l := list()
-	println("\t\t\t", type(l), l, *l, image(l))
 	show(l)
 	every l.put(!"def") do show(l)
 	every l.push(!"cba") do show(l)
-	println("\t\t\t", type(l), l, *l, image(l))
 	every writes((l.get | l.pull | l.pop)(), " : ") do show(l)
 	every l.put(!"ghi") do show(l)
 	every writes((l.get | l.pull | l.pop)(), " : ") do show(l)
 	show(l)
 	l.push(3, 2, 1) & show(l)
 	l.put(7, 8, 9) & show(l)
+
+	write("B:")
 	every writes(!l := ?"pqrstuvwxyz") do show(l)
 	every writes(i := 1 to 9 by 2) do l[i]:= i & show(l)
 	every c := !"jklmnop" do writes(?l := c) & show(l)
+
+	write("C:")
 	while writes(l.get() & l.pull() & l.pop(), " : ") do
 		l.push(*l) & l.put(*l) & show(l)
 	show(l)
-	println("\t\t\t", type(l), l, *l, image(l))
+
+	write("D:")
 	show([])
 	show([7])
-	show([3, 1, 4, 1, 5, 9])
+	show(l := [3, 1, 4, 1, 5, 9])
 end
 
 procedure show(l)
