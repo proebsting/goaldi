@@ -6,13 +6,13 @@ import (
 	"math/rand"
 )
 
-//------------------------------------  Size:  *e
+//------------------------------------  Size:  *L
 
 func (v *VList) Size() Value {
 	return NewNumber(float64(len(v.data)))
 }
 
-//------------------------------------  Choose:  ?e
+//------------------------------------  Choose:  ?L
 
 func (v *VList) Choose(lval IVariable) Value {
 	n := len(v.data)
@@ -23,7 +23,7 @@ func (v *VList) Choose(lval IVariable) Value {
 	}
 }
 
-//------------------------------------  Dispense:  !e
+//------------------------------------  Dispense:  !L
 
 func (v *VList) Dispense(lval IVariable) (Value, *Closure) {
 	i := -1
@@ -39,7 +39,7 @@ func (v *VList) Dispense(lval IVariable) (Value, *Closure) {
 	return c.Resume()
 }
 
-//------------------------------------  Index:  e1[e2]
+//------------------------------------  Index:  L[i]
 
 func (v *VList) Index(lval IVariable, x Value) Value {
 	n := len(v.data)
@@ -50,4 +50,24 @@ func (v *VList) Index(lval IVariable, x Value) Value {
 	} else {
 		return nil // fail: subscript out of range
 	}
+}
+
+//------------------------------------  Slice:  L[i:j]
+
+func (v *VList) Slice(lval IVariable, x Value, y Value) Value {
+	i := int(x.(Numerable).ToNumber().Val())
+	j := int(y.(Numerable).ToNumber().Val())
+	n := len(v.data)
+	i = GoIndex(i, n)
+	j = GoIndex(j, n)
+	if i > n || j > n {
+		return nil // subscript out of range
+	}
+	if i > j {
+		i, j = j, i // indexing was backwards
+	}
+	n = j - i
+	a := make([]Value, n, n)
+	copy(a, v.data[i:j])
+	return InitList(a)
 }

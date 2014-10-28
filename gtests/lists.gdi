@@ -33,6 +33,15 @@ procedure main()
 	show([])
 	show([7])
 	show(l := [3, 1, 4, 1, 5, 9])
+	show(l[2+:4])
+	show(l[2:6].put(1).put(6))
+	show(l)	# should be unchanged
+
+	write("E:")
+	every (l := []).push(!"fedcba")
+	show(l)
+	every show(l[(-2 to 2):(3 to 5)])
+
 end
 
 procedure show(l)
