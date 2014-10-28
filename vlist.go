@@ -13,9 +13,13 @@ type VList struct {
 	rev  bool    // true if list is reversed
 }
 
-//  NewList(n) -- construct a new Goaldi list of initial capacity n
-func NewList(n int) *VList {
-	return &VList{make([]Value, 0, n), false}
+//  NewList(n, x) -- make a new list of n elements initialized to x
+func NewList(n int, x Value) *VList {
+	v := &VList{make([]Value, n, n), false}
+	for i := range v.data {
+		v.data[i] = x
+	}
+	return v
 }
 
 //  InitList(v []Value) -- construct a new list containing the given values

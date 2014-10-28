@@ -8,11 +8,12 @@ func init() {
 	LibProcedure("list", List)
 }
 
-//  List() -- return a new list
+//  List(n, x) -- return a new list of n elements initialize to x
 func List(env *Env, a ...Value) (Value, *Closure) {
 	defer Traceback("list", a)
 	n := int(ProcArg(a, 0, ZERO).(Numerable).ToNumber().Val())
-	return Return(NewList(n))
+	x := ProcArg(a, 1, NilValue)
+	return Return(NewList(n, x))
 }
 
 //------------------------------------  Field:  L.s  implements methods
