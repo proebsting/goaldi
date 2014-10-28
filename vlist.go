@@ -18,6 +18,11 @@ func NewList(n int) *VList {
 	return &VList{make([]Value, 0, n), false}
 }
 
+//  InitList(v []Value) -- construct a new list containing the given values
+func InitList(v []Value) *VList {
+	return &VList{v, false}
+}
+
 //  VList.String -- default conversion to Go string
 func (v *VList) String() string {
 	return fmt.Sprint("list()")

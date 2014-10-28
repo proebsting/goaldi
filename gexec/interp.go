@@ -92,7 +92,7 @@ func interp(env *g.Env, pr *pr_Info, args ...g.Value) (g.Value, *g.Closure) {
 						return v, self
 					}
 				case ir_Key:
-					//#%#% keywords are dynamic vars fetchetd from env
+					//#%#% keywords are dynamic vars fetched from env
 					f.coord = i.Coord
 					v := env.VarMap[i.Name]
 					if v == nil {
@@ -104,14 +104,18 @@ func interp(env *g.Env, pr *pr_Info, args ...g.Value) (g.Value, *g.Closure) {
 						f.temps[i.Lhs] = v
 					}
 				case ir_IntLit:
-					f.temps[i.Lhs] =
-						g.NewString(i.Val).ToNumber()
+					f.temps[i.Lhs] = g.NewString(i.Val).ToNumber()
 				case ir_RealLit:
-					f.temps[i.Lhs] =
-						g.NewString(i.Val).ToNumber()
+					f.temps[i.Lhs] = g.NewString(i.Val).ToNumber()
 				case ir_StrLit:
-					f.temps[i.Lhs] =
-						g.NewString(i.Val)
+					f.temps[i.Lhs] = g.NewString(i.Val)
+				case ir_MakeList:
+					n := len(i.ValueList)
+					a := make([]g.Value, n, n)
+					for j, v := range i.ValueList {
+						a[j] = f.temps[v.(string)]
+					}
+					f.temps[i.Lhs] = g.InitList(a)
 				case ir_Var:
 					v := pr.dict[i.Name]
 					switch t := v.(type) {
