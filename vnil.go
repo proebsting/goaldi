@@ -29,6 +29,11 @@ func (v *vnil) Type() Value {
 
 var type_nil = NewString("nil")
 
+//  vnil.Copy returns itself
+func (v *vnil) Copy() Value {
+	return v
+}
+
 //  vnil.Import returns itself
 func (v *vnil) Import() Value {
 	return v

@@ -34,6 +34,11 @@ func (v *VProcedure) Type() Value {
 
 var type_procedure = NewString("procedure")
 
+//  VProcedure.Copy returns itself
+func (v *VProcedure) Copy() Value {
+	return v
+}
+
 //  VProcedure.Import returns itself
 func (v *VProcedure) Import() Value {
 	return v

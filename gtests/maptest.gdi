@@ -35,6 +35,8 @@ procedure main()
 	t.foo := 0
 	ck(t)
 	println("\t\t\t\t", type(t), t, *t, image(t))
+	ck(copy(t).delete("foo").delete("G"))
+	ck(t) # should be unchanged
 end
 
 procedure ck(t)

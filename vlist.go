@@ -42,6 +42,11 @@ func (v *VList) Type() Value {
 	return type_list
 }
 
+//  VList.Copy returns a new list with identical contents
+func (v *VList) Copy() Value {
+	return InitList(v.Export())
+}
+
 var type_list = NewString("list")
 
 //  VList.Import returns itself

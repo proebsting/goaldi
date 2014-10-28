@@ -28,3 +28,5 @@
 4 --------EFGH ~~~~6789 GEEH H:9 F:7 E:6 G:8
 5 --------EFGH ~~~~6789 FEHG H:9 F:7 E:6 G:8 foo:0
 				 map map() 5 map(5)
+3 --------EF-H ~~~~67~9 HHFE H:9 F:7 E:6
+5 --------EFGH ~~~~6789 HFHE H:9 F:7 E:6 G:8 foo:0

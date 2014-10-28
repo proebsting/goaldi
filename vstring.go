@@ -125,6 +125,11 @@ func (v *VString) Type() Value {
 
 var type_string = NewString("string")
 
+//  VString.Copy returns itself
+func (v *VString) Copy() Value {
+	return v
+}
+
 //  VString.Identical -- check equality for === operator
 func (s *VString) Identical(x Value) Value {
 	t, ok := x.(*VString)

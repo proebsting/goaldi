@@ -28,6 +28,7 @@ func init() {
 	// Goaldi procedures
 	LibProcedure("image", Image)
 	LibProcedure("type", Type)
+	LibProcedure("copy", Copy)
 	LibProcedure("exit", Exit)
 	LibProcedure("sleep", Sleep)
 	// Go library functions
@@ -67,6 +68,14 @@ func Type(env *Env, a ...Value) (Value, *Closure) {
 }
 
 var type_external = NewString("external")
+
+//  Copy(v) -- return a copy of v (or just v if a simple value).
+//  The type of v *must* implement ICopy.
+func Copy(env *Env, a ...Value) (Value, *Closure) {
+	defer Traceback("copy", a)
+	v := ProcArg(a, 0, NilValue)
+	return Return(v.(ICopy).Copy())
+}
 
 //  Sleep(n) -- delay execution for n seconds (may be fractional)
 func Sleep(env *Env, a ...Value) (Value, *Closure) {

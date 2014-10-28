@@ -58,7 +58,11 @@ procedure main()
 	show(l.push(1) ||| l2)
 	show(l ||| l2.push(5))
 	show(l.put(5) ||| l2)
-	
+
+	write("I:")
+	show(l2 := copy(l))
+	show(l2.get() & l2.pull() & l2)
+	show(l)	# should be unchanged
 end
 
 procedure show(l)

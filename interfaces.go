@@ -20,7 +20,8 @@ type IExternal interface {
 type ICore interface {
 	fmt.Stringer   // for printing (v.String())
 	fmt.GoStringer // for image() and printf("%#v") (v.GoString())
-	IType          // for "Type()"
+	IType          // for "type()"
+	ICopy          // for "copy()"
 	IImport        // for returning self to Import()
 	IExport        // for passing to a Go function as interface{} value
 	// optional:  Numerable and Stringable, if implicitly convertible
@@ -35,6 +36,10 @@ var _ ICore = &VProcedure{}    // confirm implementation by VProcedure
 
 type IType interface {
 	Type() Value // return name of type for type()
+}
+
+type ICopy interface {
+	Copy() Value // return copy of value
 }
 
 //  IImport -- convert to Goaldi value

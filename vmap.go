@@ -39,6 +39,17 @@ func (v *VMap) Type() Value {
 
 var type_map = NewString("map")
 
+//  VMap.Copy returns a duplicate of itself
+func (v *VMap) Copy() Value {
+	w := NewMap()
+	for _, k := range v.klist {
+		vx := v.Index(nil, k).(IVariable)
+		wx := w.Index(nil, k).(IVariable)
+		wx.Assign(vx.Deref())
+	}
+	return w
+}
+
 //  VMap.Import returns itself
 func (v *VMap) Import() Value {
 	return v

@@ -78,6 +78,11 @@ func (v *VFile) Type() Value {
 
 var type_file = NewString("file")
 
+//  VFile.Copy returns itself
+func (v *VFile) Copy() Value {
+	return v
+}
+
 //  VFile.Import returns itself
 func (v *VFile) Import() Value {
 	return v
