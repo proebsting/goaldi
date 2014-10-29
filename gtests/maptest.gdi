@@ -18,25 +18,14 @@ procedure main()
 		ck(t)
 	}
 	println("\t\t\t\t", type(t), t, *t, image(t))
+	ck(copy(t).delete(2).delete("G"))
+	ck(t) # should be unchanged
+	println("\t\t\t\t", type(t), t, *t, image(t))
 	every k := 3 | "G" | 1 | "H" | 2 | 4 | "F" | "E" do {
 		t.delete(k)
 		ck(t)
 	}
 	println("\t\t\t\t", type(t), t, *t, image(t))
-	#%#% we may not want to keep the following notation  (consider t.member...)
-	t.H := 9
-	ck(t)
-	t.F := 7
-	ck(t)
-	t.E := 6
-	ck(t)
-	t.G := 8
-	ck(t)
-	t.foo := 0
-	ck(t)
-	println("\t\t\t\t", type(t), t, *t, image(t))
-	ck(copy(t).delete("foo").delete("G"))
-	ck(t) # should be unchanged
 end
 
 procedure ck(t)

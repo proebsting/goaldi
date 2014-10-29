@@ -11,6 +11,10 @@
 
 package goaldi
 
+import (
+	"reflect"
+)
+
 type Closure struct {
 	Go Resumer // start or resumption function, depending on context
 }
@@ -40,11 +44,30 @@ func Return(v Value) (Value, *Closure) {
 	return v, nil
 }
 
-//  An MVFunc is a Go "method value", a function bound to an object,
+//  An MVFunc is like a Go "method value", a function bound to an object,
 //  for example the "m.delete" part of the expression "m.delete(x)"
-type MVFunc func(...Value) (Value, *Closure)
+type MVFunc struct {
+	v Value
+	f interface{} // func(Value, ...Value)(Value, *Closure)
+}
+
+//  GetMethod(m,v,s) looks up method v.s in table m, panicking on failure.
+func GetMethod(m map[string]interface{}, v Value, s string) *MVFunc {
+	method := m[s]
+	if method == nil {
+		panic(&RunErr{"unrecognized method: " + s, v})
+	}
+	return &MVFunc{v, method}
+}
 
 //  MVFunc.Call(args) invokes the underlying method function.
-func (f MVFunc) Call(env *Env, args ...Value) (Value, *Closure) {
-	return f(args...)
+func (mvf *MVFunc) Call(env *Env, args ...Value) (Value, *Closure) {
+	arglist := make([]reflect.Value, 1+len(args))
+	arglist[0] = reflect.ValueOf(mvf.v)
+	for i, v := range args {
+		arglist[i+1] = reflect.ValueOf(v)
+	}
+	method := reflect.ValueOf(mvf.f)
+	result := method.Call(arglist)
+	return Value(result[0].Interface()), (result[1].Interface().(*Closure))
 }

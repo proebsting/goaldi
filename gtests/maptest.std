@@ -13,20 +13,15 @@
 8 ----1234EFGH axyzefgh F334 1:a 2:x 3:y 4:z E:e F:f G:g H:h
 8 ----1234EFGH wxyzefgh 24GE 1:w 2:x 3:y 4:z E:e F:f G:g H:h
 				 map map() 8 map(8)
-7 ----12-4EFGH wx~zefgh GEG1 1:w 2:x H:h 4:z E:e F:f G:g
-6 ----12-4EF-H wx~zef~h 44E2 1:w 2:x H:h 4:z E:e F:f
-5 -----2-4EF-H ~x~zef~h 444F F:f 2:x H:h 4:z E:e
-4 -----2-4EF-- ~x~zef~~ 4E2F F:f 2:x E:e 4:z
-3 -------4EF-- ~~~zef~~ 4EEE F:f 4:z E:e
-2 --------EF-- ~~~~ef~~ EFEF F:f E:e
+6 ----1-34EF-H w~yzef~h H44H 1:w H:h 3:y 4:z E:e F:f
+8 ----1234EFGH wxyzefgh FH12 1:w 2:x 3:y 4:z E:e F:f G:g H:h
+				 map map() 8 map(8)
+7 ----12-4EFGH wx~zefgh H4FG 1:w 2:x H:h 4:z E:e F:f G:g
+6 ----12-4EF-H wx~zef~h F141 1:w 2:x H:h 4:z E:e F:f
+5 -----2-4EF-H ~x~zef~h 242H F:f 2:x H:h 4:z E:e
+4 -----2-4EF-- ~x~zef~~ 4E4F F:f 2:x E:e 4:z
+3 -------4EF-- ~~~zef~~ EEFF F:f 4:z E:e
+2 --------EF-- ~~~~ef~~ EEFF F:f E:e
 1 --------E--- ~~~~e~~~ EEEE E:e
 0 ------------ ~~~~~~~~ ----
 				 map map() 0 map(0)
-1 -----------H ~~~~~~~9 HHHH H:9
-2 ---------F-H ~~~~~7~9 FFFF H:9 F:7
-3 --------EF-H ~~~~67~9 EFEE H:9 F:7 E:6
-4 --------EFGH ~~~~6789 GEEH H:9 F:7 E:6 G:8
-5 --------EFGH ~~~~6789 FEHG H:9 F:7 E:6 G:8 foo:0
-				 map map() 5 map(5)
-3 --------EF-H ~~~~67~9 HHFE H:9 F:7 E:6
-5 --------EFGH ~~~~6789 HFHE H:9 F:7 E:6 G:8 foo:0

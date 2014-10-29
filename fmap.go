@@ -2,7 +2,13 @@
 
 package goaldi
 
-//  Declare constructor function for standard library
+//  Declare methods
+var MapMethods = map[string]interface{}{
+	"member": (*VMap).Member,
+	"delete": (*VMap).Delete,
+}
+
+//  Declare constructor function
 func init() {
 	// Goaldi procedures
 	LibProcedure("map", Map)
@@ -14,22 +20,13 @@ func Map(env *Env, a ...Value) (Value, *Closure) {
 	return Return(NewMap())
 }
 
-//------------------------------------  Field:  e1.s  implements methods
+//------------------------------------  Field:  M.s  implements methods
 
 func (v *VMap) Field(f string) Value {
-	//#%#% check first for "member" and "delete" method references,
-	//#%#% but allow any other string as a index (?!)
-	switch f {
-	case "member":
-		return MVFunc(v.Member)
-	case "delete":
-		return MVFunc(v.Delete)
-	default:
-		return &vMapSlot{v, NewString(f)}
-	}
+	return GetMethod(MapMethods, v, f)
 }
 
-//------------------------------------  Member:  e1.member(e2)
+//------------------------------------  Member:  M.member(x)
 
 func (v *VMap) Member(args ...Value) (Value, *Closure) {
 	defer Traceback("M.member", args)
@@ -41,7 +38,7 @@ func (v *VMap) Member(args ...Value) (Value, *Closure) {
 	}
 }
 
-//------------------------------------  Delete:  e1.delete(e2)
+//------------------------------------  Delete:  M.delete(x)
 
 func (v *VMap) Delete(args ...Value) (Value, *Closure) {
 	defer Traceback("M.delete", args)

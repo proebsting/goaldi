@@ -2,9 +2,17 @@
 
 package goaldi
 
-//  This init function adds a set of Go functions to the standard library.
+//  Declare methods
+var ListMethods = map[string]interface{}{
+	"push": (*VList).Push,
+	"pop":  (*VList).Pop,
+	"get":  (*VList).Get,
+	"put":  (*VList).Put,
+	"pull": (*VList).Pull,
+}
+
+//  Declare constructor function
 func init() {
-	// Goaldi procedures
 	LibProcedure("list", List)
 }
 
@@ -19,47 +27,34 @@ func List(env *Env, a ...Value) (Value, *Closure) {
 //------------------------------------  Field:  L.s  implements methods
 
 func (v *VList) Field(f string) Value {
-	switch f {
-	case "push":
-		return MVFunc(v.Push)
-	case "pop":
-		return MVFunc(v.Pop)
-	case "get":
-		return MVFunc(v.Get)
-	case "put":
-		return MVFunc(v.Put)
-	case "pull":
-		return MVFunc(v.Pull)
-	default:
-		panic(&RunErr{"Undefined method: " + f, v})
-	}
+	return GetMethod(ListMethods, v, f)
 }
 
-//------------------------------------  Member:  L.push(x...)
+//------------------------------------  Push:  L.push(x...)
 
 func (v *VList) Push(args ...Value) (Value, *Closure) {
 	return v.Grow(true, "L.push", args...)
 }
 
-//------------------------------------  Member:  L.pop(x...)
+//------------------------------------  Pop:  L.pop(x...)
 
 func (v *VList) Pop(args ...Value) (Value, *Closure) {
 	return v.Snip(true, "L.pop", args...)
 }
 
-//------------------------------------  Member:  L.get(x...)
+//------------------------------------  Get:  L.get(x...)
 
 func (v *VList) Get(args ...Value) (Value, *Closure) {
 	return v.Snip(true, "L.get", args...)
 }
 
-//------------------------------------  Member:  L.put(x...)
+//------------------------------------  Put:  L.put(x...)
 
 func (v *VList) Put(args ...Value) (Value, *Closure) {
 	return v.Grow(false, "L.put", args...)
 }
 
-//------------------------------------  Member:  L.pull(x...)
+//------------------------------------  Pull:  L.pull(x...)
 
 func (v *VList) Pull(args ...Value) (Value, *Closure) {
 	return v.Snip(false, "L.pull", args...)
