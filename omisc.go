@@ -29,6 +29,7 @@ type IField interface {
 
 //  Field(x,s) calls x.Field(s) or (#%#%TBD) falls back to reflection.
 func Field(x Value, s string) Value {
+	x = Deref(x) //#%#% why is this needed? doesn't interp deref?
 	if t, ok := x.(IField); ok {
 		return t.Field(s)
 	}

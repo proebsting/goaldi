@@ -41,15 +41,6 @@ func init() {
 	LibGoFunc("getppid", os.Getppid)
 }
 
-//  ProcArg(a,i,d) -- return procedure argument a[i], defaulting to d
-func ProcArg(a []Value, i int, d Value) Value {
-	if i < len(a) && a[i] != NilValue {
-		return a[i]
-	} else {
-		return d
-	}
-}
-
 //  Image(v) -- return string image of value v
 func Image(env *Env, a ...Value) (Value, *Closure) {
 	defer Traceback("image", a)

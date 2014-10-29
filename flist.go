@@ -4,11 +4,19 @@ package goaldi
 
 //  Declare methods
 var ListMethods = map[string]interface{}{
-	"push": (*VList).Push,
-	"pop":  (*VList).Pop,
-	"get":  (*VList).Get,
-	"put":  (*VList).Put,
-	"pull": (*VList).Pull,
+	"type":  (*VList).Type,
+	"copy":  (*VList).Copy,
+	"image": Image,
+	"push":  (*VList).Push,
+	"pop":   (*VList).Pop,
+	"get":   (*VList).Get,
+	"put":   (*VList).Put,
+	"pull":  (*VList).Pull,
+}
+
+//  VList.Field implements methods
+func (v *VList) Field(f string) Value {
+	return GetMethod(ListMethods, v, f)
 }
 
 //  Declare constructor function
@@ -22,12 +30,6 @@ func List(env *Env, a ...Value) (Value, *Closure) {
 	n := int(ProcArg(a, 0, ZERO).(Numerable).ToNumber().Val())
 	x := ProcArg(a, 1, NilValue)
 	return Return(NewList(n, x))
-}
-
-//------------------------------------  Field:  L.s  implements methods
-
-func (v *VList) Field(f string) Value {
-	return GetMethod(ListMethods, v, f)
 }
 
 //------------------------------------  Push:  L.push(x...)

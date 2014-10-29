@@ -4,8 +4,16 @@ package goaldi
 
 //  Declare methods
 var MapMethods = map[string]interface{}{
+	"type":   (*VMap).Type,
+	"copy":   (*VMap).Copy,
+	"image":  Image,
 	"member": (*VMap).Member,
 	"delete": (*VMap).Delete,
+}
+
+//  VMap.Field implements methods
+func (v *VMap) Field(f string) Value {
+	return GetMethod(MapMethods, v, f)
 }
 
 //  Declare constructor function
@@ -18,12 +26,6 @@ func init() {
 func Map(env *Env, a ...Value) (Value, *Closure) {
 	defer Traceback("map", a)
 	return Return(NewMap())
-}
-
-//------------------------------------  Field:  M.s  implements methods
-
-func (v *VMap) Field(f string) Value {
-	return GetMethod(MapMethods, v, f)
 }
 
 //------------------------------------  Member:  M.member(x)

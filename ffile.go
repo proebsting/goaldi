@@ -23,6 +23,18 @@ import (
 	"strings"
 )
 
+//  Declare methods
+var FileMethods = map[string]interface{}{
+	"type":  (*VFile).Type,
+	"copy":  (*VFile).Copy,
+	"image": Image,
+}
+
+//  VFile.Field implements methods
+func (v *VFile) Field(f string) Value {
+	return GetMethod(FileMethods, v, f)
+}
+
 func init() {
 	// Goaldi procedures
 	LibProcedure("open", Open)

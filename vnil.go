@@ -43,3 +43,15 @@ func (v *vnil) Import() Value {
 func (v *vnil) Export() interface{} {
 	return nil
 }
+
+//  Declare methods
+var NilMethods = map[string]interface{}{
+	"type":  (*vnil).Type,
+	"copy":  (*vnil).Copy,
+	"image": Image,
+}
+
+//  vnil.Field implements methods
+func (v *vnil) Field(f string) Value {
+	return GetMethod(NilMethods, v, f)
+}

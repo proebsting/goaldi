@@ -9,6 +9,18 @@ import (
 	"math/rand"
 )
 
+//  Declare methods
+var NumberMethods = map[string]interface{}{
+	"type":  (*VNumber).Type,
+	"copy":  (*VNumber).Copy,
+	"image": Image,
+}
+
+//  VNumber.Field implements methods
+func (v *VNumber) Field(f string) Value {
+	return GetMethod(NumberMethods, v, f)
+}
+
 func init() {
 	// Goaldi procedures
 	LibProcedure("number", Number)

@@ -42,12 +42,12 @@ func (v *VList) Type() Value {
 	return type_list
 }
 
+var type_list = NewString("list")
+
 //  VList.Copy returns a new list with identical contents
 func (v *VList) Copy() Value {
-	return InitList(v.Export())
+	return InitList(v.Export().([]Value))
 }
-
-var type_list = NewString("list")
 
 //  VList.Import returns itself
 func (v *VList) Import() Value {
@@ -55,7 +55,7 @@ func (v *VList) Import() Value {
 }
 
 //  VList.Export returns a copy of the data slice.
-func (v *VList) Export() []Value {
+func (v *VList) Export() interface{} {
 	n := len(v.data)
 	r := make([]Value, n, n)
 	copy(r, v.data)

@@ -24,6 +24,7 @@ type ICore interface {
 	ICopy          // for "copy()"
 	IImport        // for returning self to Import()
 	IExport        // for passing to a Go function as interface{} value
+	IField         // for implementing methods
 	// optional:  Numerable and Stringable, if implicitly convertible
 	// optional:  IIdentical, if === requires more than pointer comparison
 }
@@ -33,6 +34,8 @@ var _ ICore = NewNumber(1)     // confirm implementation by VNumber
 var _ ICore = NewString("a")   // confirm implementation by VString
 var _ ICore = &VFile{}         // confirm implementation by VFile
 var _ ICore = &VProcedure{}    // confirm implementation by VProcedure
+var _ ICore = &VList{}         // confirm implementation by VList
+var _ ICore = &VMap{}          // confirm implementation by VMap
 
 type IType interface {
 	Type() Value // return name of type for type()

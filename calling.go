@@ -25,6 +25,15 @@ type Procedure func(env *Env, args ...Value) (Value, *Closure)
 //  Procedure resumption prototype
 type Resumer func() (Value, *Closure)
 
+//  ProcArg(a,i,d) -- return procedure argument a[i], defaulting to d
+func ProcArg(a []Value, i int, d Value) Value {
+	if i < len(a) && a[i] != NilValue {
+		return a[i]
+	} else {
+		return d
+	}
+}
+
 //  Resume() executes the entry point in a Closure to produce the next result.
 //  If the pointer is nil, failure is produced.
 func (c *Closure) Resume() (Value, *Closure) {
@@ -69,5 +78,12 @@ func (mvf *MVFunc) Call(env *Env, args ...Value) (Value, *Closure) {
 	}
 	method := reflect.ValueOf(mvf.f)
 	result := method.Call(arglist)
-	return Value(result[0].Interface()), (result[1].Interface().(*Closure))
+	switch len(result) {
+	case 0:
+		return nil, nil
+	case 1:
+		return Value(result[0].Interface()), nil
+	default:
+		return Value(result[0].Interface()), (result[1].Interface().(*Closure))
+	}
 }

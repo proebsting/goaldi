@@ -84,5 +84,5 @@ type IListCat interface {
 }
 
 func (v *VList) ListCat(x Value) Value {
-	return InitList(append(v.Export(), x.(*VList).Export()...))
+	return InitList(append(v.Export().([]Value), x.(*VList).Export().([]Value)...))
 }

@@ -60,6 +60,18 @@ func (v *VProcedure) Call(env *Env, args ...Value) (Value, *Closure) {
 	return v.Entry(env, args...)
 }
 
+//  Declare methods
+var ProcedureMethods = map[string]interface{}{
+	"type":  (*VProcedure).Type,
+	"copy":  (*VProcedure).Copy,
+	"image": Image,
+}
+
+//  VProcedure.Field implements methods
+func (v *VProcedure) Field(f string) Value {
+	return GetMethod(ProcedureMethods, v, f)
+}
+
 //  GoProcedure(name, func) -- construct a procedure from a Go function
 func GoProcedure(name string, f interface{}) *VProcedure {
 

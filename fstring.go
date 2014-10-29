@@ -8,6 +8,18 @@ import (
 	"unicode"
 )
 
+//  Declare methods
+var StringMethods = map[string]interface{}{
+	"type":  (*VString).Type,
+	"copy":  (*VString).Copy,
+	"image": Image,
+}
+
+//  VString.Field implements methods
+func (v *VString) Field(f string) Value {
+	return GetMethod(StringMethods, v, f)
+}
+
 //  This init function adds a set of Go functions to the standard library
 func init() {
 	// Goaldi procedures
