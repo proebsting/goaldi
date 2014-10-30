@@ -4,12 +4,12 @@ procedure main()
 	m := map()
 	m[1] := "a"
 	m[2] := "b"
-	a := [, 1, &pi, 6.02214129e23, "abc", &input, main, [1,2,3], m]
+	a := [, 1, &pi, 6.02214129e23, "abc", &input, main, [1,2,3], m, !m]
 	f := "%-10s %-20s %-20s %s"
 	printf(f, "type", "string", "image", "write\n")
 	printf(f, "----", "------", "-----", "-----\n")
 	every v := !a do {
-		printf(f, v.type() | "[failed]",
+		printf(f, type(.v) | "[failed]",	#%#%#% WHY NEED DEREF .v?!!!
 			string(v) | "[failed]",
 			image(v) | "[failed]", "") 
 		write(v)

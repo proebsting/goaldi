@@ -9,3 +9,4 @@ file       (&file(%stdin))      (&file(%stdin))      (&file(%stdin))
 procedure  main()               main()               main()
 list       list()               list(3)              list()
 map        (&map())             (&map())             (&map())
+mapElem    mapElem{}            mapElem{2}           mapElem{}

@@ -6,6 +6,17 @@ import (
 	"math/rand"
 )
 
+var kvstruct = NewDefn("mapElem", []string{"key", "value"})
+
+//  VMap.Entry(i) -- return an initialized {key,value} struct copying entry i
+func (m *VMap) Entry(i int) *VStruct {
+	k := m.klist[i]
+	kv := kvstruct.New()
+	kv.Data[0] = k
+	kv.Data[1] = m.data[MapIndex(k)]
+	return kv
+}
+
 //------------------------------------  Size:  *e
 
 func (v *VMap) Size() Value {
@@ -19,22 +30,22 @@ func (v *VMap) Choose(lval IVariable) Value {
 	if n == 0 {
 		return nil
 	} else {
-		return v.klist[rand.Intn(n)]
+		return v.Entry(rand.Intn(n))
 	}
 }
 
 //------------------------------------  Dispense:  !e
 
 func (v *VMap) Dispense(lval IVariable) (Value, *Closure) {
-	i := 0
+	i := -1
 	var c *Closure
 	c = &Closure{func() (Value, *Closure) {
-		if i >= len(v.klist) {
+		i++
+		if i < len(v.klist) {
+			return v.Entry(i), c
+		} else {
 			return Fail()
 		}
-		v := v.klist[i]
-		i++
-		return v, c
 	}}
 	return c.Resume()
 }
