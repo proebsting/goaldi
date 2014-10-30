@@ -1,5 +1,6 @@
 #SRC: written for Goaldi 
-#%#% bogus list test: depends on random selection
+#
+#  Tests most list operations and methods except random selection.
 
 procedure main()
 	local l, l2, c, i, j
@@ -28,9 +29,8 @@ procedure main()
 	l.put(7, 8, 9) & show(l)
 
 	write("D:")
-	every writes(!l := ?"pqrstuvwxyz") do show(l)
-	every writes(i := 1 to 9 by 2) do l[i]:= i & show(l)
-	every c := !"jklmnop" do writes(?l := c) & show(l)
+	every (l := []).put(!"1yly5pmno")
+	show(l)
 
 	write("E:")
 	while writes(l.get() & l.pull() & l.pop(), " : ") do
@@ -68,7 +68,7 @@ end
 
 procedure show(l)
 	local i
-	writes("\t", ?l | "-", ?l | "-", ?l | "-", ?l | "-", "   ", *l, ":  ")
+	writes("\t", *l, ":  ")
 	every i := -9 to 9 do
 		writes(l[i] | "-", " ")
 	writes(" : ")

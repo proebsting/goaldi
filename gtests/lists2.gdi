@@ -1,4 +1,6 @@
 #SRC: from Jcon via icon/lists.icn
+#
+#  List test from Icon
 
 procedure main()
    local i, x, y, z
