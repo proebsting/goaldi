@@ -29,13 +29,14 @@ type ICore interface {
 	// optional:  IIdentical, if === requires more than pointer comparison
 }
 
-var _ ICore = NilValue.(*vnil) // confirm implementation by vnil
-var _ ICore = NewNumber(1)     // confirm implementation by VNumber
-var _ ICore = NewString("a")   // confirm implementation by VString
-var _ ICore = &VFile{}         // confirm implementation by VFile
-var _ ICore = &VProcedure{}    // confirm implementation by VProcedure
-var _ ICore = &VList{}         // confirm implementation by VList
-var _ ICore = &VMap{}          // confirm implementation by VMap
+//  Confirm implementation of core interfaces by all types
+var _ ICore = NilValue.(*vnil)
+var _ ICore = NewNumber(1)
+var _ ICore = NewString("a")
+var _ ICore = &VFile{}
+var _ ICore = &VProcedure{}
+var _ ICore = &VList{}
+var _ ICore = &VMap{}
 
 type IType interface {
 	Type() Value // return name of type for type()
