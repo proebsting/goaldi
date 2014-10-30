@@ -1,3 +1,4 @@
+#SRC: written for Goaldi 
 #%#% bogus list test: depends on random selection
 
 procedure main()
