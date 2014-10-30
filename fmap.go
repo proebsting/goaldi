@@ -32,7 +32,7 @@ func Map(env *Env, a ...Value) (Value, *Closure) {
 
 func (v *VMap) Member(args ...Value) (Value, *Closure) {
 	defer Traceback("M.member", args)
-	key := args[0]
+	key := ProcArg(args, 0, NilValue)
 	if v.data[MapIndex(key)] != nil {
 		return Return(key)
 	} else {
@@ -44,7 +44,7 @@ func (v *VMap) Member(args ...Value) (Value, *Closure) {
 
 func (v *VMap) Delete(args ...Value) (Value, *Closure) {
 	defer Traceback("M.delete", args)
-	key := args[0]
+	key := ProcArg(args, 0, NilValue)
 	x := MapIndex(key)
 	delete(v.data, x)
 	if len(v.data) != len(v.klist) {
