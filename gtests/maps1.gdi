@@ -1,4 +1,6 @@
-#%#% bogus test of maps: depends on internals (random seq, elem ordering)
+#SRC: written for Goaldi
+#
+#  Map operations
 
 procedure main()
 	local t, c, i, k
@@ -36,7 +38,6 @@ procedure ck(t)
 	}
 	every writes(" " | t[!4 | !"EFGH"])
 	writes(" ")
-	every 1 to 4 do writes(?t | "-")
 	every k := !t do
 		writes(" ", k, ":", t[k])
 	write()
