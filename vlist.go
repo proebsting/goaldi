@@ -3,6 +3,7 @@
 package goaldi
 
 import (
+	"bytes"
 	"fmt"
 )
 
@@ -27,14 +28,24 @@ func InitList(v []Value) *VList {
 	return &VList{v, false}
 }
 
-//  VList.String -- default conversion to Go string
+//  VList.String -- default conversion to Go string produces L:size
 func (v *VList) String() string {
-	return fmt.Sprint("list()")
+	return fmt.Sprintf("L:%d", len(v.data))
 }
 
 //  VList.GoString -- convert to Go string for image() and printf("%#v")
 func (v *VList) GoString() string {
-	return fmt.Sprintf("list(%d)", len(v.data))
+	if len(v.data) == 0 {
+		return "[]"
+	}
+	var b bytes.Buffer
+	fmt.Fprintf(&b, "[")
+	for _, x := range v.data {
+		fmt.Fprintf(&b, "%v,", x)
+	}
+	s := b.Bytes()
+	s[len(s)-1] = ']'
+	return string(s)
 }
 
 //  VList.Type -- return "list"

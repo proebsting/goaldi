@@ -2,7 +2,7 @@ hello 47 3.142
 1.414 number 1.4142135623730951
 abc string "abc"
 ~ nil %nil
-main() procedure main()
+P:main procedure procedure main()
 1
 2
 3

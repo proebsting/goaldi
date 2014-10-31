@@ -3,6 +3,7 @@
 package goaldi
 
 import (
+	"bytes"
 	"fmt"
 )
 
@@ -22,14 +23,24 @@ func NewMap() *VMap {
 	return &VMap{make(map[Value]Value), nil}
 }
 
-//  VMap.String -- default conversion to Go string
+//  VMap.String -- default conversion to Go string returns "M:size"
 func (v *VMap) String() string {
-	return fmt.Sprint("map()")
+	return fmt.Sprintf("M:%d", len(v.data))
 }
 
 //  VMap.GoString -- convert to Go string for image() and printf("%#v")
 func (v *VMap) GoString() string {
-	return fmt.Sprintf("map(%d)", len(v.data))
+	if len(v.data) == 0 {
+		return "map{}"
+	}
+	var b bytes.Buffer
+	fmt.Fprintf(&b, "map{")
+	for _, x := range v.klist {
+		fmt.Fprintf(&b, "%v:%v,", x, v.data[MapIndex(x)])
+	}
+	s := b.Bytes()
+	s[len(s)-1] = '}'
+	return string(s)
 }
 
 //  VMap.Type -- return "map"

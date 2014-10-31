@@ -3,6 +3,7 @@
 package goaldi
 
 import (
+	"bytes"
 	"fmt"
 )
 
@@ -16,9 +17,19 @@ func (v *VStruct) String() string {
 	return v.Defn.Name + "{}"
 }
 
-//  VStruct.GoString -- image returns "name{n}"
+//  VStruct.GoString -- returns string for image() and printf("%#v")
 func (v *VStruct) GoString() string {
-	return fmt.Sprintf("%s{%d}", v.Defn.Name, len(v.Data))
+	if len(v.Data) == 0 {
+		return v.Defn.Name + "{}"
+	}
+	var b bytes.Buffer
+	fmt.Fprintf(&b, "%s{", v.Defn.Name)
+	for _, x := range v.Data {
+		fmt.Fprintf(&b, "%v,", x)
+	}
+	s := b.Bytes()
+	s[len(s)-1] = '}'
+	return string(s)
 }
 
 //  VStruct.Type returns the defined struct name

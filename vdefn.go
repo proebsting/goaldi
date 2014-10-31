@@ -5,10 +5,6 @@
 
 package goaldi
 
-import (
-	"fmt"
-)
-
 type VDefn struct {
 	Name  string   // type name
 	Flist []string // ordered list of fields names
@@ -29,14 +25,14 @@ func (v *VDefn) New() *VStruct {
 	return r
 }
 
-//  VDefn.String -- conversion to Go string returns "name:"
+//  VDefn.String -- conversion to Go string returns "S:name"
 func (v *VDefn) String() string {
-	return v.Name + ":"
+	return "S:" + v.Name
 }
 
-//  VDefn.GoString -- image returns "name:n"
+//  VDefn.GoString -- convert to Go string for image() and printf("%#v")
 func (v *VDefn) GoString() string {
-	return fmt.Sprintf("%s:%d", v.Name, len(v.Flist))
+	return "constructor " + v.Name + "()"
 }
 
 //  VDefn.Type returns "defn"
