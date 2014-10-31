@@ -26,9 +26,8 @@ func init() {
 	LibProcedure("number", Number)
 	LibProcedure("min", Min)
 	LibProcedure("max", Max)
-	// Goaldi procedures written using Go interface
-	LibGoFunc("atan", Atan)
-	LibGoFunc("log", Log)
+	LibProcedure("log", Log)
+	LibProcedure("atan", Atan)
 	// Go library functions
 	LibGoFunc("abs", math.Abs)
 	LibGoFunc("ceil", math.Ceil)
@@ -41,46 +40,6 @@ func init() {
 	LibGoFunc("asin", math.Asin)
 	LibGoFunc("acos", math.Acos)
 }
-
-//------------------------------------  functions with Go interface
-//------------------------------------  (#%#% these should be converted)
-
-//  Atan(r1, r2) -- arctangent(r1/r2), default r2 = 1.0
-func Atan(r1 float64, x2 interface{}) float64 {
-	switch r2 := x2.(type) {
-	case nil:
-		return math.Atan(r1)
-	case float64:
-		return math.Atan2(r1, r2)
-	case string:
-		return math.Atan2(r1, MustParseNum(r2))
-	default:
-		return Atan(r1, x2.(Numerable).ToNumber().Val())
-	}
-}
-
-//  Log(r1, r2) -- logarithm of r1 to base r2, default r2 = e
-func Log(r1 float64, x2 interface{}) float64 {
-	switch r2 := x2.(type) {
-	case nil:
-		return math.Log(r1)
-	case float64:
-		switch r2 {
-		case 2.0:
-			return math.Log2(r1)
-		case 10.0:
-			return math.Log10(r1)
-		default:
-			return math.Log(r1) / math.Log(r2)
-		}
-	case string:
-		return Log(r1, MustParseNum(r2))
-	default:
-		return Log(r1, x2.(Numerable).ToNumber().Val())
-	}
-}
-
-//------------------------------------  procedures with Goaldi interface
 
 //  Number(x) -- return argument converted to number, or fail
 func Number(env *Env, a ...Value) (Value, *Closure) {
@@ -118,4 +77,26 @@ func Max(env *Env, a ...Value) (Value, *Closure) {
 		}
 	}
 	return Return(NewNumber(v))
+}
+
+//  Log(r1, r2) -- logarithm of r1 to base r2, default r2 = e
+func Log(env *Env, a ...Value) (Value, *Closure) {
+	r1 := ProcArg(a, 0, NilValue).(Numerable).ToNumber().Val()
+	r2 := ProcArg(a, 1, E).(Numerable).ToNumber().Val()
+	if r2 == math.E {
+		return Return(NewNumber(math.Log(r1)))
+	} else {
+		return Return(NewNumber(math.Log(r1) / math.Log(r2)))
+	}
+}
+
+//  Atan(r1, r2) -- arctangent(r1/r2), default r2 = 1.0
+func Atan(env *Env, a ...Value) (Value, *Closure) {
+	r1 := ProcArg(a, 0, NilValue).(Numerable).ToNumber().Val()
+	r2 := ProcArg(a, 1, ONE).(Numerable).ToNumber().Val()
+	if r2 == 1.0 {
+		return Return(NewNumber(math.Atan(r1)))
+	} else {
+		return Return(NewNumber(math.Atan2(r1, r2)))
+	}
 }
