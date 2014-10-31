@@ -105,8 +105,8 @@ func (v *VString) ToString() *VString {
 	return v
 }
 
-//  VString.ToNumber -- return conversion to VNumber, or issue RunErr
-func (v *VString) ToNumber() *VNumber {
+//  VString.TryNumber -- return conversion to VNumber or nil
+func (v *VString) TryNumber() *VNumber {
 	if v.high != nil { // if has exotic characters //#%#% bogus test?
 		return nil // it can't be valid
 	}
@@ -114,7 +114,17 @@ func (v *VString) ToNumber() *VNumber {
 	if e == nil {
 		return NewNumber(f)
 	} else {
+		return nil
+	}
+}
+
+//  VString.ToNumber -- return conversion to VNumber, or issue RunErr
+func (v *VString) ToNumber() *VNumber {
+	n := v.TryNumber()
+	if n == nil {
 		panic(&RunErr{"Cannot convert to number", v})
+	} else {
+		return n
 	}
 }
 

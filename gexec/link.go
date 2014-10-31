@@ -7,6 +7,9 @@ import (
 	g "goaldi"
 )
 
+//  list of struct (record) declarations seen
+var StructList = make([]*ir_Record, 0)
+
 //  link combines IR files to make a complete program.
 func link(parts [][]interface{}) {
 
@@ -22,6 +25,11 @@ func link(parts [][]interface{}) {
 	//  register procedures in global namespace
 	for _, pr := range ProcTable {
 		registerProc(pr)
+	}
+
+	//  register struct constructors
+	for _, sc := range StructList {
+		registerStruct(sc)
 	}
 
 	//  add standard library procedures for names not yet found
@@ -63,7 +71,7 @@ func irDecl(decl interface{}) {
 			}
 		}
 	case ir_Record:
-		//#%#%#%# TBD
+		StructList = append(StructList, &x)
 	case ir_Invocable, ir_Link:
 		//#%#%#% nothing?
 	default:
@@ -87,6 +95,24 @@ func registerProc(pr *pr_Info) {
 		fatal("duplicate global declaration: " + pr.name)
 	}
 	delete(Undeclared, pr.name)
+}
+
+//  registerStruct(sc) -- register struct constructor in globals
+func registerStruct(sc *ir_Record) {
+	gv := GlobalDict[sc.Name]
+	if gv == nil {
+		// not declared as global, and not seen before:
+		// create global with unmodifiable procedure value
+		GlobalDict[sc.Name] = g.NewDefn(sc.Name, sc.FieldList)
+	} else if t, ok := gv.(*g.VTrapped); ok && t.Target == &g.NilValue {
+		// uninitialized declared global:
+		// initialize global trapped variable with procedure value
+		*t.Target = g.NewDefn(sc.Name, sc.FieldList)
+	} else {
+		// duplicate global: fatal error
+		fatal("duplicate global declaration: " + sc.Name)
+	}
+	delete(Undeclared, sc.Name)
 }
 
 //  stdProcs() -- add referenced stdlib procedures to globals

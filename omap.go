@@ -11,10 +11,7 @@ var kvstruct = NewDefn("mapElem", []string{"key", "value"})
 //  VMap.Entry(i) -- return an initialized {key,value} struct copying entry i
 func (m *VMap) Entry(i int) *VStruct {
 	k := m.klist[i]
-	kv := kvstruct.New()
-	kv.Data[0] = k
-	kv.Data[1] = m.data[MapIndex(k)]
-	return kv
+	return kvstruct.New([]Value{k, m.data[MapIndex(k)]})
 }
 
 //------------------------------------  Size:  *e

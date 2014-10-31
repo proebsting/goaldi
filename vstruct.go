@@ -53,31 +53,3 @@ func (v *VStruct) Import() Value {
 func (v *VStruct) Export() interface{} {
 	return v
 }
-
-//  VStruct.Dispense() implements !D to generate the field values
-func (v *VStruct) Dispense(unused IVariable) (Value, *Closure) {
-	var c *Closure
-	i := -1
-	c = &Closure{func() (Value, *Closure) {
-		i++
-		if i < len(v.Data) {
-			return v.Data[i], c
-		} else {
-			return Fail()
-		}
-	}}
-	return c.Resume()
-}
-
-//  VStruct.Call() implements a struct constructor  //#%#%#% TO BE WRITTEN
-
-//  VStruct.Field() implements a field reference
-func (v *VStruct) Field(f string) Value {
-	d := v.Defn
-	for i, s := range d.Flist {
-		if s == f {
-			return Trapped(&v.Data[i])
-		}
-	}
-	panic(&RunErr{"Field not found: " + f, v})
-}

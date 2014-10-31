@@ -16,11 +16,15 @@ func NewDefn(name string, fields []string) *VDefn {
 	return &VDefn{name, fields}
 }
 
-//  VDefn.New() -- create a new underlying struct object
-func (v *VDefn) New() *VStruct {
+//  VDefn.New(values) -- create a new underlying struct object
+func (v *VDefn) New(a []Value) *VStruct {
 	r := &VStruct{v, make([]Value, len(v.Flist))}
 	for i := range r.Data {
-		r.Data[i] = NilValue
+		if i < len(a) {
+			r.Data[i] = a[i]
+		} else {
+			r.Data[i] = NilValue
+		}
 	}
 	return r
 }
@@ -72,7 +76,10 @@ func (v *VDefn) Dispense(unused IVariable) (Value, *Closure) {
 	return c.Resume()
 }
 
-//  VDefn.Call() implements a struct constructor  //#%#%#% TO BE WRITTEN
+//  VDefn.Call() implements a struct constructor
+func (v *VDefn) Call(env *Env, args ...Value) (Value, *Closure) {
+	return Return(v.New(args))
+}
 
 //  Declare required methods
 var Defnethods = map[string]interface{}{
