@@ -81,7 +81,7 @@ type IVariable interface {
 
 var _ IVariable = &VTrapped{} // confirm implementation by VTrapped
 
-//  Interfaces for indexing operations that can produce variables
+//  Interfaces for indexing operations that can produce variables.
 //  If the IVariable argument is nil, a value is wanted.
 //  If not, it is just a flag for most datatypes but is the actual
 //  underlying value to be replaced by substring assignment.

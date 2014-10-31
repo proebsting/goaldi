@@ -18,6 +18,8 @@ func (v *VList) Choose(lval IVariable) Value {
 	n := len(v.data)
 	if n == 0 {
 		return nil // fail
+	} else if lval == nil {
+		return v.data[rand.Intn(n)]
 	} else {
 		return &vListRef{v, rand.Intn(n)}
 	}
@@ -30,10 +32,12 @@ func (v *VList) Dispense(lval IVariable) (Value, *Closure) {
 	var c *Closure
 	c = &Closure{func() (Value, *Closure) {
 		i++
-		if i < len(v.data) {
-			return &vListRef{v, i}, c
-		} else {
+		if i >= len(v.data) {
 			return nil, nil
+		} else if lval == nil {
+			return v.data[i], c
+		} else {
+			return &vListRef{v, i}, c
 		}
 	}}
 	return c.Resume()
@@ -45,10 +49,12 @@ func (v *VList) Index(lval IVariable, x Value) Value {
 	n := len(v.data)
 	i := int(x.(Numerable).ToNumber().Val())
 	i = GoIndex(i, n)
-	if i < n {
-		return &vListRef{v, i}
-	} else {
+	if i >= n {
 		return nil // fail: subscript out of range
+	} else if lval == nil {
+		return v.data[i]
+	} else {
+		return &vListRef{v, i}
 	}
 }
 
