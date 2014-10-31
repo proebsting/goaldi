@@ -5,8 +5,8 @@ number     1                    1                    1
 number     3.142                3.141592653589793    3.142
 number     6.022e+23            6.02214129e+23       6.022e+23
 string     abc                  "abc"                abc
-file       (&file(%stdin))      (&file(%stdin))      (&file(%stdin))
+file       file(%stdin)         file(%stdin,r)       file(%stdin)
 procedure  main()               main()               main()
 list       list()               list(3)              list()
-map        (&map())             (&map())             (&map())
+map        map()                map(2)               map()
 mapElem    mapElem{}            mapElem{2}           mapElem{}

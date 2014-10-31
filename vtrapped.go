@@ -16,12 +16,6 @@ func Trapped(target *Value) *VTrapped {
 	return &VTrapped{target}
 }
 
-//  VTrapped.Deref() -- extract value of for use as an rvalue
-func (t *VTrapped) Deref() Value {
-	// later becomes more complicated with tvsubs, tvstr
-	return *t.Target
-}
-
 //  VTrapped.String() -- show string representation: produces (&value)
 //  #%#% should make this smarter
 func (t *VTrapped) String() string {
@@ -31,6 +25,19 @@ func (t *VTrapped) String() string {
 //  VTrapped.GoString() -- show string representation for traceback
 func (t *VTrapped) GoString() string {
 	return t.String()
+}
+
+//  VTrapped.Type() -- return "trapped" (shouldn't happen)
+func (t *VTrapped) Type() Value {
+	return type_trapped
+}
+
+var type_trapped = NewString("trapped")
+
+//  VTrapped.Deref() -- extract value of for use as an rvalue
+func (t *VTrapped) Deref() Value {
+	// later becomes more complicated with tvsubs, tvstr
+	return *t.Target
 }
 
 //  VTrapped.Assign -- store value in target variable

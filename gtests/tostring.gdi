@@ -1,17 +1,17 @@
 procedure main()
-	local a, m, v, f
+	local a, m, v, fmt
 
 	m := map()
 	m[1] := "a"
 	m[2] := "b"
-	a := [, 1, &pi, 6.02214129e23, "abc", &input, main, [1,2,3], m, !m]
-	f := "%-10s %-20s %-20s %s"
-	printf(f, "type", "string", "image", "write\n")
-	printf(f, "----", "------", "-----", "-----\n")
+	a := [, 1, &pi, 6.02214129e23, "abc", &stdin, main, [1,2,3], m, !m]
+	fmt := "%-10s %-20s %-20s %s"
+	printf(fmt, "type", "string", "image", "write\n")
+	printf(fmt, "----", "------", "-----", "-----\n")
 	every v := !a do {
-		printf(f, type(.v) | "[failed]",	#%#%#% WHY NEED DEREF .v?!!!
+		printf(fmt, type(v) | "[failed]",
 			string(v) | "[failed]",
 			image(v) | "[failed]", "") 
-		write(v)
+		write(&stdout, v)
 	}
 end

@@ -113,7 +113,7 @@ func interp(env *g.Env, pr *pr_Info, args ...g.Value) (g.Value, *g.Closure) {
 					n := len(i.ValueList)
 					a := make([]g.Value, n, n)
 					for j, v := range i.ValueList {
-						a[j] = f.temps[v.(string)]
+						a[j] = g.Deref(f.temps[v.(string)])
 					}
 					f.temps[i.Lhs] = g.InitList(a)
 				case ir_Var:
