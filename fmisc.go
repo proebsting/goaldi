@@ -34,6 +34,7 @@ func init() {
 	// Go library functions
 	LibGoFunc("getenv", os.Getenv)
 	LibGoFunc("setenv", os.Setenv)
+	LibGoFunc("environ", os.Environ)
 	LibGoFunc("expandenv", os.ExpandEnv)
 	LibGoFunc("clearenv", os.Clearenv)
 	LibGoFunc("hostname", os.Hostname)

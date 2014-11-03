@@ -303,7 +303,7 @@ func opFunc(env *g.Env, f *pr_frame, i *ir_OpFunction) (g.Value, *g.Closure) {
 	case "1!":
 		return g.Deref(a[0]).(g.IDispense).Dispense(lval)
 	case "2[]":
-		return g.Deref(a[0]).(g.IIndex).Index(lval, a[1]), nil
+		return g.Index(lval, g.Deref(a[0]), a[1]), nil
 	case "3[:]":
 		return g.Deref(a[0]).(g.ISlice).Slice(lval, a[1], a[2]), nil
 	case "3[+:]":

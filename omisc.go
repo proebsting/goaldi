@@ -2,6 +2,10 @@
 
 package goaldi
 
+import (
+	"reflect"
+)
+
 //  Identical(a,b) implements the === operator.
 //  NotIdentical(a,b) implements the ~=== operator.
 //  Both call a.Identical(b) if implemented (interface IIdentical).
@@ -25,6 +29,28 @@ func NotIdentical(a, b Value) Value {
 
 type IField interface {
 	Field(string) Value
+}
+
+//  Index(lval,x,y) calls x.Index(lval, y) or falls back to reflection.
+func Index(lval IVariable, x Value, y Value) Value {
+	if t, ok := x.(IIndex); ok {
+		return t.Index(lval, y)
+	}
+	xv := reflect.ValueOf(x)
+	if xv.Kind() != reflect.Slice && xv.Kind() != reflect.Array {
+		panic(&RunErr{"Wrong type for indexing", x})
+	}
+	n := xv.Len()
+	i := GoIndex(int(y.(Numerable).ToNumber().Val()), n)
+	if i >= n {
+		return nil // out of bounds
+	}
+	if lval == nil {
+		return Import(xv.Index(i).Interface())
+	} else {
+		//#%#% lvalue context NYI
+		return Import(xv.Index(i).Interface())
+	}
 }
 
 //  Field(x,s) calls x.Field(s) or (#%#%TBD) falls back to reflection.
