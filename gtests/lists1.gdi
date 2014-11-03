@@ -52,7 +52,7 @@ procedure main()
 		every j := 3 to 5 do
 			writes(i,":",j) & show(l[i:j])
 
-    write("H:")
+	write("H:")
 	l := [2,3,4]
 	l2 := [7,8,9]
 	show(l ||| l2)
@@ -64,6 +64,10 @@ procedure main()
 	show(l2 := copy(l))
 	show(l2.get() & l2.pull() & l2)
 	show(l)	# should be unchanged
+
+	write("J:")
+	show([:!"wxyz":])
+	show([: 3 * !7 % 10 :])
 end
 
 procedure show(l)

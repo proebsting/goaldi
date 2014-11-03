@@ -300,6 +300,8 @@ func opFunc(f *pr_frame, i *ir_OpFunction) (g.Value, *g.Closure) {
 		return deltaSlice(lval, a, -1)
 
 	// miscellaneous operations
+	case "2put":
+		return a[0].(g.IListPut).ListPut(a[1]), nil
 	case "2|||":
 		return a[0].(g.IListCat).ListCat(a[1]), nil
 

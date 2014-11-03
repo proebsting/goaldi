@@ -83,6 +83,17 @@ func (v *VList) Slice(lval IVariable, x Value, y Value) Value {
 	return InitList(a)
 }
 
+//------------------------------------  ListPut: used in [: expr :]
+
+type IListPut interface {
+	ListPut(Value) Value
+}
+
+func (v *VList) ListPut(x Value) Value {
+	v.Grow(false, "[:put:]", x)
+	return v
+}
+
 //------------------------------------  ListCat:  L1 ||| L2
 
 type IListCat interface {
