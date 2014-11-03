@@ -28,6 +28,7 @@ func init() {
 	LibProcedure("max", Max)
 	LibProcedure("log", Log)
 	LibProcedure("atan", Atan)
+	LibProcedure("gcd", GCD)
 	// Go library functions
 	LibGoFunc("abs", math.Abs)
 	LibGoFunc("ceil", math.Ceil)
@@ -81,6 +82,7 @@ func Max(env *Env, a ...Value) (Value, *Closure) {
 
 //  Log(r1, r2) -- logarithm of r1 to base r2, default r2 = e
 func Log(env *Env, a ...Value) (Value, *Closure) {
+	defer Traceback("log", a)
 	r1 := ProcArg(a, 0, NilValue).(Numerable).ToNumber().Val()
 	r2 := ProcArg(a, 1, E).(Numerable).ToNumber().Val()
 	if r2 == math.E {
@@ -92,6 +94,7 @@ func Log(env *Env, a ...Value) (Value, *Closure) {
 
 //  Atan(r1, r2) -- arctangent(r1/r2), default r2 = 1.0
 func Atan(env *Env, a ...Value) (Value, *Closure) {
+	defer Traceback("atan", a)
 	r1 := ProcArg(a, 0, NilValue).(Numerable).ToNumber().Val()
 	r2 := ProcArg(a, 1, ONE).(Numerable).ToNumber().Val()
 	if r2 == 1.0 {
@@ -99,4 +102,25 @@ func Atan(env *Env, a ...Value) (Value, *Closure) {
 	} else {
 		return Return(NewNumber(math.Atan2(r1, r2)))
 	}
+}
+
+//  GCD(i, ...) -- greatest common divisor
+//  Returns the GCD of one or more values, which are truncated to int.
+//  Negative values are allowed.  Returns zero if all values are zero.
+func GCD(env *Env, args ...Value) (Value, *Closure) {
+	defer Traceback("gcd", args)
+	a := int(ProcArg(args, 0, NilValue).(Numerable).ToNumber().Val())
+	if a < 0 {
+		a = -a
+	}
+	for i := 1; i < len(args); i++ {
+		b := int(args[i].(Numerable).ToNumber().Val())
+		if b < 0 {
+			b = -b
+		}
+		for b > 0 {
+			a, b = b, a%b
+		}
+	}
+	return Return(NewNumber(float64(a)))
 }

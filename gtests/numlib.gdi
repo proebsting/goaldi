@@ -10,6 +10,8 @@ procedure main()
 	write("\natan2:")
 	every testa2(0 | &phi | &pi, 0 | &e | &pi)
 	write()
+	write("\ngcd:")
+	testgcd()
 end
 
 procedure testout(v)
@@ -49,5 +51,23 @@ end
 
 procedure apply(p, x, y)
 	writes(" ", string(p)[3:0], "()", p(x, y) | "--")
+	return
+end
+
+procedure testgcd()
+	writes(" a.", gcd(0))
+	writes(" b.", gcd(1))
+	writes(" c.", gcd(3))
+	writes(" d.", gcd(-5))
+	writes(" e.", gcd(0,3))
+	writes(" f.", gcd(3,0))
+	writes(" g.", gcd(15,12))
+	writes(" h.", gcd(15,-12))
+	writes(" i.", gcd(30,42,15))
+	writes(" j.", gcd(30,42,18,28))
+	writes(" k.", gcd(30,42,18,-36))
+	writes(" l.", gcd(30,42,18,28,19))
+	writes(" m.", gcd(0,0,0))
+	write()
 	return
 end
