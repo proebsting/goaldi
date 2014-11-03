@@ -143,7 +143,7 @@ func interp(env *g.Env, pr *pr_Info, args ...g.Value) (g.Value, *g.Closure) {
 					break Chunk
 				case ir_OpFunction:
 					f.coord = i.Coord
-					v, c := opFunc(&f, &i)
+					v, c := opFunc(env, &f, &i)
 					if v != nil {
 						if i.Lhs != "" {
 							f.temps[i.Lhs] = v
@@ -234,7 +234,7 @@ func getArgs(f *pr_frame, nd int, arglist []interface{}) []g.Value {
 }
 
 //  opFunc -- implement operator function
-func opFunc(f *pr_frame, i *ir_OpFunction) (g.Value, *g.Closure) {
+func opFunc(env *g.Env, f *pr_frame, i *ir_OpFunction) (g.Value, *g.Closure) {
 	op := string('0'+len(i.ArgList)) + i.Fn
 	a := getArgs(f, nonDeref[op], i.ArgList)
 	f.offv = a[0]        // save offending value
@@ -300,6 +300,8 @@ func opFunc(f *pr_frame, i *ir_OpFunction) (g.Value, *g.Closure) {
 		return deltaSlice(lval, a, -1)
 
 	// miscellaneous operations
+	case "2!":
+		return a[0].(g.ICall).Call(env, a[1].(*g.VList).Export().([]g.Value)...)
 	case "2put":
 		return a[0].(g.IListPut).ListPut(a[1]), nil
 	case "2|||":

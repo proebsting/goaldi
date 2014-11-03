@@ -68,6 +68,8 @@ procedure main()
 	write("J:")
 	show([:!"wxyz":])
 	show([: 3 * !7 % 10 :])
+
+	write ! ["all ", "done", "!"]
 end
 
 procedure show(l)
