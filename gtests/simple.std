@@ -36,3 +36,9 @@ P:main procedure procedure main()
 3c
 4d
 5--
+p4: %nil %nil []
+p4: 1 %nil []
+p4: 2 3 []
+p4: 4 5 [6]
+p4: 7 8 [9,10]
+p4: 11 22 [31,41,59,26,535]

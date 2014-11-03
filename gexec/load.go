@@ -66,8 +66,11 @@ func dumptree(indent string, x interface{}) {
 	case ir_Function:
 		fmt.Printf("\n%sproc %s  %v  start %v\n",
 			indent, t.Name, t.Coord, t.CodeStart)
-		fmt.Printf("%s   param %v\n", indent, t.ParamList)
-		fmt.Printf("%s   local %v\n", indent, t.LocalList)
+		fmt.Printf("%s   param %v", indent, t.ParamList)
+		if t.Accumulate != "" {
+			fmt.Printf(" [accumulate]")
+		}
+		fmt.Printf("\n%s   local %v\n", indent, t.LocalList)
 		fmt.Printf("%s   static %v\n", indent, t.StaticList)
 		dumptree(indent, t.CodeList)
 	case ir_chunk:

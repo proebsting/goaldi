@@ -24,6 +24,13 @@ procedure main()
    every writes (" ", (!27 & ?100) | "\n")
    every i := -5 to +5 do
        write (i, i("a","b","c","d") | "--")
+
+   p4()
+   p4(1)
+   p4(2,3)
+   p4(4,5,6)
+   p4(7,8,9,10)
+   p4(11,22,31,41,59,26,535)
 end
 
 procedure p1()
@@ -36,4 +43,8 @@ end
 
 procedure p3(a,b,c)
    write(a,b,c)
+end
+
+procedure p4(a,b,c[])
+   write("p4: ", image(a), " ", image(b), " ", image(c))
 end

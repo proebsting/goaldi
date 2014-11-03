@@ -30,13 +30,14 @@ func interp(env *g.Env, pr *pr_Info, args ...g.Value) (g.Value, *g.Closure) {
 		fmt.Printf("P: %s\n", pr.name)
 	}
 
-	// initialize procedure frame: params, locals, temps
+	// initialize procedure frame
 	var f pr_frame
 	f.env = env
 	f.info = pr
 	f.temps = make(map[string]interface{})
+
+	// initialize parameters
 	f.params = make([]g.Value, pr.nparams, pr.nparams)
-	f.locals = make([]g.Value, pr.nlocals, pr.nlocals)
 	for i := 0; i < len(f.params); i++ {
 		if i < len(args) {
 			f.params[i] = args[i]
@@ -44,7 +45,18 @@ func interp(env *g.Env, pr *pr_Info, args ...g.Value) (g.Value, *g.Closure) {
 			f.params[i] = g.NilValue
 		}
 	}
-	// #%#%# need to check accum flag and make list of trailing params
+	//  handle variadic procedure
+	if pr.accum {
+		n := len(f.params) - 1
+		if len(args) < n {
+			f.params[n] = g.NewList(0, nil)
+		} else {
+			f.params[n] = g.InitList(args[n:])
+		}
+	}
+
+	// initialize locals to nil
+	f.locals = make([]g.Value, pr.nlocals, pr.nlocals)
 	for i := 0; i < len(f.locals); i++ {
 		f.locals[i] = g.NilValue
 	}
