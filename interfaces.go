@@ -95,9 +95,3 @@ type IIndex interface {
 type ISlice interface {
 	Slice(IVariable, Value, Value) Value
 }
-
-//  Other interfaces implemented by multiple types
-
-type ISize interface {
-	Size() Value
-}

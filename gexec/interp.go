@@ -296,7 +296,7 @@ func opFunc(env *g.Env, f *pr_frame, i *ir_OpFunction) (g.Value, *g.Closure) {
 
 	// multi-type operations
 	case "1*":
-		return a[0].(g.ISize).Size(), nil
+		return g.Size(a[0]), nil
 	case "1?":
 		v := g.Deref(a[0])
 		return v.(g.IChoose).Choose(lval), nil

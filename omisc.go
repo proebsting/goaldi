@@ -2,6 +2,10 @@
 
 package goaldi
 
+import (
+	"reflect"
+)
+
 //  IIdentical -- interface for a.Identical(b), used by a===b
 //  Must be implemented for types where === is not just a pointer match
 type IIdentical interface {
@@ -29,6 +33,21 @@ func NotIdentical(a, b Value) Value {
 		return nil
 	} else {
 		return b
+	}
+}
+
+//  ISize -- interface for a.Size(), used by *a
+type ISize interface {
+	Size() Value
+}
+
+//  Size(a) calls a.Size() or falls back to reflection.
+//  It panics on an inappropriate argument type.
+func Size(x Value) Value {
+	if t, ok := x.(ISize); ok {
+		return t.Size()
+	} else {
+		return NewNumber(float64(reflect.ValueOf(x).Len()))
 	}
 }
 
