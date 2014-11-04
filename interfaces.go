@@ -53,6 +53,7 @@ type IImport interface {
 	Import() Value // return value to be imported as Goaldi value
 }
 
+//  IExport -- convert Goaldi value to Go value
 type IExport interface {
 	Export() interface{} // return value for export to Go function
 }
@@ -65,14 +66,6 @@ type Numerable interface {
 	ToNumber() *VNumber // if implicitly convertible to number
 }
 
-//  IIdentical -- needed for types where === is not just a pointer match
-type IIdentical interface {
-	Identical(Value) Value
-}
-
-var _ IIdentical = NewNumber(1)   // confirm implementation by VNumber
-var _ IIdentical = NewString("a") // confirm implementation by VString
-
 //  IVariable -- an assignable trapped variable (simple or subscripted)
 type IVariable interface {
 	Deref() Value           // return dereferenced value
@@ -81,7 +74,8 @@ type IVariable interface {
 
 var _ IVariable = &VTrapped{} // confirm implementation by VTrapped
 
-//  Interfaces for indexing operations that can produce variables.
+//  Interfaces for operations that can produce substring variables
+//  when applied to strings.
 //  If the IVariable argument is nil, a value is wanted.
 //  If not, it is just a flag for most datatypes but is the actual
 //  underlying value to be replaced by substring assignment.
