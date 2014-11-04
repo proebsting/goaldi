@@ -298,8 +298,7 @@ func opFunc(env *g.Env, f *pr_frame, i *ir_OpFunction) (g.Value, *g.Closure) {
 	case "1*":
 		return g.Size(a[0]), nil
 	case "1?":
-		v := g.Deref(a[0])
-		return v.(g.IChoose).Choose(lval), nil
+		return g.Choose(lval, g.Deref(a[0])), nil
 	case "1!":
 		return g.Dispense(lval, g.Deref(a[0]))
 	case "2[]":

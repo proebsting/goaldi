@@ -3,6 +3,7 @@
 package goaldi
 
 import (
+	"math/rand"
 	"reflect"
 )
 
@@ -39,6 +40,16 @@ func Index(lval IVariable, x Value, y Value) Value {
 	} else {
 		return TrapValue(xv.Index(i))
 	}
+}
+
+//  Choose(lval, x) calls x.Choose(lval) or uses Size() and Index().
+func Choose(lval IVariable, x Value) Value {
+	if t, ok := x.(IChoose); ok {
+		return t.Choose(lval)
+	}
+	n := int(Size(x).(*VNumber).Val())
+	i := rand.Intn(n) + 1 // +1 for 1-based indexing
+	return Index(lval, x, NewNumber(float64(i)))
 }
 
 //  Dispense(lval, x) calls x.Dispense(lval) or steps through Index() calls.
