@@ -38,6 +38,9 @@ func Index(lval IVariable, x Value, y Value) Value {
 		return t.Index(lval, y)
 	}
 	xv := reflect.ValueOf(x)
+	if xv.Kind() == reflect.Map {
+		return TrapMap(xv, y)
+	}
 	if xv.Kind() != reflect.Slice && xv.Kind() != reflect.Array {
 		panic(&RunErr{"Wrong type for indexing", x})
 	}

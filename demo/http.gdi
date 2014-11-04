@@ -1,7 +1,7 @@
 #  http.gdi -- demonstrate HTTP extension
 
 procedure main(url1, url2)
-	local f, r, rr, p
+	local f, k, r, rr, p
 	/url1 := "http://www.cs.arizona.edu"
 	/url2 := "http://httpbin.org/post"
 
@@ -21,6 +21,9 @@ procedure main(url1, url2)
 		write("  encoding: ", image(rr.TransferEncoding))
 		write("headers:")
 		every write("   ", !r)
+		write("via lookup:")
+		every k := "Date" | "Content-Type" | "Server" do
+			write("   ", k, ":  ", rr.Header[k])
 	} else {
 		showfile(url1, &nil)
 	}
