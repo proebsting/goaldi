@@ -1,7 +1,7 @@
 #  http.gdi -- demonstrate HTTP extension
 
 procedure main(url1, url2)
-	local f, r, p
+	local f, r, rr, p
 	/url1 := "http://www.cs.arizona.edu"
 	/url2 := "http://httpbin.org/post"
 
@@ -13,6 +13,12 @@ procedure main(url1, url2)
 	if showfile(url1, *\r) then {
 		write(repl("-", 72))
 		write("response: ", image(r))
+		rr := r.Resp
+		write("  status: ", rr.Status, " (", rr.StatusCode, ")")
+		write("  proto:  ", rr.Proto, " (",rr.ProtoMajor,".",rr.ProtoMinor,")")
+		write("  ctlen:  ", rr.ContentLength)
+		write("  close:  ", rr.Close)
+		write("  encoding: ", image(rr.TransferEncoding))
 		write("headers:")
 		every write("   ", !r)
 	} else {

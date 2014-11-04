@@ -12,13 +12,24 @@ type IField interface {
 	Field(string) Value
 }
 
-//  Field(x,s) calls x.Field(s) or (#%#%TBD) falls back to reflection.
+//  Field(x,s) calls x.Field(s) or falls back to reflection.
 func Field(x Value, s string) Value {
 	if t, ok := x.(IField); ok {
 		return t.Field(s)
 	}
-	//#%#% try looking up field in Go struct or map using reflection.
-	return nil
+	xv := reflect.ValueOf(x)
+	if xv.Kind() == reflect.Interface {
+		xv = xv.Elem()
+	}
+	if xv.Kind() == reflect.Ptr {
+		xv = xv.Elem()
+	}
+	if xv.Kind() == reflect.Struct {
+		if f := xv.FieldByName(s); f.IsValid() {
+			return TrapValue(f)
+		}
+	}
+	panic(&RunErr{"Field not found: " + s, x})
 }
 
 //  Index(lval,x,y) calls x.Index(lval, y) or falls back to reflection.

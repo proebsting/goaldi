@@ -50,12 +50,12 @@ func htpost(u string, kv ...string) *htresp {
 
 //  htresp is our version of an http.Response with added Goaldi methods
 type htresp struct {
-	resp *http.Response
+	Resp *http.Response
 }
 
 //  htresp.Size() returns the underlying file.  (*H: unary operator abuse.)
 func (h *htresp) Size() Value {
-	return Import(h.resp.Body) // Import() converts Go value to Goaldi value
+	return Import(h.Resp.Body) // Import() converts Go value to Goaldi value
 }
 
 //  htresp.Dispense() generates the headers as name:value.  (!H unary operator.)
@@ -63,7 +63,7 @@ func (h *htresp) Dispense(unused IVariable) (Value, *Closure) {
 	//  range over the headers and feed into a channel
 	ch := make(chan *VString)
 	go func() {
-		for k, l := range h.resp.Header {
+		for k, l := range h.Resp.Header {
 			for _, v := range l {
 				ch <- NewString(k + ":" + v)
 			}
