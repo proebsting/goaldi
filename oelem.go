@@ -6,6 +6,20 @@ import (
 	"reflect"
 )
 
+//  IField -- interface for x.Field(id), used by x.id
+type IField interface {
+	Field(string) Value
+}
+
+//  Field(x,s) calls x.Field(s) or (#%#%TBD) falls back to reflection.
+func Field(x Value, s string) Value {
+	if t, ok := x.(IField); ok {
+		return t.Field(s)
+	}
+	//#%#% try looking up field in Go struct or map using reflection.
+	return nil
+}
+
 //  Index(lval,x,y) calls x.Index(lval, y) or falls back to reflection.
 func Index(lval IVariable, x Value, y Value) Value {
 	if t, ok := x.(IIndex); ok {
@@ -27,18 +41,18 @@ func Index(lval IVariable, x Value, y Value) Value {
 	}
 }
 
-//  IField -- interface for x.Field(id), used by x.id
-type IField interface {
-	Field(string) Value
-}
-
-//  Field(x,s) calls x.Field(s) or (#%#%TBD) falls back to reflection.
-func Field(x Value, s string) Value {
-	if t, ok := x.(IField); ok {
-		return t.Field(s)
+//  Dispense(lval, x) calls x.Dispense(lval) or steps through Index() calls.
+func Dispense(lval IVariable, x Value) (Value, *Closure) {
+	if t, ok := x.(IDispense); ok {
+		return t.Dispense(lval)
 	}
-	//#%#% try looking up field in Go struct or map using reflection.
-	return nil
+	i := 0.0
+	var c *Closure
+	c = &Closure{func() (Value, *Closure) {
+		i++
+		return Index(lval, x, NewNumber(i)), c
+	}}
+	return c.Resume()
 }
 
 //  GoIndex(i, n) -- return Go index for i into length n, or n+1 if out of range
