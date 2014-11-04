@@ -48,8 +48,7 @@ func Index(lval IVariable, x Value, y Value) Value {
 	if lval == nil {
 		return Import(xv.Index(i).Interface())
 	} else {
-		//#%#% lvalue context NYI
-		return Import(xv.Index(i).Interface())
+		return TrapValue(xv.Index(i))
 	}
 }
 

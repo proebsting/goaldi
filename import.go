@@ -95,3 +95,22 @@ func Export(v Value) interface{} {
 		return v
 	}
 }
+
+//  -------------------------- trapped references ---------------------
+
+type vGoTrap struct {
+	target reflect.Value
+}
+
+func TrapValue(v reflect.Value) *vGoTrap {
+	return &vGoTrap{v}
+}
+
+func (v *vGoTrap) Deref() Value {
+	return Import(v.target.Interface())
+}
+
+func (v *vGoTrap) Assign(x Value) IVariable {
+	v.target.Set(passfunc(v.target.Type())(x))
+	return v
+}
