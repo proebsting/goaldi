@@ -2,6 +2,19 @@
 
 package goaldi
 
+import (
+	"reflect"
+)
+
+//  IIdentical -- interface for a.Identical(b), used by a===b
+//  Must be implemented for types where === is not just a pointer match
+type IIdentical interface {
+	Identical(Value) Value
+}
+
+var _ IIdentical = NewNumber(1)   // confirm implementation by VNumber
+var _ IIdentical = NewString("a") // confirm implementation by VString
+
 //  Identical(a,b) implements the === operator.
 //  NotIdentical(a,b) implements the ~=== operator.
 //  Both call a.Identical(b) if implemented (interface IIdentical).
@@ -20,6 +33,21 @@ func NotIdentical(a, b Value) Value {
 		return nil
 	} else {
 		return b
+	}
+}
+
+//  ISize -- interface for a.Size(), used by *a
+type ISize interface {
+	Size() Value
+}
+
+//  Size(a) calls a.Size() or falls back to reflection.
+//  It panics on an inappropriate argument type.
+func Size(x Value) Value {
+	if t, ok := x.(ISize); ok {
+		return t.Size()
+	} else {
+		return NewNumber(float64(reflect.ValueOf(x).Len()))
 	}
 }
 
@@ -64,20 +92,4 @@ func ToBy(e1 Value, e2 Value, e3 Value) (Value, *Closure) {
 		}
 	}}
 	return f.Resume()
-}
-
-//  GoIndex(i, n) -- return Go index for i into length n, or n+1 if out of range
-//  i is a 1-based index and may be nonpositive.  i==n or i==0 is in range.
-//  The caller may want to check for result<n or result<=n depending on context.
-func GoIndex(i int, n int) int {
-	if i > 0 {
-		i-- // convert to zero-based
-	} else {
-		i = n + i // count backwards from end
-	}
-	if i >= 0 && i <= n {
-		return i // index is valid
-	} else {
-		return n + 1 // index is out of range
-	}
 }

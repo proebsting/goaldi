@@ -92,6 +92,11 @@ func (v *VNumber) Type() Value {
 
 var type_number = NewString("number")
 
+//  VNumber.Copy returns itself
+func (v *VNumber) Copy() Value {
+	return v
+}
+
 //  VNumber.Identical -- check equality for === operator
 func (a *VNumber) Identical(x Value) Value {
 	b, ok := x.(*VNumber)

@@ -28,25 +28,18 @@ func init() {
 	// Goaldi procedures
 	LibProcedure("image", Image)
 	LibProcedure("type", Type)
+	LibProcedure("copy", Copy)
 	LibProcedure("exit", Exit)
 	LibProcedure("sleep", Sleep)
 	// Go library functions
 	LibGoFunc("getenv", os.Getenv)
 	LibGoFunc("setenv", os.Setenv)
+	LibGoFunc("environ", os.Environ)
 	LibGoFunc("expandenv", os.ExpandEnv)
 	LibGoFunc("clearenv", os.Clearenv)
 	LibGoFunc("hostname", os.Hostname)
 	LibGoFunc("getpid", os.Getpid)
 	LibGoFunc("getppid", os.Getppid)
-}
-
-//  ProcArg(a,i,d) -- return procedure argument a[i], defaulting to d
-func ProcArg(a []Value, i int, d Value) Value {
-	if i < len(a) && a[i] != NilValue {
-		return a[i]
-	} else {
-		return d
-	}
 }
 
 //  Image(v) -- return string image of value v
@@ -67,6 +60,14 @@ func Type(env *Env, a ...Value) (Value, *Closure) {
 }
 
 var type_external = NewString("external")
+
+//  Copy(v) -- return a copy of v (or just v if a simple value).
+//  The type of v *must* implement ICopy.
+func Copy(env *Env, a ...Value) (Value, *Closure) {
+	defer Traceback("copy", a)
+	v := ProcArg(a, 0, NilValue)
+	return Return(v.(ICopy).Copy())
+}
 
 //  Sleep(n) -- delay execution for n seconds (may be fractional)
 func Sleep(env *Env, a ...Value) (Value, *Closure) {

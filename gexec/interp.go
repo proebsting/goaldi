@@ -30,13 +30,14 @@ func interp(env *g.Env, pr *pr_Info, args ...g.Value) (g.Value, *g.Closure) {
 		fmt.Printf("P: %s\n", pr.name)
 	}
 
-	// initialize procedure frame: params, locals, temps
+	// initialize procedure frame
 	var f pr_frame
 	f.env = env
 	f.info = pr
 	f.temps = make(map[string]interface{})
+
+	// initialize parameters
 	f.params = make([]g.Value, pr.nparams, pr.nparams)
-	f.locals = make([]g.Value, pr.nlocals, pr.nlocals)
 	for i := 0; i < len(f.params); i++ {
 		if i < len(args) {
 			f.params[i] = args[i]
@@ -44,7 +45,18 @@ func interp(env *g.Env, pr *pr_Info, args ...g.Value) (g.Value, *g.Closure) {
 			f.params[i] = g.NilValue
 		}
 	}
-	// #%#%# need to check accum flag and make list of trailing params
+	//  handle variadic procedure
+	if pr.accum {
+		n := len(f.params) - 1
+		if len(args) < n {
+			f.params[n] = g.NewList(0, nil)
+		} else {
+			f.params[n] = g.InitList(args[n:])
+		}
+	}
+
+	// initialize locals to nil
+	f.locals = make([]g.Value, pr.nlocals, pr.nlocals)
 	for i := 0; i < len(f.locals); i++ {
 		f.locals[i] = g.NilValue
 	}
@@ -92,7 +104,7 @@ func interp(env *g.Env, pr *pr_Info, args ...g.Value) (g.Value, *g.Closure) {
 						return v, self
 					}
 				case ir_Key:
-					//#%#% keywords are dynamic vars fetchetd from env
+					//#%#% keywords are dynamic vars fetched from env
 					f.coord = i.Coord
 					v := env.VarMap[i.Name]
 					if v == nil {
@@ -104,14 +116,18 @@ func interp(env *g.Env, pr *pr_Info, args ...g.Value) (g.Value, *g.Closure) {
 						f.temps[i.Lhs] = v
 					}
 				case ir_IntLit:
-					f.temps[i.Lhs] =
-						g.NewString(i.Val).ToNumber()
+					f.temps[i.Lhs] = g.NewString(i.Val).ToNumber()
 				case ir_RealLit:
-					f.temps[i.Lhs] =
-						g.NewString(i.Val).ToNumber()
+					f.temps[i.Lhs] = g.NewString(i.Val).ToNumber()
 				case ir_StrLit:
-					f.temps[i.Lhs] =
-						g.NewString(i.Val)
+					f.temps[i.Lhs] = g.NewString(i.Val)
+				case ir_MakeList:
+					n := len(i.ValueList)
+					a := make([]g.Value, n, n)
+					for j, v := range i.ValueList {
+						a[j] = g.Deref(f.temps[v.(string)])
+					}
+					f.temps[i.Lhs] = g.InitList(a)
 				case ir_Var:
 					v := pr.dict[i.Name]
 					switch t := v.(type) {
@@ -139,13 +155,25 @@ func interp(env *g.Env, pr *pr_Info, args ...g.Value) (g.Value, *g.Closure) {
 					break Chunk
 				case ir_OpFunction:
 					f.coord = i.Coord
-					v, c := opFunc(&f, &i)
+					v, c := opFunc(env, &f, &i)
 					if v != nil {
 						if i.Lhs != "" {
 							f.temps[i.Lhs] = v
 						}
 						if i.Lhsclosure != "" {
 							f.temps[i.Lhsclosure] = c
+						}
+					} else if i.FailLabel != "" {
+						label = i.FailLabel
+						break Chunk
+					}
+				case ir_Field:
+					f.coord = i.Coord
+					x := g.Deref(f.temps[i.Expr].(g.Value))
+					v := g.Field(x, i.Field)
+					if v != nil {
+						if i.Lhs != "" {
+							f.temps[i.Lhs] = v
 						}
 					} else if i.FailLabel != "" {
 						label = i.FailLabel
@@ -218,7 +246,7 @@ func getArgs(f *pr_frame, nd int, arglist []interface{}) []g.Value {
 }
 
 //  opFunc -- implement operator function
-func opFunc(f *pr_frame, i *ir_OpFunction) (g.Value, *g.Closure) {
+func opFunc(env *g.Env, f *pr_frame, i *ir_OpFunction) (g.Value, *g.Closure) {
 	op := string('0'+len(i.ArgList)) + i.Fn
 	a := getArgs(f, nonDeref[op], i.ArgList)
 	f.offv = a[0]        // save offending value
@@ -268,20 +296,27 @@ func opFunc(f *pr_frame, i *ir_OpFunction) (g.Value, *g.Closure) {
 
 	// multi-type operations
 	case "1*":
-		return a[0].(g.ISize).Size(), nil
+		return g.Size(a[0]), nil
 	case "1?":
-		v := g.Deref(a[0])
-		return v.(g.IChoose).Choose(lval), nil
+		return g.Choose(lval, g.Deref(a[0])), nil
 	case "1!":
-		return g.Deref(a[0]).(g.IDispense).Dispense(lval)
+		return g.Dispense(lval, g.Deref(a[0]))
 	case "2[]":
-		return g.Deref(a[0]).(g.IIndex).Index(lval, a[1]), nil
+		return g.Index(lval, g.Deref(a[0]), a[1]), nil
 	case "3[:]":
 		return g.Deref(a[0]).(g.ISlice).Slice(lval, a[1], a[2]), nil
 	case "3[+:]":
 		return deltaSlice(lval, a, +1)
 	case "3[-:]":
 		return deltaSlice(lval, a, -1)
+
+	// miscellaneous operations
+	case "2!":
+		return a[0].(g.ICall).Call(env, a[1].(*g.VList).Export().([]g.Value)...)
+	case "2put":
+		return a[0].(g.IListPut).ListPut(a[1]), nil
+	case "2|||":
+		return a[0].(g.IListCat).ListCat(a[1]), nil
 
 	// string operations
 	case "2||":

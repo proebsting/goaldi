@@ -20,21 +20,32 @@ type IExternal interface {
 type ICore interface {
 	fmt.Stringer   // for printing (v.String())
 	fmt.GoStringer // for image() and printf("%#v") (v.GoString())
-	IType          // for "Type()"
+	IType          // for "type()"
+	ICopy          // for "copy()"
 	IImport        // for returning self to Import()
 	IExport        // for passing to a Go function as interface{} value
+	IField         // for implementing methods
 	// optional:  Numerable and Stringable, if implicitly convertible
 	// optional:  IIdentical, if === requires more than pointer comparison
 }
 
-var _ ICore = NilValue.(*vnil) // confirm implementation by vnil
-var _ ICore = NewNumber(1)     // confirm implementation by VNumber
-var _ ICore = NewString("a")   // confirm implementation by VString
-var _ ICore = &VFile{}         // confirm implementation by VFile
-var _ ICore = &VProcedure{}    // confirm implementation by VProcedure
+//  Confirm implementation of core interfaces by all types
+var _ ICore = NilValue.(*vnil)
+var _ ICore = NewNumber(1)
+var _ ICore = NewString("a")
+var _ ICore = &VFile{}
+var _ ICore = &VProcedure{}
+var _ ICore = &VDefn{}
+var _ ICore = &VStruct{}
+var _ ICore = &VList{}
+var _ ICore = &VMap{}
 
 type IType interface {
 	Type() Value // return name of type for type()
+}
+
+type ICopy interface {
+	Copy() Value // return copy of value
 }
 
 //  IImport -- convert to Goaldi value
@@ -42,6 +53,7 @@ type IImport interface {
 	Import() Value // return value to be imported as Goaldi value
 }
 
+//  IExport -- convert Goaldi value to Go value
 type IExport interface {
 	Export() interface{} // return value for export to Go function
 }
@@ -54,14 +66,6 @@ type Numerable interface {
 	ToNumber() *VNumber // if implicitly convertible to number
 }
 
-//  IIdentical -- needed for types where === is not just a pointer match
-type IIdentical interface {
-	Identical(Value) Value
-}
-
-var _ IIdentical = NewNumber(1)   // confirm implementation by VNumber
-var _ IIdentical = NewString("a") // confirm implementation by VString
-
 //  IVariable -- an assignable trapped variable (simple or subscripted)
 type IVariable interface {
 	Deref() Value           // return dereferenced value
@@ -70,7 +74,8 @@ type IVariable interface {
 
 var _ IVariable = &VTrapped{} // confirm implementation by VTrapped
 
-//  Interfaces for indexing operations that can produce variables
+//  Interfaces for operations that can produce substring variables
+//  when applied to strings.
 //  If the IVariable argument is nil, a value is wanted.
 //  If not, it is just a flag for most datatypes but is the actual
 //  underlying value to be replaced by substring assignment.
@@ -89,10 +94,4 @@ type IIndex interface {
 
 type ISlice interface {
 	Slice(IVariable, Value, Value) Value
-}
-
-//  Other interfaces implemented by multiple types
-
-type ISize interface {
-	Size() Value
 }

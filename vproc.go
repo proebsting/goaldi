@@ -17,14 +17,14 @@ func NewProcedure(name string, entry Procedure) *VProcedure {
 	return &VProcedure{name, entry}
 }
 
-//  VProcedure.String -- default conversion to Go string returns "procname()"
+//  VProcedure.String -- default conversion to Go string returns "P:procname"
 func (v *VProcedure) String() string {
-	return v.Name + "()" //#%#%??
+	return "P:" + v.Name
 }
 
 //  VProcedure.GoString -- convert to string for image() and printf("%#v")
 func (v *VProcedure) GoString() string {
-	return v.Name + "()" //#%#%??
+	return "procedure " + v.Name + "()"
 }
 
 //  VProcedure.Type -- return "procedure"
@@ -33,6 +33,11 @@ func (v *VProcedure) Type() Value {
 }
 
 var type_procedure = NewString("procedure")
+
+//  VProcedure.Copy returns itself
+func (v *VProcedure) Copy() Value {
+	return v
+}
 
 //  VProcedure.Import returns itself
 func (v *VProcedure) Import() Value {
@@ -53,6 +58,18 @@ type ICall interface {
 //  VProcedure.Call(args) -- invoke a procedure
 func (v *VProcedure) Call(env *Env, args ...Value) (Value, *Closure) {
 	return v.Entry(env, args...)
+}
+
+//  Declare methods
+var ProcedureMethods = map[string]interface{}{
+	"type":  (*VProcedure).Type,
+	"copy":  (*VProcedure).Copy,
+	"image": Image,
+}
+
+//  VProcedure.Field implements methods
+func (v *VProcedure) Field(f string) Value {
+	return GetMethod(ProcedureMethods, v, f)
 }
 
 //  GoProcedure(name, func) -- construct a procedure from a Go function

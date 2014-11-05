@@ -35,6 +35,6 @@ procedure testcnv(v)
 end
 
 procedure apply(p, x, y)
-	writes(" ", p, p(x, y) | "--")
+	writes(" ", string(p)[3:0], "()", p(x, y) | "--")
 	return
 end

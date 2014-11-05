@@ -95,3 +95,47 @@ func Export(v Value) interface{} {
 		return v
 	}
 }
+
+//  --------------------- trapped references (general) ----------------
+
+type vGoTrap struct {
+	target reflect.Value
+}
+
+func TrapValue(v reflect.Value) *vGoTrap {
+	return &vGoTrap{v}
+}
+
+func (v *vGoTrap) Deref() Value {
+	return Import(v.target.Interface())
+}
+
+func (v *vGoTrap) Assign(x Value) IVariable {
+	v.target.Set(passfunc(v.target.Type())(x))
+	return v
+}
+
+//  --------------------- trapped references (for Go maps) ----------------
+
+type vMapTrap struct {
+	mapv reflect.Value // underlying Go map
+	keyv reflect.Value // key converted to appropriate Go type
+}
+
+func TrapMap(mapv reflect.Value, key Value) *vMapTrap {
+	return &vMapTrap{mapv, passfunc(mapv.Type().Key())(key)}
+}
+
+func (t *vMapTrap) Deref() Value {
+	v := t.mapv.MapIndex(t.keyv)
+	if v.IsValid() {
+		return Import(v.Interface())
+	} else {
+		return nil // not found in map
+	}
+}
+
+func (t *vMapTrap) Assign(x Value) IVariable {
+	t.mapv.SetMapIndex(t.keyv, passfunc(t.mapv.Elem().Type())(x))
+	return t
+}

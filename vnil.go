@@ -29,6 +29,11 @@ func (v *vnil) Type() Value {
 
 var type_nil = NewString("nil")
 
+//  vnil.Copy returns itself
+func (v *vnil) Copy() Value {
+	return v
+}
+
 //  vnil.Import returns itself
 func (v *vnil) Import() Value {
 	return v
@@ -37,4 +42,16 @@ func (v *vnil) Import() Value {
 //  vnil.Export returns a Go nil
 func (v *vnil) Export() interface{} {
 	return nil
+}
+
+//  Declare methods
+var NilMethods = map[string]interface{}{
+	"type":  (*vnil).Type,
+	"copy":  (*vnil).Copy,
+	"image": Image,
+}
+
+//  vnil.Field implements methods
+func (v *vnil) Field(f string) Value {
+	return GetMethod(NilMethods, v, f)
 }
