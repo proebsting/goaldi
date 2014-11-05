@@ -14,6 +14,7 @@ var MapMethods = map[string]interface{}{
 	"image":  Image,
 	"member": (VMap).Member,
 	"delete": (VMap).Delete,
+	"sort":   (VMap).Sort,
 }
 
 //  VMap.Field implements method calls
@@ -50,6 +51,21 @@ func (m VMap) Delete(args ...Value) (Value, *Closure) {
 	key := ProcArg(args, 0, NilValue)
 	TrapMap(m, key).Delete()
 	return Return(m)
+}
+
+//  VMap.Sort(i) produces [:!M:].sort(i)
+func (m VMap) Sort(args ...Value) (Value, *Closure) {
+	defer Traceback("M.sort", args)
+	i := ProcArg(args, 0, ONE).(Numerable).ToNumber()
+	mv := reflect.ValueOf(m)
+	klist := mv.MapKeys()
+	vlist := make([]Value, len(m))
+	for i, kv := range klist {
+		k := Import(kv.Interface())
+		v := Import(mv.MapIndex(kv).Interface())
+		vlist[i] = kvstruct.New([]Value{k, v})
+	}
+	return InitList(vlist).Sort(i)
 }
 
 //  -------------------------- key/value pairs ---------------------

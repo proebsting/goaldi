@@ -86,33 +86,58 @@ const (
 //  a list to be sorted, with field index
 type sortdata struct {
 	data []Value // Goaldi values
-	f    int     // field index or 0
+	f    int     // zero-based field index, or -1
 }
 
-//  L.Sort(i) -- sort list L on field i		#%#% ignores i
+//  L.Sort(i) -- sort list L on field i (default i=1; use i=0 for no field)
 func (v *VList) Sort(args ...Value) (Value, *Closure) {
 	defer Traceback("sort", args)
-	i := int(ProcArg(args, 0, ZERO).(Numerable).ToNumber().Val())
+	i := int(ProcArg(args, 0, ONE).(Numerable).ToNumber().Val()) - 1
 	d := &sortdata{make([]Value, len(v.data)), i}
 	copy(d.data, v.data)
-	sort.Sort(d)
+	sort.Stable(d)
 	return Return(InitList(d.data))
 }
 
 //  sort interface functions
-func (a *sortdata) Len() int      { return len(a.data) }
-func (a *sortdata) Swap(i, j int) { a.data[i], a.data[j] = a.data[j], a.data[i] }
-func (a *sortdata) Less(i, j int) bool {
-	ri := rank(a.data[i])
-	rj := rank(a.data[j])
-	if ri != rj {
-		return ri < rj
+func (a *sortdata) Len() int           { return len(a.data) }
+func (a *sortdata) Swap(i, j int)      { a.data[i], a.data[j] = a.data[j], a.data[i] }
+func (a *sortdata) Less(i, j int) bool { return LT(a.data[i], a.data[j], a.f) }
+
+//  LT(x, y, i) -- return x < y on field i
+func LT(x Value, y Value, i int) bool {
+	rx := rank(x)
+	ry := rank(y)
+	if rx != ry { // if different types
+		return rx < ry // order by type rank
 	}
-	switch ri {
+	// both values have the same type
+	switch ry {
 	case rNumber:
-		return a.data[i].(*VNumber).Val() < a.data[j].(*VNumber).Val()
+		return x.(*VNumber).Val() < y.(*VNumber).Val()
 	case rString:
-		return a.data[i].(*VString).String() < a.data[j].(*VString).String()
+		return x.(*VString).String() < y.(*VString).String()
+	case rStruct:
+		xs := x.(*VStruct)
+		ys := y.(*VStruct)
+		if i >= 0 && len(xs.Data) > i && len(ys.Data) > i {
+			// both sides have an item i
+			return LT(xs.Data[i], ys.Data[i], -1)
+		} else {
+			// put missing one first; otherwise we don't care
+			return len(xs.Data) < len(ys.Data)
+		}
+	case rList:
+		xl := x.(*VList)
+		yl := y.(*VList)
+		if i >= 0 && len(xl.data) > i && len(yl.data) > i {
+			xr := &vListRef{xl, i}
+			yr := &vListRef{yl, i}
+			return LT(xr.Deref(), yr.Deref(), -1)
+		} else {
+			// put missing one first; otherwise we don't care
+			return len(xl.data) < len(yl.data)
+		}
 	default:
 		return false //#%#% not comparable?
 	}
