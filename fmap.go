@@ -2,63 +2,90 @@
 
 package goaldi
 
+import (
+	"math/rand"
+	"reflect"
+)
+
 //  Declare methods
 var MapMethods = map[string]interface{}{
-	"type":   (*VMap).Type,
-	"copy":   (*VMap).Copy,
+	"type":   (VMap).Type,
+	"copy":   (VMap).Copy,
 	"image":  Image,
-	"member": (*VMap).Member,
-	"delete": (*VMap).Delete,
+	"member": (VMap).Member,
+	"delete": (VMap).Delete,
 }
 
-//  VMap.Field implements methods
-func (v *VMap) Field(f string) Value {
-	return GetMethod(MapMethods, v, f)
+//  VMap.Field implements method calls
+func (m VMap) Field(f string) Value {
+	return GetMethod(MapMethods, m, f)
 }
 
-//  Declare constructor function
+//  init() declares the constructor function
 func init() {
 	// Goaldi procedures
 	LibProcedure("map", Map)
 }
 
-//  Map() -- return a new map
+//  Map() returns a new map
 func Map(env *Env, a ...Value) (Value, *Closure) {
 	defer Traceback("map", a)
 	return Return(NewMap())
 }
 
-//------------------------------------  Member:  M.member(x)
-
-func (v *VMap) Member(args ...Value) (Value, *Closure) {
+//  VMap.Member(k) succeeds if k is an existing key
+func (m VMap) Member(args ...Value) (Value, *Closure) {
 	defer Traceback("M.member", args)
 	key := ProcArg(args, 0, NilValue)
-	if v.data[MapIndex(key)] != nil {
+	if TrapMap(m, key).Exists() {
 		return Return(key)
 	} else {
 		return Fail()
 	}
 }
 
-//------------------------------------  Delete:  M.delete(x)
-
-func (v *VMap) Delete(args ...Value) (Value, *Closure) {
+//  VMap.Delete(k) deletes the entry, if any, with key k
+func (m VMap) Delete(args ...Value) (Value, *Closure) {
 	defer Traceback("M.delete", args)
 	key := ProcArg(args, 0, NilValue)
-	x := MapIndex(key)
-	delete(v.data, x)
-	if len(v.data) != len(v.klist) {
-		// delete was successful; need to remove from klist
-		for i := len(v.klist) - 1; i >= 0; i-- {
-			if Identical(key, v.klist[i]) != nil {
-				v.klist[i] = v.klist[len(v.klist)-1]
-				v.klist = v.klist[:len(v.klist)-1]
-				break
-			}
+	TrapMap(m, key).Delete()
+	return Return(m)
+}
+
+//  -------------------------- key/value pairs ---------------------
+
+//  kvstruct defines the {key,value} struct returned by ?M and !M
+var kvstruct = NewDefn("mapElem", []string{"key", "value"})
+
+//  ChooseMap returns a key/value pair from any Go (or Goaldi) map
+func ChooseMap(m interface{} /*anymap*/) Value {
+	mv := reflect.ValueOf(m)
+	klist := mv.MapKeys()
+	n := len(klist)
+	if n == 0 { // if map empty
+		return nil // fail
+	}
+	i := rand.Intn(n)
+	k := Import(klist[i].Interface())
+	v := Import(mv.MapIndex(klist[i]).Interface())
+	return kvstruct.New([]Value{k, v})
+}
+
+//  DispenseMap generates key/value pairs for any Go (or Goaldi) map
+func DispenseMap(m interface{} /*anymap*/) (Value, *Closure) {
+	mv := reflect.ValueOf(m)
+	klist := mv.MapKeys()
+	i := -1
+	var c *Closure
+	c = &Closure{func() (Value, *Closure) {
+		i++
+		if i < len(klist) {
+			k := Import(klist[i].Interface())
+			v := Import(mv.MapIndex(klist[i]).Interface())
+			return kvstruct.New([]Value{k, v}), c
+		} else {
+			return Fail()
 		}
-	}
-	if len(v.data) != len(v.klist) {
-		panic(&RunErr{"inconsistent map", v})
-	}
-	return Return(v)
+	}}
+	return c.Resume()
 }

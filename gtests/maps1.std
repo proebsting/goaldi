@@ -13,15 +13,15 @@
 8 ----1234EFGH axyzefgh  1:a 2:x 3:y 4:z E:e F:f G:g H:h
 8 ----1234EFGH wxyzefgh  1:w 2:x 3:y 4:z E:e F:f G:g H:h
 				 map M:8 8 map{1:w,2:x,3:y,4:z,E:e,F:f,G:g,H:h}
-6 ----1-34EF-H w~yzef~h  1:w H:h 3:y 4:z E:e F:f
+6 ----1-34EF-H w~yzef~h  1:w 3:y 4:z E:e F:f H:h
 8 ----1234EFGH wxyzefgh  1:w 2:x 3:y 4:z E:e F:f G:g H:h
 				 map M:8 8 map{1:w,2:x,3:y,4:z,E:e,F:f,G:g,H:h}
-7 ----12-4EFGH wx~zefgh  1:w 2:x H:h 4:z E:e F:f G:g
-6 ----12-4EF-H wx~zef~h  1:w 2:x H:h 4:z E:e F:f
-5 -----2-4EF-H ~x~zef~h  F:f 2:x H:h 4:z E:e
-4 -----2-4EF-- ~x~zef~~  F:f 2:x E:e 4:z
-3 -------4EF-- ~~~zef~~  F:f 4:z E:e
-2 --------EF-- ~~~~ef~~  F:f E:e
+7 ----12-4EFGH wx~zefgh  1:w 2:x 4:z E:e F:f G:g H:h
+6 ----12-4EF-H wx~zef~h  1:w 2:x 4:z E:e F:f H:h
+5 -----2-4EF-H ~x~zef~h  2:x 4:z E:e F:f H:h
+4 -----2-4EF-- ~x~zef~~  2:x 4:z E:e F:f
+3 -------4EF-- ~~~zef~~  4:z E:e F:f
+2 --------EF-- ~~~~ef~~  E:e F:f
 1 --------E--- ~~~~e~~~  E:e
 0 ------------ ~~~~~~~~ 
 				 map M:0 0 map{}
