@@ -27,6 +27,11 @@ func (v *VProcedure) GoString() string {
 	return "procedure " + v.Name + "()"
 }
 
+//  VProcedure.Rank returns rProc
+func (v *VProcedure) Rank() int {
+	return rProc
+}
+
 //  VProcedure.Type -- return "procedure"
 func (v *VProcedure) Type() Value {
 	return type_procedure

@@ -71,6 +71,11 @@ func (v *VFile) GoString() string {
 	return s + ")"
 }
 
+//  VFile.Rank returns rFile
+func (v *VFile) Rank() int {
+	return rFile
+}
+
 //  VFile.Type returns "file"
 func (v *VFile) Type() Value {
 	return type_file

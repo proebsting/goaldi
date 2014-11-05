@@ -128,6 +128,11 @@ func (v *VString) ToNumber() *VNumber {
 	}
 }
 
+//  VString.Rank returns rString
+func (v *VString) Rank() int {
+	return rString
+}
+
 //  VString.Type -- return "string"
 func (v *VString) Type() Value {
 	return type_string

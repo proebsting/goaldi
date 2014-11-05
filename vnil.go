@@ -22,6 +22,11 @@ func (v *vnil) GoString() string {
 	return "%nil" //#%#% ??
 }
 
+//  vnil.Rank returns rNil
+func (v *vnil) Rank() int {
+	return rNil
+}
+
 //  vnil.Type returns "nil"
 func (v *vnil) Type() Value {
 	return type_nil

@@ -85,6 +85,11 @@ func (v *VNumber) ToNumber() *VNumber {
 	return v
 }
 
+//  VNumber.Rank returns rNumber
+func (v *VNumber) Rank() int {
+	return rNumber
+}
+
 //  VNumber.Type -- return "number"
 func (v *VNumber) Type() Value {
 	return type_number

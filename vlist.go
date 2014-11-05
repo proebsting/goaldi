@@ -48,6 +48,11 @@ func (v *VList) GoString() string {
 	return string(s)
 }
 
+//  VList.Rank returns rList
+func (v *VList) Rank() int {
+	return rList
+}
+
 //  VList.Type -- return "list"
 func (v *VList) Type() Value {
 	return type_list

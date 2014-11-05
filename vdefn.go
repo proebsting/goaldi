@@ -39,6 +39,11 @@ func (v *VDefn) GoString() string {
 	return "constructor " + v.Name + "()"
 }
 
+//  VDefn.Rank returns rDefn
+func (v *VDefn) Rank() int {
+	return rDefn
+}
+
 //  VDefn.Type returns "defn"
 func (v *VDefn) Type() Value {
 	return type_defn

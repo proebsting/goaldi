@@ -39,6 +39,11 @@ func (m VMap) GoString() string {
 	return string(s)
 }
 
+//  VMap.Rank returns rMap
+func (v VMap) Rank() int {
+	return rMap
+}
+
 //  VMap.Type -- return "map"
 func (m VMap) Type() Value {
 	return type_map

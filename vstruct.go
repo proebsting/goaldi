@@ -32,6 +32,11 @@ func (v *VStruct) GoString() string {
 	return string(s)
 }
 
+//  VStruct.Rank returns rStruct
+func (v *VStruct) Rank() int {
+	return rStruct
+}
+
 //  VStruct.Type returns the defined struct name
 func (v *VStruct) Type() Value {
 	return NewString(v.Defn.Name)

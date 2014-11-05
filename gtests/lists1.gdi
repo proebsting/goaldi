@@ -3,7 +3,7 @@
 #  Tests most list operations and methods except random selection.
 
 procedure main()
-	local l, l2, c, i, j
+	local a, b, c, i, j, l, l2
 
 	write("A:")
 	show(list())
@@ -68,6 +68,17 @@ procedure main()
 	write("J:")
 	show([:!"wxyz":])
 	show([: 3 * !7 % 10 :])
+
+	write("K:")
+	a := [3,1,4,1,5,9,2,6,5]
+	write(image(a))
+	write(image(a.sort()))
+	every (b := []).put(!"cowabunga!")
+	write(image(b))
+	write(image(b.sort()))
+	c := [3, "x", &nil, 5.5, a, "q", 7, &stdin, "t", main, 9]
+	write(image(c))
+	write(image(c.sort()))
 
 	write ! ["all ", "done", "!"]
 end

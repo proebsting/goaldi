@@ -20,6 +20,7 @@ type IExternal interface {
 type ICore interface {
 	fmt.Stringer   // for printing (v.String())
 	fmt.GoStringer // for image() and printf("%#v") (v.GoString())
+	IRank          // rank for sorting
 	IType          // for "type()"
 	ICopy          // for "copy()"
 	IImport        // for returning self to Import()
@@ -39,6 +40,10 @@ var _ ICore = &VDefn{}
 var _ ICore = &VStruct{}
 var _ ICore = &VList{}
 var _ ICore = &VMap{}
+
+type IRank interface {
+	Rank() int // return rank of type for sorting
+}
 
 type IType interface {
 	Type() Value // return name of type for type()
