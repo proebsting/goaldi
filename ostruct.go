@@ -6,14 +6,27 @@ import (
 	"math/rand"
 )
 
+//  Declare standard methods
+var StructMethods = map[string]interface{}{
+	"type":  (*VStruct).Type,
+	"copy":  (*VStruct).Copy,
+	"image": Image,
+}
+
 //  VStruct.Field() implements a field reference S.k
 func (v *VStruct) Field(f string) Value {
+	//  check first for record field
 	d := v.Defn
 	for i, s := range d.Flist {
 		if s == f {
 			return Trapped(&v.Data[i])
 		}
 	}
+	//  check for standard method
+	if m := StructMethods[f]; m != nil {
+		return &MVFunc{v, m}
+	}
+	//  neither one found
 	panic(&RunErr{"Field not found: " + f, v})
 }
 

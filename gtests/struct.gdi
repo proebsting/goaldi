@@ -4,7 +4,7 @@ record simple(f)
 record rec(f1, f2)
 
 procedure main()
-   local a, b
+   local a, b, c
 
    a := rec()
    a.f1 := 1
@@ -41,4 +41,10 @@ procedure main()
    a.f2 +:= 20
    every !b +:= 70
    every writes(" ", !a | !b | "\n")
+
+   c := b.copy()
+   b.f2 +:= 3
+   write(image(a))
+   write(image(b))
+   write(image(c))
 end
