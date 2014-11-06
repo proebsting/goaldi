@@ -1,9 +1,6 @@
 #SRC: written for Goaldi
 #
 #  Map operations
-#
-#  Dependent on underlying implementation in terms of map generation order.
-#  Final portion is also dependent on random number implementation.
 
 procedure main()
 	local t, c, i, k, kv
@@ -32,13 +29,13 @@ procedure main()
 	}
 	println("\t\t\t\t", type(t), t, *t, image(t))
 
-	# randomness
-	every t[!4 | !"EFGH"] := ?"abcdefghijklmnopqrstuvwxyz"
-	ck(t)
-	writes("\t\t\t")
-	every !12 do
-		kv := ?t & writes(" ", kv.key, ":", kv.value)
-	write()
+	#%#% random portion disabled
+	#  every t[!4 | !"EFGH"] := ?"abcdefghijklmnopqrstuvwxyz"
+	#  ck(t)
+	#  writes("\t\t\t")
+	#  every !12 do
+	#  	kv := ?t & writes(" ", kv.key, ":", kv.value)
+	#  write()
 end
 
 procedure ck(t)
@@ -49,7 +46,7 @@ procedure ck(t)
 	}
 	every writes(" " | t[!4 | !"EFGH"])
 	writes(" ")
-	every kv := !t do
+	every kv := !t.sort() do
 		writes(" ", kv.key, ":", kv.value)
 	write()
 end

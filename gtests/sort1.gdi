@@ -17,7 +17,7 @@ procedure main()
 	every n := !8 do
 		m[n * 97 % 61] := n * 71 % 43
 	write("m0: ", image(m))
-	show("l!:", l := [:!m:])
+	show("l!:", l := [:!m:].sort())
 	show("l0:", l.sort())
 	show("l1:", l.sort(1))
 	show("l2:", l.sort(2))
