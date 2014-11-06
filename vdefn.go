@@ -87,7 +87,7 @@ func (v *VDefn) Call(env *Env, args ...Value) (Value, *Closure) {
 }
 
 //  Declare required methods
-var Defnethods = map[string]interface{}{
+var DefnMethods = map[string]interface{}{
 	"type":  (*VDefn).Type,
 	"copy":  (*VDefn).Copy,
 	"image": Image,
@@ -95,5 +95,5 @@ var Defnethods = map[string]interface{}{
 
 //  VDefn.Field implements methods
 func (v *VDefn) Field(f string) Value {
-	return GetMethod(Defnethods, v, f)
+	return GetMethod(DefnMethods, v, f)
 }
