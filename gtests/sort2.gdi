@@ -201,7 +201,6 @@ procedure messtest()
    every write(image(!L1.sort()))
 
    wsortf(L1, 2)
-   wsortf(L1, -1)
    return
 end
 

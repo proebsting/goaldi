@@ -73,6 +73,9 @@ func (v *VList) Pull(args ...Value) (Value, *Closure) {
 func (v *VList) Sort(args ...Value) (Value, *Closure) {
 	defer Traceback("sort", args)
 	i := int(ProcArg(args, 0, ONE).(Numerable).ToNumber().Val()) - 1
+	if i < 0 {
+		panic(&RunErr{"Nonpositive field index", args[0]})
+	}
 	d := &lsort{make([]Value, len(v.data)), i}
 	copy(d.v, v.data)
 	sort.Stable(d)
@@ -102,15 +105,25 @@ func LT(x Value, y Value, i int) bool {
 	case rNumber:
 		return x.(*VNumber).Val() < y.(*VNumber).Val()
 	case rString:
-		return x.(*VString).String() < y.(*VString).String()
+		return x.(*VString).compare(y.(*VString)) < 0
+	case rFile:
+		return x.(*VFile).Name < y.(*VFile).Name
+	case rDefn:
+		return x.(*VDefn).Name < y.(*VDefn).Name
+	case rProc:
+		return x.(*VProcedure).Name < y.(*VProcedure).Name
 	case rStruct:
 		xs := x.(*VStruct)
 		ys := y.(*VStruct)
+		if xs.Defn != ys.Defn {
+			// different struct types; order by struct name
+			return xs.Defn.Name < ys.Defn.Name
+		}
 		if i >= 0 && len(xs.Data) > i && len(ys.Data) > i {
 			// both sides have an item i
 			return LT(xs.Data[i], ys.Data[i], -1)
 		} else {
-			// put missing one first; otherwise we don't care
+			// put missing one first; otherwise #%#% we don't care
 			return len(xs.Data) < len(ys.Data)
 		}
 	case rList:
@@ -121,9 +134,11 @@ func LT(x Value, y Value, i int) bool {
 			yr := &vListRef{yl, i}
 			return LT(xr.Deref(), yr.Deref(), -1)
 		} else {
-			// put missing one first; otherwise we don't care
+			// put missing one first; otherwise #%#% we don't care
 			return len(xl.data) < len(yl.data)
 		}
+	case rMap:
+		return len(x.(VMap)) < len(y.(VMap)) //#%#% got anything better?
 	default:
 		return false //#%#% not comparable?
 	}
