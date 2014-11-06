@@ -69,40 +69,26 @@ func (v *VList) Pull(args ...Value) (Value, *Closure) {
 
 //------------------------------------  Sort:  L.sort(i)
 
-//  ranking of types for sorting
-const (
-	rNil = iota
-	rNumber
-	rString
-	rFile
-	rDefn
-	rProc
-	rList
-	rMap
-	rStruct
-	rExternal
-)
-
-//  a list to be sorted, with field index
-type sortdata struct {
-	data []Value // Goaldi values
-	f    int     // zero-based field index, or -1
-}
-
 //  L.Sort(i) -- sort list L on field i (default i=1; use i=0 for no field)
 func (v *VList) Sort(args ...Value) (Value, *Closure) {
 	defer Traceback("sort", args)
 	i := int(ProcArg(args, 0, ONE).(Numerable).ToNumber().Val()) - 1
-	d := &sortdata{make([]Value, len(v.data)), i}
-	copy(d.data, v.data)
+	d := &lsort{make([]Value, len(v.data)), i}
+	copy(d.v, v.data)
 	sort.Stable(d)
-	return Return(InitList(d.data))
+	return Return(InitList(d.v))
+}
+
+//  a list to be sorted, with field index
+type lsort struct {
+	v []Value // Goaldi values
+	f int     // zero-based field index, or -1
 }
 
 //  sort interface functions
-func (a *sortdata) Len() int           { return len(a.data) }
-func (a *sortdata) Swap(i, j int)      { a.data[i], a.data[j] = a.data[j], a.data[i] }
-func (a *sortdata) Less(i, j int) bool { return LT(a.data[i], a.data[j], a.f) }
+func (a *lsort) Len() int           { return len(a.v) }
+func (a *lsort) Swap(i, j int)      { a.v[i], a.v[j] = a.v[j], a.v[i] }
+func (a *lsort) Less(i, j int) bool { return LT(a.v[i], a.v[j], a.f) }
 
 //  LT(x, y, i) -- return x < y on field i
 func LT(x Value, y Value, i int) bool {
@@ -142,6 +128,20 @@ func LT(x Value, y Value, i int) bool {
 		return false //#%#% not comparable?
 	}
 }
+
+//  ranking of types for sorting
+const (
+	rNil = iota
+	rNumber
+	rString
+	rFile
+	rDefn
+	rProc
+	rList
+	rMap
+	rStruct
+	rExternal
+)
 
 //  rank(x) -- return sort ranking for the type of x
 func rank(x Value) int {
