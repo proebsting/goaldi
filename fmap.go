@@ -9,12 +9,12 @@ import (
 
 //  Declare methods
 var MapMethods = map[string]interface{}{
-	"type":   (VMap).Type,
-	"copy":   (VMap).Copy,
+	"type":   VMap.Type,
+	"copy":   VMap.Copy,
 	"image":  Image,
-	"member": (VMap).Member,
-	"delete": (VMap).Delete,
-	"sort":   (VMap).Sort,
+	"member": VMap.Member,
+	"delete": VMap.Delete,
+	"sort":   VMap.Sort,
 }
 
 //  VMap.Field implements method calls
