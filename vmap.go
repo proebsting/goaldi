@@ -25,14 +25,19 @@ func (m VMap) String() string {
 }
 
 //  VMap.GoString -- convert to Go string for image() and printf("%#v")
+//
+//  For utility and reproducibility, we assume it's worth the cost
+//  to sort the map in key order.
 func (m VMap) GoString() string {
 	if len(m) == 0 {
 		return "map{}"
 	}
+	l, _ := m.Sort(ONE) // sort on key values
 	var b bytes.Buffer
 	fmt.Fprintf(&b, "map{")
-	for k, v := range m {
-		fmt.Fprintf(&b, "%v:%v,", k, v)
+	for _, e := range l.(*VList).data {
+		r := e.(*VStruct)
+		fmt.Fprintf(&b, "%v:%v,", r.Data[0], r.Data[1])
 	}
 	s := b.Bytes()
 	s[len(s)-1] = '}'
