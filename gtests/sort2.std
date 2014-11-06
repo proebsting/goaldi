@@ -1,0 +1,438 @@
+0:
+1:
+2:
+3:
+4:
+5:
+6:
+7:
+8:
+9:
+10:
+23:
+47:
+91:
+
+ 0 e 1 t 2 a 3 o 4 i 5 n 6 s 7 h 8 r 9 d
+ 0 e 1 t 2 a 3 o 4 i 5 n 6 s 7 h 8 r 9 d
+ 2 a 9 d 0 e 7 h 4 i 5 n 3 o 8 r 6 s 1 t
+ 0 e 1 t 2 a 3 o 4 i 5 n 6 s 7 h 8 r 9 d
+ 0 e 1 t 2 a 3 o 4 i 5 n 6 s 7 h 8 r 9 d
+ 2 a 9 d 0 e 7 h 4 i 5 n 3 o 8 r 6 s 1 t
+
+ L1: [3,2,1,L:4] 1 2 3 
+ L2: [3,2,1,L:4] 1 2 4 
+ T1: mapElem{2,j} mapElem{5,c} mapElem{8,n} mapElem{15,M:4} 
+ T2: mapElem{2,j} mapElem{8,n} mapElem{11,t} mapElem{15,M:4} 
+
+
+%nil
+%nil
+%nil
+%nil
+%nil
+%nil
+-3.647299637717079e+19
+-3.647299637717079e+19
+-2.7368747340080914e+19
+-2.7368747340080914e+19
+1
+1
+1.1
+1.1
+2
+2
+2.2
+2.2
+3
+3
+3.3
+3.3
+4
+4
+4.4
+4.4
+5
+5
+7
+7
+3.725290298461914e+19
+3.725290298461914e+19
+6.115909044841455e+19
+6.115909044841455e+19
+""
+""
+""
+""
+"0cs"
+"0cs"
+"1234cs"
+"1234cs"
+"123cs"
+"123cs"
+"XYZcs"
+"XYZcs"
+"a"
+"a"
+"alpha"
+"alpha"
+"beta"
+"beta"
+"delta"
+"delta"
+"epsilon"
+"epsilon"
+"epsilons"
+"epsilons"
+"gamma"
+"gamma"
+"gamma"
+"gamma"
+file(%stdin,r)
+file(%stdout,w)
+file(%stderr,w)
+file(%stdin,r)
+file(%stdout,w)
+file(%stderr,w)
+constructor r0()
+constructor r5()
+constructor r2()
+constructor r1()
+constructor r0()
+constructor r5()
+constructor r2()
+constructor r1()
+procedure number()
+procedure wlist()
+procedure image()
+procedure write()
+procedure image()
+procedure reverse()
+procedure check()
+procedure read()
+procedure map()
+procedure toupper()
+procedure messtest()
+procedure listtest()
+procedure main()
+procedure number()
+procedure wlist()
+procedure image()
+procedure write()
+procedure image()
+procedure reverse()
+procedure check()
+procedure read()
+procedure map()
+procedure toupper()
+procedure messtest()
+procedure listtest()
+procedure main()
+[]
+[]
+[]
+[]
+[1,2,3]
+[1,2,3]
+[3,4]
+[3,4]
+[,0cs,4.4,2.2,a,~,P:number,P:wlist,epsilons,S:r0,delta,P:image,beta,M:0,L:0,P:write,123cs,L:2,-3.647e+19,P:image,7,F:%stdin,3.3,P:reverse,r1{},L:0,M:0,S:r5,r5{},~,,r2{},-2.737e+19,epsilon,L:3,r5{},S:r2,F:%stdout,4,~,1,r5{},S:r1,P:check,XYZcs,1.1,r1{},3.725e+19,1234cs,5,r0{},P:read,gamma,r5{},2,P:map,r2{},P:toupper,r0{},alpha,P:messtest,F:%stderr,6.116e+19,P:listtest,gamma,P:main,3,L:136,,0cs,4.4,2.2,a,~,P:number,P:wlist,epsilons,S:r0,delta,P:image,beta,M:0,L:0,P:write,123cs,L:2,-3.647e+19,P:image,7,F:%stdin,3.3,P:reverse,r1{},L:0,M:0,S:r5,r5{},~,,r2{},-2.737e+19,epsilon,L:3,r5{},S:r2,F:%stdout,4,~,1,r5{},S:r1,P:check,XYZcs,1.1,r1{},3.725e+19,1234cs,5,r0{},P:read,gamma,r5{},2,P:map,r2{},P:toupper,r0{},alpha,P:messtest,F:%stderr,6.116e+19,P:listtest,gamma,P:main,3,L:135]
+[,0cs,4.4,2.2,a,~,P:number,P:wlist,epsilons,S:r0,delta,P:image,beta,M:0,L:0,P:write,123cs,L:2,-3.647e+19,P:image,7,F:%stdin,3.3,P:reverse,r1{},L:0,M:0,S:r5,r5{},~,,r2{},-2.737e+19,epsilon,L:3,r5{},S:r2,F:%stdout,4,~,1,r5{},S:r1,P:check,XYZcs,1.1,r1{},3.725e+19,1234cs,5,r0{},P:read,gamma,r5{},2,P:map,r2{},P:toupper,r0{},alpha,P:messtest,F:%stderr,6.116e+19,P:listtest,gamma,P:main,3,L:136,,0cs,4.4,2.2,a,~,P:number,P:wlist,epsilons,S:r0,delta,P:image,beta,M:0,L:0,P:write,123cs,L:2,-3.647e+19,P:image,7,F:%stdin,3.3,P:reverse,r1{},L:0,M:0,S:r5,r5{},~,,r2{},-2.737e+19,epsilon,L:3,r5{},S:r2,F:%stdout,4,~,1,r5{},S:r1,P:check,XYZcs,1.1,r1{},3.725e+19,1234cs,5,r0{},P:read,gamma,r5{},2,P:map,r2{},P:toupper,r0{},alpha,P:messtest,F:%stderr,6.116e+19,P:listtest,gamma,P:main,3]
+map{}
+map{}
+map{}
+map{}
+r0{}
+r0{}
+r0{}
+r0{}
+r1{1}
+r5{1,23,~,~,~}
+r5{1,2,3,~,~}
+r2{1,2}
+r1{1}
+r5{1,23,~,~,~}
+r5{1,2,3,~,~}
+r2{1,2}
+r5{4,5,6,7,8}
+r5{4,5,6,7,8}
+r2{5,6}
+r1{5}
+r2{5,6}
+r1{5}
+r5{7,8,9,~,~}
+r5{7,8,9,~,~}
+
+%nil
+%nil
+%nil
+%nil
+%nil
+%nil
+-3.647299637717079e+19
+-3.647299637717079e+19
+-2.7368747340080914e+19
+-2.7368747340080914e+19
+1
+1
+1.1
+1.1
+2
+2
+2.2
+2.2
+3
+3
+3.3
+3.3
+4
+4
+4.4
+4.4
+5
+5
+7
+7
+3.725290298461914e+19
+3.725290298461914e+19
+6.115909044841455e+19
+6.115909044841455e+19
+""
+""
+""
+""
+"0cs"
+"0cs"
+"1234cs"
+"1234cs"
+"123cs"
+"123cs"
+"XYZcs"
+"XYZcs"
+"a"
+"a"
+"alpha"
+"alpha"
+"beta"
+"beta"
+"delta"
+"delta"
+"epsilon"
+"epsilon"
+"epsilons"
+"epsilons"
+"gamma"
+"gamma"
+"gamma"
+"gamma"
+file(%stdin,r)
+file(%stdout,w)
+file(%stderr,w)
+file(%stdin,r)
+file(%stdout,w)
+file(%stderr,w)
+constructor r0()
+constructor r5()
+constructor r2()
+constructor r1()
+constructor r0()
+constructor r5()
+constructor r2()
+constructor r1()
+procedure number()
+procedure wlist()
+procedure image()
+procedure write()
+procedure image()
+procedure reverse()
+procedure check()
+procedure read()
+procedure map()
+procedure toupper()
+procedure messtest()
+procedure listtest()
+procedure main()
+procedure number()
+procedure wlist()
+procedure image()
+procedure write()
+procedure image()
+procedure reverse()
+procedure check()
+procedure read()
+procedure map()
+procedure toupper()
+procedure messtest()
+procedure listtest()
+procedure main()
+[]
+[]
+[]
+[]
+[1,2,3]
+[1,2,3]
+[3,4]
+[3,4]
+[,0cs,4.4,2.2,a,~,P:number,P:wlist,epsilons,S:r0,delta,P:image,beta,M:0,L:0,P:write,123cs,L:2,-3.647e+19,P:image,7,F:%stdin,3.3,P:reverse,r1{},L:0,M:0,S:r5,r5{},~,,r2{},-2.737e+19,epsilon,L:3,r5{},S:r2,F:%stdout,4,~,1,r5{},S:r1,P:check,XYZcs,1.1,r1{},3.725e+19,1234cs,5,r0{},P:read,gamma,r5{},2,P:map,r2{},P:toupper,r0{},alpha,P:messtest,F:%stderr,6.116e+19,P:listtest,gamma,P:main,3,L:136,,0cs,4.4,2.2,a,~,P:number,P:wlist,epsilons,S:r0,delta,P:image,beta,M:0,L:0,P:write,123cs,L:2,-3.647e+19,P:image,7,F:%stdin,3.3,P:reverse,r1{},L:0,M:0,S:r5,r5{},~,,r2{},-2.737e+19,epsilon,L:3,r5{},S:r2,F:%stdout,4,~,1,r5{},S:r1,P:check,XYZcs,1.1,r1{},3.725e+19,1234cs,5,r0{},P:read,gamma,r5{},2,P:map,r2{},P:toupper,r0{},alpha,P:messtest,F:%stderr,6.116e+19,P:listtest,gamma,P:main,3,L:135]
+[,0cs,4.4,2.2,a,~,P:number,P:wlist,epsilons,S:r0,delta,P:image,beta,M:0,L:0,P:write,123cs,L:2,-3.647e+19,P:image,7,F:%stdin,3.3,P:reverse,r1{},L:0,M:0,S:r5,r5{},~,,r2{},-2.737e+19,epsilon,L:3,r5{},S:r2,F:%stdout,4,~,1,r5{},S:r1,P:check,XYZcs,1.1,r1{},3.725e+19,1234cs,5,r0{},P:read,gamma,r5{},2,P:map,r2{},P:toupper,r0{},alpha,P:messtest,F:%stderr,6.116e+19,P:listtest,gamma,P:main,3,L:136,,0cs,4.4,2.2,a,~,P:number,P:wlist,epsilons,S:r0,delta,P:image,beta,M:0,L:0,P:write,123cs,L:2,-3.647e+19,P:image,7,F:%stdin,3.3,P:reverse,r1{},L:0,M:0,S:r5,r5{},~,,r2{},-2.737e+19,epsilon,L:3,r5{},S:r2,F:%stdout,4,~,1,r5{},S:r1,P:check,XYZcs,1.1,r1{},3.725e+19,1234cs,5,r0{},P:read,gamma,r5{},2,P:map,r2{},P:toupper,r0{},alpha,P:messtest,F:%stderr,6.116e+19,P:listtest,gamma,P:main,3]
+map{}
+map{}
+map{}
+map{}
+r0{}
+r0{}
+r0{}
+r0{}
+r1{1}
+r1{5}
+r1{1}
+r1{5}
+r5{1,2,3,~,~}
+r2{1,2}
+r5{1,2,3,~,~}
+r2{1,2}
+r5{4,5,6,7,8}
+r5{4,5,6,7,8}
+r2{5,6}
+r2{5,6}
+r5{7,8,9,~,~}
+r5{7,8,9,~,~}
+r5{1,23,~,~,~}
+r5{1,23,~,~,~}
+
+%nil
+%nil
+%nil
+%nil
+%nil
+%nil
+-3.647299637717079e+19
+-3.647299637717079e+19
+-2.7368747340080914e+19
+-2.7368747340080914e+19
+1
+1
+1.1
+1.1
+2
+2
+2.2
+2.2
+3
+3
+3.3
+3.3
+4
+4
+4.4
+4.4
+5
+5
+7
+7
+3.725290298461914e+19
+3.725290298461914e+19
+6.115909044841455e+19
+6.115909044841455e+19
+""
+""
+""
+""
+"0cs"
+"0cs"
+"1234cs"
+"1234cs"
+"123cs"
+"123cs"
+"XYZcs"
+"XYZcs"
+"a"
+"a"
+"alpha"
+"alpha"
+"beta"
+"beta"
+"delta"
+"delta"
+"epsilon"
+"epsilon"
+"epsilons"
+"epsilons"
+"gamma"
+"gamma"
+"gamma"
+"gamma"
+file(%stdin,r)
+file(%stdout,w)
+file(%stderr,w)
+file(%stdin,r)
+file(%stdout,w)
+file(%stderr,w)
+constructor r0()
+constructor r5()
+constructor r2()
+constructor r1()
+constructor r0()
+constructor r5()
+constructor r2()
+constructor r1()
+procedure number()
+procedure wlist()
+procedure image()
+procedure write()
+procedure image()
+procedure reverse()
+procedure check()
+procedure read()
+procedure map()
+procedure toupper()
+procedure messtest()
+procedure listtest()
+procedure main()
+procedure number()
+procedure wlist()
+procedure image()
+procedure write()
+procedure image()
+procedure reverse()
+procedure check()
+procedure read()
+procedure map()
+procedure toupper()
+procedure messtest()
+procedure listtest()
+procedure main()
+[]
+[]
+[]
+[]
+[3,4]
+[3,4]
+[1,2,3]
+[1,2,3]
+[,0cs,4.4,2.2,a,~,P:number,P:wlist,epsilons,S:r0,delta,P:image,beta,M:0,L:0,P:write,123cs,L:2,-3.647e+19,P:image,7,F:%stdin,3.3,P:reverse,r1{},L:0,M:0,S:r5,r5{},~,,r2{},-2.737e+19,epsilon,L:3,r5{},S:r2,F:%stdout,4,~,1,r5{},S:r1,P:check,XYZcs,1.1,r1{},3.725e+19,1234cs,5,r0{},P:read,gamma,r5{},2,P:map,r2{},P:toupper,r0{},alpha,P:messtest,F:%stderr,6.116e+19,P:listtest,gamma,P:main,3,L:136,,0cs,4.4,2.2,a,~,P:number,P:wlist,epsilons,S:r0,delta,P:image,beta,M:0,L:0,P:write,123cs,L:2,-3.647e+19,P:image,7,F:%stdin,3.3,P:reverse,r1{},L:0,M:0,S:r5,r5{},~,,r2{},-2.737e+19,epsilon,L:3,r5{},S:r2,F:%stdout,4,~,1,r5{},S:r1,P:check,XYZcs,1.1,r1{},3.725e+19,1234cs,5,r0{},P:read,gamma,r5{},2,P:map,r2{},P:toupper,r0{},alpha,P:messtest,F:%stderr,6.116e+19,P:listtest,gamma,P:main,3]
+[,0cs,4.4,2.2,a,~,P:number,P:wlist,epsilons,S:r0,delta,P:image,beta,M:0,L:0,P:write,123cs,L:2,-3.647e+19,P:image,7,F:%stdin,3.3,P:reverse,r1{},L:0,M:0,S:r5,r5{},~,,r2{},-2.737e+19,epsilon,L:3,r5{},S:r2,F:%stdout,4,~,1,r5{},S:r1,P:check,XYZcs,1.1,r1{},3.725e+19,1234cs,5,r0{},P:read,gamma,r5{},2,P:map,r2{},P:toupper,r0{},alpha,P:messtest,F:%stderr,6.116e+19,P:listtest,gamma,P:main,3,L:136,,0cs,4.4,2.2,a,~,P:number,P:wlist,epsilons,S:r0,delta,P:image,beta,M:0,L:0,P:write,123cs,L:2,-3.647e+19,P:image,7,F:%stdin,3.3,P:reverse,r1{},L:0,M:0,S:r5,r5{},~,,r2{},-2.737e+19,epsilon,L:3,r5{},S:r2,F:%stdout,4,~,1,r5{},S:r1,P:check,XYZcs,1.1,r1{},3.725e+19,1234cs,5,r0{},P:read,gamma,r5{},2,P:map,r2{},P:toupper,r0{},alpha,P:messtest,F:%stderr,6.116e+19,P:listtest,gamma,P:main,3,L:135]
+map{}
+map{}
+map{}
+map{}
+r0{}
+r0{}
+r0{}
+r0{}
+r1{1}
+r1{5}
+r1{1}
+r1{5}
+r2{5,6}
+r2{1,2}
+r2{5,6}
+r2{1,2}
+r5{1,23,~,~,~}
+r5{7,8,9,~,~}
+r5{1,2,3,~,~}
+r5{4,5,6,7,8}
+r5{1,23,~,~,~}
+r5{7,8,9,~,~}
+r5{1,2,3,~,~}
+r5{4,5,6,7,8}
