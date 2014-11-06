@@ -175,24 +175,25 @@ end
 #  sort different types together
 
 procedure messtest()
-   local L1, L2, L3
+   local L0, L1, L2, L3
 
    write()
+   L0 := []
    L1 := [
-      "", "0cs", 4.4, 2.2, "a", &nil, number, wlist, "epsilons",
+      "", "0cs", 4.4, 2.2, "a", &nil, number, wlist, "epsilons", L0.put,
       r0, "delta", image, "beta", map(5), [], write, "123cs", [3,4], -3^41,
       image, map()[4]:=7, &stdin, 3.3, reverse, r1(1), [], map(),
       r5, r5(1,23), &nil,
  	  #%#% create 1 | 2, 5.5,
-       "", r2(5,6), -7^23,
+       "", r2(5,6), -7^23, L0.get,
       "epsilon", [1,2,3], r5(7,8,9), r2, &stdout, 4, , 1,
       r5(1,2,3), r1, check,
       #%#% create 3 | 4,
-      "XYZcs", 1.1, r1(5), 5^28,
+      "XYZcs", 1.1, r1(5), 5^28, L0.push,
       "1234cs", 5, r0(), read, "gamma", r5(4,5,6,7,8), 2,
       #%#% create 5 to 7,
       map, r2(1,2), toupper, r0(), "alpha", messtest, &stderr, 11^19,
-      listtest, "gamma", main, 3]
+      listtest, "gamma", main, 3, L0.pop ]
    L1.put(L1)
    L2 := L1.copy()
    every L1.put((!L2).copy())

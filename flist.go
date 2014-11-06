@@ -110,6 +110,8 @@ func LT(x Value, y Value, i int) bool {
 		return x.(*VFile).Name < y.(*VFile).Name
 	case rDefn:
 		return x.(*VDefn).Name < y.(*VDefn).Name
+	case rMethB:
+		return x.(*VMethB).Name < y.(*VMethB).Name
 	case rProc:
 		return x.(*VProcedure).Name < y.(*VProcedure).Name
 	case rStruct:
@@ -151,6 +153,7 @@ const (
 	rString
 	rFile
 	rDefn
+	rMethB
 	rProc
 	rList
 	rMap

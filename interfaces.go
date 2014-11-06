@@ -36,6 +36,7 @@ var _ ICore = NewNumber(1)
 var _ ICore = NewString("a")
 var _ ICore = &VFile{}
 var _ ICore = &VProcedure{}
+var _ ICore = &VMethB{}
 var _ ICore = &VDefn{}
 var _ ICore = &VStruct{}
 var _ ICore = &VList{}
