@@ -8,7 +8,7 @@ procedure main()
 	m[2] := "b"
 	a := [, 1, &pi, 6.02214129e23, "abc", &stdin, [].push, main,
 		Circle(3,4,5), [1,2,3], m, !m]
-	fmt := "%-12s %-12s %-20s %s"
+	fmt := "%-12s %-12s %-24s %s"
 	printf(fmt, "type", "string", "image", "write\n")
 	printf(fmt, "----", "------", "-----", "-----\n")
 	every v := !a do {

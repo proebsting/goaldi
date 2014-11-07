@@ -24,8 +24,8 @@ func (v *VStruct) GoString() string {
 	}
 	var b bytes.Buffer
 	fmt.Fprintf(&b, "%s{", v.Defn.Name)
-	for _, x := range v.Data {
-		fmt.Fprintf(&b, "%v,", x)
+	for i, x := range v.Data {
+		fmt.Fprintf(&b, "%v:%v,", v.Defn.Flist[i], x)
 	}
 	s := b.Bytes()
 	s[len(s)-1] = '}'
