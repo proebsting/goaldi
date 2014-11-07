@@ -7,7 +7,7 @@ number       6.022e+23    6.02214129e+23           6.022e+23
 string       abc          "abc"                    abc
 file         F:%stdin     file(%stdin,r)           F:%stdin
 constructor  C:Circle     constructor Circle()     C:Circle
-methb        B:push       method (L:0).push        B:push
+methodvalue  V:push       methodvalue (L:0).push   V:push
 procedure    P:main       procedure main()         P:main
 list         L:3          [1,2,3]                  L:3
 map          M:2          map{1:a,2:b}             M:2

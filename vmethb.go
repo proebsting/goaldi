@@ -1,4 +1,4 @@
-//  vmethb -- a bound method
+//  vmethb -- a bound method, or "method value"
 //
 //  This needs to be a first-class type because it is visible to a
 //  Goaldi programmer.
@@ -18,14 +18,14 @@ type VMethB struct {
 	Func interface{} // func(Value, ...Value)(Value, *Closure)
 }
 
-//  VMethB.String -- conversion to Go string returns "B:Name"
+//  VMethB.String -- conversion to Go string returns "V:Name"
 func (v *VMethB) String() string {
-	return "B:" + v.Name
+	return "V:" + v.Name
 }
 
 //  VMethB.GoString -- convert to Go string for image() and printf("%#v")
 func (v *VMethB) GoString() string {
-	return fmt.Sprintf("method (%v).%s", v.Val, v.Name)
+	return fmt.Sprintf("methodvalue (%v).%s", v.Val, v.Name)
 }
 
 //  VMethB.Rank returns rMethB
@@ -33,12 +33,12 @@ func (v *VMethB) Rank() int {
 	return rMethB
 }
 
-//  VMethB.Type returns "methb"
+//  VMethB.Type returns "methodvalue"
 func (v *VMethB) Type() Value {
-	return type_methb
+	return type_methodvalue
 }
 
-var type_methb = NewString("methb")
+var type_methodvalue = NewString("methodvalue")
 
 //  VMethB.Copy returns itself
 func (v *VMethB) Copy() Value {
