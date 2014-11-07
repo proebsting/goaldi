@@ -3,6 +3,7 @@ mn 37 qr 1.618st 25 uv 0
 543210
      1.618 3.141592653589793 12345 abcde
      1.618 3.141592653589793 12345 abcde
+"2.7183"
 
 strings:
 aBc: equalfold()0 repl()aBcaBcaBc toupper()ABC tolower()abc trim()aBc

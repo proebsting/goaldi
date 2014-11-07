@@ -59,6 +59,7 @@ func init() {
 	LibGoFunc("truncate", os.Truncate)
 	LibGoFunc("printf", fmt.Printf)   // use %.0f to format as integer
 	LibGoFunc("fprintf", fmt.Fprintf) // use %.0f to format as integer
+	LibGoFunc("sprintf", fmt.Sprintf) // use %.0f to format as integer
 }
 
 var noBytes = []byte("")
