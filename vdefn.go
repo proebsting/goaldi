@@ -1,4 +1,4 @@
-//  vdefn.go -- struct definition information
+//  vdefn.go -- struct definition (constructor) information
 //
 //  Defines the interpretation of a vstruct object that points to it,
 //  and constructs objects for it.
@@ -29,9 +29,9 @@ func (v *VDefn) New(a []Value) *VStruct {
 	return r
 }
 
-//  VDefn.String -- conversion to Go string returns "S:name"
+//  VDefn.String -- conversion to Go string returns "C:name"
 func (v *VDefn) String() string {
-	return "S:" + v.Name
+	return "C:" + v.Name
 }
 
 //  VDefn.GoString -- convert to Go string for image() and printf("%#v")
@@ -44,12 +44,12 @@ func (v *VDefn) Rank() int {
 	return rDefn
 }
 
-//  VDefn.Type returns "defn"
+//  VDefn.Type returns "constructor"
 func (v *VDefn) Type() Value {
-	return type_defn
+	return type_constructor
 }
 
-var type_defn = NewString("defn")
+var type_constructor = NewString("constructor")
 
 //  VDefn.Copy returns itself
 func (v *VDefn) Copy() Value {

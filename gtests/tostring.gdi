@@ -1,3 +1,5 @@
+#  Image and string conversion examples for every Goaldi type
+
 record Circle(x, y, r)
 
 procedure main()
@@ -6,13 +8,21 @@ procedure main()
 	m := map()
 	m[1] := "a"
 	m[2] := "b"
+
+	# make a collection, and sort it
 	a := [, 1, &pi, 6.02214129e23, "abc", &stdin, [].push, main,
-		Circle(3,4,5), [1,2,3], m, !m]
+		Circle, Circle(3,4,5), [1,2,3], m, !m.sort()]
+	a := a.sort()
+
+	# print header
 	fmt := "%-12s %-12s %-24s %s"
 	printf(fmt, "type", "string", "image", "write\n")
 	printf(fmt, "----", "------", "-----", "-----\n")
+
+	# print conversion examples, ending with implicit conversion by write()
 	every v := !a do {
-		printf(fmt, type(v) | "[failed]",
+		printf(fmt,
+			type(v) | "[failed]",
 			string(v) | "[failed]",
 			image(v) | "[failed]", "") 
 		write(&stdout, v)

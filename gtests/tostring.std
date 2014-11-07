@@ -6,9 +6,10 @@ number       3.142        3.141592653589793        3.142
 number       6.022e+23    6.02214129e+23           6.022e+23
 string       abc          "abc"                    abc
 file         F:%stdin     file(%stdin,r)           F:%stdin
+constructor  C:Circle     constructor Circle()     C:Circle
 methb        B:push       method (L:0).push        B:push
 procedure    P:main       procedure main()         P:main
-Circle       Circle{}     Circle{x:3,y:4,r:5}      Circle{}
 list         L:3          [1,2,3]                  L:3
 map          M:2          map{1:a,2:b}             M:2
+Circle       Circle{}     Circle{x:3,y:4,r:5}      Circle{}
 mapElem      mapElem{}    mapElem{key:1,value:a}   mapElem{}
