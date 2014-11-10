@@ -16,7 +16,7 @@ type VList struct {
 
 //  NewList(n, x) -- make a new list of n elements each initialized to x
 func NewList(n int, x Value) *VList {
-	v := &VList{make([]Value, n, n), false}
+	v := &VList{make([]Value, n), false}
 	for i := range v.data {
 		v.data[i] = x
 	}
@@ -74,7 +74,7 @@ func (v *VList) Import() Value {
 //  VList.Export returns a copy of the data slice.
 func (v *VList) Export() interface{} {
 	n := len(v.data)
-	r := make([]Value, n, n)
+	r := make([]Value, n)
 	copy(r, v.data)
 	if v.rev {
 		ReverseValues(r)

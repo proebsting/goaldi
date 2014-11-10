@@ -73,7 +73,7 @@ func (v *VList) Slice(lval IVariable, x Value, y Value) Value {
 		i, j = j, i // indexing was backwards
 	}
 	m := j - i
-	a := make([]Value, m, m)
+	a := make([]Value, m)
 	if v.rev {
 		copy(a, v.data[n-j:n-i])
 		ReverseValues(a)

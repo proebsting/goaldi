@@ -33,7 +33,7 @@ func abort(e interface{}) {
 func sortedKeys(m interface{}) chan string {
 	vlist := reflect.ValueOf(m).MapKeys()
 	n := len(vlist)
-	slist := make([]string, n, n)
+	slist := make([]string, n)
 	for i, k := range vlist {
 		slist[i] = k.String()
 	}

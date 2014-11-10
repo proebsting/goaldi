@@ -37,7 +37,7 @@ func interp(env *g.Env, pr *pr_Info, args ...g.Value) (g.Value, *g.Closure) {
 	f.temps = make(map[string]interface{})
 
 	// initialize parameters
-	f.params = make([]g.Value, pr.nparams, pr.nparams)
+	f.params = make([]g.Value, pr.nparams)
 	for i := 0; i < len(f.params); i++ {
 		if i < len(args) {
 			f.params[i] = args[i]
@@ -58,7 +58,7 @@ func interp(env *g.Env, pr *pr_Info, args ...g.Value) (g.Value, *g.Closure) {
 	}
 
 	// initialize locals to nil
-	f.locals = make([]g.Value, pr.nlocals, pr.nlocals)
+	f.locals = make([]g.Value, pr.nlocals)
 	for i := 0; i < len(f.locals); i++ {
 		f.locals[i] = g.NilValue
 	}
@@ -125,7 +125,7 @@ func interp(env *g.Env, pr *pr_Info, args ...g.Value) (g.Value, *g.Closure) {
 					f.temps[i.Lhs] = g.NewString(i.Val)
 				case ir_MakeList:
 					n := len(i.ValueList)
-					a := make([]g.Value, n, n)
+					a := make([]g.Value, n)
 					for j, v := range i.ValueList {
 						a[j] = g.Deref(f.temps[v.(string)])
 					}
@@ -230,7 +230,7 @@ func interp(env *g.Env, pr *pr_Info, args ...g.Value) (g.Value, *g.Closure) {
 //  nd is the number of leading arguments that should *not* be dereferenced
 func getArgs(f *pr_frame, nd int, arglist []interface{}) []g.Value {
 	n := len(arglist)
-	argl := make([]g.Value, n, n)
+	argl := make([]g.Value, n)
 	for i, a := range arglist {
 		switch t := a.(type) {
 		case string:

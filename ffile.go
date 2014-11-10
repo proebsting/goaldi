@@ -179,7 +179,7 @@ func Readb(env *Env, a ...Value) (Value, *Closure) {
 	defer Traceback("readb", a)
 	r := ProcArg(a, 0, STDIN).(*VFile).Reader
 	n := int(ProcArg(a, 1, ONE).(Numerable).ToNumber().Val())
-	b := make([]byte, n, n)
+	b := make([]byte, n)
 	n, err := r.Read(b)
 	if err == io.EOF {
 		return Fail()

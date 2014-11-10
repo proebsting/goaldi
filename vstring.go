@@ -31,8 +31,8 @@ func NewString(s string) *VString {
 //  RuneString -- construct a Goaldi string from a slice of Go runes
 func RuneString(r []rune) *VString {
 	n := len(r)
-	low := make([]uint8, n, n)
-	high := make([]uint16, n, n)
+	low := make([]uint8, n)
+	high := make([]uint16, n)
 	h := '\000'
 	for i, c := range r {
 		h |= c
@@ -49,7 +49,7 @@ func RuneString(r []rune) *VString {
 
 //  BinaryString -- construct a Goaldi string from Go Latin1 bytes
 func BinaryString(s []byte) *VString {
-	low := make([]uint8, len(s), len(s))
+	low := make([]uint8, len(s))
 	copy(low, s)
 	return &VString{low, nil}
 }
@@ -57,7 +57,7 @@ func BinaryString(s []byte) *VString {
 //  VString.ToUTF8 -- convert Goaldi Unicode string to Go UTF8 string
 func (v *VString) ToUTF8() string {
 	b := make([]byte, 0, len(v.low))
-	p := make([]byte, 8, 8)
+	p := make([]byte, 8)
 	for i, c := range v.low {
 		r := rune(c)
 		if v.high != nil {
@@ -72,7 +72,7 @@ func (v *VString) ToUTF8() string {
 //  VString.ToRunes() -- convert Goaldi Unicode string to array of Go runes
 func (v *VString) ToRunes() []rune {
 	n := len(v.low)
-	r := make([]rune, n, n)
+	r := make([]rune, n)
 	for i := 0; i < n; i++ {
 		c := rune(v.low[i])
 		if v.high != nil {
@@ -85,7 +85,7 @@ func (v *VString) ToRunes() []rune {
 
 //  VString.ToBinary -- convert Goaldi Unicode to 8-bit bytes by truncation
 func (v *VString) ToBinary() []byte {
-	b := make([]byte, len(v.low), len(v.low))
+	b := make([]byte, len(v.low))
 	copy(b, v.low)
 	return b
 }
@@ -257,14 +257,14 @@ func scat(s1 *VString, i1, j1 int, s2 *VString, i2, j2 int,
 	n2 := j2 - i2
 	n3 := j3 - i3
 	nt := n1 + n2 + n3
-	low := make([]uint8, nt, nt)
+	low := make([]uint8, nt)
 	copy(low[0:], s1.low[i1:j1])
 	copy(low[n1:], s2.low[i2:j2])
 	copy(low[n1+n2:], s3.low[i3:j3])
 	if s1.high == nil && s2.high == nil && s3.high == nil {
 		return &VString{low, nil}
 	}
-	high := make([]uint16, nt, nt)
+	high := make([]uint16, nt)
 	if s1.high != nil {
 		copy(high[0:], s1.high[i1:j1])
 	}
