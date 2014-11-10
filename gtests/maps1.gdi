@@ -3,7 +3,7 @@
 #  Map operations
 
 procedure main()
-	local t, c, i, k, kv
+	local t, u, c, i, k, kv
 	t := map()
 	println("\t\t\t\t", type(t), t, *t, image(t))
 	ck(t)
@@ -20,7 +20,11 @@ procedure main()
 		ck(t)
 	}
 	println("\t\t\t\t", type(t), t, *t, image(t))
-	ck(copy(t).delete(2).delete("G"))
+	u := t.copy()
+	write("\t\t\t\t t vs t: ", if t === t then "identical" else "distinct")
+	write("\t\t\t\t t vs u: ", if t === u then "identical" else "distinct")
+	u.delete(2).delete("G")
+	ck(u)
 	ck(t) # should be unchanged
 	println("\t\t\t\t", type(t), t, *t, image(t))
 	every k := 3 | "G" | 1 | "H" | 2 | 4 | "F" | "E" do {

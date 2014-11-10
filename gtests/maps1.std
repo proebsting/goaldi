@@ -13,6 +13,8 @@
 8 ----1234EFGH axyzefgh  1:a 2:x 3:y 4:z E:e F:f G:g H:h
 8 ----1234EFGH wxyzefgh  1:w 2:x 3:y 4:z E:e F:f G:g H:h
 				 map M:8 8 map{1:w,2:x,3:y,4:z,E:e,F:f,G:g,H:h}
+				 t vs t: identical
+				 t vs u: distinct
 6 ----1-34EF-H w~yzef~h  1:w 3:y 4:z E:e F:f H:h
 8 ----1234EFGH wxyzefgh  1:w 2:x 3:y 4:z E:e F:f G:g H:h
 				 map M:8 8 map{1:w,2:x,3:y,4:z,E:e,F:f,G:g,H:h}

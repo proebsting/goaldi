@@ -65,6 +65,16 @@ func (m VMap) Copy() Value {
 	return r
 }
 
+//  VMap.Identical checks equality for the === operator
+func (m VMap) Identical(x Value) Value {
+	m2, ok := x.(VMap)
+	if ok && reflect.ValueOf(m).Pointer() == reflect.ValueOf(m2).Pointer() {
+		return x
+	} else {
+		return nil
+	}
+}
+
 //  VMap.Import returns itself
 func (v VMap) Import() Value {
 	return v
