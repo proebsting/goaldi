@@ -51,7 +51,9 @@ func interp(env *g.Env, pr *pr_Info, args ...g.Value) (g.Value, *g.Closure) {
 		if len(args) < n {
 			f.params[n] = g.NewList(0, nil)
 		} else {
-			f.params[n] = g.InitList(args[n:])
+			vals := make([]g.Value, len(args)-n)
+			copy(vals, args[n:])
+			f.params[n] = g.InitList(vals)
 		}
 	}
 

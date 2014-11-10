@@ -69,7 +69,7 @@ func (v *VList) Pull(args ...Value) (Value, *Closure) {
 
 //------------------------------------  Sort:  L.sort(i)
 
-//  L.Sort(i) -- sort list L on field i (default i=1; use i=0 for no field)
+//  L.Sort(i) -- sort list L on field i (default i=1)
 func (v *VList) Sort(args ...Value) (Value, *Closure) {
 	defer Traceback("sort", args)
 	i := int(ProcArg(args, 0, ONE).(Numerable).ToNumber().Val()) - 1

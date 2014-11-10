@@ -14,7 +14,7 @@ type VList struct {
 	rev  bool    // true if list is reversed
 }
 
-//  NewList(n, x) -- make a new list of n elements initialized to x
+//  NewList(n, x) -- make a new list of n elements each initialized to x
 func NewList(n int, x Value) *VList {
 	v := &VList{make([]Value, n, n), false}
 	for i := range v.data {
@@ -23,7 +23,8 @@ func NewList(n int, x Value) *VList {
 	return v
 }
 
-//  InitList(v []Value) -- construct a new list containing the given values
+//  InitList(v []Value) -- construct a new VList containing the given list
+//  (directly, without copying)
 func InitList(v []Value) *VList {
 	return &VList{v, false}
 }
