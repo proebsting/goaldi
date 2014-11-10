@@ -13,7 +13,7 @@ import (
 var NumberMethods = map[string]interface{}{
 	"type":  (*VNumber).Type,
 	"copy":  (*VNumber).Copy,
-	"image": Image,
+	"image": (*VNumber).GoString,
 }
 
 //  VNumber.Field implements methods

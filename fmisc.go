@@ -26,9 +26,9 @@ func LibGoFunc(name string, f interface{}) {
 //  Miscellaneous library procedures
 func init() {
 	// Goaldi procedures
-	LibProcedure("image", Image)
 	LibProcedure("type", Type)
 	LibProcedure("copy", Copy)
+	LibProcedure("image", Image)
 	LibProcedure("exit", Exit)
 	LibProcedure("sleep", Sleep)
 	// Go library functions
@@ -40,12 +40,6 @@ func init() {
 	LibGoFunc("hostname", os.Hostname)
 	LibGoFunc("getpid", os.Getpid)
 	LibGoFunc("getppid", os.Getppid)
-}
-
-//  Image(v) -- return string image of value v
-func Image(env *Env, a ...Value) (Value, *Closure) {
-	defer Traceback("image", a)
-	return Return(NewString(fmt.Sprintf("%#v", ProcArg(a, 0, NilValue))))
 }
 
 //  Type(v) -- return the name of v's type, as a string
@@ -67,6 +61,12 @@ func Copy(env *Env, a ...Value) (Value, *Closure) {
 	defer Traceback("copy", a)
 	v := ProcArg(a, 0, NilValue)
 	return Return(v.(ICopy).Copy())
+}
+
+//  Image(v) -- return string image of value v
+func Image(env *Env, a ...Value) (Value, *Closure) {
+	defer Traceback("image", a)
+	return Return(NewString(fmt.Sprintf("%#v", ProcArg(a, 0, NilValue))))
 }
 
 //  Sleep(n) -- delay execution for n seconds (may be fractional)

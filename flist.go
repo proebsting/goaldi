@@ -10,7 +10,7 @@ import (
 var ListMethods = map[string]interface{}{
 	"type":  (*VList).Type,
 	"copy":  (*VList).Copy,
-	"image": Image,
+	"image": (*VList).GoString,
 	"push":  (*VList).Push,
 	"pop":   (*VList).Pop,
 	"get":   (*VList).Get,

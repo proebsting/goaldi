@@ -12,7 +12,7 @@ import (
 var StringMethods = map[string]interface{}{
 	"type":  (*VString).Type,
 	"copy":  (*VString).Copy,
-	"image": Image,
+	"image": (*VString).GoString,
 }
 
 //  VString.Field implements methods

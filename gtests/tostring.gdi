@@ -22,9 +22,9 @@ procedure main()
 	# print conversion examples, ending with implicit conversion by write()
 	every v := !a do {
 		printf(fmt,
-			type(v) | "[failed]",
+			v.type() | "[failed]",
 			string(v) | "[failed]",
-			image(v) | "[failed]", "") 
+			v.image() | "[failed]", "") 
 		write(&stdout, v)
 	}
 end

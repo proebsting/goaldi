@@ -53,7 +53,7 @@ func (v *vnil) Export() interface{} {
 var NilMethods = map[string]interface{}{
 	"type":  (*vnil).Type,
 	"copy":  (*vnil).Copy,
-	"image": Image,
+	"image": (*vnil).GoString,
 }
 
 //  vnil.Field implements methods

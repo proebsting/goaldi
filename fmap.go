@@ -11,7 +11,7 @@ import (
 var MapMethods = map[string]interface{}{
 	"type":   VMap.Type,
 	"copy":   VMap.Copy,
-	"image":  Image,
+	"image":  VMap.GoString,
 	"member": VMap.Member,
 	"delete": VMap.Delete,
 	"sort":   VMap.Sort,

@@ -10,7 +10,7 @@ import (
 var StructMethods = map[string]interface{}{
 	"type":  (*VStruct).Type,
 	"copy":  (*VStruct).Copy,
-	"image": Image,
+	"image": (*VStruct).GoString,
 }
 
 //  VStruct.Field() implements a field reference S.k
