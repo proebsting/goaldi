@@ -152,6 +152,7 @@ const (
 	rNumber
 	rString
 	rFile
+	rChannel
 	rDefn
 	rMethB
 	rProc

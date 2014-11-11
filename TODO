@@ -4,6 +4,7 @@ reorganize source tree; what makes sense for a mixed-language project?
 straighten out goaldi vs goaldi/gexec: what goes where?
 
 more consistency in struct and procedure names
+don't abbr type names in internals (vproc etc)
 better & more uniform func header comments
 review all errors for consistency
 review funcs: which should be exposed publicly?

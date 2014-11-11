@@ -1,0 +1,6 @@
+get from type=channel size=3  CH:5  channel(5)   =>   "algebub"
+get from type=channel size=2  CH:5  channel(5)   =>   "biolozy"
+[closed]
+get from type=channel size=1  CH:5  channel(5)   =>   "chemixtry"
+get from type=channel size=0  CH:5  channel(5)   =>   [failed]
+get from type=channel size=0  CH:5  channel(5)   =>   [failed]

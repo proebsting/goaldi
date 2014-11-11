@@ -1,0 +1,26 @@
+#  channel test
+
+procedure main()
+	local ch
+	ch := channel(5)
+	ch.put("algebub")
+	ch.put("biolozy")
+	ch.put("chemixtry")
+	try(ch)
+	try(ch)
+	ch.close()
+	write("[closed]")
+	try(ch)	# should get pending value
+	try(ch) # should fail
+	try(ch) # should fail
+end
+
+procedure try(ch)
+	writes("get from type=", ch.type(), " size=", *ch, "  ", ch, "  ",
+		ch.image(), "   =>   ")
+	if *ch % 2 == 0 then
+		write(image(@ch) | "[failed]")
+	else
+		write(image(ch.get()) | "[failed]")
+	return ch
+end
