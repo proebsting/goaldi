@@ -40,27 +40,29 @@ func interp(env *g.Env, pr *pr_Info, args ...g.Value) (g.Value, *g.Closure) {
 	f.params = make([]g.Value, pr.nparams)
 	for i := 0; i < len(f.params); i++ {
 		if i < len(args) {
-			f.params[i] = args[i]
+			f.params[i] = g.Trapped(&args[i])
 		} else {
-			f.params[i] = g.NilValue
+			f.params[i] = g.Trapped(g.NewVariable())
 		}
 	}
 	//  handle variadic procedure
 	if pr.accum {
 		n := len(f.params) - 1
+		vp := new(g.Value)
 		if len(args) < n {
-			f.params[n] = g.NewList(0, nil)
+			*vp = g.NewList(0, nil)
 		} else {
 			vals := make([]g.Value, len(args)-n)
 			copy(vals, args[n:])
-			f.params[n] = g.InitList(vals)
+			*vp = g.InitList(vals)
 		}
+		f.params[n] = g.Trapped(vp)
 	}
 
-	// initialize locals to nil
+	// initialize locals
 	f.locals = make([]g.Value, pr.nlocals)
 	for i := 0; i < len(f.locals); i++ {
-		f.locals[i] = g.NilValue
+		f.locals[i] = g.Trapped(g.NewVariable())
 	}
 
 	// set starting point
@@ -134,9 +136,9 @@ func interp(env *g.Env, pr *pr_Info, args ...g.Value) (g.Value, *g.Closure) {
 					v := pr.dict[i.Name]
 					switch t := v.(type) {
 					case pr_local:
-						v = g.Trapped(&f.locals[int(t)])
+						v = f.locals[int(t)]
 					case pr_param:
-						v = g.Trapped(&f.params[int(t)])
+						v = f.params[int(t)]
 					case nil:
 						f.coord = i.Coord
 						panic(&g.RunErr{"Undeclared identifier", i.Name})

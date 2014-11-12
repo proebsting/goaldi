@@ -8,10 +8,9 @@ import (
 
 type VTrapped struct {
 	Target *Value // pointer to target
-	// other stuff later for tvsubs, tvstr
 }
 
-//  Trapped(v) -- create a simple trapped (unindexed) variable
+//  Trapped(v) -- create a simple (unindexed) trapped variable
 func Trapped(target *Value) *VTrapped {
 	return &VTrapped{target}
 }

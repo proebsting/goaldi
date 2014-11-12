@@ -86,7 +86,7 @@ func makeDict(pr *pr_Info) map[string]interface{} {
 
 	// add statics
 	for _, name := range pr.ir.StaticList {
-		dict[name] = g.Trapped(g.NewStatic())
+		dict[name] = g.Trapped(g.NewVariable())
 	}
 	// add outer locals
 	//#%#% TBD

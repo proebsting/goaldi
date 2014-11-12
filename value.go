@@ -24,8 +24,8 @@ func V(x interface{}) Value {
 	}
 }
 
-//  NewStatic() creates a new static variable, initialized to nil.
-func NewStatic() *Value {
+//  NewVariable() returns a pointer to a new variable initialized to NilValue.
+func NewVariable() *Value {
 	v := new(Value)
 	*v = NilValue
 	return v
