@@ -1,0 +1,9 @@
+#  simple test of create (and channels)
+
+procedure main()
+    local x, y
+    x := create !10
+    y := create !"abcdefg"
+    while write(@x, ". ", @y)		 # n.b. consumes 8 before failing
+    while write("+ ", @x | @y)
+end

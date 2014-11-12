@@ -16,6 +16,7 @@ type pr_frame struct {
 	temps  map[string]interface{} // temporaries
 	coord  string                 // last known source location
 	offv   g.Value                // offending value for traceback
+	cxout  g.VChannel             // co-expression output pipe
 }
 
 //  catchf -- annotate a panic value with procedure frame information
@@ -34,7 +35,6 @@ func interp(env *g.Env, pr *pr_Info, args ...g.Value) (g.Value, *g.Closure) {
 	var f pr_frame
 	f.env = env
 	f.info = pr
-	f.temps = make(map[string]interface{})
 
 	// initialize parameters
 	f.params = make([]g.Value, pr.nparams)
@@ -65,26 +65,30 @@ func interp(env *g.Env, pr *pr_Info, args ...g.Value) (g.Value, *g.Closure) {
 		f.locals[i] = g.Trapped(g.NewVariable())
 	}
 
-	// set starting point
-	label := pr.ir.CodeStart
+	// set up tracback recovery
+	defer func() {
+		if p := recover(); p != nil {
+			panic(catchf(p, &f, args))
+		}
+	}()
+
+	// execute the IR code
+	return execute(&f, pr.ir.CodeStart)
+}
+
+func execute(f *pr_frame, label string) (g.Value, *g.Closure) {
 
 	// create re-entrant interpreter
+	f.temps = make(map[string]interface{}) // each cx needs own copy
 	var self *g.Closure
 	self = &g.Closure{func() (g.Value, *g.Closure) {
-
-		// set up tracback recovery
-		defer func() {
-			if p := recover(); p != nil {
-				panic(catchf(p, &f, args))
-			}
-		}()
 
 		// interpret the IR code
 		for {
 			if opt_trace {
 				fmt.Printf("L: %s\n", label)
 			}
-			ilist := pr.insns[label] // look up label
+			ilist := f.info.insns[label] // look up label
 		Chunk:
 			for _, insn := range ilist { // execute insns in chunk
 				if opt_trace {
@@ -107,10 +111,24 @@ func interp(env *g.Env, pr *pr_Info, args ...g.Value) (g.Value, *g.Closure) {
 						label = i.ResumeLabel
 						return v, self
 					}
+				case ir_Create:
+					fnew := &pr_frame{}
+					*fnew = *f
+					fnew.cxout = g.NewChannel(0)
+					if i.Lhs != "" {
+						f.temps[i.Lhs] = fnew.cxout
+					}
+					go execute(fnew, i.CoexpLabel)
+				case ir_CoRet:
+					f.cxout <- f.temps[i.Value]
+					label = i.ResumeLabel
+				case ir_CoFail:
+					close(f.cxout)
+					return nil, nil // i.e. die
 				case ir_Key:
 					//#%#% keywords are dynamic vars fetched from env
 					f.coord = i.Coord
-					v := env.VarMap[i.Name]
+					v := f.env.VarMap[i.Name]
 					if v == nil {
 						panic(&g.RunErr{"Unrecognized dynamic variable",
 							"%" + i.Name})
@@ -133,7 +151,7 @@ func interp(env *g.Env, pr *pr_Info, args ...g.Value) (g.Value, *g.Closure) {
 					}
 					f.temps[i.Lhs] = g.InitList(a)
 				case ir_Var:
-					v := pr.dict[i.Name]
+					v := f.info.dict[i.Name]
 					switch t := v.(type) {
 					case pr_local:
 						v = f.locals[int(t)]
@@ -159,7 +177,7 @@ func interp(env *g.Env, pr *pr_Info, args ...g.Value) (g.Value, *g.Closure) {
 					break Chunk
 				case ir_OpFunction:
 					f.coord = i.Coord
-					v, c := opFunc(env, &f, &i)
+					v, c := opFunc(f.env, f, &i)
 					if v != nil {
 						if i.Lhs != "" {
 							f.temps[i.Lhs] = v
@@ -186,9 +204,9 @@ func interp(env *g.Env, pr *pr_Info, args ...g.Value) (g.Value, *g.Closure) {
 				case ir_Call:
 					f.coord = i.Coord
 					proc := g.Deref(f.temps[i.Fn].(g.Value))
-					argl := getArgs(&f, 0, i.ArgList)
+					argl := getArgs(f, 0, i.ArgList)
 					f.offv = proc
-					v, c := proc.(g.ICall).Call(env, argl...)
+					v, c := proc.(g.ICall).Call(f.env, argl...)
 					if v != nil {
 						if i.Lhs != "" {
 							f.temps[i.Lhs] = v
