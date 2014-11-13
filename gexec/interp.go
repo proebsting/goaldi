@@ -28,7 +28,7 @@ func catchf(p interface{}, f *pr_frame, args []g.Value) *g.CallFrame {
 func interp(env *g.Env, pr *pr_Info, args ...g.Value) (g.Value, *g.Closure) {
 
 	if opt_trace {
-		fmt.Printf("P: %s\n", pr.name)
+		fmt.Printf("[%d] P: %s\n", env.ThreadID, pr.name)
 	}
 
 	// initialize procedure frame
@@ -86,13 +86,13 @@ func execute(f *pr_frame, label string) (g.Value, *g.Closure) {
 		// interpret the IR code
 		for {
 			if opt_trace {
-				fmt.Printf("L: %s\n", label)
+				fmt.Printf("[%d] L: %s\n", f.env.ThreadID, label)
 			}
 			ilist := f.info.insns[label] // look up label
 		Chunk:
 			for _, insn := range ilist { // execute insns in chunk
 				if opt_trace {
-					fmt.Printf("I: %T %v\n", insn, insn)
+					fmt.Printf("[%d] I: %T %v\n", f.env.ThreadID, insn, insn)
 				}
 				f.coord = "" //#%#% prudent, but s/n/b needed
 				f.offv = nil //#%#% prudent, but s/n/b needed
@@ -115,6 +115,7 @@ func execute(f *pr_frame, label string) (g.Value, *g.Closure) {
 					fnew := &pr_frame{}
 					*fnew = *f
 					fnew.cxout = g.NewChannel(0)
+					fnew.env = g.NewEnv(f.env)
 					if i.Lhs != "" {
 						f.temps[i.Lhs] = fnew.cxout
 					}

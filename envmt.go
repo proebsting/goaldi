@@ -4,10 +4,32 @@ package goaldi
 
 //  execution environment
 type Env struct {
-	//#%#% to be determined
+	ThreadID int              // thread ID
+	VarMap   map[string]Value // %variable map
+	//#%#% more to be determined
 	//#%#% dynamic variables?
-	//#%#% thread id for monitoring?
-	VarMap map[string]Value
+}
+
+//  NewEnv(e) returns a new environment with a distinct ThreadID.
+func NewEnv(e *Env) *Env {
+	if e == nil {
+		return &Env{0, StdEnv}
+	} else {
+		return &Env{<-TID, e.VarMap}
+	}
+}
+
+//  ThreadID production
+var TID = make(chan int)
+
+func init() {
+	go func() {
+		tid := 0
+		for {
+			tid++
+			TID <- tid
+		}
+	}()
 }
 
 //  StdEnv is the initial environment

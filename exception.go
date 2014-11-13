@@ -40,7 +40,7 @@ type CallFrame struct {
 //  Run wraps a Goaldi procedure in an environment and an exception catcher,
 //  and calls it from Go
 func Run(p Value, arglist []Value) {
-	env := &Env{StdEnv}
+	env := NewEnv(nil)
 	defer func() {
 		if x := recover(); x != nil {
 			r := Diagnose(os.Stderr, x) // write Goaldi stack trace
