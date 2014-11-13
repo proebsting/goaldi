@@ -320,10 +320,8 @@ func opFunc(env *g.Env, f *pr_frame, i *ir_OpFunction) (g.Value, *g.Closure) {
 	// multi-type operations
 	case "1*":
 		return g.Size(a[0]), nil
-	case "1@":
-		return a[0].(g.IAt).At(), nil
-	case "2@": //#%#% 1@(x) is passed as 2@(x,null)
-		return a[0].(g.IAt).At(), nil
+	case "1@", "2@": //#%#% 1@(x) is passed as 2@(x,null)
+		return g.Take(a[0]), nil
 	case "1?":
 		return g.Choose(lval, g.Deref(a[0])), nil
 	case "1!":

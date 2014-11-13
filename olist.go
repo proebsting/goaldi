@@ -12,6 +12,13 @@ func (v *VList) Size() Value {
 	return NewNumber(float64(len(v.data)))
 }
 
+//------------------------------------  Take:  @L
+
+func (v *VList) Take() Value {
+	r, _ := v.Snip(true, "@L", nil)
+	return r
+}
+
 //------------------------------------  Choose:  ?L
 
 func (v *VList) Choose(lval IVariable) Value {

@@ -33,7 +33,7 @@ procedure main()
 	show(l)
 
 	write("E:")
-	while writes(l.get() & l.pull() & l.pop(), " : ") do
+	while writes(@l & l.pull() & l.pop(), " : ") do
 		l.push(*l) & l.put(*l) & show(l)
 	show(l)
 
@@ -62,7 +62,7 @@ procedure main()
 
 	write("I:")
 	show(l2 := copy(l))
-	show(l2.get() & l2.pull() & l2)
+	show(l2.get() & l2.pull() & @l2 & l2)
 	show(l)	# should be unchanged
 
 	write("J:")

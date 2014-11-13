@@ -3,7 +3,7 @@
 #  Map operations
 
 procedure main()
-	local t, u, c, i, k, kv
+	local t, u, c, i, k, kv, l
 	t := map()
 	println("\t\t\t\t", type(t), t, *t, image(t))
 	ck(t)
@@ -32,6 +32,13 @@ procedure main()
 		ck(t)
 	}
 	println("\t\t\t\t", type(t), t, *t, image(t))
+	ck(u)
+	l := []
+	while l.put(@u)
+	ck(u)
+	every kv := !l.sort() do
+		writes(" ", kv.key, ":", kv.value)
+	write()
 
 	#%#% random portion disabled
 	#  every t[!4 | !"EFGH"] := ?"abcdefghijklmnopqrstuvwxyz"
@@ -42,7 +49,7 @@ procedure main()
 	#  write()
 end
 
-procedure ck(t)
+procedure ck(t)			#: show map indexed by 1..4 and "E".."H"
 	local k, kv
 	writes(*t, " ")
 	every k := !"1234" | !4 | !"EFGH" do {

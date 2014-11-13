@@ -86,18 +86,18 @@ var _ IVariable = &VTrapped{} // confirm implementation by VTrapped
 //  If not, it is just a flag for most datatypes but is the actual
 //  underlying value to be replaced by substring assignment.
 
-type IChoose interface {
+type IChoose interface { // ?x
 	Choose(IVariable) Value
 }
 
-type IDispense interface {
+type IDispense interface { // !x
 	Dispense(IVariable) (Value, *Closure)
 }
 
-type IIndex interface {
+type IIndex interface { // x[y]
 	Index(IVariable, Value) Value
 }
 
-type ISlice interface {
+type ISlice interface { // x[i:j]
 	Slice(IVariable, Value, Value) Value
 }

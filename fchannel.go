@@ -57,16 +57,7 @@ func (c VChannel) Close(args ...Value) (Value, *Closure) {
 	return Return(c)
 }
 
-//  VChannel.At() implements the unary '@' operator
-func (c VChannel) At() Value {
-	v := <-c
-	if v == nil { // if closed
-		return nil // fail
-	} else {
-		return v
-	}
-}
-
-type IAt interface {
-	At() Value
+//  VChannel.Take() implements the unary '@' operator
+func (c VChannel) Take() Value {
+	return <-c
 }

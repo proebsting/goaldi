@@ -36,18 +36,35 @@ func NotIdentical(a, b Value) Value {
 	}
 }
 
-//  ISize -- interface for a.Size(), used by *a
+//  ISize -- interface for x.Size(), used by *x
 type ISize interface {
 	Size() Value
 }
 
-//  Size(a) calls a.Size() or falls back to reflection.
+//  Size(x) calls x.Size() or falls back to reflection.
 //  It panics on an inappropriate argument type.
 func Size(x Value) Value {
 	if t, ok := x.(ISize); ok {
 		return t.Size()
 	} else {
 		return NewNumber(float64(reflect.ValueOf(x).Len()))
+	}
+}
+
+//  ITake -- interface for x.Take(), used by @x
+type ITake interface { // @x
+	Take() Value
+}
+
+//  Take(x) calls x.Take() or uses reflection for a map of any type.
+//  It panics on an inappropriate argument type.
+func Take(x Value) Value {
+	if t, ok := x.(ITake); ok {
+		return t.Take()
+	} else if reflect.ValueOf(x).Kind() == reflect.Map {
+		return TakeMap(x)
+	} else {
+		return x.(ITake).Take() // provoke panic
 	}
 }
 
