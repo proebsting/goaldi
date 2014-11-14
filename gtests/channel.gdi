@@ -2,6 +2,7 @@
 
 procedure main()
 	local ch
+	write("[new1]")
 	ch := channel(5)
 	ch.put("algebub")
 	ch.put("biolozy")
@@ -13,11 +14,28 @@ procedure main()
 	try(ch)	# should get pending value
 	try(ch) # should fail
 	try(ch) # should fail
+
+	write("[new2]")
+	ch := channel()
+	ch := ch.buffer(3)
+	ch.put("one")
+	ch.put("two")
+	ch.put("three")
+	# ch.put("four") would deadlock
+	try(ch)
+	try(ch)
+	try(ch)
+	
+	#%#%  "size=" outputs beyond here are nondeterministic
+	write("[new3]")
+	ch := buffer(4, create(!6))
+	every !7 do
+		try(ch)
+
 end
 
 procedure try(ch)
-	writes("get from type=", ch.type(), " size=", *ch, "  ", ch, "  ",
-		ch.image(), "   =>   ")
+	writes(image(ch), " size=", *ch, "   =>   ")
 	if *ch % 2 == 0 then
 		write(image(@ch) | "[failed]")
 	else

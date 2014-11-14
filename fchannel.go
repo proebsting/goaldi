@@ -4,17 +4,23 @@ package goaldi
 
 //  Declare methods
 var ChannelMethods = map[string]interface{}{
-	"type":  VChannel.Type,
-	"copy":  VChannel.Copy,
-	"image": VChannel.GoString,
-	"get":   VChannel.Get,
-	"put":   VChannel.Put,
-	"close": VChannel.Close,
+	"type":   VChannel.Type,
+	"copy":   VChannel.Copy,
+	"image":  VChannel.GoString,
+	"get":    VChannel.Get,
+	"put":    VChannel.Put,
+	"close":  VChannel.Close,
+	"buffer": VChannel.Buffer,
 }
 
 //  VChannel.Field implements method calls
 func (m VChannel) Field(f string) Value {
 	return GetMethod(ChannelMethods, m, f)
+}
+
+//  Declare static function
+func init() {
+	LibProcedure("buffer", Buffer)
 }
 
 //  init() declares the constructor function
@@ -55,6 +61,28 @@ func (c VChannel) Close(args ...Value) (Value, *Closure) {
 	defer Traceback("C.close", args)
 	close(c)
 	return Return(c)
+}
+
+//  VChannel.Buffer(i) interposes a buffer of size i in front of a channel.
+func (c VChannel) Buffer(args ...Value) (Value, *Closure) {
+	defer Traceback("C.buffer", args)
+	i := int(ProcArg(args, 0, ONE).(Numerable).ToNumber().Val())
+	r := NewChannel(i)
+	go func() {
+		for {
+			r <- <-c
+		}
+	}()
+	return Return(r)
+}
+
+//  Buffer(i, C) is the static version of C.Buffer(i).
+//  This is useful in the Goaldi form buffer(i, create e).
+func Buffer(env *Env, args ...Value) (Value, *Closure) {
+	defer Traceback("buffer", args)
+	i := ProcArg(args, 0, ONE)
+	c := ProcArg(args, 1, NilValue)
+	return c.(VChannel).Buffer(i)
 }
 
 //  VChannel.Take() implements the unary '@' operator
