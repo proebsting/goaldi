@@ -6,6 +6,7 @@ package goaldi
 var ChannelMethods = map[string]interface{}{
 	"type":   VChannel.Type,
 	"copy":   VChannel.Copy,
+	"string": VChannel.String,
 	"image":  VChannel.GoString,
 	"get":    VChannel.Get,
 	"put":    VChannel.Put,

@@ -25,9 +25,10 @@ import (
 
 //  Declare methods
 var FileMethods = map[string]interface{}{
-	"type":  (*VFile).Type,
-	"copy":  (*VFile).Copy,
-	"image": (*VFile).GoString,
+	"type":   (*VFile).Type,
+	"copy":   (*VFile).Copy,
+	"string": (*VFile).String,
+	"image":  (*VFile).GoString,
 }
 
 //  VFile.Field implements methods

@@ -67,9 +67,10 @@ func (v *VProcedure) Call(env *Env, args ...Value) (Value, *Closure) {
 
 //  Declare methods
 var ProcedureMethods = map[string]interface{}{
-	"type":  (*VProcedure).Type,
-	"copy":  (*VProcedure).Copy,
-	"image": (*VProcedure).GoString,
+	"type":   (*VProcedure).Type,
+	"copy":   (*VProcedure).Copy,
+	"string": (*VProcedure).String,
+	"image":  (*VProcedure).GoString,
 }
 
 //  VProcedure.Field implements methods

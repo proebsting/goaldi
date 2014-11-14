@@ -8,15 +8,16 @@ import (
 
 //  Declare methods
 var ListMethods = map[string]interface{}{
-	"type":  (*VList).Type,
-	"copy":  (*VList).Copy,
-	"image": (*VList).GoString,
-	"push":  (*VList).Push,
-	"pop":   (*VList).Pop,
-	"get":   (*VList).Get,
-	"put":   (*VList).Put,
-	"pull":  (*VList).Pull,
-	"sort":  (*VList).Sort,
+	"type":   (*VList).Type,
+	"copy":   (*VList).Copy,
+	"string": (*VList).String,
+	"image":  (*VList).GoString,
+	"push":   (*VList).Push,
+	"pop":    (*VList).Pop,
+	"get":    (*VList).Get,
+	"put":    (*VList).Put,
+	"pull":   (*VList).Pull,
+	"sort":   (*VList).Sort,
 }
 
 //  VList.Field implements methods

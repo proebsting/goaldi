@@ -88,9 +88,10 @@ func (v *VDefn) Call(env *Env, args ...Value) (Value, *Closure) {
 
 //  Declare required methods
 var DefnMethods = map[string]interface{}{
-	"type":  (*VDefn).Type,
-	"copy":  (*VDefn).Copy,
-	"image": (*VDefn).GoString,
+	"type":   (*VDefn).Type,
+	"copy":   (*VDefn).Copy,
+	"string": (*VDefn).String,
+	"image":  (*VDefn).GoString,
 }
 
 //  VDefn.Field implements methods

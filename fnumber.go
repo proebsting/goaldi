@@ -11,9 +11,10 @@ import (
 
 //  Declare methods
 var NumberMethods = map[string]interface{}{
-	"type":  (*VNumber).Type,
-	"copy":  (*VNumber).Copy,
-	"image": (*VNumber).GoString,
+	"type":   (*VNumber).Type,
+	"copy":   (*VNumber).Copy,
+	"string": (*VNumber).String,
+	"image":  (*VNumber).GoString,
 }
 
 //  VNumber.Field implements methods

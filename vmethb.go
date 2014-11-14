@@ -57,9 +57,10 @@ func (v *VMethB) Export() interface{} {
 
 //  Declare required methods
 var MethBMethods = map[string]interface{}{
-	"type":  (*VMethB).Type,
-	"copy":  (*VMethB).Copy,
-	"image": (*VMethB).GoString,
+	"type":   (*VMethB).Type,
+	"copy":   (*VMethB).Copy,
+	"string": (*VMethB).String,
+	"image":  (*VMethB).GoString,
 }
 
 //  VMethB.Field implements methods

@@ -10,9 +10,10 @@ import (
 
 //  Declare methods
 var StringMethods = map[string]interface{}{
-	"type":  (*VString).Type,
-	"copy":  (*VString).Copy,
-	"image": (*VString).GoString,
+	"type":   (*VString).Type,
+	"copy":   (*VString).Copy,
+	"string": (*VString).String,
+	"image":  (*VString).GoString,
 }
 
 //  VString.Field implements methods
