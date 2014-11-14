@@ -24,9 +24,9 @@ func V(x interface{}) Value {
 	}
 }
 
-//  NewVariable() returns a pointer to a new variable initialized to NilValue.
-func NewVariable() *Value {
+//  NewVariable(x) returns a pointer to a new variable initialized to x.
+func NewVariable(x Value) *Value {
 	v := new(Value)
-	*v = NilValue
+	*v = x
 	return v
 }

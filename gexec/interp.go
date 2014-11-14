@@ -19,6 +19,27 @@ type pr_frame struct {
 	cxout  g.VChannel             // co-expression output pipe
 }
 
+//#%#% possible future optimization:  instead of allocating m+n params+locals,
+//#%#% and m+n trapped varabless, allocate one huge array and connect pointers.
+
+//  newframe(f) -- duplicate a procedure frame
+func newframe(f *pr_frame) *pr_frame {
+	fnew := &pr_frame{}
+	*fnew = *f
+	fnew.params = duplvars(f.params)
+	fnew.locals = duplvars(f.locals)
+	return fnew
+}
+
+//  duplvars(a) -- duplicate a list of (trapped) variables or parameters
+func duplvars(a []g.Value) []g.Value {
+	b := make([]g.Value, len(a))
+	for i, x := range a {
+		b[i] = g.Trapped(g.NewVariable(g.Deref(x)))
+	}
+	return b
+}
+
 //  catchf -- annotate a panic value with procedure frame information
 func catchf(p interface{}, f *pr_frame, args []g.Value) *g.CallFrame {
 	return g.Catch(p, f.offv, f.coord, f.info.name, args)
@@ -42,7 +63,7 @@ func interp(env *g.Env, pr *pr_Info, args ...g.Value) (g.Value, *g.Closure) {
 		if i < len(args) {
 			f.params[i] = g.Trapped(&args[i])
 		} else {
-			f.params[i] = g.Trapped(g.NewVariable())
+			f.params[i] = g.Trapped(g.NewVariable(g.NilValue))
 		}
 	}
 	//  handle variadic procedure
@@ -62,7 +83,7 @@ func interp(env *g.Env, pr *pr_Info, args ...g.Value) (g.Value, *g.Closure) {
 	// initialize locals
 	f.locals = make([]g.Value, pr.nlocals)
 	for i := 0; i < len(f.locals); i++ {
-		f.locals[i] = g.Trapped(g.NewVariable())
+		f.locals[i] = g.Trapped(g.NewVariable(g.NilValue))
 	}
 
 	// set up tracback recovery
@@ -112,8 +133,7 @@ func execute(f *pr_frame, label string) (g.Value, *g.Closure) {
 						return v, self
 					}
 				case ir_Create:
-					fnew := &pr_frame{}
-					*fnew = *f
+					fnew := newframe(f)
 					fnew.cxout = g.NewChannel(0)
 					fnew.env = g.NewEnv(f.env)
 					if i.Lhs != "" {
