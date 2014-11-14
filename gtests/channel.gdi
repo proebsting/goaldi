@@ -26,19 +26,18 @@ procedure main()
 	try(ch)
 	try(ch)
 	
-	#%#%  "size=" outputs beyond here are nondeterministic
 	write("[new3]")
 	ch := buffer(4, create(!6))
-	every !7 do
-		try(ch)
-
+	drain(ch)
 end
 
+#  try reading one value from channel, showing size  
 procedure try(ch)
-	writes(image(ch), " size=", *ch, "   =>   ")
-	if *ch % 2 == 0 then
-		write(image(@ch) | "[failed]")
-	else
-		write(image(ch.get()) | "[failed]")
-	return ch
+	write(image(ch), " size=", *ch, "   =>   ", image(@ch) | "[failed]")
+end
+
+#  drain channel and print, without showing size  (more deterministic)
+procedure drain(ch)
+	while write(image(ch), "  =>  ", image(ch.get()))
+	write(image(ch), "  =>  [failed]")
 end
