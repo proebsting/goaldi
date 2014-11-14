@@ -21,7 +21,20 @@ var _ IIdentical = NewString("a") // confirm implementation by VString
 func Identical(a, b Value) Value {
 	if _, ok := a.(IIdentical); ok {
 		return a.(IIdentical).Identical(b)
-	} else if a == b {
+	}
+	av := reflect.ValueOf(a)
+	bv := reflect.ValueOf(b)
+	if av.Type() != bv.Type() {
+		return nil
+	}
+	same := false
+	switch av.Kind() {
+	default:
+		same = (a == b)
+	case reflect.Chan, reflect.Func, reflect.Map, reflect.Ptr, reflect.Slice:
+		same = (av.Pointer() == bv.Pointer())
+	}
+	if same {
 		return b
 	} else {
 		return nil

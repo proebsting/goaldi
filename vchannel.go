@@ -4,7 +4,6 @@ package goaldi
 
 import (
 	"fmt"
-	"reflect"
 )
 
 //  VChannel implements a Goaldi channel, which just wraps a Go channel.
@@ -40,16 +39,6 @@ var type_channel = NewString("channel")
 //  VChannel.Copy returns itself
 func (c VChannel) Copy() Value {
 	return c
-}
-
-//  VChannel.Identical checks equality for the === operator
-func (c VChannel) Identical(x Value) Value {
-	c2, ok := x.(VChannel)
-	if ok && reflect.ValueOf(c).Pointer() == reflect.ValueOf(c2).Pointer() {
-		return x
-	} else {
-		return nil
-	}
 }
 
 //  VChannel.Import returns itself
