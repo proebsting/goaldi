@@ -98,10 +98,7 @@ func TrapMap(m Value, key Value) *vMapTrap {
 		default:
 			// nothing: use key as is
 		}
-	} else {
-		// convert key to export form for external map
-		key = Export(key)
-	}
+	} // else key will be converted by passfunc
 	return &vMapTrap{mv, passfunc(mv.Type().Key())(key)}
 }
 
