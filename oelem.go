@@ -24,10 +24,13 @@ func Field(x Value, s string) Value {
 	if xv.Kind() == reflect.Ptr {
 		xv = xv.Elem()
 	}
-	if xv.Kind() == reflect.Struct {
+	switch xv.Kind() {
+	case reflect.Struct:
 		if f := xv.FieldByName(s); f.IsValid() {
 			return TrapValue(f)
 		}
+	case reflect.Map:
+		return GetMethod(GoMapMethods, x, s)
 	}
 	panic(&RunErr{"Field not found: " + s, x})
 }

@@ -1,7 +1,7 @@
 #  http.gdi -- demonstrate HTTP extension
 
 procedure main(url1, url2)
-	local f, k, r, rr, p
+	local f, k, kv, r, resp, hmap, p
 	/url1 := "http://www.cs.arizona.edu"
 	/url2 := "http://httpbin.org/post"
 
@@ -13,17 +13,23 @@ procedure main(url1, url2)
 	if showfile(url1, *\r) then {
 		write(repl("-", 72))
 		write("response: ", image(r))
-		rr := r.Resp
-		write("  status: ", rr.Status, " (", rr.StatusCode, ")")
-		write("  proto:  ", rr.Proto, " (",rr.ProtoMajor,".",rr.ProtoMinor,")")
-		write("  ctlen:  ", rr.ContentLength)
-		write("  close:  ", rr.Close)
-		write("  encoding: ", image(rr.TransferEncoding))
+		resp := r.Resp
+		hmap := resp.Header
+		write("  status: ", resp.Status, " (", resp.StatusCode, ")")
+		write("  proto:  ", resp.Proto,
+			" (",resp.ProtoMajor,".",resp.ProtoMinor,")")
+		write("  ctlen:  ", resp.ContentLength)
+		write("  close:  ", resp.Close)
+		write("  encoding: ", image(resp.TransferEncoding))
 		write("headers:")
 		every write("   ", !r)
 		write("via lookup:")
-		every k := "Date" | "Content-Type" | "Server" do
-			write("   ", k, ":  ", rr.Header[k])
+		every k := "Date" | "Content-Type" | "Credibility" do
+			write("   ", k, ":  ", hmap[k])
+		write("sorted:")
+		every kv := !hmap.sort() do {
+			write("    ", hmap.member(kv.key) | "?!?!", ":  ", kv.value)
+		}
 	} else {
 		showfile(url1, &nil)
 	}

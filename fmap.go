@@ -29,6 +29,13 @@ func init() {
 	LibProcedure("map", Map)
 }
 
+//  Declare methods on Go Maps
+var GoMapMethods = map[string]interface{}{
+	"member": GoMapMember,
+	"delete": GoMapDelete,
+	"sort":   GoMapSort,
+}
+
 //  Map() returns a new map
 func Map(env *Env, a ...Value) (Value, *Closure) {
 	defer Traceback("map", a)
@@ -37,6 +44,11 @@ func Map(env *Env, a ...Value) (Value, *Closure) {
 
 //  VMap.Member(k) succeeds if k is an existing key
 func (m VMap) Member(args ...Value) (Value, *Closure) {
+	return GoMapMember(m, args...)
+}
+
+//  GoMapMember(M, k) succeeds if k is an existing key in m
+func GoMapMember(m Value, args ...Value) (Value, *Closure) {
 	defer Traceback("M.member", args)
 	key := ProcArg(args, 0, NilValue)
 	if TrapMap(m, key).Exists() {
@@ -48,6 +60,11 @@ func (m VMap) Member(args ...Value) (Value, *Closure) {
 
 //  VMap.Delete(k) deletes the entry, if any, with key k
 func (m VMap) Delete(args ...Value) (Value, *Closure) {
+	return GoMapDelete(m, args...)
+}
+
+//  GoMapDelete(M, k) deletes the entry in map m, if any, with key k
+func GoMapDelete(m Value, args ...Value) (Value, *Closure) {
 	defer Traceback("M.delete", args)
 	key := ProcArg(args, 0, NilValue)
 	TrapMap(m, key).Delete()
@@ -56,11 +73,16 @@ func (m VMap) Delete(args ...Value) (Value, *Closure) {
 
 //  VMap.Sort(i) produces [:!M:].sort(i)
 func (m VMap) Sort(args ...Value) (Value, *Closure) {
+	return GoMapSort(m, args...)
+}
+
+//  GoMapSort(M, i) produces [:!M:].sort(i)
+func GoMapSort(m Value, args ...Value) (Value, *Closure) {
 	defer Traceback("M.sort", args)
 	i := ProcArg(args, 0, ONE).(Numerable).ToNumber()
 	mv := reflect.ValueOf(m)
 	klist := mv.MapKeys()
-	vlist := make([]Value, len(m))
+	vlist := make([]Value, mv.Len())
 	for i, kv := range klist {
 		k := Import(kv.Interface())
 		v := Import(mv.MapIndex(kv).Interface())
