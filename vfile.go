@@ -1,10 +1,9 @@
 //  vfile.go -- implementation of a file type
 //
 //  A Goaldi file is produced by open().
-//  It implements io.ReadWriteCloser so it can be passed to Go funcs.
+//  It implements io.ReadWriteCloser so that it can be passed to Go funcs.
 //
-//  NOTE:  Read and Write are Go methods.  read and write are Goaldi methods.
-//  #%#%#% once Goaldi has methods, that is.
+//  NOTE:  Read and Write in here are Go methods, not Goaldi procedures.
 
 //  #%#% Do we need to register all files in order to flush them on exit?
 
@@ -98,7 +97,31 @@ func (v *VFile) Export() interface{} {
 	return v
 }
 
-//  VFile.Read() calls io.Read().
+//  VFile.Dispense() implements the !f operator
+func (f *VFile) Dispense(unused IVariable) (Value, *Closure) {
+	var c *Closure
+	c = &Closure{func() (Value, *Closure) {
+		s := f.ReadLine()
+		if s != nil {
+			return s, c
+		} else {
+			return Fail()
+		}
+	}}
+	return c.Resume()
+}
+
+//  VFile.Take() implements the @f operator
+func (f *VFile) Take() Value {
+	s := f.ReadLine()
+	if s != nil {
+		return s
+	} else {
+		return nil
+	}
+}
+
+//  VFile.Read() calls io.Read().  This implements the Go io.Reader interface.
 func (v *VFile) Read(p []byte) (int, error) {
 	if v.Reader != nil {
 		return v.Reader.Read(p)
@@ -126,7 +149,7 @@ func (v *VFile) ReadLine() *VString {
 	}
 }
 
-//  VFile.Write() calls io.Write().
+//  VFile.Write() calls io.Write().  This implements the Go io.Writer interface.
 func (v *VFile) Write(p []byte) (int, error) {
 	if v.Writer != nil {
 		return v.Writer.Write(p)
@@ -144,7 +167,8 @@ func (v *VFile) Flush() error {
 	}
 }
 
-//  VFile.Close() marks the file as closed and calls io.Close().
+//  VFile.Close() closes a file.  This implements the Go io.Closer interface.
+//  It marks the file as closed and calls io.Close() on the underlying Closer.
 func (v *VFile) Close() error {
 	if v.Closer == nil {
 		panic(&RunErr{"File not open", v})
@@ -158,28 +182,4 @@ func (v *VFile) Close() error {
 	v.Writer = nil
 	v.Closer = nil
 	return c.Close()
-}
-
-//  VFile.Dispense() implements the !f operator
-func (f *VFile) Dispense(unused IVariable) (Value, *Closure) {
-	var c *Closure
-	c = &Closure{func() (Value, *Closure) {
-		s := f.ReadLine()
-		if s != nil {
-			return s, c
-		} else {
-			return Fail()
-		}
-	}}
-	return c.Resume()
-}
-
-//  VFile.Take() implements the @f operator
-func (f *VFile) Take() Value {
-	s := f.ReadLine()
-	if s != nil {
-		return s
-	} else {
-		return nil
-	}
 }
