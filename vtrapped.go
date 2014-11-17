@@ -54,7 +54,7 @@ func Deref(v Value) Value {
 	}
 }
 
-//  RevAssign -- implment reversible assignment (<-)
+//  RevAssign -- implement reversible assignment (<-)
 func RevAssign(e1 Value, e2 Value) (IVariable, *Closure) {
 	v1 := e1.(IVariable)
 	x1 := v1.Deref()
@@ -77,7 +77,7 @@ func Swap(e1 Value, e2 Value) IVariable {
 	return v1
 }
 
-//  RevSwap -- implment reversible exchange (<->)
+//  RevSwap -- implement reversible exchange (<->)
 func RevSwap(e1 Value, e2 Value) (IVariable, *Closure) {
 	v1 := e1.(IVariable)
 	v2 := e2.(IVariable)

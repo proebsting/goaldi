@@ -9,7 +9,7 @@ import (
 
 //  procedure frame
 type pr_frame struct {
-	env    *g.Env                 // dynamic execution enviromment
+	env    *g.Env                 // dynamic execution environment
 	info   *pr_Info               // static procedure information
 	params []g.Value              // parameters
 	locals []g.Value              // locals
@@ -20,7 +20,7 @@ type pr_frame struct {
 }
 
 //#%#% possible future optimization:  instead of allocating m+n params+locals,
-//#%#% and m+n trapped varabless, allocate one huge array and connect pointers.
+//#%#% and m+n trapped variables, allocate one huge array and connect pointers.
 
 //  newframe(f) -- duplicate a procedure frame
 func newframe(f *pr_frame) *pr_frame {
@@ -86,7 +86,7 @@ func interp(env *g.Env, pr *pr_Info, args ...g.Value) (g.Value, *g.Closure) {
 		f.locals[i] = g.Trapped(g.NewVariable(g.NilValue))
 	}
 
-	// set up tracback recovery
+	// set up traceback recovery
 	defer func() {
 		if p := recover(); p != nil {
 			panic(catchf(p, &f, args))

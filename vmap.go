@@ -9,7 +9,7 @@ import (
 )
 
 //  VMap implements a native Goaldi map.
-//  It behaves similarly to an external map except tha
+//  It behaves similarly to an external map except that
 //  only strings and numbers are converted before use as keys.
 //  (Unconverted "identical" values would be seen as distinct.)
 type VMap map[Value]Value
