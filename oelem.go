@@ -14,9 +14,11 @@ type IField interface {
 
 //  Field(x,s) calls x.Field(s) or falls back to reflection.
 func Field(x Value, s string) Value {
+	// first check to see if this value implements Field()
 	if t, ok := x.(IField); ok {
 		return t.Field(s)
 	}
+	// using reflection, peek inside interface and/or pointer to actual value
 	xv := reflect.ValueOf(x)
 	if xv.Kind() == reflect.Interface {
 		xv = xv.Elem()
@@ -24,14 +26,18 @@ func Field(x Value, s string) Value {
 	if xv.Kind() == reflect.Ptr {
 		xv = xv.Elem()
 	}
+	// what kind of a Go value is this?
 	switch xv.Kind() {
 	case reflect.Struct:
+		// check for field of arbitrary struct type
 		if f := xv.FieldByName(s); f.IsValid() {
 			return TrapValue(f)
 		}
 	case reflect.Map:
+		// we have implicit methods for any kind of map
 		return GetMethod(GoMapMethods, x, s)
 	}
+	// nothing found
 	panic(&RunErr{"Field not found: " + s, x})
 }
 
