@@ -15,21 +15,21 @@ procedure testprint()
 	write("gh", 90, "kl", &pi)
 	print("mn", 37, "qr", &phi)
 	println("st", 25, "uv", 0)
-	write(&output,"543210")
+	write("543210")
 	printf("%10.3f %g %.0f %s\n", &phi, &pi, 12345, "abcde")
 	fprintf(&output, "%10.3f %g %.0f %s\n", &phi, &pi, 12345, "abcde")
 	write(image(sprintf("%.4f", &e)))
 end
 
 procedure teststring(v)
-	writes(&output, v, ":")
+	writes(v, ":")
 	every apply(equalfold | repl | toupper | tolower | trim, v, "3")
 	write()
 	return
 end
 
 procedure testcnv(v)
-	writes(&output, v, ":")
+	writes(v, ":")
 	every apply(type | image | number | string, v)
 	write()
 	return

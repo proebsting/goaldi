@@ -25,6 +25,6 @@ procedure main()
 			v.type()   | "[failed]",
 			v.string() | "[failed]",
 			v.image()  | "[failed]", "") 
-		write(&stdout, v)
+		write(v)
 	}
 end

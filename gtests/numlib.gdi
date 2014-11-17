@@ -15,21 +15,21 @@ procedure main()
 end
 
 procedure testout(v)
-	writes(&output, v, ":")
+	writes(v, ":")
 	every apply(type | image | number | string, v)
 	write()
 	return
 end
 
 procedure testarith(v)
-	writes(&output, v, ":")
+	writes(v, ":")
 	every apply(abs | ceil | floor | log | sqrt, v)
 	write()
 	return
 end
 
 procedure testtrig(v)
-	writes(&output, v, ":")
+	writes(v, ":")
 	every apply(sin | cos | tan | asin | acos | atan, v)
 	write()
 	return
@@ -37,7 +37,7 @@ end
 
 procedure testlogb(v)
 	local b
-	writes(&output, v, ":")
+	writes(v, ":")
 	every b := &nil | &e | 2 | 4 | 10 do {
 		writes(" log(,", b, ")", log(v, b))
 	}

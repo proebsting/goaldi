@@ -81,11 +81,11 @@ var dflt_open = NewString("r")
 //  #%#% no flag "c": implied by "w"
 //  #%#% no flag "t" or "u": done differently (see readb/writeb)
 //  #%#% no flag "p": to be considered
-func Open(env *Env, a ...Value) (Value, *Closure) {
-	defer Traceback("open", a)
+func Open(env *Env, args ...Value) (Value, *Closure) {
+	defer Traceback("open", args)
 
-	name := ProcArg(a, 0, NilValue).(Stringable).ToString().String()
-	flags := ProcArg(a, 1, dflt_open).(Stringable).ToString().String()
+	name := ProcArg(args, 0, NilValue).(Stringable).ToString().String()
+	flags := ProcArg(args, 1, dflt_open).(Stringable).ToString().String()
 	fail := false
 	read := false
 	write := false
@@ -204,49 +204,67 @@ func (f *VFile) FWriteb(args ...Value) (Value, *Closure) {
 	return Return(s)
 }
 
-//  Write(x,...)
-func Write(env *Env, a ...Value) (Value, *Closure) {
-	defer Traceback("write", a)
-	return Wrt(STDOUT, noBytes, nlByte, a)
+//  Write(x,...) -- write values and newline to stdout
+func Write(env *Env, args ...Value) (Value, *Closure) {
+	defer Traceback("write", args)
+	return Wrt(STDOUT, noBytes, nlByte, args)
 }
 
-//  Writes(x,...)
-func Writes(env *Env, a ...Value) (Value, *Closure) {
-	defer Traceback("writes", a)
-	return Wrt(STDOUT, noBytes, noBytes, a)
+//  VFile.FWrite(x,...) -- write values and newline to file
+func (f *VFile) FWrite(args ...Value) (Value, *Closure) {
+	defer Traceback("f.write", args)
+	return Wrt(f, noBytes, nlByte, args)
 }
 
-//  Print(x,...)
-func Print(env *Env, a ...Value) (Value, *Closure) {
-	defer Traceback("print", a)
-	return Wrt(STDOUT, spByte, noBytes, a)
+//  Writes(x,...) -- write values without newline to stdout
+func Writes(env *Env, args ...Value) (Value, *Closure) {
+	defer Traceback("writes", args)
+	return Wrt(STDOUT, noBytes, noBytes, args)
 }
 
-//  Println(x,...)
-func Println(env *Env, a ...Value) (Value, *Closure) {
-	defer Traceback("println", a)
-	return Wrt(STDOUT, spByte, nlByte, a)
+//  VFile.FWrites(x,...) -- write values without newline to file
+func (f *VFile) FWrites(args ...Value) (Value, *Closure) {
+	defer Traceback("f.writes", args)
+	return Wrt(f, noBytes, noBytes, args)
 }
 
-//  Stop(x,...):
-func Stop(env *Env, a ...Value) (Value, *Closure) {
-	defer Traceback("stop", a)
-	Wrt(STDERR, noBytes, nlByte, a)
+//  Print(x,...) -- write values with separating whitespace to stdout
+func Print(env *Env, args ...Value) (Value, *Closure) {
+	defer Traceback("print", args)
+	return Wrt(STDOUT, spByte, noBytes, args)
+}
+
+//  VFile.FPrint(x,...)  -- write values with separating whitespace to file
+func (f *VFile) FPrint(args ...Value) (Value, *Closure) {
+	defer Traceback("f.print", args)
+	return Wrt(f, spByte, noBytes, args)
+}
+
+//  Println(x,...)  -- write values with whitespace and newline to stdout
+func Println(env *Env, args ...Value) (Value, *Closure) {
+	defer Traceback("println", args)
+	return Wrt(STDOUT, spByte, nlByte, args)
+}
+
+//  VFile.FPrintln(x,...) -- write values with whitespace and newline to file
+func (f *VFile) FPrintln(args ...Value) (Value, *Closure) {
+	defer Traceback("f.println", args)
+	return Wrt(f, spByte, nlByte, args)
+}
+
+//  Stop(x,...): -- write values to stderr and terminate program
+func Stop(env *Env, args ...Value) (Value, *Closure) {
+	defer Traceback("stop", args)
+	Wrt(STDERR, noBytes, nlByte, args)
 	Shutdown(1) // does not return
 	return Fail()
 }
 
 //  Wrt(file, between, atEnd, x[]) -- implement write/writes/print/println/stop
-func Wrt(v Value, between []byte, atEnd []byte, a []Value) (Value, *Closure) {
+func Wrt(v Value, between []byte, atEnd []byte, args []Value) (Value, *Closure) {
 	f := v.(*VFile)
-	if len(a) > 0 { // if there is a first argument
-		if altf, ok := a[0].(*VFile); ok { // and it's a file
-			f = altf  // use that as the output file
-			a = a[1:] // and remove from arglist
-		}
-	}
 	r := NilValue
-	for i, v := range a {
+	for i, v := range args {
 		if i > 0 {
 			Ock(f.Write(between))
 		}
