@@ -24,6 +24,8 @@ import (
 )
 
 //  Declare methods
+//  Method names begin with an extra F to distinguish from those in vfile.go
+//  (whose names are fixed by the need to implement io.ReadWriteCloser).
 var FileMethods = map[string]interface{}{
 	"type":   (*VFile).Type,
 	"copy":   (*VFile).Copy,
@@ -31,6 +33,9 @@ var FileMethods = map[string]interface{}{
 	"image":  (*VFile).GoString,
 	"flush":  (*VFile).FFlush,
 	"close":  (*VFile).FClose,
+	"read":   (*VFile).FRead,
+	"readb":  (*VFile).FReadb,
+	"writeb": (*VFile).FWriteb,
 }
 
 //  VFile.Field implements methods
@@ -42,10 +47,8 @@ func init() {
 	// Goaldi procedures
 	LibProcedure("open", Open)
 	LibProcedure("read", Read)
-	LibProcedure("readb", Readb)
 	LibProcedure("write", Write)
 	LibProcedure("writes", Writes)
-	LibProcedure("writeb", Writeb)
 	LibProcedure("print", Print)
 	LibProcedure("println", Println)
 	LibProcedure("stop", Stop)
@@ -160,10 +163,14 @@ func (f *VFile) FClose(args ...Value) (Value, *Closure) {
 
 //  Read(f) -- return next line from file
 //  Fails at EOF when no more data is available.
-func Read(env *Env, a ...Value) (Value, *Closure) {
-	defer Traceback("read", a)
-	r := ProcArg(a, 0, STDIN).(*VFile)
-	s := r.ReadLine()
+func Read(env *Env, args ...Value) (Value, *Closure) {
+	return ProcArg(args, 0, STDIN).(*VFile).FRead(args)
+}
+
+//  VFile.FRead() -- read next line from file, failing at EOF.
+func (f *VFile) FRead(args ...Value) (Value, *Closure) {
+	defer Traceback("f.read", args)
+	s := f.ReadLine()
 	if s == nil {
 		return Fail()
 	} else {
@@ -171,16 +178,14 @@ func Read(env *Env, a ...Value) (Value, *Closure) {
 	}
 }
 
-//  Readb(f,n) -- read next n binary bytes from file
+//  VFile.FReadb(n) -- read next n binary bytes from file
 //  Reads up to n bytes into individual characters without decoding as UTF-8.
 //  Useful for reading binary files.
 //  Fails at EOF when no more data is available.
-func Readb(env *Env, a ...Value) (Value, *Closure) {
-	defer Traceback("readb", a)
-	r := ProcArg(a, 0, STDIN).(*VFile).Reader
-	n := int(ProcArg(a, 1, ONE).(Numerable).ToNumber().Val())
+func (f *VFile) FReadb(args ...Value) (Value, *Closure) {
+	n := int(ProcArg(args, 0, ONE).(Numerable).ToNumber().Val())
 	b := make([]byte, n)
-	n, err := r.Read(b)
+	n, err := f.Reader.Read(b)
 	if err == io.EOF {
 		return Fail()
 	} else if err != nil {
@@ -190,13 +195,12 @@ func Readb(env *Env, a ...Value) (Value, *Closure) {
 	}
 }
 
-//  Writeb(f,s) -- write string s as bytes
+//  VFile.FWriteb(s) -- write string s as bytes
 //  Writes the low 8 bits of each character of s to file f.
-func Writeb(env *Env, a ...Value) (Value, *Closure) {
-	defer Traceback("writeb", a)
-	w := ProcArg(a, 0, STDIN).(*VFile).Writer
-	s := ProcArg(a, 1, NilValue).(Stringable).ToString()
-	Ock(w.Write(s.ToBinary()))
+func (f *VFile) FWriteb(args ...Value) (Value, *Closure) {
+	defer Traceback("f.writeb", args)
+	s := ProcArg(args, 0, NilValue).(Stringable).ToString()
+	Ock(f.Writer.Write(s.ToBinary()))
 	return Return(s)
 }
 
