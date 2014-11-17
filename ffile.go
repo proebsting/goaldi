@@ -201,7 +201,7 @@ func (f *VFile) FWriteb(args ...Value) (Value, *Closure) {
 	defer Traceback("f.writeb", args)
 	s := ProcArg(args, 0, NilValue).(Stringable).ToString()
 	Ock(f.Writer.Write(s.ToBinary()))
-	return Return(s)
+	return Return(f)
 }
 
 //  Write(x,...) -- write values and newline to stdout
@@ -263,17 +263,15 @@ func Stop(env *Env, args ...Value) (Value, *Closure) {
 //  Wrt(file, between, atEnd, x[]) -- implement write/writes/print/println/stop
 func Wrt(v Value, between []byte, atEnd []byte, args []Value) (Value, *Closure) {
 	f := v.(*VFile)
-	r := NilValue
 	for i, v := range args {
 		if i > 0 {
 			Ock(f.Write(between))
 		}
 		Ock(fmt.Fprint(f, v))
-		r = v
 	}
 	Ock(f.Write(atEnd))
 	Ock(0, f.Flush()) // #%#% seems necessary; should it be?
-	return Return(r)
+	return Return(f)
 }
 
 //  Ock(n, e) -- output error check: panics if e is non-nil after output call
