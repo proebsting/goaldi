@@ -27,15 +27,19 @@ import (
 //  Method names begin with an extra F to distinguish from those in vfile.go
 //  (whose names are fixed by the need to implement io.ReadWriteCloser).
 var FileMethods = map[string]interface{}{
-	"type":   (*VFile).Type,
-	"copy":   (*VFile).Copy,
-	"string": (*VFile).String,
-	"image":  (*VFile).GoString,
-	"flush":  (*VFile).FFlush,
-	"close":  (*VFile).FClose,
-	"read":   (*VFile).FRead,
-	"readb":  (*VFile).FReadb,
-	"writeb": (*VFile).FWriteb,
+	"type":    (*VFile).Type,
+	"copy":    (*VFile).Copy,
+	"string":  (*VFile).String,
+	"image":   (*VFile).GoString,
+	"flush":   (*VFile).FFlush,
+	"close":   (*VFile).FClose,
+	"read":    (*VFile).FRead,
+	"readb":   (*VFile).FReadb,
+	"writeb":  (*VFile).FWriteb,
+	"write":   (*VFile).FWrite,
+	"writes":  (*VFile).FWrites,
+	"print":   (*VFile).FPrint,
+	"println": (*VFile).FPrintln,
 }
 
 //  VFile.Field implements methods
