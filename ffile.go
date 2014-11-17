@@ -29,6 +29,8 @@ var FileMethods = map[string]interface{}{
 	"copy":   (*VFile).Copy,
 	"string": (*VFile).String,
 	"image":  (*VFile).GoString,
+	"flush":  (*VFile).FFlush,
+	"close":  (*VFile).FClose,
 }
 
 //  VFile.Field implements methods
@@ -39,8 +41,6 @@ func (v *VFile) Field(f string) Value {
 func init() {
 	// Goaldi procedures
 	LibProcedure("open", Open)
-	LibProcedure("flush", Flush)
-	LibProcedure("close", Close)
 	LibProcedure("read", Read)
 	LibProcedure("readb", Readb)
 	LibProcedure("write", Write)
@@ -143,19 +143,18 @@ func Open(env *Env, a ...Value) (Value, *Closure) {
 	return Return(NewFile(name, reader, writer, f))
 }
 
-//  Flush(f) -- flush output on a Goaldi file
-func Flush(env *Env, a ...Value) (Value, *Closure) {
-	defer Traceback("flush", a)
-	f := ProcArg(a, 0, STDOUT)
-	Ock(0, f.(*VFile).Flush())
+//  VFile.FFlush() -- flush output
+func (f *VFile) FFlush(args ...Value) (Value, *Closure) {
+	defer Traceback("f.flush", args)
+	f.Flush()
 	return Return(f)
 }
 
-//  Close(f) -- close a Goaldi file
-func Close(env *Env, a ...Value) (Value, *Closure) {
-	defer Traceback("close", a)
-	f := ProcArg(a, 0, NilValue)
-	Ock(0, f.(*VFile).Close())
+//  VFile.FClose(f) -- close a Goaldi file
+func (f *VFile) FClose(args ...Value) (Value, *Closure) {
+	defer Traceback("f.close", args)
+	f.Flush()
+	f.Close()
 	return Return(f)
 }
 

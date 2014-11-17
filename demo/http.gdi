@@ -46,6 +46,6 @@ procedure showfile(u, f)	#: show contents of file (first n lines)
 	write(repl("-", 72))
 	every write(("" ~== !f) \ 10)
 	write("   ...")
-	close(f)
+	f.close()
 	return
 end
