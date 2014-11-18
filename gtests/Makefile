@@ -6,4 +6,4 @@ runall:
 	./runtest.sh
 
 clean:
-	rm -f *.gir *.out *.err
+	rm -f *.gir *.out *.err *.tmp

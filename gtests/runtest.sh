@@ -31,6 +31,7 @@ for F in $*; do
 	    echo "ok"
 	    rm $F.out
 	    test -s $F.err || rm $F.err
+		rm -f $F*.tmp
 	else
 	    echo "output differs"
 	    FAILURES="$FAILURES $F"
