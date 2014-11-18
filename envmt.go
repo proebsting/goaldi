@@ -57,9 +57,4 @@ func init() {
 	EnvInit("stdin", Trapped(&STDIN))
 	EnvInit("stdout", Trapped(&STDOUT))
 	EnvInit("stderr", Trapped(&STDERR))
-
-	// #%#% alternate names for the same standard files?
-	EnvInit("input", Trapped(&STDIN))
-	EnvInit("output", Trapped(&STDOUT))
-	EnvInit("errout", Trapped(&STDERR))
 }

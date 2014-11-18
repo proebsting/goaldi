@@ -17,7 +17,7 @@ procedure testprint()
 	println("st", 25, "uv", 0)
 	write("543210")
 	printf("%10.3f %g %.0f %s\n", &phi, &pi, 12345, "abcde")
-	fprintf(&output, "%10.3f %g %.0f %s\n", &phi, &pi, 12345, "abcde")
+	fprintf(&stdout, "%10.3f %g %.0f %s\n", &phi, &pi, 12345, "abcde")
 	write(image(sprintf("%.4f", &e)))
 end
 
