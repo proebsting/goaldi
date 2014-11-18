@@ -1,0 +1,34 @@
+a. line 1
+b. line 2
+c. line 3
+d. line 4
+d. line 5
+d. line 6
+e. line 1
+f. line 2
+g. line 3
+h. "lin"
+i. "e 4\n"
+j. "line "
+
+17: "first line normal"
+32: "raw\r    CR embedded in this line"
+19: "line ending in CRLF"
+19: "another normal line"
+14: "12 34 56 78 90"
+39: "Latin1: naïve Häagen-Dazs Frusen Glädjé"
+39: "Latin1: naïve Häagen-Dazs Frusen Glädjé"
+46: "Unicode:  ♠ A K Q  ♥ A K Q  ♦ A K Q J  ♣ K J 9"
+46: "Unicode:  ♠ A K Q  ♥ A K Q  ♦ A K Q J  ♣ K J 9"
+19: "another normal line"
+17: "unterminated line"
+
+342: "first line normal\nraw\r    CR embedded in this line\nline ending in CRLF\r\nanother normal line\n12 34 56 78 90\nLatin1: naÃ¯ve HÃ¤agen-Dazs Frusen GlÃ¤djÃ©\nLatin1: naÃ¯ve HÃ¤agen-Dazs Frusen GlÃ¤djÃ©\nUnicode:  â\u0099\u00a0 A K Q  â\u0099¥ A K Q  â\u0099¦ A K Q J  â\u0099£ K J 9\nUnicode:  â\u0099\u00a0 A K Q  â\u0099¥ A K Q  â\u0099¦ A K Q J  â\u0099£ K J 9\nanother normal line\nunterminated line"
+[open failed as expected]
+
+skip: abcde
+skip: fghij
+reread: abcde
+reread: fghij
+reread: klmno
+reread: pqrst
