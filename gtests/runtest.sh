@@ -21,6 +21,11 @@ for F in $*; do
     F=`basename $F .gdi`
     rm -f $F.gir $F.out $F.err
     printf "%-12s" $F:
+	if test -r $F.dat; then
+		exec <$F.dat
+	else
+		exec </dev/null
+	fi
     if goaldi $F.gdi >$F.out 2>$F.err; then
 	if cmp -s $F.std $F.out; then
 	    echo "ok"
