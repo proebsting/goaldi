@@ -17,7 +17,7 @@ record ir_Var(coord, lhs, name)
 record ir_Key(coord, lhs, name, failLabel)
 record ir_IntLit(coord, lhs, val)
 record ir_RealLit(coord, lhs, val)
-record ir_StrLit(coord, lhs, len, val)
+record ir_StrLit(coord, lhs, len, val)	# UTF-8 encoded string
 record ir_CsetLit(coord, lhs, len, val)
 
 record ir_operator(name, arity, rval)

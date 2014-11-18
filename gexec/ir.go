@@ -122,8 +122,8 @@ type ir_RealLit struct {
 type ir_StrLit struct {
 	Coord string
 	Lhs   string
-	Len   string
-	Val   string
+	Len   string // length of the UTF-8 encoding
+	Val   string // individual bytes of the UTF-8 encoding
 }
 
 type ir_CsetLit struct {

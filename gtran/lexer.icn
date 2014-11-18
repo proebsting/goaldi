@@ -21,7 +21,7 @@ procedure yylex(getline)
             if \lex_newline then {
                 lex_newline := &null
                 if member(lex_ender_set,\last_token) &
-		 member(lex_beginner_set,\t) then {
+                        member(lex_beginner_set,\t) then {
                     lex_SEMICOL.coord := lex_coordinate(lex_filename,
                                                         lex_lineno-1,
                                                         last_pos)
@@ -184,7 +184,7 @@ procedure lex_nextline(getline)
 end
 
 procedure lex_quoted(delim, getline) 
-    local str, dset, hex, h, ch, octal, o
+    local str, dset, hex, h, ch, octal, o, u
     static lookup
     initial {
         lookup := table()
@@ -210,10 +210,18 @@ procedure lex_quoted(delim, getline)
                     return str
                 }
                 ="\\" | runerr(500, lex_lineno)
-                if ="x" | ="X" then {
+                if ="u" | ="U" then {
+                    if hex:= tab(many('0123456789abcdefABCDEF',,,&pos+8)) then {
+                        u := "16r" || hex
+                        str ||:= lex_utf8(u)
+                        next
+                    } else {
+                        str ||:= "\\u"
+                    }
+                } else if ="x" | ="X" then {
                     if hex:= tab(many('0123456789abcdefABCDEF',,,&pos+2)) then {
                         h := "16r" || hex
-                        str ||:= char(h)
+                        str ||:= lex_utf8(h)
                         next
                     } else {
                         str ||:= "\\x"
@@ -227,7 +235,7 @@ procedure lex_quoted(delim, getline)
                     }   
                 } else if octal := tab(many('01234567',,,&pos+3)) then {
                     o := "8r" || octal
-                    str ||:= char(o)
+                    str ||:= lex_utf8(o)
                     next
                 } else if ch := move(1) then {
                     str ||:= (\lookup[ch] | ch)
@@ -251,5 +259,29 @@ procedure lex_quoted(delim, getline)
         }
         runerr(500, lex_lineno)
     }
+    fail
+end
+
+procedure lex_utf8(u)  #: encode Unicode character u as UTF-8 string
+    local n
+    n := integer(u)
+    if n < 16r80 then {
+        return char(n)
+    }
+    if n < 16r800 then {
+        return char(16rC0 + ishift(n, -6)) || char(16r80 + iand(n, 16r3F))
+    }
+    if n < 16r10000 then {
+        return char(16rE0 + ishift(n, -12)) ||
+        char(16r80 + iand(ishift(n, -6), 16r3F)) ||
+        char(16r80 + iand(n, 16r3F))
+    }
+    if n < 16r110000 then {
+        return char(16rF0 + ishift(n, -18)) ||
+        char(16r80 + iand(ishift(n, -12), 16r3F)) ||
+        char(16r80 + iand(ishift(n, -6), 16r3F)) ||
+        char(16r80 + iand(n, 16r3F))
+    }
+    lex_error("Unicode value too large: \u" || u)
     fail
 end

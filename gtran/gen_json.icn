@@ -76,6 +76,7 @@ procedure json(p, indent)
 end
 
 procedure json_image(s)
+#  treats a string as individual runes (not, e.g., as a UTF-8 encoding)
 	local t
 	static mapping
 	initial {

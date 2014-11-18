@@ -31,11 +31,11 @@ procedure main()
 	f.println(6, 78, 90)	# adjoins previous, spaces, newline
 	f.flush()
 	# extended character sets
-	#%#% when Unicode literals work properly,
-	#%#% change first of each pair to f.writes(...)
-	f.writeb("Latin1: naïve Häagen-Dazs Frusen Glädjé\n")
+	f.write("Latin1: naïve Häagen-Dazs Frusen Glädjé")
+	f.write("Latin1: na\xEFve H\xE4agen-Dazs Frusen Gl\xE4dj\xE9")
 	f.writeb("Latin1: na\xC3\xAFve H\xC3\xA4agen-Dazs Frusen Gl\xC3\xA4dj\xC3\xA9\n")
-	f.writeb("Unicode:  ♠ A K Q  ♥ A K Q  ♦ A K Q J  ♣ K J 9\n")
+	f.write("Unicode:  ♠ A K Q  ♥ A K Q  ♦ A K Q J  ♣ K J 9")
+	f.write("Unicode:  \u2660 A K Q  \u2665 A K Q  \U2666 A K Q J  \u2663 K J 9")
 	f.writeb("Unicode:  \xE2\x99\xA0 A K Q  \xE2\x99\xA5 A K Q  \xE2\x99\xA6 A K Q J  \xE2\x99\xA3 K J 9\n")
 	f.write("another normal line")
 	f.writes("unterminated line")
