@@ -70,6 +70,11 @@ func main() {
 		os.Exit(0)
 	}
 
+	// set execution flag
+	if opt_debug {
+		g.EnvInit("gostack", g.ONE)
+	}
+
 	// find and execute main()
 	arglist := make([]g.Value, 0)
 	for _, s := range args {

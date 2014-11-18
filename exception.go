@@ -44,7 +44,9 @@ func Run(p Value, arglist []Value) {
 	defer func() {
 		if x := recover(); x != nil {
 			r := Diagnose(os.Stderr, x) // write Goaldi stack trace
-			if !r {                     // if unrecognized
+			_ = r
+			//%#% if !r {                     // if unrecognized
+			if env.VarMap["gostack"] != nil { // if interpreter set %gostack
 				fmt.Fprintf(os.Stderr, "Go stack:\n%s\n",
 					debug.Stack()) // write Go stack trace
 			}

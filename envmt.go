@@ -3,6 +3,9 @@
 package goaldi
 
 //  execution environment
+//
+//  #%#% This needs more thought, especially if it is to be dynamic.
+//  #%#% Currently it only changes, by copying, on creation of a new thread.
 type Env struct {
 	ThreadID int              // thread ID
 	VarMap   map[string]Value // %variable map
