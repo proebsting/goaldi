@@ -91,7 +91,7 @@ func GoMethod(val Value, name string, meth reflect.Method) Value {
 		proc = GoShim(name, meth.Func.Interface())
 		KnownMethods[addr] = proc
 	}
-	return &VMethB{name, Deref(val), proc, true}
+	return &VMethVal{name, Deref(val), proc, true}
 }
 
 //  GoProcedure(name, func) -- construct a procedure from a Go function
