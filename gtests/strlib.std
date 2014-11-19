@@ -1,3 +1,4 @@
+repl:    la, la, la, la, la, la, la, la, la, la, la, hey Jude
 reverse: 
 reverse: a
 reverse: ba
@@ -7,6 +8,8 @@ reverse: edcba
 reverse: --
 tolower: abcde
 toupper: ABCDE
+fields:  "argon," "boron," "carbon," "freon," "krypton," "silicon," "teflon" 
+split:   "argon" "boron" "carbon" "freon" "krypton" "silicon" "teflon" 
 char/ord: 0 "\x00" 0 "\x00" 0
 char/ord: 1 "\x01" 1 "\x01" 1
 char/ord: 33 "!" 33 "!" 33

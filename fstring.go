@@ -30,8 +30,10 @@ func init() {
 	LibProcedure("reverse", Reverse)
 	// Go library functions
 	LibGoFunc("equalfold", strings.EqualFold)
+	LibGoFunc("fields", strings.Fields)
 	LibGoFunc("replace", strings.Replace)
 	LibGoFunc("repl", strings.Repeat)
+	LibGoFunc("split", strings.Split)
 	LibGoFunc("toupper", strings.ToUpper)
 	LibGoFunc("tolower", strings.ToLower)
 	LibGoFunc("trim", strings.Trim)
