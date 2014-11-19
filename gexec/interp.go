@@ -163,8 +163,7 @@ func execute(f *pr_frame, label string) (g.Value, *g.Closure) {
 				case ir_RealLit:
 					f.temps[i.Lhs] = g.NewString(i.Val).ToNumber()
 				case ir_StrLit:
-					//#%#% should really do fixUTF8 just once, when loading
-					f.temps[i.Lhs] = g.NewString(fixUTF8(i.Val))
+					f.temps[i.Lhs] = g.NewString(i.Val)
 				case ir_MakeList:
 					n := len(i.ValueList)
 					a := make([]g.Value, n)
@@ -442,19 +441,4 @@ func deltaSlice(lval g.IVariable, a []g.Value, sign int) (g.Value, *g.Closure) {
 		return nil, nil // fail
 	}
 	return x.Slice(lval, g.NewNumber(float64(i)), g.NewNumber(float64(j))), nil
-}
-
-//  fixUTF8 turns a doubly-UTF-encoded string into a singly-encoded string
-func fixUTF8(s string) string {
-	j := 0
-	b := make([]byte, len(s))
-	for _, r := range s {
-		b[j] = byte(r)
-		j++
-	}
-	if j < len(s) {
-		return string(b[:j])
-	} else {
-		return s // no change; so no need to reallocate / convert
-	}
 }
