@@ -1,7 +1,7 @@
 #  http.gdi -- demonstrate HTTP extension
 
 procedure main(url1, url2)
-	local f, k, kv, r, resp, hmap, p
+	local f, k, kv, r, resp, hmap, p, m
 	/url1 := "http://www.cs.arizona.edu"
 	/url2 := "http://httpbin.org/post"
 
@@ -27,9 +27,12 @@ procedure main(url1, url2)
 		every k := "Date" | "Content-Type" | "Credibility" do
 			write("   ", k, ":  ", hmap[k])
 		write("sorted:")
-		every kv := !hmap.sort() do {
+		every kv := !hmap.sort() do
 			write("    ", hmap.member(kv.key) | "?!?!", ":  ", kv.value)
-		}
+		write("cookies: ", image(resp.Cookies()))
+		write("location: ", image(resp.Location()))
+		every m := 0 | 1 | 2 do
+			write("protocol 1.", m, "?  ", resp.ProtoAtLeast(1, m))
 	} else {
 		showfile(url1, &nil)
 	}

@@ -13,9 +13,10 @@ import (
 //  An VMethB is like a Go "method value", a function bound to an object,
 //  for example the "m.delete" part of the expression "m.delete(x)"
 type VMethB struct {
-	Name string
-	Val  Value
-	Func interface{} // func(Value, ...Value)(Value, *Closure)
+	Name    string
+	Val     Value
+	Func    interface{} // func(Value, ...Value)(Value, *Closure)
+	PassEnv bool        // pass environment when calling?
 }
 
 //  VMethB.String -- conversion to Go string returns "V:Name"
@@ -74,17 +75,21 @@ func GetMethod(m map[string]interface{}, v Value, s string) *VMethB {
 	if method == nil {
 		panic(&RunErr{"unrecognized method: " + s, v})
 	}
-	return &VMethB{s, v, method}
+	return &VMethB{s, v, method, false}
 }
 
 //  VMethB.Call(args) invokes the underlying method function.
 func (mvf *VMethB) Call(env *Env, args ...Value) (Value, *Closure) {
-	arglist := make([]reflect.Value, 1+len(args))
-	arglist[0] = reflect.ValueOf(mvf.Val)
+	arglist := make([]reflect.Value, 2+len(args))
+	arglist[0] = reflect.ValueOf(env)
+	arglist[1] = reflect.ValueOf(mvf.Val)
 	for i, v := range args {
-		arglist[i+1] = reflect.ValueOf(v)
+		arglist[i+2] = reflect.ValueOf(v)
 	}
 	method := reflect.ValueOf(mvf.Func)
+	if !mvf.PassEnv {
+		arglist = arglist[1:]
+	}
 	result := method.Call(arglist)
 	switch len(result) {
 	case 0:

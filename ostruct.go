@@ -25,7 +25,7 @@ func (v *VStruct) Field(f string) Value {
 	}
 	//  check for standard method
 	if m := StructMethods[f]; m != nil {
-		return &VMethB{f, v, m}
+		return &VMethB{f, v, m, false}
 	}
 	//  neither one found
 	panic(&RunErr{"Field not found: " + f, v})

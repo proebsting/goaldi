@@ -78,8 +78,29 @@ func (v *VProcedure) Field(f string) Value {
 	return GetMethod(ProcedureMethods, v, f)
 }
 
+//  Go methods already converted to Goaldi procedures
+var KnownMethods = make(map[uintptr]interface{})
+
+//  GoMethod(val, name, meth) -- construct a Goaldi method from a Go method.
+//  meth is a method struct such as returned by reflect.Type.MethodByName(),
+//  not a bound method value such as returned by reflect.Value.MethodByName().
+func GoMethod(val Value, name string, meth reflect.Method) Value {
+	addr := meth.Func.Pointer()
+	proc := KnownMethods[addr]
+	if proc == nil {
+		proc = GoShim(name, meth.Func.Interface())
+		KnownMethods[addr] = proc
+	}
+	return &VMethB{name, Deref(val), proc, true}
+}
+
 //  GoProcedure(name, func) -- construct a procedure from a Go function
 func GoProcedure(name string, f interface{}) *VProcedure {
+	return NewProcedure(name, GoShim(name, f))
+}
+
+//  GoShim(name, func) -- make a shim for converting args to a Go function
+func GoShim(name string, f interface{} /*func*/) Procedure {
 
 	//  get information about the Go function
 	ftype := reflect.TypeOf(f)
@@ -103,8 +124,8 @@ func GoProcedure(name string, f interface{}) *VProcedure {
 		passer[nfixed] = passfunc(ftype.In(nfixed).Elem())
 	}
 
-	//  define a func to convert arguments and call the underlying func
-	pfun := func(env *Env, args ...Value) (Value, *Closure) {
+	// create a function that converts arguments and calls the underlying func
+	return func(env *Env, args ...Value) (Value, *Closure) {
 		//  set up traceback recovery
 		defer Traceback(name, args)
 		//  convert fixed arguments from Goaldi values to needed Go type
@@ -144,9 +165,6 @@ func GoProcedure(name string, f interface{}) *VProcedure {
 			return NilValue, nil
 		}
 	}
-
-	//  make this function a Goaldi procedure, and return it
-	return NewProcedure(name, pfun)
 }
 
 //  passfunc returns a function that converts a Goaldi value
