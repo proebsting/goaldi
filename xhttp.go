@@ -1,4 +1,4 @@
-//  http.go -- HTTP interface *** SAMPLE EXTENSION ***
+//  xhttp.go -- HTTP interface *** SAMPLE EXTENSION ***
 
 package goaldi
 
