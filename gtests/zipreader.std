@@ -1,0 +1,71 @@
+zipreader.dat
+------------------------------------------------------------
+README:  193 bytes
+A sample from "30 great poems everyone should know"
+The Times [of London], 19 November 2011  (viewed 20 November 2014)
+http://www.thetimes.co.uk/tto/public/poetrycompetition/article3229711.ece
+------------------------------------------------------------
+blake.txt:  571 bytes
+Jerusalem
+William Blake
+
+And did those feet in ancient time
+Walk upon England’s mountains green?
+   ...   
+------------------------------------------------------------
+carroll.txt:  974 bytes
+Jabberwocky
+Lewis Carroll
+
+’Twas brillig, and the slithy toves
+Did gyre and gimble in the wabe:
+   ...   
+------------------------------------------------------------
+coleridge.txt:  2042 bytes
+Kubla Khan
+Samuel taylor Coleridge
+
+In Xanadu did Kubla Khan
+A stately pleasure-dome decree:
+   ...   
+------------------------------------------------------------
+grahame.txt:  682 bytes
+The Song of Mr Toad
+Kenneth Grahame
+
+The world has held great Heroes,
+As history-books have showed;
+   ...   
+------------------------------------------------------------
+kipling.txt:  1519 bytes
+If
+Rudyard Kipling
+
+If you can keep your head when all about you
+Are losing theirs and blaming it on you,
+   ...   
+------------------------------------------------------------
+lear.txt:  1141 bytes
+The Owl and the Pussycat
+Edward Lear
+
+The Owl and the Pussy-cat went to sea
+In a beautiful pea green boat,
+   ...   
+------------------------------------------------------------
+longfellow.txt:  477 bytes
+The Arrow and the Song
+Henry Wadsworth Longfellow
+
+I shot an arrow into the air,
+It fell to earth, I knew not where;
+   ...   
+------------------------------------------------------------
+whitman.txt:  885 bytes
+I Hear America Singing
+Walt Whitman
+
+I hear America singing, the varied carols I hear,
+Those of mechanics, each one singing his as it should be blithe and strong,
+   ...   
+[end]

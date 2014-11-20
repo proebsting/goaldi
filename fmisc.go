@@ -3,6 +3,7 @@
 package goaldi
 
 import (
+	"archive/zip"
 	"fmt"
 	"os"
 	"time"
@@ -40,6 +41,8 @@ func init() {
 	LibGoFunc("hostname", os.Hostname)
 	LibGoFunc("getpid", os.Getpid)
 	LibGoFunc("getppid", os.Getppid)
+	// Heavy-duty package interfaces
+	LibGoFunc("zipreader", zip.OpenReader)
 }
 
 //  Type(v) -- return the name of v's type, as a string
