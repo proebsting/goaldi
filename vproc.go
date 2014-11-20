@@ -156,14 +156,16 @@ func GoShim(name string, f interface{} /*func*/) Procedure {
 		}
 		//  call the Go function
 		out := fval.Call(in)
-		//  return the result
-		//  #%#% in the case of multiple return values, returns only the first!
-		//  #%#% should at least panic if the second is type error and non-nil
-		if nrtn >= 1 {
-			return Import(out[0].Interface()), nil
-		} else {
-			return NilValue, nil
+		if nrtn == 0 {
+			return Return(NilValue) // no return value: return %nil
 		}
+		r := Import(out[0].Interface()) // import the first return value
+		if r == NilValue && nrtn == 2 { // if result is nil and there's one more
+			if e, ok := out[1].Interface().(error); ok && e != nil { // if error
+				return Fail() // then fail
+			}
+		}
+		return Return(r) // return first value
 	}
 }
 
