@@ -29,9 +29,6 @@ func Field(x Value, s string) Value {
 	if xv.Kind() == reflect.Ptr {
 		xv = xv.Elem()
 	}
-	if m, ok := xv.Type().MethodByName(s); ok {
-		return GoMethod(x, s, m)
-	}
 	// what kind of a Go value is this?
 	switch xv.Kind() {
 	case reflect.Struct:
