@@ -64,7 +64,7 @@ func irDecl(decl interface{}) {
 		for _, chunk := range x.CodeList {
 			for _, insn := range chunk.InsnList {
 				if i, ok := insn.(ir_Var); ok {
-					if !pr.lset[i.Name] {
+					if !pr.known[i.Name] {
 						Undeclared[i.Name] = true
 					}
 				}

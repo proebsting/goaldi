@@ -1,53 +1,59 @@
-//  proc.go -- things dealing with procedures in the interpreter
+//  proc.go -- things dealing with procedures at link time
 
 package main
 
 import (
 	"fmt"
 	g "goaldi"
+	"regexp"
 )
 
-//  info about a procedure
+//  information about a procedure that is shared by all invocations
 type pr_Info struct {
-	name    string                   // procedure name
-	outer   *pr_Info                 // immediate parent #%#% NOT YET SET
-	ir      *ir_Function             // intermediate code structure
-	accum   bool                     // true if last param is [] #%#% NYET IMPL
-	nparams int                      // number of parameters
-	nlocals int                      // number of locals
-	lset    map[string]bool          // set of locally declared identifiers
-	dict    map[string]interface{}   // map from identifiers to variables
-	insns   map[string][]interface{} // map from labels to IR code chunks
+	name     string                   // procedure name
+	outer    *pr_Info                 // enclosing procedure, if any
+	ir       *ir_Function             // intermediate code structure
+	insns    map[string][]interface{} // map from labels to IR code chunks
+	known    map[string]bool          // set of locally declared identifiers
+	statics  map[string]interface{}   // table of statics (including globals)
+	locals   []string                 // list of local names
+	params   []string                 // list of parameter names
+	variadic bool                     // true if last param is []
 }
 
 //  global index of procedure information
 var ProcTable = make(map[string]*pr_Info)
 
-//  a local variable
-type pr_local int // value is index of this particular local
-
-//  a parameter
-type pr_param int // value is index of this particular parameter
+//  pattern for extracting name of enclosing procedure
+var enclpat = regexp.MustCompile(`^(.*)\$nested\$[0-9]*$`)
 
 //  declareProc initializes and returns a procedure info structure
 func declareProc(ir *ir_Function) *pr_Info {
 	pr := &pr_Info{}
 	pr.name = ir.Name
 	pr.ir = ir
-	pr.accum = (ir.Accumulate != "")
-	pr.nlocals = len(pr.ir.LocalList)
-	pr.nparams = len(pr.ir.ParamList)
-	pr.lset = make(map[string]bool)
-	for _, name := range ir.ParamList {
-		pr.lset[name] = true
+	pr.variadic = (ir.Accumulate != "")
+	pr.params = pr.ir.ParamList
+	pr.locals = pr.ir.LocalList
+	pr.known = make(map[string]bool)
+	for _, name := range pr.params {
+		pr.known[name] = true
 	}
-	for _, name := range ir.LocalList {
-		pr.lset[name] = true
+	for _, name := range pr.locals {
+		pr.known[name] = true
 	}
 	for _, name := range ir.StaticList {
-		pr.lset[name] = true
+		pr.known[name] = true
 	}
 	ProcTable[ir.Name] = pr
+	// if nested, we also know all idents known to enclosing procedure
+	matches := enclpat.FindStringSubmatch(pr.name) // check pattern of proc name
+	if matches != nil {                            // if nested
+		pr.outer = ProcTable[matches[1]]   // look up parent info
+		for name := range pr.outer.known { // every identifier known there
+			pr.known[name] = true // is known here, too
+		}
+	}
 	return pr
 }
 
@@ -66,39 +72,27 @@ func irProcedure(pr *pr_Info) *g.VProcedure {
 //	#%#% TODO: handle nested procedures
 func setupProc(pr *pr_Info) {
 	undeclared(pr)
-	pr.dict = makeDict(pr)
+	pr.statics = makeDict(pr)
 	pr.insns = getInsns(pr)
 	if opt_verbose {
-		showProc(pr)
+		fmt.Printf("\n%s()  %d param  %d local  static+global %d\n",
+			pr.name, len(pr.params), len(pr.locals), len(pr.statics))
 	}
 }
 
-//  makeDict creates the mapping from identifiers to variables within the proc
+//  makeDict creates the initial mapping of identifiers to variables for a proc
+//  This initial dictionary contains only globals and statics.
 func makeDict(pr *pr_Info) map[string]interface{} {
-
 	dict := make(map[string]interface{})
-
-	// start with the globals; may overwrite some of these with locals
-	//#%#% later: start with outer proc dict to grab its statics etc
+	//  start with every global that is not hidden by a local/param/static
 	for name, value := range GlobalDict {
-		dict[name] = value
+		if !pr.known[name] {
+			dict[name] = value
+		}
 	}
-
-	// add statics
+	// add a trapped variable for every static
 	for _, name := range pr.ir.StaticList {
 		dict[name] = g.Trapped(g.NewVariable(g.NilValue))
-	}
-	// add outer locals
-	//#%#% TBD
-
-	// add locals
-	for i, name := range pr.ir.LocalList {
-		dict[name] = pr_local(i)
-	}
-
-	// add params
-	for i, name := range pr.ir.ParamList {
-		dict[name] = pr_param(i)
 	}
 	return dict
 }
@@ -117,7 +111,7 @@ func undeclared(pr *pr_Info) {
 	for _, chunk := range pr.ir.CodeList {
 		for _, insn := range chunk.InsnList {
 			if i, ok := insn.(ir_Var); ok {
-				if !pr.lset[i.Name] && Undeclared[i.Name] {
+				if !pr.known[i.Name] && Undeclared[i.Name] {
 					//%#% warn now, later fatal
 					warning(fmt.Sprintf("%v %s undeclared",
 						i.Coord, i.Name))
@@ -127,22 +121,4 @@ func undeclared(pr *pr_Info) {
 			}
 		}
 	}
-}
-
-//  showProc prints information about the procedure in verbose mode
-func showProc(pr *pr_Info) {
-	fmt.Printf("\n%s()  %d param  %d local  dict %d\n   ",
-		pr.name, pr.nparams, pr.nlocals, len(pr.dict))
-	for name := range sortedKeys(pr.dict) {
-		v := pr.dict[name]
-		switch x := v.(type) {
-		case pr_param:
-			fmt.Printf(" p%d:%s", int(x), name)
-		case pr_local:
-			fmt.Printf(" l%d:%s", int(x), name)
-		default:
-			fmt.Printf(" g:%s", name)
-		}
-	}
-	fmt.Println()
 }

@@ -9,25 +9,31 @@ import (
 
 //  procedure frame
 type pr_frame struct {
-	env    *g.Env                 // dynamic execution environment
-	info   *pr_Info               // static procedure information
-	params []g.Value              // parameters
-	locals []g.Value              // locals
-	temps  map[string]interface{} // temporaries
-	coord  string                 // last known source location
-	offv   g.Value                // offending value for traceback
-	cxout  g.VChannel             // co-expression output pipe
+	env   *g.Env                 // dynamic execution environment
+	info  *pr_Info               // static procedure information
+	vars  map[string]interface{} // variables
+	temps map[string]interface{} // temporaries
+	coord string                 // last known source location
+	offv  g.Value                // offending value for traceback
+	cxout g.VChannel             // co-expression output pipe
 }
-
-//#%#% possible future optimization:  instead of allocating m+n params+locals,
-//#%#% and m+n trapped variables, allocate one huge array and connect pointers.
 
 //  newframe(f) -- duplicate a procedure frame
 func newframe(f *pr_frame) *pr_frame {
 	fnew := &pr_frame{}
 	*fnew = *f
-	fnew.params = duplvars(f.params)
-	fnew.locals = duplvars(f.locals)
+	fnew.vars = make(map[string]interface{})
+	for k, v := range f.vars {
+		fnew.vars[k] = v
+	}
+	// make new copies of all parameter values
+	for _, name := range f.info.params {
+		fnew.vars[name] = g.Trapped(g.NewVariable(g.Deref(f.vars[name])))
+	}
+	// make new copies of all locals (n.b. does not include statics)
+	for _, name := range f.info.locals {
+		fnew.vars[name] = g.Trapped(g.NewVariable(g.Deref(f.vars[name])))
+	}
 	return fnew
 }
 
@@ -57,18 +63,24 @@ func interp(env *g.Env, pr *pr_Info, args ...g.Value) (g.Value, *g.Closure) {
 	f.env = env
 	f.info = pr
 
+	// initialize variable dictionary with statics and globals
+	f.vars = make(map[string]interface{})
+	for k, v := range pr.statics {
+		f.vars[k] = v
+	}
+
 	// initialize parameters
-	f.params = make([]g.Value, pr.nparams)
-	for i := 0; i < len(f.params); i++ {
+	for i, name := range pr.params {
 		if i < len(args) {
-			f.params[i] = g.Trapped(&args[i])
+			f.vars[name] = g.Trapped(g.NewVariable(args[i]))
 		} else {
-			f.params[i] = g.Trapped(g.NewVariable(g.NilValue))
+			f.vars[name] = g.Trapped(g.NewVariable(g.NilValue))
 		}
 	}
+
 	//  handle variadic procedure
-	if pr.accum {
-		n := len(f.params) - 1
+	if pr.variadic {
+		n := len(pr.params) - 1
 		vp := new(g.Value)
 		if len(args) < n {
 			*vp = g.NewList(0, nil)
@@ -77,13 +89,12 @@ func interp(env *g.Env, pr *pr_Info, args ...g.Value) (g.Value, *g.Closure) {
 			copy(vals, args[n:])
 			*vp = g.InitList(vals)
 		}
-		f.params[n] = g.Trapped(vp)
+		f.vars[pr.params[n]] = g.Trapped(vp)
 	}
 
 	// initialize locals
-	f.locals = make([]g.Value, pr.nlocals)
-	for i := 0; i < len(f.locals); i++ {
-		f.locals[i] = g.Trapped(g.NewVariable(g.NilValue))
+	for _, name := range pr.locals {
+		f.vars[name] = g.Trapped(g.NewVariable(g.NilValue))
 	}
 
 	// set up traceback recovery
@@ -173,17 +184,10 @@ func execute(f *pr_frame, label string) (g.Value, *g.Closure) {
 					}
 					f.temps[i.Lhs] = g.InitList(a)
 				case ir_Var:
-					v := f.info.dict[i.Name]
-					switch t := v.(type) {
-					case pr_local:
-						v = f.locals[int(t)]
-					case pr_param:
-						v = f.params[int(t)]
-					case nil:
-						f.coord = i.Coord
+					frame := f
+					v := frame.vars[i.Name]
+					if v == nil { //#%#% eventually make a link-time error
 						panic(&g.RunErr{"Undeclared identifier", i.Name})
-					default:
-						// global or static: already trapped
 					}
 					f.temps[i.Lhs] = v
 				case ir_Move:
