@@ -52,7 +52,8 @@ func catchf(p interface{}, f *pr_frame, args []g.Value) *g.CallFrame {
 }
 
 //  interp -- interpret one procedure
-func interp(env *g.Env, pr *pr_Info, args ...g.Value) (g.Value, *g.Closure) {
+func interp(env *g.Env, pr *pr_Info, outer map[string]interface{},
+	args ...g.Value) (g.Value, *g.Closure) {
 
 	if opt_trace {
 		fmt.Printf("[%d] P: %s\n", env.ThreadID, pr.name)
@@ -63,9 +64,12 @@ func interp(env *g.Env, pr *pr_Info, args ...g.Value) (g.Value, *g.Closure) {
 	f.env = env
 	f.info = pr
 
-	// initialize variable dictionary with statics and globals
+	// initialize variable dictionary with inherited variables
+	if outer == nil {
+		outer = pr.statics
+	}
 	f.vars = make(map[string]interface{})
-	for k, v := range pr.statics {
+	for k, v := range outer {
 		f.vars[k] = v
 	}
 
@@ -201,6 +205,11 @@ func execute(f *pr_frame, label string) (g.Value, *g.Closure) {
 					label = i.TargetTmpLabel
 					label = f.temps[label].(string)
 					break Chunk
+				case ir_MakeClosure:
+					//#%#% potential later optimization:
+					//#%#% only pass in *referenced* variables
+					//#%#% so that the remainder can get garbage collected
+					f.temps[i.Lhs] = irProcedure(ProcTable[i.Name], f.vars)
 				case ir_OpFunction:
 					f.coord = i.Coord
 					v, c := opFunc(f.env, f, &i)

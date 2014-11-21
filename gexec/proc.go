@@ -57,11 +57,11 @@ func declareProc(ir *ir_Function) *pr_Info {
 	return pr
 }
 
-//  irProcedure makes a runtime procedure from a procedure info structure
-func irProcedure(pr *pr_Info) *g.VProcedure {
+//  irProcedure makes a runtime procedure from static info and inherited vars
+func irProcedure(pr *pr_Info, outer map[string]interface{}) *g.VProcedure {
 	return g.NewProcedure(pr.name,
 		func(env *g.Env, args ...g.Value) (g.Value, *g.Closure) {
-			return interp(env, pr, args...)
+			return interp(env, pr, outer, args...)
 		})
 }
 

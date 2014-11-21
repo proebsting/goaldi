@@ -85,11 +85,11 @@ func registerProc(pr *pr_Info) {
 	if gv == nil {
 		// not declared as global, and not seen before:
 		// create global with unmodifiable procedure value
-		GlobalDict[pr.name] = irProcedure(pr)
+		GlobalDict[pr.name] = irProcedure(pr, nil)
 	} else if t, ok := gv.(*g.VTrapped); ok && t.Target == &g.NilValue {
 		// uninitialized declared global:
 		// initialize global trapped variable with procedure value
-		*t.Target = irProcedure(pr) //#%#% TEST THIS!
+		*t.Target = irProcedure(pr, nil) //#%#% TEST THIS!
 	} else {
 		// duplicate global: fatal error
 		fatal("duplicate global declaration: " + pr.name)
