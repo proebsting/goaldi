@@ -47,6 +47,7 @@ func (v *VFile) Field(f string) Value {
 	return GetMethod(FileMethods, v, f)
 }
 
+//  Declare procedures
 func init() {
 	// Goaldi procedures
 	LibProcedure("open", Open)

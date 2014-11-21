@@ -97,6 +97,7 @@ func interp(env *g.Env, pr *pr_Info, args ...g.Value) (g.Value, *g.Closure) {
 	return execute(&f, pr.ir.CodeStart)
 }
 
+//  execute IR code for procedure or co-expression
 func execute(f *pr_frame, label string) (g.Value, *g.Closure) {
 
 	// create re-entrant interpreter
