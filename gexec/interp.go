@@ -107,7 +107,7 @@ func interp(env *g.Env, pr *pr_Info, outer map[string]interface{},
 
 //  coexecute wraps an execute call to catch a panic in a co-expression
 func coexecute(f *pr_frame, label string) (g.Value, *g.Closure) {
-	defer g.Catcher(f.env, nil)
+	defer g.Catcher(f.env)
 	return execute(f, label)
 }
 
