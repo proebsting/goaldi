@@ -5,7 +5,6 @@ package main
 import (
 	"fmt"
 	g "goaldi"
-	"strings"
 )
 
 //  procedure frame
@@ -166,7 +165,7 @@ func execute(f *pr_frame, label string) (g.Value, *g.Closure) {
 					go coexecute(fnew, i.CoexpLabel)
 				case ir_CoRet:
 					f.coord = i.Coord
-					if !cosend(f.cxout, f.temps[i.Value]) {
+					if g.CoSend(f.cxout, f.temps[i.Value]) == nil {
 						return nil, nil // kill self: channel was closed
 					}
 					label = i.ResumeLabel
@@ -470,21 +469,4 @@ func deltaSlice(lval g.IVariable, a []g.Value, sign int) (g.Value, *g.Closure) {
 		return nil, nil // fail
 	}
 	return x.Slice(lval, g.NewNumber(float64(i)), g.NewNumber(float64(j))), nil
-}
-
-//  cosend(chan, value) sends a co-expression result to a channel
-//  it returns true if successful, false if channel was closed, panics on error
-func cosend(ch g.VChannel, v g.Value) bool {
-	success := true
-	defer func() {
-		r := recover()
-		if r != nil {
-			success = false
-			if !strings.HasSuffix(fmt.Sprint(r), "send on closed channel") {
-				panic(r) // not what we expected
-			}
-		}
-	}()
-	ch <- v
-	return success
 }

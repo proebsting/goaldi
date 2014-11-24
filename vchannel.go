@@ -4,6 +4,7 @@ package goaldi
 
 import (
 	"fmt"
+	"strings"
 )
 
 //  VChannel implements a Goaldi channel, which just wraps a Go channel.
@@ -49,4 +50,22 @@ func (v VChannel) Import() Value {
 //  VChannel.Export returns itself.
 func (v VChannel) Export() interface{} {
 	return v
+}
+
+//  CoSend(chan, value) sends a co-expression result to a channel.
+//  Returns chan if successful, nil if channel had been closed.
+//  Panics on any other error.
+func CoSend(ch VChannel, v Value) VChannel {
+	result := ch
+	defer func() {
+		r := recover()
+		if r != nil {
+			result = nil
+			if !strings.HasSuffix(fmt.Sprint(r), "send on closed channel") {
+				panic(r) // not what we expected
+			}
+		}
+	}()
+	ch <- v
+	return result
 }

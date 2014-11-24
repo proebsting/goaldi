@@ -65,13 +65,22 @@ func (c VChannel) Close(args ...Value) (Value, *Closure) {
 }
 
 //  VChannel.Buffer(i) interposes a buffer of size i in front of a channel.
+//  NOTE: a Go nil is indistinguishable from EOF and is treated as such.
+//  (This only applies to Go values.  There is no problem with Goaldi nil.)
 func (c VChannel) Buffer(args ...Value) (Value, *Closure) {
 	defer Traceback("C.buffer", args)
 	i := int(ProcArg(args, 0, ONE).(Numerable).ToNumber().Val())
 	r := NewChannel(i)
 	go func() {
 		for {
-			r <- <-c
+			v := <-c      // get value from input side
+			if v == nil { // if input channel was closed
+				close(r) // then close output channel
+				return   // and return (killing this thread)
+			}
+			if CoSend(r, v) == nil { // send output; if closed,
+				return // return (killing this thread)
+			}
 		}
 	}()
 	return Return(r)
