@@ -64,12 +64,15 @@ func interp(env *g.Env, pr *pr_Info, outer map[string]interface{},
 	f.env = env
 	f.info = pr
 
-	// initialize variable dictionary with inherited variables
-	if outer == nil {
-		outer = pr.statics
-	}
+	// initialize variable dictionary with inherited variables;
+	// any of these may be subsequently hidden (replaced)
 	f.vars = make(map[string]interface{})
 	for k, v := range outer {
+		f.vars[k] = v
+	}
+
+	// add static variables
+	for k, v := range pr.statics {
 		f.vars[k] = v
 	}
 
@@ -190,7 +193,11 @@ func execute(f *pr_frame, label string) (g.Value, *g.Closure) {
 				case ir_Var:
 					frame := f
 					v := frame.vars[i.Name]
-					if v == nil { //#%#% eventually make a link-time error
+					if v == nil {
+						v = GlobalDict[i.Name]
+					}
+					if v == nil {
+						//#%#% eventually make a link-time error
 						panic(&g.RunErr{"Undeclared identifier", i.Name})
 					}
 					f.temps[i.Lhs] = v

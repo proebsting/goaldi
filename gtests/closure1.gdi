@@ -1,0 +1,36 @@
+#SRC: written for goaldi
+#
+#  simple test of closures
+
+procedure main()
+	local p, q, r, mkproc
+
+	mkproc := procedure(name)
+		local n, pnum
+		static pcount
+		/pcount := 0
+		pnum := (pcount +:= 1)
+		n := 0
+		return procedure(arg) 
+			static t
+			/t := 0
+			n +:= 1
+			t +:= 1
+			write("p#", pnum, ":  ", name, "(", arg, ")",
+				"  call #", n, ", total=", t)
+		end;
+	end;
+
+	p := mkproc("p")
+	q := mkproc("q")
+	q("00")
+	p(11)
+	p(22)
+	q(33)
+	q(44)
+	r := mkproc("r")
+	q(55)
+	p(66)
+	r(77)
+	r(88)
+end

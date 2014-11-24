@@ -57,53 +57,28 @@ func declareProc(ir *ir_Function) *pr_Info {
 	return pr
 }
 
-//  irProcedure makes a runtime procedure from static info and inherited vars
-func irProcedure(pr *pr_Info, outer map[string]interface{}) *g.VProcedure {
-	return g.NewProcedure(pr.name,
-		func(env *g.Env, args ...g.Value) (g.Value, *g.Closure) {
-			return interp(env, pr, outer, args...)
-		})
-}
-
-//  setupProc finishes procedure setup now that the GlobalDict is set
-//	report undeclared identifiers
-//	create combined dictionary of global + local variables
-//	create chunk table indexed by labels
-//	#%#% TODO: handle nested procedures
+//  setupProc finishes procedure setup now that all globals are known
 func setupProc(pr *pr_Info) {
+
+	// report undeclared identifiers
 	undeclared(pr)
-	pr.statics = makeDict(pr)
-	pr.insns = getInsns(pr)
+
+	// make a trapped variable for every static
+	pr.statics = make(map[string]interface{})
+	for _, name := range pr.ir.StaticList {
+		pr.statics[name] = g.Trapped(g.NewVariable(g.NilValue))
+	}
+
+	// create an index of IR code chunks
+	pr.insns = make(map[string][]interface{})
+	for _, ch := range pr.ir.CodeList {
+		pr.insns[ch.Label] = ch.InsnList
+	}
+
 	if opt_verbose {
-		fmt.Printf("\n%s()  %d param  %d local  static+global %d\n",
+		fmt.Printf("\n%s()  %d param  %d local  %d static\n",
 			pr.name, len(pr.params), len(pr.locals), len(pr.statics))
 	}
-}
-
-//  makeDict creates the initial mapping of identifiers to variables for a proc
-//  This initial dictionary contains only globals and statics.
-func makeDict(pr *pr_Info) map[string]interface{} {
-	dict := make(map[string]interface{})
-	//  start with every global that is not hidden by a local/param/static
-	for name, value := range GlobalDict {
-		if !pr.known[name] {
-			dict[name] = value
-		}
-	}
-	// add a trapped variable for every static
-	for _, name := range pr.ir.StaticList {
-		dict[name] = g.Trapped(g.NewVariable(g.NilValue))
-	}
-	return dict
-}
-
-//  getInsns creates the index of IR code chunks
-func getInsns(pr *pr_Info) map[string][]interface{} {
-	insns := make(map[string][]interface{})
-	for _, ch := range pr.ir.CodeList {
-		insns[ch.Label] = ch.InsnList
-	}
-	return insns
 }
 
 //  undeclared reports identifiers never declared anywhere
@@ -121,4 +96,12 @@ func undeclared(pr *pr_Info) {
 			}
 		}
 	}
+}
+
+//  irProcedure makes a runtime procedure from static info and inherited vars
+func irProcedure(pr *pr_Info, outer map[string]interface{}) *g.VProcedure {
+	return g.NewProcedure(pr.name,
+		func(env *g.Env, args ...g.Value) (g.Value, *g.Closure) {
+			return interp(env, pr, outer, args...)
+		})
 }

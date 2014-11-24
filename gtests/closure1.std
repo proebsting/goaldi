@@ -1,0 +1,9 @@
+p#2:  q(00)  call #1, total=1
+p#1:  p(11)  call #1, total=2
+p#1:  p(22)  call #2, total=3
+p#2:  q(33)  call #2, total=4
+p#2:  q(44)  call #3, total=5
+p#2:  q(55)  call #4, total=6
+p#1:  p(66)  call #3, total=7
+p#3:  r(77)  call #1, total=8
+p#3:  r(88)  call #2, total=9
