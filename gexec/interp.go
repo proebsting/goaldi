@@ -11,6 +11,7 @@ import (
 type pr_frame struct {
 	env   *g.Env                 // dynamic execution environment
 	info  *pr_Info               // static procedure information
+	args  []g.Value              // arglist as called
 	vars  map[string]interface{} // variables
 	temps map[string]interface{} // temporaries
 	coord string                 // last known source location
@@ -46,11 +47,6 @@ func duplvars(a []g.Value) []g.Value {
 	return b
 }
 
-//  catchf -- annotate a panic value with procedure frame information
-func catchf(p interface{}, f *pr_frame, args []g.Value) *g.CallFrame {
-	return g.Catch(p, f.offv, f.coord, f.info.name, args)
-}
-
 //  interp -- interpret one procedure
 func interp(env *g.Env, pr *pr_Info, outer map[string]interface{},
 	args ...g.Value) (g.Value, *g.Closure) {
@@ -63,6 +59,7 @@ func interp(env *g.Env, pr *pr_Info, outer map[string]interface{},
 	var f pr_frame
 	f.env = env
 	f.info = pr
+	f.args = args
 
 	// initialize variable dictionary with inherited variables;
 	// any of these may be subsequently hidden (replaced)
@@ -104,19 +101,25 @@ func interp(env *g.Env, pr *pr_Info, outer map[string]interface{},
 		f.vars[name] = g.Trapped(g.NewVariable(g.NilValue))
 	}
 
-	// set up traceback recovery
-	defer func() {
-		if p := recover(); p != nil {
-			panic(catchf(p, &f, args))
-		}
-	}()
-
 	// execute the IR code
 	return execute(&f, pr.ir.CodeStart)
 }
 
+//  coexecute wraps an execute call to catch a panic in a co-expression
+func coexecute(f *pr_frame, label string) (g.Value, *g.Closure) {
+	defer g.Catcher(f.env, nil)
+	return execute(f, label)
+}
+
 //  execute IR code for procedure or co-expression
 func execute(f *pr_frame, label string) (g.Value, *g.Closure) {
+
+	// set up traceback recovery
+	defer func() {
+		if p := recover(); p != nil {
+			panic(g.Catch(p, f.offv, f.coord, f.info.name, f.args))
+		}
+	}()
 
 	// create re-entrant interpreter
 	f.temps = make(map[string]interface{}) // each cx needs own copy
@@ -155,11 +158,13 @@ func execute(f *pr_frame, label string) (g.Value, *g.Closure) {
 					fnew := newframe(f)
 					fnew.cxout = g.NewChannel(0)
 					fnew.env = g.NewEnv(f.env)
+					fnew.coord = i.Coord
 					if i.Lhs != "" {
 						f.temps[i.Lhs] = fnew.cxout
 					}
-					go execute(fnew, i.CoexpLabel)
+					go coexecute(fnew, i.CoexpLabel)
 				case ir_CoRet:
+					f.coord = i.Coord
 					f.cxout <- f.temps[i.Value]
 					label = i.ResumeLabel
 				case ir_CoFail:

@@ -41,19 +41,23 @@ type CallFrame struct {
 //  and calls it from Go
 func Run(p Value, arglist []Value) {
 	env := NewEnv(nil)
-	defer func() {
-		if x := recover(); x != nil {
-			r := Diagnose(os.Stderr, x) // write Goaldi stack trace
-			_ = r
-			//%#% if !r {                     // if unrecognized
-			if env.VarMap["gostack"] != nil { // if interpreter set %gostack
-				fmt.Fprintf(os.Stderr, "Go stack:\n%s\n",
-					debug.Stack()) // write Go stack trace
-			}
-			Shutdown(1)
-		}
-	}()
+	defer Catcher(env, nil)
 	p.(ICall).Call(env, arglist...)
+}
+
+//  Catcher(env, okch) tries to recover from a panic and print a traceback.
+//  A panic due to a write attempt on okch causes a silent (thread) exit.
+//  Anything else is reported and terminates the entire program.
+func Catcher(env *Env, okch chan Value) {
+	if x := recover(); x != nil {
+		Diagnose(os.Stderr, x)            // write Goaldi stack trace
+		if env.VarMap["gostack"] != nil { // if interpreter set %gostack
+			fmt.Fprintf(os.Stderr, "Go stack:\n%s\n",
+				debug.Stack()) // write Go stack trace
+		}
+		Shutdown(1)
+		panic(x)
+	}
 }
 
 //  Shutdown terminates execution with the given exit code.
