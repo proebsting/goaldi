@@ -6,6 +6,7 @@ procedure main()
 	write("\ntrigonometry:")
 	every testtrig(-&phi | "0" | 1.0 | 2 | &e | &pi)
 	testpot()
+	testrad()
 	write("\nbased logarithms:")
 	every testlogb(0 | 1 | &phi | 2 | 8 | 32 | 100 | 1012)
 	write("\natan2:")
@@ -41,6 +42,17 @@ procedure testpot()
 	writes("hypot: ")
 	every (x := 2 | 3 | 4) & (y := 3 | 5 | 8) do
 		writes(" ",x,":",y,":",hypot(x,y))
+	write()
+	return
+end
+
+procedure testrad()
+    local d, r
+	writes("dtortod:")
+	every d := -45 | 0 | 30 | 60 | 90 | 360/&pi | 180 do {
+		r := dtor(d)
+		writes(" ", d, "/", r, "/", rtod(r))
+	}
 	write()
 	return
 end

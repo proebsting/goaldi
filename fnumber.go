@@ -30,6 +30,8 @@ func init() {
 	LibProcedure("log", Log)
 	LibProcedure("atan", Atan)
 	LibProcedure("gcd", GCD)
+	LibProcedure("rtod", RtoD)
+	LibProcedure("dtor", DtoR)
 	// Go library functions
 	LibGoFunc("abs", math.Abs)
 	LibGoFunc("ceil", math.Ceil)
@@ -128,4 +130,18 @@ func GCD(env *Env, args ...Value) (Value, *Closure) {
 		}
 	}
 	return Return(NewNumber(float64(a)))
+}
+
+//  DtoR(r1) -- convert degrees to radians
+func DtoR(env *Env, a ...Value) (Value, *Closure) {
+	defer Traceback("dtor", a)
+	r := ProcArg(a, 0, NilValue).(Numerable).ToNumber().Val()
+	return Return(NewNumber(r * math.Pi / 180.0))
+}
+
+//  RtoD(r1) -- convert radians to degrees
+func RtoD(env *Env, a ...Value) (Value, *Closure) {
+	defer Traceback("rtod", a)
+	r := ProcArg(a, 0, NilValue).(Numerable).ToNumber().Val()
+	return Return(NewNumber(r * 180.0 / math.Pi))
 }
