@@ -4,6 +4,7 @@ package goaldi
 
 import (
 	"fmt"
+	"regexp"
 	"strings"
 	"unicode"
 )
@@ -31,6 +32,8 @@ func init() {
 	// Go library functions
 	LibGoFunc("equalfold", strings.EqualFold)
 	LibGoFunc("fields", strings.Fields)
+	LibGoFunc("regex", regexp.Compile)
+	LibGoFunc("regexp", regexp.CompilePOSIX)
 	LibGoFunc("replace", strings.Replace)
 	LibGoFunc("repl", strings.Repeat)
 	LibGoFunc("split", strings.Split)

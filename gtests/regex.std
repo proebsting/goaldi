@@ -1,0 +1,16 @@
+a(x*)b(y|z)c : "-axxxbyc-" : "axxxbyc" "xxx" "y" 
+a(x*)b(y|z)c : "-abzc-" : "abzc" "" "z" 
+(a|bcdef|g|ab|c|d|e|efg|fg)* : "abcdefg" : "abcdefg" "g" 
+\d+(\.\d*)?(e\d+)? : "5" : "5" "" "" 
+\d+(\.\d*)?(e\d+)? : "2.71" : "2.71" ".71" "" 
+\d+(\.\d*)?(e\d+)? : "3e9" : "3e9" "" "e9" 
+\d+(\.\d*)?(e\d+)? : "x59" : "59" "" "" 
+\d+(\.\d*)?(e\d+)? : "16r99" : "16" "" "" 
+\d+(\.\d*)?(e\d+)? : "eleven" : [no match]
+p([aeiou]*)([bcdfghj-np-tv-z]*)ch : "punch" : "punch" "u" "n" 
+p([aeiou]*)([bcdfghj-np-tv-z]*)ch : "patch" : "patch" "a" "t" 
+p([aeiou]*)([bcdfghj-np-tv-z]*)ch : "peach" : "peach" "ea" "" 
+p([aeiou]*)([bcdfghj-np-tv-z]*)ch : "pitch" : "pitch" "i" "t" 
+p([aeiou]*)([bcdfghj-np-tv-z]*)ch : "porch" : "porch" "o" "r" 
+p([aeiou]*)([bcdfghj-np-tv-z]*)ch : "pooch" : "pooch" "oo" "" 
+p([aeiou]*)([bcdfghj-np-tv-z]*)ch : "prunch" : [no match]
