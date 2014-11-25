@@ -43,10 +43,10 @@ func init() {
 }
 
 //  String(x) -- return argument converted to string, or fail
-func String(env *Env, a ...Value) (Value, *Closure) {
+func String(env *Env, args ...Value) (Value, *Closure) {
 	// nonstandard entry; on panic, returns default nil values
 	defer func() { recover() }()
-	v := ProcArg(a, 0, NilValue)
+	v := ProcArg(args, 0, NilValue)
 	if s, ok := v.(Stringable); ok {
 		return Return(s.ToString())
 	} else if s, ok := v.(fmt.Stringer); ok {
@@ -57,31 +57,31 @@ func String(env *Env, a ...Value) (Value, *Closure) {
 }
 
 //  Char(i) -- return one-character string with Unicode value i
-func Char(env *Env, a ...Value) (Value, *Closure) {
-	defer Traceback("char", a)
+func Char(env *Env, args ...Value) (Value, *Closure) {
+	defer Traceback("char", args)
 	var r [1]rune
-	i := int(ProcArg(a, 0, NilValue).(Numerable).ToNumber().Val())
+	i := int(ProcArg(args, 0, NilValue).(Numerable).ToNumber().Val())
 	if i < 0 || i > int(unicode.MaxRune) {
-		panic(&RunErr{"character code out of range", a[0]})
+		panic(&RunErr{"character code out of range", args[0]})
 	}
 	r[0] = rune(i)
 	return Return(RuneString(r[:]))
 }
 
 //  Ord(c) -- return Unicode value of one-character string
-func Ord(env *Env, a ...Value) (Value, *Closure) {
-	defer Traceback("ord", a)
-	r := ProcArg(a, 0, NilValue).(Stringable).ToString().ToRunes()
+func Ord(env *Env, args ...Value) (Value, *Closure) {
+	defer Traceback("ord", args)
+	r := ProcArg(args, 0, NilValue).(Stringable).ToString().ToRunes()
 	if len(r) != 1 {
-		panic(&RunErr{"string length not 1", a[0]})
+		panic(&RunErr{"string length not 1", args[0]})
 	}
 	return Return(NewNumber(float64(r[0])))
 }
 
 //  Reverse(s) -- return mirror image of string
-func Reverse(env *Env, a ...Value) (Value, *Closure) {
-	defer Traceback("reverse", a)
-	r := ProcArg(a, 0, NilValue).(Stringable).ToString().ToRunes()
+func Reverse(env *Env, args ...Value) (Value, *Closure) {
+	defer Traceback("reverse", args)
+	r := ProcArg(args, 0, NilValue).(Stringable).ToString().ToRunes()
 	n := len(r)
 	for i := 0; i < n/2; i++ {
 		r[i], r[n-1-i] = r[n-1-i], r[i]

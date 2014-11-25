@@ -31,10 +31,10 @@ func init() {
 }
 
 //  List(n, x) -- return a new list of n elements initialize to x
-func List(env *Env, a ...Value) (Value, *Closure) {
-	defer Traceback("list", a)
-	n := int(ProcArg(a, 0, ZERO).(Numerable).ToNumber().Val())
-	x := ProcArg(a, 1, NilValue)
+func List(env *Env, args ...Value) (Value, *Closure) {
+	defer Traceback("list", args)
+	n := int(ProcArg(args, 0, ZERO).(Numerable).ToNumber().Val())
+	x := ProcArg(args, 1, NilValue)
 	return Return(NewList(n, x))
 }
 

@@ -57,10 +57,10 @@ func init() {
 }
 
 //  Number(x) -- return argument converted to number, or fail
-func Number(env *Env, a ...Value) (Value, *Closure) {
+func Number(env *Env, args ...Value) (Value, *Closure) {
 	// nonstandard entry; on panic, returns default nil values
 	defer func() { recover() }()
-	v := ProcArg(a, 0, NilValue)
+	v := ProcArg(args, 0, NilValue)
 	if n, ok := v.(Numerable); ok {
 		return Return(n.ToNumber())
 	} else {
@@ -77,11 +77,11 @@ func Seq(env *Env, args ...Value) (Value, *Closure) {
 }
 
 //  Min(n1, ...) -- return numeric minimum
-func Min(env *Env, a ...Value) (Value, *Closure) {
-	defer Traceback("min", a)
-	v := ProcArg(a, 0, NilValue).(Numerable).ToNumber().Val()
-	for i := 1; i < len(a); i++ {
-		vi := a[i].(Numerable).ToNumber().Val()
+func Min(env *Env, args ...Value) (Value, *Closure) {
+	defer Traceback("min", args)
+	v := ProcArg(args, 0, NilValue).(Numerable).ToNumber().Val()
+	for i := 1; i < len(args); i++ {
+		vi := args[i].(Numerable).ToNumber().Val()
 		if vi < v {
 			v = vi
 		}
@@ -90,11 +90,11 @@ func Min(env *Env, a ...Value) (Value, *Closure) {
 }
 
 //  Max(n1, ...) -- return numeric maximum
-func Max(env *Env, a ...Value) (Value, *Closure) {
-	defer Traceback("max", a)
-	v := ProcArg(a, 0, NilValue).(Numerable).ToNumber().Val()
-	for i := 1; i < len(a); i++ {
-		vi := a[i].(Numerable).ToNumber().Val()
+func Max(env *Env, args ...Value) (Value, *Closure) {
+	defer Traceback("max", args)
+	v := ProcArg(args, 0, NilValue).(Numerable).ToNumber().Val()
+	for i := 1; i < len(args); i++ {
+		vi := args[i].(Numerable).ToNumber().Val()
 		if vi > v {
 			v = vi
 		}
@@ -103,10 +103,10 @@ func Max(env *Env, a ...Value) (Value, *Closure) {
 }
 
 //  Log(r1, r2) -- logarithm of r1 to base r2, default r2 = e
-func Log(env *Env, a ...Value) (Value, *Closure) {
-	defer Traceback("log", a)
-	r1 := ProcArg(a, 0, NilValue).(Numerable).ToNumber().Val()
-	r2 := ProcArg(a, 1, E).(Numerable).ToNumber().Val()
+func Log(env *Env, args ...Value) (Value, *Closure) {
+	defer Traceback("log", args)
+	r1 := ProcArg(args, 0, NilValue).(Numerable).ToNumber().Val()
+	r2 := ProcArg(args, 1, E).(Numerable).ToNumber().Val()
 	if r2 == math.E {
 		return Return(NewNumber(math.Log(r1)))
 	} else {
@@ -115,10 +115,10 @@ func Log(env *Env, a ...Value) (Value, *Closure) {
 }
 
 //  Atan(r1, r2) -- arctangent(r1/r2), default r2 = 1.0
-func Atan(env *Env, a ...Value) (Value, *Closure) {
-	defer Traceback("atan", a)
-	r1 := ProcArg(a, 0, NilValue).(Numerable).ToNumber().Val()
-	r2 := ProcArg(a, 1, ONE).(Numerable).ToNumber().Val()
+func Atan(env *Env, args ...Value) (Value, *Closure) {
+	defer Traceback("atan", args)
+	r1 := ProcArg(args, 0, NilValue).(Numerable).ToNumber().Val()
+	r2 := ProcArg(args, 1, ONE).(Numerable).ToNumber().Val()
 	if r2 == 1.0 {
 		return Return(NewNumber(math.Atan(r1)))
 	} else {
@@ -148,16 +148,16 @@ func GCD(env *Env, args ...Value) (Value, *Closure) {
 }
 
 //  DtoR(r1) -- convert degrees to radians
-func DtoR(env *Env, a ...Value) (Value, *Closure) {
-	defer Traceback("dtor", a)
-	r := ProcArg(a, 0, NilValue).(Numerable).ToNumber().Val()
+func DtoR(env *Env, args ...Value) (Value, *Closure) {
+	defer Traceback("dtor", args)
+	r := ProcArg(args, 0, NilValue).(Numerable).ToNumber().Val()
 	return Return(NewNumber(r * math.Pi / 180.0))
 }
 
 //  RtoD(r1) -- convert radians to degrees
-func RtoD(env *Env, a ...Value) (Value, *Closure) {
-	defer Traceback("rtod", a)
-	r := ProcArg(a, 0, NilValue).(Numerable).ToNumber().Val()
+func RtoD(env *Env, args ...Value) (Value, *Closure) {
+	defer Traceback("rtod", args)
+	r := ProcArg(args, 0, NilValue).(Numerable).ToNumber().Val()
 	return Return(NewNumber(r * 180.0 / math.Pi))
 }
 

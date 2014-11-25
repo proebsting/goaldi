@@ -37,8 +37,8 @@ var GoMapMethods = map[string]interface{}{
 }
 
 //  Map() returns a new map
-func Map(env *Env, a ...Value) (Value, *Closure) {
-	defer Traceback("map", a)
+func Map(env *Env, args ...Value) (Value, *Closure) {
+	defer Traceback("map", args)
 	return Return(NewMap())
 }
 

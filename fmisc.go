@@ -46,9 +46,9 @@ func init() {
 }
 
 //  Type(v) -- return the name of v's type, as a string
-func Type(env *Env, a ...Value) (Value, *Closure) {
-	defer Traceback("type", a)
-	v := ProcArg(a, 0, NilValue)
+func Type(env *Env, args ...Value) (Value, *Closure) {
+	defer Traceback("type", args)
+	v := ProcArg(args, 0, NilValue)
 	if t, ok := v.(IType); ok {
 		return Return(t.Type())
 	} else {
@@ -60,22 +60,22 @@ var type_external = NewString("external")
 
 //  Copy(v) -- return a copy of v (or just v if a simple value).
 //  The type of v *must* implement ICopy.
-func Copy(env *Env, a ...Value) (Value, *Closure) {
-	defer Traceback("copy", a)
-	v := ProcArg(a, 0, NilValue)
+func Copy(env *Env, args ...Value) (Value, *Closure) {
+	defer Traceback("copy", args)
+	v := ProcArg(args, 0, NilValue)
 	return Return(v.(ICopy).Copy())
 }
 
 //  Image(v) -- return string image of value v
-func Image(env *Env, a ...Value) (Value, *Closure) {
-	defer Traceback("image", a)
-	return Return(NewString(fmt.Sprintf("%#v", ProcArg(a, 0, NilValue))))
+func Image(env *Env, args ...Value) (Value, *Closure) {
+	defer Traceback("image", args)
+	return Return(NewString(fmt.Sprintf("%#v", ProcArg(args, 0, NilValue))))
 }
 
 //  Sleep(n) -- delay execution for n seconds (may be fractional)
-func Sleep(env *Env, a ...Value) (Value, *Closure) {
-	defer Traceback("sleep", a)
-	v := ProcArg(a, 0, ONE).(Numerable).ToNumber()
+func Sleep(env *Env, args ...Value) (Value, *Closure) {
+	defer Traceback("sleep", args)
+	v := ProcArg(args, 0, ONE).(Numerable).ToNumber()
 	n := v.Val()
 	d := time.Duration(n * float64(time.Second))
 	time.Sleep(d)
@@ -83,8 +83,8 @@ func Sleep(env *Env, a ...Value) (Value, *Closure) {
 }
 
 //  Exit(n) -- terminate program
-func Exit(env *Env, a ...Value) (Value, *Closure) {
-	defer Traceback("exit", a)
-	Shutdown(int(ProcArg(a, 0, ZERO).(Numerable).ToNumber().Val()))
+func Exit(env *Env, args ...Value) (Value, *Closure) {
+	defer Traceback("exit", args)
+	Shutdown(int(ProcArg(args, 0, ZERO).(Numerable).ToNumber().Val()))
 	return Fail() // NOTREACHED
 }
