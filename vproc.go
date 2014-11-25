@@ -192,6 +192,19 @@ func passfunc(t reflect.Type) func(Value) reflect.Value {
 		return func(v Value) reflect.Value {
 			return reflect.ValueOf(v.(Stringable).ToString().ToUTF8())
 		}
+	case reflect.Bool:
+		return func(v Value) reflect.Value {
+			var b bool
+			switch x := v.(type) {
+			case vnil:
+				b = true
+			case *VNumber:
+				b = (x.Val() != 0)
+			default:
+				b = false
+			}
+			return reflect.ValueOf(b)
+		}
 	case reflect.Interface: // #%#% this assumes interface{}; should check
 		// use default conversion
 		break
