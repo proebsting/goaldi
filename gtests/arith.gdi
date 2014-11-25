@@ -1,7 +1,8 @@
+#SRC: Jcon via icon/arith.icn
 # test arithmetic operators and numeric coercion
-#%#% chopped down from Icon arith.icn test
 
 procedure main()
+   local i, j
 
    numtest(0, 0)
    numtest(0, 1)
@@ -26,6 +27,13 @@ procedure main()
    numtest(-3., "2.")
    numtest(-6, -3)
    numtest(-6., -3.)
+   write()
+
+   every (i := -9 | 0 | 5 | 191) & (j := -23 | 0 | 9 | 61) do
+	  bitcombo(i, j)
+   write()
+
+   shifttest()
    write()
 
    every pow(-3 to 3, -3 to 3)
@@ -54,6 +62,13 @@ procedure numtest(a, b)
    return
 end
 
+procedure bitcombo(i, j)
+   every wr5(i | j | icom(i) | icom(j) |
+      iand(i,j) | ior(i,j) | ixor(i,j) | iclear(i,j))
+   write()
+   return
+end
+
 procedure wr5(n)			# write in 5 chars
    local s
    s := n || ""
@@ -69,4 +84,12 @@ procedure pow(m, n)
    v := m ^ n
    printf("%f ^ %f = %f\n", m, n, v)
    return
+end
+
+procedure shifttest()
+   local n
+
+   every n := 10 to -10 by -1 do
+	  printf("shift %-2.0f %5.0f %8.0f %8.0f\n",
+	     n, ishift(1, n), ishift(1703, n), ishift(-251, n))
 end

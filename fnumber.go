@@ -32,6 +32,12 @@ func init() {
 	LibProcedure("gcd", GCD)
 	LibProcedure("rtod", RtoD)
 	LibProcedure("dtor", DtoR)
+	LibProcedure("iand", IAnd)
+	LibProcedure("ior", IOr)
+	LibProcedure("ixor", IXor)
+	LibProcedure("iclear", IClear)
+	LibProcedure("icom", ICom)
+	LibProcedure("ishift", IShift)
 	// Go library functions
 	LibGoFunc("abs", math.Abs)
 	LibGoFunc("ceil", math.Ceil)
@@ -144,4 +150,55 @@ func RtoD(env *Env, a ...Value) (Value, *Closure) {
 	defer Traceback("rtod", a)
 	r := ProcArg(a, 0, NilValue).(Numerable).ToNumber().Val()
 	return Return(NewNumber(r * 180.0 / math.Pi))
+}
+
+//  IAnd(i1, i2) -- bitwise AND of i1 and i2
+func IAnd(env *Env, args ...Value) (Value, *Closure) {
+	defer Traceback("iand", args)
+	i1 := int64(ProcArg(args, 0, NilValue).(Numerable).ToNumber().Val())
+	i2 := int64(ProcArg(args, 1, NilValue).(Numerable).ToNumber().Val())
+	return Return(NewNumber(float64(i1 & i2)))
+}
+
+//  IOr(i1, i2) -- bitwise OR of i1 and i2
+func IOr(env *Env, args ...Value) (Value, *Closure) {
+	defer Traceback("ior", args)
+	i1 := int64(ProcArg(args, 0, NilValue).(Numerable).ToNumber().Val())
+	i2 := int64(ProcArg(args, 1, NilValue).(Numerable).ToNumber().Val())
+	return Return(NewNumber(float64(i1 | i2)))
+}
+
+//  IXor(i1, i2) -- bitwise XOR of i1 and i2
+func IXor(env *Env, args ...Value) (Value, *Closure) {
+	defer Traceback("ixor", args)
+	i1 := int64(ProcArg(args, 0, NilValue).(Numerable).ToNumber().Val())
+	i2 := int64(ProcArg(args, 1, NilValue).(Numerable).ToNumber().Val())
+	return Return(NewNumber(float64(i1 ^ i2)))
+}
+
+//  IClear(i1, i2) -- bitwise clear of i1 by i2
+func IClear(env *Env, args ...Value) (Value, *Closure) {
+	defer Traceback("iclear", args)
+	i1 := int64(ProcArg(args, 0, NilValue).(Numerable).ToNumber().Val())
+	i2 := int64(ProcArg(args, 1, NilValue).(Numerable).ToNumber().Val())
+	return Return(NewNumber(float64(i1 &^ i2)))
+}
+
+//  IShift(i1, i2) -- bitwise shift of i1 by i2
+func IShift(env *Env, args ...Value) (Value, *Closure) {
+	defer Traceback("ishift", args)
+	i1 := int64(ProcArg(args, 0, NilValue).(Numerable).ToNumber().Val())
+	i2 := int64(ProcArg(args, 1, NilValue).(Numerable).ToNumber().Val())
+	if i2 > 0 {
+		return Return(NewNumber(float64(i1 << uint(i2))))
+	} else {
+		return Return(NewNumber(float64(i1 >> uint(-i2))))
+	}
+}
+
+//  ICom(i) -- bitwise complement of i
+func ICom(env *Env, args ...Value) (Value, *Closure) {
+	defer Traceback("icom", args)
+	i := int64(ProcArg(args, 0, NilValue).(Numerable).ToNumber().Val())
+	return Return(NewNumber(float64(^i)))
 }
