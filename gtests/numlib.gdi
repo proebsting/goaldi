@@ -5,6 +5,7 @@ procedure main()
 	every testarith(-&phi | "0" | 1.0 | 2 | &e | &pi)
 	write("\ntrigonometry:")
 	every testtrig(-&phi | "0" | 1.0 | 2 | &e | &pi)
+	testpot()
 	write("\nbased logarithms:")
 	every testlogb(0 | 1 | &phi | 2 | 8 | 32 | 100 | 1012)
 	write("\natan2:")
@@ -23,7 +24,7 @@ end
 
 procedure testarith(v)
 	writes(v, ":")
-	every apply(abs | ceil | floor | log | sqrt, v)
+	every apply(abs | trunc | ceil | floor | log | sqrt | cbrt | exp, v)
 	write()
 	return
 end
@@ -31,6 +32,15 @@ end
 procedure testtrig(v)
 	writes(v, ":")
 	every apply(sin | cos | tan | asin | acos | atan, v)
+	write()
+	return
+end
+
+procedure testpot()
+	local x, y
+	writes("hypot: ")
+	every (x := 2 | 3 | 4) & (y := 3 | 5 | 8) do
+		writes(" ",x,":",y,":",hypot(x,y))
 	write()
 	return
 end
