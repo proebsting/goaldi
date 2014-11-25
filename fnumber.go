@@ -27,6 +27,7 @@ func init() {
 	LibProcedure("number", Number)
 	LibProcedure("min", Min)
 	LibProcedure("max", Max)
+	LibProcedure("seq", Seq)
 	LibProcedure("log", Log)
 	LibProcedure("atan", Atan)
 	LibProcedure("gcd", GCD)
@@ -65,6 +66,14 @@ func Number(env *Env, a ...Value) (Value, *Closure) {
 	} else {
 		return Return(Import(v).(Numerable).ToNumber())
 	}
+}
+
+//  Seq(n1,n2) -- produce n1 to infinity by n2
+func Seq(env *Env, args ...Value) (Value, *Closure) {
+	defer Traceback("seq", args)
+	n1 := ProcArg(args, 0, ONE).(Numerable).ToNumber()
+	n2 := ProcArg(args, 1, ONE).(Numerable).ToNumber()
+	return ToBy(n1, INF, n2)
 }
 
 //  Min(n1, ...) -- return numeric minimum

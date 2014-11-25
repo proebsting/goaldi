@@ -44,6 +44,7 @@ func MustParseNum(s string) float64 {
 var (
 	ZERO = NewNumber(0)
 	ONE  = NewNumber(1)
+	INF  = NewNumber(math.Inf(+1))
 	E    = NewNumber(math.E)
 	PI   = NewNumber(math.Pi)
 	PHI  = NewNumber(math.Phi)

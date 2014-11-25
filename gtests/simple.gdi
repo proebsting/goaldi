@@ -25,6 +25,14 @@ procedure main()
    every i := -5 to +5 do
        write (i, i("a","b","c","d") | "--")
 
+   writes("seq")
+   every writes(" ", ":" | seq() \ 3)
+   every writes(" ", ":" | seq(5) \ 3)
+   every writes(" ", ":" | seq(10, 2) \ 3)
+   every writes(" ", ":" | seq(, 17) \ 3)
+   every writes(" ", ":" | seq(2.5, .375) \ 5)
+   write()
+
    p4()
    p4(1)
    p4(2,3)
