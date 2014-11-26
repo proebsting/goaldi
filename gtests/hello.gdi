@@ -1,4 +1,0 @@
-#SRC: goaldi original
-procedure main()
-	write("hello, world")
-end
