@@ -86,7 +86,7 @@ func registerProc(pr *pr_Info) {
 		// not declared as global, and not seen before:
 		// create global with unmodifiable procedure value
 		GlobalDict[pr.name] = irProcedure(pr, nil)
-	} else if t, ok := gv.(*g.VTrapped); ok && t.Target == &g.NilValue {
+	} else if t, ok := gv.(*g.VTrapped); ok && *t.Target == g.NilValue {
 		// uninitialized declared global:
 		// initialize global trapped variable with procedure value
 		*t.Target = irProcedure(pr, nil) //#%#% TEST THIS!
@@ -104,7 +104,7 @@ func registerStruct(sc *ir_Record) {
 		// not declared as global, and not seen before:
 		// create global with unmodifiable procedure value
 		GlobalDict[sc.Name] = g.NewDefn(sc.Name, sc.FieldList)
-	} else if t, ok := gv.(*g.VTrapped); ok && t.Target == &g.NilValue {
+	} else if t, ok := gv.(*g.VTrapped); ok && *t.Target == g.NilValue {
 		// uninitialized declared global:
 		// initialize global trapped variable with procedure value
 		*t.Target = g.NewDefn(sc.Name, sc.FieldList)
