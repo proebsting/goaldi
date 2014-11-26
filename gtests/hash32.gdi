@@ -1,3 +1,4 @@
+#SRC: goaldi original
 #  demo of 32-bit hash functions
 
 procedure main()

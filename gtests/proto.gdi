@@ -1,3 +1,4 @@
+#SRC: icon/proto.icn
 #  This program contains samples of all the basic syntactic forms in Icon.
 
 record three(x,y,z)

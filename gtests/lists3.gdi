@@ -1,4 +1,4 @@
-#SRC: written for Goaldi 
+#SRC: goaldi original 
 #
 #  Tests random list selection and assignment.
 #  Sensitive to randomness implementation.

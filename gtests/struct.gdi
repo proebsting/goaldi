@@ -1,4 +1,4 @@
-#SRC: from Jcon via icon/record.icn
+#SRC: icon/record.icn
 
 record simple(f)
 record rec(f1, f2)

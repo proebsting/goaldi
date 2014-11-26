@@ -1,3 +1,4 @@
+#SRC: goaldi original
 #  Image and string conversion examples for every Goaldi type
 
 record Circle(x, y, r)

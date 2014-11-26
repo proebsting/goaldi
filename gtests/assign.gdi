@@ -1,4 +1,5 @@
-# tests swapping and reversible assisgnment
+#SRC: goaldi original
+# tests swapping and reversible assignment
 procedure main()
     local a, b, c
     write()

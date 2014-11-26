@@ -1,4 +1,4 @@
-#SRC: Jcon via icon/arith.icn
+#SRC: icon/arith.icn
 # test arithmetic operators and numeric coercion
 
 procedure main()

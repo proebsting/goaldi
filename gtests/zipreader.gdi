@@ -1,3 +1,4 @@
+#SRC: goaldi original
 #  zip file reader demo
 
 procedure main(fname)

@@ -1,3 +1,4 @@
+#SRC: goaldi original
 #  numlib.gdi -- test numeric library functions
 
 procedure main() 

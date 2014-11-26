@@ -1,3 +1,4 @@
+#SRC: goaldi original
 global a, g
 
 procedure main()

@@ -1,3 +1,4 @@
+#SRC: goaldi original
 procedure main()
    local i, s, n, p, x
 

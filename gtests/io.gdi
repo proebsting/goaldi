@@ -1,4 +1,4 @@
-#  SRC: written for Goaldi
+#SRC: goaldi original
 #  i/o test
 
 procedure main()

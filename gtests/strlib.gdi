@@ -1,3 +1,4 @@
+#SRC: goaldi original
 procedure main()
 	local i, c1, c2, n1, n2, el, f
 	el := "argon, boron, carbon, freon, krypton, silicon, teflon"
