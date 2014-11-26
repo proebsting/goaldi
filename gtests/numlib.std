@@ -1,11 +1,11 @@
 
 arithmetic:
--1.618: abs()1.618 trunc()-1 ceil()-1 floor()-2 log()NaN sqrt()NaN cbrt()-1.174 exp()0.1983
-0: abs()0 trunc()0 ceil()0 floor()0 log()-Inf sqrt()0 cbrt()0 exp()1
-1: abs()1 trunc()1 ceil()1 floor()1 log()0 sqrt()1 cbrt()1 exp()2.718
-2: abs()2 trunc()2 ceil()2 floor()2 log()0.6931 sqrt()1.414 cbrt()1.26 exp()7.389
-2.718: abs()2.718 trunc()2 ceil()3 floor()2 log()1 sqrt()1.649 cbrt()1.396 exp()15.15
-3.142: abs()3.142 trunc()3 ceil()4 floor()3 log()1.145 sqrt()1.772 cbrt()1.465 exp()23.14
+-1.618: abs()1.618 integer()-1 ceil()-1 floor()-2 log()NaN sqrt()NaN cbrt()-1.174 exp()0.1983
+0: abs()0 integer()0 ceil()0 floor()0 log()-Inf sqrt()0 cbrt()0 exp()1
+1: abs()1 integer()1 ceil()1 floor()1 log()0 sqrt()1 cbrt()1 exp()2.718
+2: abs()2 integer()2 ceil()2 floor()2 log()0.6931 sqrt()1.414 cbrt()1.26 exp()7.389
+2.718: abs()2.718 integer()2 ceil()3 floor()2 log()1 sqrt()1.649 cbrt()1.396 exp()15.15
+3.142: abs()3.142 integer()3 ceil()4 floor()3 log()1.145 sqrt()1.772 cbrt()1.465 exp()23.14
 
 trigonometry:
 -1.618: sin()-0.9989 cos()-0.04722 tan()21.15 asin()NaN acos()NaN atan()-1.017

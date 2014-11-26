@@ -43,7 +43,7 @@ func init() {
 	LibGoFunc("abs", math.Abs)
 	LibGoFunc("ceil", math.Ceil)
 	LibGoFunc("floor", math.Floor)
-	LibGoFunc("trunc", math.Trunc)
+	LibGoFunc("integer", math.Trunc)
 	LibGoFunc("cbrt", math.Cbrt)
 	LibGoFunc("sqrt", math.Sqrt)
 	LibGoFunc("hypot", math.Hypot)

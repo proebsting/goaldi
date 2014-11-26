@@ -26,7 +26,7 @@ end
 
 procedure testarith(v)
 	writes(v, ":")
-	every apply(abs | trunc | ceil | floor | log | sqrt | cbrt | exp, v)
+	every apply(abs | integer | ceil | floor | log | sqrt | cbrt | exp, v)
 	write()
 	return
 end
