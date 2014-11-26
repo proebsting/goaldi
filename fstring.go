@@ -30,6 +30,8 @@ func init() {
 	LibProcedure("ord", Ord)
 	LibProcedure("reverse", Reverse)
 	// Go library functions
+	LibGoFunc("contains", strings.Contains)
+	LibGoFunc("containsany", strings.ContainsAny)
 	LibGoFunc("equalfold", strings.EqualFold)
 	LibGoFunc("fields", strings.Fields)
 	LibGoFunc("regex", regexp.Compile)
