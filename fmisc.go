@@ -30,6 +30,7 @@ func init() {
 	LibProcedure("type", Type)
 	LibProcedure("copy", Copy)
 	LibProcedure("image", Image)
+	LibProcedure("runerr", Runerr)
 	LibProcedure("exit", Exit)
 	LibProcedure("sleep", Sleep)
 	// Go library functions
@@ -88,3 +89,16 @@ func Exit(env *Env, args ...Value) (Value, *Closure) {
 	Shutdown(int(ProcArg(args, 0, ZERO).(Numerable).ToNumber().Val()))
 	return Fail() // NOTREACHED
 }
+
+//  Runerr(x, v) -- terminate with error x and offending value v
+func Runerr(env *Env, args ...Value) (Value, *Closure) {
+	defer Traceback("runerr", args)
+	x := ProcArg(args, 0, err_fatal)
+	v := ProcArg(args, 1, nil)
+	if n, ok := x.(*VNumber); ok {
+		x = NewString(fmt.Sprintf("Fatal error %v", n))
+	}
+	panic(&RunErr{fmt.Sprintf("%v", x), v})
+}
+
+var err_fatal = NewString("Unspecified fatal error")
