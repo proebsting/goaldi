@@ -808,6 +808,10 @@ procedure parse_do_proc(noident)
     idcoord := parse_tok_rec.coord
     if /noident then {
         ident := a_Ident(parse_match_token(lex_IDENT), idcoord)
+        if parse_tok_rec === lex_DOT then {	# it's a method!
+            parse_eat_token()
+            ident.id ||:= "." || parse_match_token(lex_IDENT)
+        }
     } else {
         ident := a_Ident(&null, idcoord)
     }
@@ -820,6 +824,10 @@ procedure parse_do_proc(noident)
             parse_match_token(lex_RBRACK)
             accumulate := 1
         }
+    }
+    if upto('.', ident.id) then {	# if a method
+        # add an initial "self" parameter; note NOT a reserved word
+        push(paramList, a_Ident("self", idcoord))
     }
     parse_match_token(lex_RPAREN)
     parse_match_token(lex_SEMICOL)

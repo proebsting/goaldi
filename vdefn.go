@@ -6,14 +6,30 @@
 package goaldi
 
 type VDefn struct {
-	Name  string   // type name
-	Flist []string // ordered list of fields names
-	//#%#% could add a hash map... but is it worth it?
+	Name    string                 // type name
+	Flist   []string               // ordered list of field names
+	Methods map[string]*VProcedure // method list
+	//#%#% could add a hash map for the fields ... but is it worth it?
 }
 
 //  NewDefn(name, fields) -- construct new definition
 func NewDefn(name string, fields []string) *VDefn {
-	return &VDefn{name, fields}
+	return &VDefn{name, fields, make(map[string]*VProcedure)}
+}
+
+//  AddMethod(name, procedure) -- add a method for this struct type
+//  Returns false if rejected as a duplicate.
+func (v *VDefn) AddMethod(name string, p *VProcedure) bool {
+	for _, s := range v.Flist {
+		if s == name {
+			return false
+		}
+	}
+	if v.Methods[name] != nil {
+		return false
+	}
+	v.Methods[name] = p
+	return true
 }
 
 //  VDefn.New(values) -- create a new underlying struct object
@@ -86,7 +102,7 @@ func (v *VDefn) Call(env *Env, args ...Value) (Value, *Closure) {
 	return Return(v.New(args))
 }
 
-//  Declare required methods
+//  Declare required methods of the constructor (not the underlying type)
 var DefnMethods = map[string]interface{}{
 	"type":   (*VDefn).Type,
 	"copy":   (*VDefn).Copy,
@@ -94,7 +110,7 @@ var DefnMethods = map[string]interface{}{
 	"image":  (*VDefn).GoString,
 }
 
-//  VDefn.Field implements methods
+//  VDefn.Field implements methods called *on the constructor*
 func (v *VDefn) Field(f string) Value {
 	return GetMethod(DefnMethods, v, f)
 }

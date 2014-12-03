@@ -5,6 +5,7 @@ package main
 import (
 	"fmt"
 	g "goaldi"
+	"strings"
 )
 
 //  list of struct (record) declarations seen
@@ -22,14 +23,19 @@ func link(parts [][]interface{}) {
 		}
 	}
 
-	//  register procedures in global namespace
-	for _, pr := range ProcTable {
-		registerProc(pr)
-	}
-
 	//  register struct constructors
 	for _, sc := range StructList {
 		registerStruct(sc)
+	}
+
+	//  register methods in constructors and procedures in global namespace
+	for _, pr := range ProcTable {
+		a := strings.Split(pr.name, ".") // look for xxx.yyy form
+		if len(a) == 1 {                 // if simple procedure name
+			registerProc(pr)
+		} else { // no, this is typename.methodname
+			registerMethod(pr, a[0], a[1])
+		}
 	}
 
 	//  add standard library procedures for names not yet found
@@ -76,6 +82,23 @@ func irDecl(decl interface{}) {
 		//#%#%#% nothing?
 	default:
 		panic(fmt.Sprintf("gdecl1: %#v", x))
+	}
+}
+
+//  registerMethod(pr, recname, methname) -- register method in record defn
+func registerMethod(pr *pr_Info, recname string, methname string) {
+	gv := GlobalDict[recname]
+	if gv != nil {
+		gv = g.Deref(gv)
+	}
+	if d, ok := gv.(*g.VDefn); ok && d != nil {
+		if !d.AddMethod(methname, irProcedure(pr, nil)) {
+			fatal(fmt.Sprintf("Method %s.%s() duplicates field name %s",
+				recname, methname, methname))
+		}
+	} else {
+		fatal(fmt.Sprintf("No struct %s found for method %s.%s()",
+			recname, recname, methname))
 	}
 }
 

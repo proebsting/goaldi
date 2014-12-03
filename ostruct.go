@@ -23,6 +23,10 @@ func (v *VStruct) Field(f string) Value {
 			return Trapped(&v.Data[i])
 		}
 	}
+	//  check for explicit method
+	if m := d.Methods[f]; m != nil {
+		return &VMethVal{f, v, m.Entry, true}
+	}
 	//  check for standard method
 	if m := StructMethods[f]; m != nil {
 		return &VMethVal{f, v, m, false}
