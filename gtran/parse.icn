@@ -13,10 +13,9 @@ end
 
 #  CASE  expr  OF  LBRACE  cclause {  SEMICOL  cclause }  RBRACE
 procedure parse_do_case()
-    local e, body, element, dflt, coord, bodyList
+    local e, body, element, dflt, coord
 
     coord := parse_tok_rec.coord
-    bodyList := []
     parse_eat_token()
     e := parse_expr()
     parse_match_token(lex_OF)
@@ -59,6 +58,7 @@ procedure parse_cclause()
                               lex_SLASH, lex_SNE, lex_STAR, lex_STRINGLIT,
                               lex_SUSPEND, lex_TILDE, lex_UNION, lex_UNTIL,
                               lex_WHILE,
+			      lex_SELECT,
 			      lex_LCOMP,
 			      lex_PROCEDURE])
     }
@@ -77,6 +77,73 @@ procedure parse_cclause()
         parse_error("\""||parse_tok_rec.str||"\": invalid case clause")
     }
     return a_Cclause(e, body, coord)
+end
+
+procedure parse_do_select()
+#  SELECT  LBRACE  selcase {  SEMICOL  selcase }  RBRACE
+    local caseList, element, dflt, coord
+
+    coord := parse_tok_rec.coord
+    parse_eat_token()
+    parse_match_token(lex_LBRACE)
+    caseList := []
+    repeat {
+        element := parse_selcase()
+        if element.kind === "default" then {
+            (/dflt := element.body) |
+                                   parse_error("more than one default clause")
+        } else {
+            put(caseList, element)
+        }
+        parse_match_token(parse_tok_rec === lex_SEMICOL) | break
+    }
+    parse_match_token(lex_RBRACE)
+    return a_Select(caseList, dflt, coord)
+end
+
+procedure parse_selcase()
+# select-case:  select-condition : body
+    local sc
+
+    sc := a_SelectCase()
+    parse_selectby(sc) | parse_error("Malformed select condition")
+    sc.coord := parse_tok_rec.coord
+    parse_match_token(lex_COLON)
+    sc.body := parse_expr()
+    return sc
+end
+
+procedure parse_selectby(sc)
+# select-condition:  default  |  expr := @expr  |  expr @: expr
+# sets sc.kind,left,right; fails on parse error
+    local e, r
+
+    if parse_tok_rec === lex_DEFAULT then {
+        parse_eat_token()
+        sc.kind := "default"
+        return
+    }
+    e := parse_expr()
+    type(e) == "a_Binop" | fail
+    sc.left := e.left
+    case e.op of {
+    default: {
+        fail
+        }
+    "@:": {
+        sc.kind := "send"
+        sc.right := e.right
+        return
+        }
+    ":=": {
+        r := e.right
+        type(r) == "a_Unop" | fail
+        r.op === "@" | fail
+        sc.kind := "receive"
+        sc.right := r.operand
+        return
+        }
+    }
 end
 
 procedure parse_compound()
@@ -172,6 +239,7 @@ procedure parse_expr10()
                               lex_LPAREN, lex_NEXT, lex_REALLIT, lex_REPEAT,
                               lex_RETURN, lex_STRINGLIT, lex_SUSPEND, lex_UNTIL,
                               lex_WHILE,
+			      lex_SELECT,
 			      lex_LCOMP,
 			      lex_PROCEDURE ])
     expr10_set2 := set([lex_AT, lex_NOT, lex_BAR, lex_DOT, lex_BANG,
@@ -228,6 +296,8 @@ procedure parse_expr11()
         return parse_do_if()
     lex_CASE    :   # case 
         return parse_do_case()
+    lex_SELECT  :   # select
+        return parse_do_select()
     lex_WHILE   :   # while 
         return parse_do_while()
     lex_UNTIL   :   # until 
@@ -353,6 +423,7 @@ procedure parse_expr11suffix(lhs)
                                   lex_SNE, lex_STAR, lex_STRINGLIT,
                                   lex_SUSPEND, lex_TILDE, lex_UNION, lex_UNTIL,
                                   lex_WHILE,
+				  lex_SELECT,
 				  lex_LCOMP,
 				  lex_PROCEDURE ])
         expr11suffix_set2 := set([lex_COLON, lex_MCOLON, lex_PCOLON])
@@ -761,6 +832,7 @@ procedure parse_nexpr()
                       lex_RETURN, lex_SEQ, lex_SLASH, lex_SNE, lex_STAR,
                       lex_STRINGLIT, lex_SUSPEND, lex_TILDE, lex_UNION,
                       lex_UNTIL, lex_WHILE,
+		      lex_SELECT,
 		      lex_LCOMP,
 		      lex_PROCEDURE ])
     }
@@ -799,6 +871,7 @@ procedure parse_do_proc(noident)
                         lex_RETURN, lex_SEMICOL, lex_SEQ, lex_SLASH,
                         lex_SNE, lex_STAR, lex_STRINGLIT, lex_SUSPEND,
                         lex_TILDE, lex_UNION, lex_UNTIL, lex_WHILE,
+			lex_SELECT,
 			lex_LCOMP,
 			lex_PROCEDURE ])
     }

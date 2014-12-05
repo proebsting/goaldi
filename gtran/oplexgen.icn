@@ -38,6 +38,7 @@ procedure init_lex_tables()
                ["record",          "RECORD",    "b"  ],
                ["repeat",          "REPEAT",    "b" ],
                ["return",          "RETURN",    "be"],
+               ["select",          "SELECT",    "b" ],
                ["static",          "STATIC",    "b" ],
                ["suspend",         "SUSPEND",   "be"],
                ["then",            "THEN",      ""  ],
