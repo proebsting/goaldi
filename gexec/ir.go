@@ -38,6 +38,9 @@ var irlist = [...]interface{}{
 	&ir_Create{},
 	&ir_CoRet{},
 	&ir_CoFail{},
+	&ir_Select{},
+	&ir_SelectCase{},
+	&ir_NoValue{},
 	&ir_ScanSwap{},
 	&ir_Unreachable{},
 }
@@ -244,6 +247,21 @@ type ir_CoRet struct {
 
 type ir_CoFail struct {
 	Coord string
+}
+
+type ir_Select struct {
+	Coord    string
+	CaseList []ir_SelectCase
+}
+
+type ir_SelectCase struct {
+	Kind string // send, receive, default
+	Lhs  string
+	Rhs  string
+}
+
+type ir_NoValue struct {
+	Lhs string
 }
 
 type ir_ScanSwap struct {
