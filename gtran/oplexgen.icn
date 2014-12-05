@@ -49,6 +49,7 @@ procedure init_lex_tables()
     operators  := [
                [":=",              "ASSIGN",    ""  ],
                ["@",               "AT",        "b" ],
+               ["@:",              "ATCOLON",   ""  ],
                ["@:=",             "AUGAT",    ""  ],
                ["&:=",             "AUGAND",    ""  ],
                ["=:=",             "AUGNMEQ",     ""  ],

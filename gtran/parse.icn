@@ -144,7 +144,7 @@ procedure parse_expr1()
                             lex_AUGPLUS, lex_AUGQMARK, lex_AUGSEQ, lex_AUGSGE,
                             lex_AUGSGT, lex_AUGSLASH, lex_AUGSLE, lex_AUGSLT,
                             lex_AUGSNE, lex_AUGSTAR, lex_AUGUNION,
-                            lex_REVASSIGN, lex_REVSWAP, lex_SWAP])
+                            lex_REVASSIGN, lex_REVSWAP, lex_SWAP, lex_ATCOLON])
     }
     #  expr2 {  expr1op  expr1 } (Right Associative)
     ret := parse_expr2()
