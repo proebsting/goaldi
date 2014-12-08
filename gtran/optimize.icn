@@ -116,7 +116,6 @@ procedure optim_def_use(p, uses, defs)
 	    }
     "ir_NoValue" :   { defs[\p.lhs] +:= 1
 	    }
-    "ir_Select" :   { }
     "ir_MakeClosure" :   { defs[\p.lhs] +:= 1
 	    }
     "ir_Succeed" :   { 
@@ -137,6 +136,9 @@ procedure optim_def_use(p, uses, defs)
 	    uses[p.fn] +:= 1
 	    uses[\p.failLabel] +:= 1
 	    every uses[!p.argList] +:= 1
+	    }
+    "ir_Select" :   { 
+	    every uses[!p.caseList] +:= 1
 	    }
     "ir_SelectCase" :   {
 	    defs[\p.lhs] +:= 1
@@ -218,7 +220,11 @@ procedure optim_rewrite(p, rename)
 	    }
             p.failLabel := optim_rename(\p.failLabel, rename);
             }
-    "ir_Select" :  { }
+    "ir_Select" :  {
+            every i := 1 to *p.caseList do {
+                p.caseList[i] := optim_rename(p.caseList[i], rename);
+		}
+            }
     "ir_SelectCase" : {
             p.lhs := optim_rename(\p.lhs, rename);
             p.rhs := optim_rename(\p.rhs, rename);
@@ -443,7 +449,7 @@ procedure optim_refcountX(refcount, p)
     "ir_ResumeValue" : {  # ir_ResumeValue : ( lhs value failLabel )
 	refcount[\p.failLabel] +:= 1
         }
-    "ir_SelectCase" : { # ir_SelectCase : ( kind left right bodyLabel )
+    "ir_SelectCase" : { # ir_SelectCase : ( kind lhs rhs bodyLabel )
 	refcount[p.bodyLabel] +:= 1
         }
     "ir_Create" : {  # ir_Create : ( lhs coexpLabel )
