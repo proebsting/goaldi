@@ -1248,8 +1248,8 @@ procedure ir_a_Select(p, st, inuse, target, bounded, rval)
     every i := 1 to *p.caseList do {
 	c := p.caseList[i]
         suspend ir(c.body, st, inuse, target, bounded, rval)
-        suspend ir_chunk(c.body.ir.failure, [ ir_Goto(ir_coord(p.coord), p.ir.failure) ])
-        suspend ir_chunk(c.body.ir.success, [ ir_Goto(ir_coord(p.coord), p.ir.success) ])
+        suspend ir_chunk(c.body.ir.failure, [ ir_Goto(ir_coord(c.coord), p.ir.failure) ])
+        suspend ir_chunk(c.body.ir.success, [ ir_Goto(ir_coord(c.coord), p.ir.success) ])
         if /bounded then {
             lab := ir_label(c, "setup")
             suspend ir_chunk(lab, [
@@ -1265,7 +1265,7 @@ procedure ir_a_Select(p, st, inuse, target, bounded, rval)
         sc := ir_SelectCase(ir_coord(c.coord), c.kind, left, right, lab)
 	put(caseList, sc)
         suspend ir(c.left, st, inuse, left, &null, &null)
-        suspend ir_chunk(c.left.ir.success, [ ir_Goto(ir_coord(p.coord), c.right.ir.start) ])
+        suspend ir_chunk(c.left.ir.success, [ ir_Goto(ir_coord(c.coord), c.right.ir.start) ])
         lab := ir_label(c, "nullify")
         suspend ir_chunk(lab, [ ir_NoValue(ir_coord(c.coord), left), ir_Goto(ir_coord(c.coord), p.caseList[i+1].left.ir.start | select) ])
         suspend ir(c.right, st, inuse, right, "bounded", "rval")
@@ -1274,8 +1274,8 @@ procedure ir_a_Select(p, st, inuse, target, bounded, rval)
     }
     if c := \p.dflt then {
         suspend ir(c.body, st, inuse, target, bounded, rval)
-        suspend ir_chunk(c.body.ir.failure, [ ir_Goto(ir_coord(p.coord), p.ir.failure) ])
-        suspend ir_chunk(c.body.ir.success, [ ir_Goto(ir_coord(p.coord), p.ir.success) ])
+        suspend ir_chunk(c.body.ir.failure, [ ir_Goto(ir_coord(c.coord), p.ir.failure) ])
+        suspend ir_chunk(c.body.ir.success, [ ir_Goto(ir_coord(c.coord), p.ir.success) ])
         if /bounded then {
             lab := ir_label(c, "setup")
             suspend ir_chunk(lab, [
