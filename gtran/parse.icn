@@ -276,7 +276,7 @@ procedure parse_expr10()
         default     : runerr(500)
         }
     } else {
-        parse_error("\""||parse_tok_rec.str||"\": invalid argument")
+        parse_error("\""||parse_tok_rec.str||"\": expression expected")
     }
 end
 
