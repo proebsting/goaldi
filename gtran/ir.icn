@@ -44,8 +44,8 @@ record ir_CoRet(coord, value, resumeLabel)
 record ir_CoFail(coord)
 
 record ir_Select(coord, caseList)
-record ir_SelectCase(kind, lhs, rhs)
-record ir_NoValue(lhs)
+record ir_SelectCase(coord, kind, lhs, rhs, body)
+record ir_NoValue(coord, lhs)
 
 record ir_ScanSwap(coord, subject, pos)
 
