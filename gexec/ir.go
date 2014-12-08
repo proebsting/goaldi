@@ -255,13 +255,16 @@ type ir_Select struct {
 }
 
 type ir_SelectCase struct {
-	Kind string // send, receive, default
-	Lhs  string
-	Rhs  string
+	Coord     string
+	Kind      string // "send" | "receive" | "default"
+	Lhs       string
+	Rhs       string
+	BodyLabel string
 }
 
 type ir_NoValue struct {
-	Lhs string
+	Coord string
+	Lhs   string
 }
 
 type ir_ScanSwap struct {

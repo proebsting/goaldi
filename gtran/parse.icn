@@ -90,8 +90,7 @@ procedure parse_do_select()
     repeat {
         element := parse_selcase()
         if element.kind === "default" then {
-            (/dflt := element.body) |
-                                   parse_error("more than one default clause")
+            (/dflt := element) | parse_error("more than one default clause")
         } else {
             put(caseList, element)
         }

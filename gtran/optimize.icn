@@ -114,6 +114,9 @@ procedure optim_def_use(p, uses, defs)
 	    }
     "ir_CsetLit" :   { defs[\p.lhs] +:= 1
 	    }
+    "ir_NoValue" :   { defs[\p.lhs] +:= 1
+	    }
+    "ir_Select" :   { }
     "ir_MakeClosure" :   { defs[\p.lhs] +:= 1
 	    }
     "ir_Succeed" :   { 
@@ -134,6 +137,11 @@ procedure optim_def_use(p, uses, defs)
 	    uses[p.fn] +:= 1
 	    uses[\p.failLabel] +:= 1
 	    every uses[!p.argList] +:= 1
+	    }
+    "ir_SelectCase" :   {
+	    defs[\p.lhs] +:= 1
+	    defs[\p.rhs] +:= 1
+	    uses[p.bodyLabel] +:= 1
 	    }
     "ir_Create" :    {
 	    defs[\p.lhs] +:= 1
@@ -186,6 +194,7 @@ procedure optim_rewrite(p, rename)
     "ir_RealLit" :   { p.lhs := optim_rename(\p.lhs, rename) }
     "ir_StrLit" :    { p.lhs := optim_rename(\p.lhs, rename) }
     "ir_CsetLit" :   { p.lhs := optim_rename(\p.lhs, rename) }
+    "ir_NoValue" :   { p.lhs := optim_rename(\p.lhs, rename) }
     "ir_Succeed" :   { p.expr := optim_rename(p.expr, rename);
             p.resumeLabel := optim_rename(\p.resumeLabel, rename); }
     "ir_Fail" :  { }
@@ -209,6 +218,11 @@ procedure optim_rewrite(p, rename)
 	    }
             p.failLabel := optim_rename(\p.failLabel, rename);
             }
+    "ir_Select" :  { }
+    "ir_SelectCase" : {
+            p.lhs := optim_rename(\p.lhs, rename);
+            p.rhs := optim_rename(\p.rhs, rename);
+	    p.bodyLabel := optim_rename(\p.bodyLabel, rename); }
     "ir_Create" :    {
             p.lhs := optim_rename(\p.lhs, rename);
 	    p.coexpLabel := optim_rename(p.coexpLabel, rename); }
@@ -313,6 +327,8 @@ procedure optim_goto_transitive(t, new, lab)
 	    "ir_RealLit" |
 	    "ir_StrLit" |
 	    "ir_CsetLit" |
+	    "ir_NoValue" |
+	    "ir_Select" |
 	    "ir_ScanSwap" |
 	    "ir_Tmp" |
 	    "ir_TmpLabel" |
@@ -351,6 +367,10 @@ procedure optim_goto_transitive(t, new, lab)
 		p.failLabel := optim_goto_chain(\p.failLabel, t)
 		optim_goto_transitive(t, new, \p.failLabel)
 		}
+	    "ir_SelectCase" : { # ir_SelectCase : ( kind left right bodyLabel ) {
+		p.bodyLabel := optim_goto_chain(p.bodyLabel, t)
+		optim_goto_transitive(t, new, p.bodyLabel)
+		}
 	    "ir_Create" : {  # ir_Create : ( lhs location )
 		p.coexpLabel := optim_goto_chain_defer(p.coexpLabel, t)
 		optim_goto_transitive(t, new, p.coexpLabel)
@@ -380,6 +400,8 @@ procedure optim_refcountX(refcount, p)
     "ir_RealLit" |
     "ir_StrLit" |
     "ir_CsetLit" |
+    "ir_NoValue" |
+    "ir_Select" |
     "ir_ScanSwap" |
     "ir_Tmp" |
     "ir_MakeClosure" |
@@ -420,6 +442,9 @@ procedure optim_refcountX(refcount, p)
         }
     "ir_ResumeValue" : {  # ir_ResumeValue : ( lhs value failLabel )
 	refcount[\p.failLabel] +:= 1
+        }
+    "ir_SelectCase" : { # ir_SelectCase : ( kind left right bodyLabel )
+	refcount[p.bodyLabel] +:= 1
         }
     "ir_Create" : {  # ir_Create : ( lhs coexpLabel )
 	refcount[p.coexpLabel] +:= 1
