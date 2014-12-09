@@ -5,6 +5,7 @@ package main
 import (
 	"fmt"
 	g "goaldi"
+	"reflect"
 )
 
 //  execute IR instructions for procedure or co-expression
@@ -59,6 +60,9 @@ func execute(f *pr_frame, label string) (g.Value, *g.Closure) {
 						f.temps[i.Lhs] = fnew.cxout
 					}
 					go coexecute(fnew, i.CoexpLabel)
+				case ir_Select:
+					label = irSelect(f, i)
+					break Chunk
 				case ir_CoRet:
 					f.coord = i.Coord
 					if g.CoSend(f.cxout, f.temps[i.Value]) == nil {
@@ -211,3 +215,68 @@ func getArgs(f *pr_frame, nd int, arglist []interface{}) []g.Value {
 	}
 	return argl
 }
+
+//  irSelect -- execute select statement, returning label of chosen body
+func irSelect(f *pr_frame, ir ir_Select) string {
+
+	// set up data structures for reflect.Select
+	cases := make([]reflect.SelectCase, len(ir.CaseList))
+	for i, sc := range ir.CaseList {
+		f.coord = sc.Coord
+		switch sc.Kind {
+		case "send":
+			ch := g.Deref(f.temps[sc.Lhs])
+			v := g.Deref(f.temps[sc.Rhs])
+			if _, ok := ch.(g.VChannel); !ok {
+				// not a Goaldi channel; convert data value to best Go type
+				v = g.Export(v)
+			}
+			cases[i] = reflect.SelectCase{
+				Dir:  reflect.SelectSend,
+				Chan: channelValue(ch),
+				Send: reflect.ValueOf(v)}
+		case "receive":
+			ch := g.Deref(f.temps[sc.Rhs])
+			cases[i] = reflect.SelectCase{
+				Dir:  reflect.SelectRecv,
+				Chan: channelValue(ch)}
+		case "default":
+			cases[i] = reflect.SelectCase{
+				Dir: reflect.SelectDefault}
+		default:
+			panic(&g.RunErr{"Bad selectcase kind", sc.Kind})
+		}
+	}
+	// repeat until we get anything other than a read on a closed channel
+	for {
+		f.coord = ir.Coord
+		// call select through the reflection interface
+		i, v, recvOK := reflect.Select(cases)
+		// select has returned, having chosen case i
+		sc := ir.CaseList[i]
+		f.coord = sc.Coord
+		if sc.Kind == "receive" {
+			if recvOK {
+				// assign received value before executing body
+				f.temps[sc.Lhs].(g.IVariable).Assign(g.Import(v.Interface()))
+			} else {
+				// a closed channel was selected
+				cases[i].Chan = hungChannel // disable this case
+				continue                    // and retry
+			}
+		}
+		return sc.BodyLabel // all scenarios except receive from closed channel
+	}
+}
+
+//  get channel value and validate
+func channelValue(ch g.Value) reflect.Value {
+	cv := reflect.ValueOf(ch)
+	if cv.Kind() != reflect.Chan {
+		panic(&g.RunErr{"Not a channel", ch})
+	}
+	return cv
+}
+
+//  used for disabling one branch of a select
+var hungChannel = reflect.ValueOf(make(chan interface{}))
