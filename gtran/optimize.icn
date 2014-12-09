@@ -372,7 +372,7 @@ procedure optim_goto_transitive(t, new, lab)
 		}
 	    "ir_Select" : {  # ir_Select : ( caselist ) : ir_SelectCase ( lhs rhs bodyLabel )
 	    	every sc := !p.caseList do {
-			sc.bodyLabel := optim_goto_chain_defer(sc.bodyLabel, t)
+			sc.bodyLabel := optim_goto_chain(sc.bodyLabel, t)
 			optim_goto_transitive(t, new, sc.bodyLabel)
 			}
 		}
