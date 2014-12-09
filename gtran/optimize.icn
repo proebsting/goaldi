@@ -73,6 +73,7 @@ procedure optim_copy_propagation(t, start)
 end
 
 procedure optim_def_use(p, uses, defs)
+    local sc
     case type(p) of {
     "ir_Field" : { defs[\p.lhs] +:= 1
 	    uses[p.expr] +:= 1
@@ -138,12 +139,11 @@ procedure optim_def_use(p, uses, defs)
 	    every uses[!p.argList] +:= 1
 	    }
     "ir_Select" :   { 
-	    every uses[!p.caseList] +:= 1
-	    }
-    "ir_SelectCase" :   {
-	    defs[\p.lhs] +:= 1
-	    defs[\p.rhs] +:= 1
-	    uses[p.bodyLabel] +:= 1
+	    every sc := !p.caseList do {
+	        uses[\sc.lhs] +:= 1
+	        uses[\sc.rhs] +:= 1
+	        uses[sc.bodyLabel] +:= 1
+	        }
 	    }
     "ir_Create" :    {
 	    defs[\p.lhs] +:= 1
@@ -174,7 +174,7 @@ procedure optim_rename(p, rename)
 end
 
 procedure optim_rewrite(p, rename)
-    local i
+    local i, sc
 
     case type(p) of {
     "ir_Move" :  { p.lhs := optim_rename(\p.lhs, rename);
@@ -220,15 +220,13 @@ procedure optim_rewrite(p, rename)
 	    }
             p.failLabel := optim_rename(\p.failLabel, rename);
             }
-    "ir_Select" :  {
-            every i := 1 to *p.caseList do {
-                p.caseList[i] := optim_rename(p.caseList[i], rename);
-		}
-            }
-    "ir_SelectCase" : {
-            p.lhs := optim_rename(\p.lhs, rename);
-            p.rhs := optim_rename(\p.rhs, rename);
-	    p.bodyLabel := optim_rename(\p.bodyLabel, rename); }
+    "ir_Select" :  {	#%#% untested
+	    every sc := !p.caseList do {
+	        sc.lhs := optim_rename(\sc.lhs, rename);
+	        sc.rhs := optim_rename(\sc.rhs, rename);
+	        sc.bodyLabel := optim_rename(\sc.bodyLabel, rename); 
+	    }
+	    }
     "ir_Create" :    {
             p.lhs := optim_rename(\p.lhs, rename);
 	    p.coexpLabel := optim_rename(p.coexpLabel, rename); }
@@ -314,7 +312,7 @@ procedure optim_goto_chain_defer(lab, t)
 end
 
 procedure optim_goto_transitive(t, new, lab)
-    local p
+    local p, sc
 
     if /t[lab] | \new[lab] then {
 	return
@@ -334,7 +332,6 @@ procedure optim_goto_transitive(t, new, lab)
 	    "ir_StrLit" |
 	    "ir_CsetLit" |
 	    "ir_NoValue" |
-	    "ir_Select" |
 	    "ir_ScanSwap" |
 	    "ir_Tmp" |
 	    "ir_TmpLabel" |
@@ -373,9 +370,11 @@ procedure optim_goto_transitive(t, new, lab)
 		p.failLabel := optim_goto_chain(\p.failLabel, t)
 		optim_goto_transitive(t, new, \p.failLabel)
 		}
-	    "ir_SelectCase" : { # ir_SelectCase : ( kind left right bodyLabel ) {
-		p.bodyLabel := optim_goto_chain(p.bodyLabel, t)
-		optim_goto_transitive(t, new, p.bodyLabel)
+	    "ir_Select" : {  # ir_Select : ( caselist ) : ir_SelectCase ( lhs rhs bodyLabel )
+	    	every sc := !p.caseList do {
+			sc.bodyLabel := optim_goto_chain_defer(sc.bodyLabel, t)
+			optim_goto_transitive(t, new, sc.bodyLabel)
+			}
 		}
 	    "ir_Create" : {  # ir_Create : ( lhs location )
 		p.coexpLabel := optim_goto_chain_defer(p.coexpLabel, t)
@@ -407,7 +406,6 @@ procedure optim_refcountX(refcount, p)
     "ir_StrLit" |
     "ir_CsetLit" |
     "ir_NoValue" |
-    "ir_Select" |
     "ir_ScanSwap" |
     "ir_Tmp" |
     "ir_MakeClosure" |
@@ -449,8 +447,8 @@ procedure optim_refcountX(refcount, p)
     "ir_ResumeValue" : {  # ir_ResumeValue : ( lhs value failLabel )
 	refcount[\p.failLabel] +:= 1
         }
-    "ir_SelectCase" : { # ir_SelectCase : ( kind lhs rhs bodyLabel )
-	refcount[p.bodyLabel] +:= 1
+    "ir_Select": {
+	every refcount[(!p.caseList).bodyLabel] +:= 1
         }
     "ir_Create" : {  # ir_Create : ( lhs coexpLabel )
 	refcount[p.coexpLabel] +:= 1
