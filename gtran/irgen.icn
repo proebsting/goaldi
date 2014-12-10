@@ -1235,7 +1235,7 @@ end
 
 # record a_Select( caseList, dflt )
 procedure ir_a_Select(p, st, inuse, target, bounded, rval)
-    local i, left, right, caseList, sc, c, t, select, lab
+    local i, left, right, caseList, sc, c, t, select, lab, dest
 
     ir_init(p)
 
@@ -1257,7 +1257,7 @@ procedure ir_a_Select(p, st, inuse, target, bounded, rval)
                 ir_Goto(ir_coord(c.coord), c.body.ir.start)
                 ])
         } else {
-	    lab := c.body.ir.start
+            lab := c.body.ir.start
         }
 
         left := ir_tmp(st, inuse)
@@ -1268,11 +1268,13 @@ procedure ir_a_Select(p, st, inuse, target, bounded, rval)
         suspend ir(c.right, st, inuse, right, "bounded", "rval")
         suspend ir_chunk(c.left.ir.success, [ ir_Goto(ir_coord(c.coord), c.right.ir.start) ])
         lab := ir_label(c, "nullify")
+        dest := p.caseList[i+1].left.ir.start | select
         suspend ir_chunk(lab, [
-	    ir_NoValue(ir_coord(c.coord), left),
-	    ir_Goto(ir_coord(c.coord), (p.caseList[i+1].left.ir.start | select)\1)
-	    ])
-        suspend ir_chunk(c.right.ir.success, [ ir_Goto(ir_coord(c.coord), (p.caseList[i+1].left.ir.start | select)\1) ])
+            ir_NoValue(ir_coord(c.coord), left),
+            ir_Goto(ir_coord(c.coord), dest)
+            ])
+        dest := p.caseList[i+1].left.ir.start | select
+        suspend ir_chunk(c.right.ir.success, [ ir_Goto(ir_coord(c.coord), dest) ])
         suspend ir_chunk(c.right.ir.failure, [ ir_Goto(ir_coord(c.coord), c.left.ir.resume) ])
     }
     if c := \p.dflt then {
@@ -1286,7 +1288,7 @@ procedure ir_a_Select(p, st, inuse, target, bounded, rval)
                 ir_Goto(ir_coord(c.coord), c.body.ir.start)
                 ])
         } else {
-	    lab := c.body.ir.start
+            lab := c.body.ir.start
         }
         sc := ir_SelectCase(ir_coord(c.coord), "default", &null, &null, c.body.ir.start)
         put(caseList, sc)
