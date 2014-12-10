@@ -72,6 +72,9 @@ func setupProc(pr *pr_Info) {
 	// create an index of IR code chunks
 	pr.insns = make(map[string][]interface{})
 	for _, ch := range pr.ir.CodeList {
+		if pr.insns[ch.Label] != nil {
+			panic("Duplicate IR label: " + ch.Label)
+		}
 		pr.insns[ch.Label] = ch.InsnList
 	}
 
