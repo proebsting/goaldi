@@ -112,6 +112,9 @@ func execute(f *pr_frame, label string) (g.Value, *g.Closure) {
 					f.temps[i.Lhs] = f.temps[i.Rhs]
 				case ir_MoveLabel:
 					f.temps[i.Lhs] = i.Label
+				case ir_EnterInit: //#%#% TEMPORARY -- should not be seen
+					label = i.StartLabel //#%#% always skip initial block
+					break Chunk
 				case ir_Goto:
 					label = i.TargetLabel
 					break Chunk
