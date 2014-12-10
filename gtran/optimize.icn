@@ -225,7 +225,7 @@ procedure optim_rewrite(p, rename)
 	        sc.lhs := optim_rename(\sc.lhs, rename);
 	        sc.rhs := optim_rename(\sc.rhs, rename);
 	        sc.bodyLabel := optim_rename(\sc.bodyLabel, rename); 
-	    }
+	        }
 	    }
     "ir_Create" :    {
             p.lhs := optim_rename(\p.lhs, rename);
@@ -370,11 +370,12 @@ procedure optim_goto_transitive(t, new, lab)
 		p.failLabel := optim_goto_chain(\p.failLabel, t)
 		optim_goto_transitive(t, new, \p.failLabel)
 		}
-	    "ir_Select" : {  # ir_Select : ( caselist ) : ir_SelectCase ( lhs rhs bodyLabel )
+	    "ir_Select" : {  # ir_Select : ( caselist ) 
 	    	every sc := !p.caseList do {
-			sc.bodyLabel := optim_goto_chain(sc.bodyLabel, t)
-			optim_goto_transitive(t, new, sc.bodyLabel)
-			}
+		    # ir_SelectCase : ( kind lhs rhs bodyLabel )
+		    sc.bodyLabel := optim_goto_chain(sc.bodyLabel, t)
+		    optim_goto_transitive(t, new, sc.bodyLabel)
+		    }
 		}
 	    "ir_Create" : {  # ir_Create : ( lhs location )
 		p.coexpLabel := optim_goto_chain_defer(p.coexpLabel, t)

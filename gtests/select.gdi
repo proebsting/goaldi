@@ -1,0 +1,37 @@
+#SRC: goaldi original
+#
+#  select test
+#
+#  results are deterministic if the random number generator is predictable
+
+procedure main()
+	local i, n, c1, c2, c3, c9
+
+	every c1 | c2 | c3 | c9 := channel(1)
+	every i := !40 do {
+		writes(i, ". ")
+		select {
+			n := @c1 : { write("c1 got ", n) }
+			n := @c2 : { write("c2 got ", n); c1.put(n) }
+			n := @c3 : { write("c3 got ", n); c2 @: n }
+			c9 @: i   : { write("c9 sent ", i) }
+			default   : {
+				if ?4 === 0 then {
+					write("c9 got ", @c9)
+				} else {
+					write("sending ", i)
+					?[c1, c2, c3] @: i
+				}
+			}
+		}
+	}
+	drain("c1", c1)
+	drain("c2", c2)
+	drain("c3", c3)
+	drain("c9", c9)
+end
+
+procedure drain(name, ch)
+	ch.close()
+	every writes(" ", "   drain" | name | ":" | @ch | "\n")
+end
