@@ -26,13 +26,14 @@ func execute(f *pr_frame, label string) (g.Value, *g.Closure) {
 		// interpret the IR code
 		for {
 			if opt_trace {
-				fmt.Printf("[%d] L: %s\n", f.env.ThreadID, label)
+				fmt.Printf("[%d] %s:\n", f.env.ThreadID, label)
 			}
 			ilist := f.info.insns[label] // look up label
 		Chunk:
 			for _, insn := range ilist { // execute insns in chunk
 				if opt_trace {
-					fmt.Printf("[%d] I: %T %v\n", f.env.ThreadID, insn, insn)
+					t := fmt.Sprintf("%T", insn)[8:]
+					fmt.Printf("[%d]    %s %v\n", f.env.ThreadID, t, insn)
 				}
 				f.coord = "" //#%#% prudent, but s/n/b needed
 				f.offv = nil //#%#% prudent, but s/n/b needed
