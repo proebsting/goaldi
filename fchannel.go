@@ -40,11 +40,11 @@ func Channel(env *Env, args ...Value) (Value, *Closure) {
 //  VChannel.Get() reads the next value from a channel
 func (c VChannel) Get(args ...Value) (Value, *Closure) {
 	defer Traceback("C.get", args)
-	v := <-c
-	if v == nil { // if closed
-		return Fail()
+	v, ok := <-c
+	if ok {
+		return Return(v) // got a value
 	} else {
-		return Return(v)
+		return Fail() // channel was closed
 	}
 }
 
@@ -73,8 +73,8 @@ func (c VChannel) Buffer(args ...Value) (Value, *Closure) {
 	r := NewChannel(i)
 	go func() {
 		for {
-			v := <-c      // get value from input side
-			if v == nil { // if input channel was closed
+			v, ok := <-c // get value from input side
+			if !ok {     // if input channel was closed
 				close(r) // then close output channel
 				return   // and return (killing this thread)
 			}
@@ -97,5 +97,10 @@ func Buffer(env *Env, args ...Value) (Value, *Closure) {
 
 //  VChannel.Take() implements the unary '@' operator
 func (c VChannel) Take() Value {
-	return <-c
+	v, ok := <-c
+	if ok {
+		return v // got a value
+	} else {
+		return nil // fail: channel was closed
+	}
 }
