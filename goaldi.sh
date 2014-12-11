@@ -3,21 +3,24 @@
 #  goaldi [options] file [arg...] -- compile and execute Goaldi program
 #
 #  -c	compile only, producing IR on file.gir (interpreter options ignored)
+#  -N	no optimization
 #
 #  Options -l -t -v -A -D -F -J -P -T are passed along to the interpreter.
 #
 #  Assumes that gtran and gexec are in the search path.
 
-FLAGS=cltvADFJPT
+FLAGS=cNltvADFJPT
 USAGE="usage: $0 [-$FLAGS] file [arg...]"
 TMP=/tmp/gdi.$$.gir
 
 #  process options
 XOPTS=
 CFLAG=
+OPT=": optim -O"
 while getopts $FLAGS C; do
     case $C in
 	c)			CFLAG=$C;;
+	N)			OPT="";;
 	[ltvADFJPT])	XOPTS="$XOPTS -$C";;
 	?)			echo 1>&2 $USAGE; exit 1;;
     esac
@@ -26,7 +29,7 @@ shift $(($OPTIND - 1))
 test $# -lt 1 && echo 1>&2 $USAGE && exit 1
 
 I=$1
-TRAN="gtran preproc $I : yylex : parse : ast2ir : optim -O : json_File : stdout"
+TRAN="gtran preproc $I : yylex : parse : ast2ir $OPT : json_File : stdout"
 shift
 
 export COEXPSIZE=300000
