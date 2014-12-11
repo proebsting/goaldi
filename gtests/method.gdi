@@ -7,12 +7,15 @@ record square(w)
 record circle(r, color)
 
 procedure main()
-	local c1, c2, s1, s2
+	local c1, c2, s1, s2, m
 	c1 := circle(2)
 	c2 := circle(7, "red")
 	s1 := square(4)
 	s2 := square(6)
 	every (point() | c1 | s1 | c2 | s2) . draw (1 | 5, 5 | 1)
+	m := c1.draw
+	c1.color := "purple"
+	m(3,4)
 end
 
 procedure point.draw(x, y)
