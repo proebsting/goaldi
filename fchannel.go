@@ -109,12 +109,26 @@ func (c VChannel) Take() Value {
 	}
 }
 
-//  TakeChan(c) receives and imports a value from an external channel
+//  TakeChan(c) receives and imports a value from a Goaldi or external channel
 func TakeChan(c interface{} /*anychan*/) Value {
 	v, ok := reflect.ValueOf(c).Recv()
 	if ok {
-		return Import(v) // got a value
+		return Import(v.Interface()) // got a value
 	} else {
 		return nil // fail: channel was closed
 	}
+}
+
+//  DispenseChan(c) implements @c for a Goaldi or external channel
+func DispenseChan(c interface{} /*anychan*/) (Value, *Closure) {
+	var f *Closure
+	f = &Closure{func() (Value, *Closure) {
+		v := TakeChan(c)
+		if v != nil {
+			return v, f
+		} else {
+			return Fail()
+		}
+	}}
+	return f.Resume()
 }

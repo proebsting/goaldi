@@ -40,6 +40,6 @@
 40. c1 got 39
     drain c1 : 
     drain c2 : 
-    drain c3 : 
+    drain c3 : 77 88 99 
     drain c9 : 34 
 ok: got default when files closed

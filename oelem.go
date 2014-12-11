@@ -86,7 +86,10 @@ func Dispense(lval IVariable, x Value) (Value, *Closure) {
 	if t, ok := x.(IDispense); ok {
 		return t.Dispense(lval)
 	}
-	if reflect.ValueOf(x).Kind() == reflect.Map {
+	k := reflect.ValueOf(x).Kind()
+	if k == reflect.Chan {
+		return DispenseChan(x)
+	} else if k == reflect.Map {
 		return DispenseMap(x)
 	}
 	i := 0.0
