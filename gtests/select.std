@@ -42,3 +42,4 @@
     drain c2 : 
     drain c3 : 
     drain c9 : 34 
+ok: got default when files closed

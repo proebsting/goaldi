@@ -29,6 +29,11 @@ procedure main()
 	drain("c2", c2)
 	drain("c3", c3)
 	drain("c9", c9)
+	select {
+		n := @c1 : write("oops: closed c1 returned ", n)
+		n := @c9 : write("oops: closed c9 returned ", n)
+		default  : write("ok: got default when files closed")
+	}
 end
 
 procedure drain(name, ch)
