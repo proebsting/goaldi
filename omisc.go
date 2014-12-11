@@ -64,7 +64,7 @@ func Size(x Value) Value {
 	}
 }
 
-//  Send(x,v) calls x.Put(v) or uses reflection for a channel of any type.
+//  Send(x,v) sends value v to the Goaldi or external channel x.
 //  It panics on an inappropriate argument type.
 func Send(x Value, v Value) Value {
 	if c, ok := x.(VChannel); ok { // if a Goaldi channel
@@ -84,12 +84,16 @@ type ITake interface { // @x
 	Take() Value
 }
 
-//  Take(x) calls x.Take() or uses reflection for a map of any type.
+//  Take(x) calls x.Take() or uses reflection for an arbitrary map or channel.
 //  It panics on an inappropriate argument type.
 func Take(x Value) Value {
 	if t, ok := x.(ITake); ok {
 		return t.Take()
-	} else if reflect.ValueOf(x).Kind() == reflect.Map {
+	}
+	k := reflect.ValueOf(x).Kind()
+	if k == reflect.Chan {
+		return TakeChan(x)
+	} else if k == reflect.Map {
 		return TakeMap(x)
 	} else {
 		return x.(ITake).Take() // provoke panic

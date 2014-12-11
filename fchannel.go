@@ -2,6 +2,10 @@
 
 package goaldi
 
+import (
+	"reflect"
+)
+
 //  Declare methods
 var ChannelMethods = map[string]interface{}{
 	"type":   VChannel.Type,
@@ -95,11 +99,21 @@ func Buffer(env *Env, args ...Value) (Value, *Closure) {
 	return c.(VChannel).Buffer(i)
 }
 
-//  VChannel.Take() implements the unary '@' operator
+//  VChannel.Take() implements the unary '@' operator for a Goaldi channel
 func (c VChannel) Take() Value {
 	v, ok := <-c
 	if ok {
 		return v // got a value
+	} else {
+		return nil // fail: channel was closed
+	}
+}
+
+//  TakeChan(c) receives and imports a value from an external channel
+func TakeChan(c interface{} /*anychan*/) Value {
+	v, ok := reflect.ValueOf(c).Recv()
+	if ok {
+		return Import(v) // got a value
 	} else {
 		return nil // fail: channel was closed
 	}
