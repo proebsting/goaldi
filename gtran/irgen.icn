@@ -1072,11 +1072,6 @@ procedure ir_a_Create(p, st, inuse, target, bounded, rval)
 
     \p.coord | runerr(500, p)
     ir_init(p)
-    if /target then {
-        suspend ir_chunk(p.ir.start, [ ir_Goto(ir_coord(p.coord), p.ir.success) ])
-        /bounded & suspend ir_chunk(p.ir.resume, [ ir_Goto(ir_coord(p.coord), p.ir.failure) ])
-	fail
-    }
     t := (\target | ir_tmp(st, inuse))
 
     ir_createflag := 1
