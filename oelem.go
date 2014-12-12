@@ -23,6 +23,7 @@ func Field(x Value, s string) Value {
 	if xv.Kind() == reflect.Interface {
 		xv = xv.Elem()
 	}
+	// look for an explicitly implemented method
 	if m, ok := xv.Type().MethodByName(s); ok {
 		return GoMethod(x, s, m)
 	}
@@ -36,6 +37,9 @@ func Field(x Value, s string) Value {
 		if f := xv.FieldByName(s); f.IsValid() {
 			return TrapValue(f)
 		}
+	case reflect.Chan:
+		// we have implicit methods for any kind of map
+		return GetMethod(GoChanMethods, x, s)
 	case reflect.Map:
 		// we have implicit methods for any kind of map
 		return GetMethod(GoMapMethods, x, s)

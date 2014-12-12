@@ -64,21 +64,6 @@ func Size(x Value) Value {
 	}
 }
 
-//  Send(x,v) sends value v to the Goaldi or external channel x.
-//  It panics on an inappropriate argument type.
-func Send(x Value, v Value) Value {
-	if c, ok := x.(VChannel); ok { // if a Goaldi channel
-		c <- v // no conversion or reflection needed
-		return v
-	}
-	cv := reflect.ValueOf(x)
-	if cv.Kind() != reflect.Chan {
-		panic(&RunErr{"Not a channel", x})
-	}
-	cv.Send(reflect.ValueOf(Export(v)))
-	return v
-}
-
 //  ITake -- interface for x.Take(), used by @x
 type ITake interface { // @x
 	Take() Value
