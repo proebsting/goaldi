@@ -100,13 +100,11 @@ procedure expr3()
    s1 >>=:= s2
    s1 >>:= s2
    s1 ~==:= s2
-   s1 ?:= s2
    a1 |||:= a2
    x ===:= y
    x ~===:= y
    x &:= y
    x @:= y
-   s ? x
    x & y
    create x
    return
