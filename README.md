@@ -1,4 +1,4 @@
-Goaldi: a new goal-directed programming language 
+Goaldi: A New Goal-Directed Programming Language 
 =====
 
 Todd Proebsting  
@@ -17,7 +17,7 @@ Goaldi should run on any platform that supports:
 Install Go and Icon and add them to your search path  
 Set your $GOPATH environment variable  
 Download Goaldi to $GOPATH/src/goaldi  
-Add go and icon to your $PATH
+Add go and icon to your $PATH  
 Add $GOPATH/bin to your $PATH  
 Type **make**
 
