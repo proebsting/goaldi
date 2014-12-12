@@ -1,24 +1,13 @@
 #  irgen.icn -- translate abstract syntax trees to intermediate representation.
 
-global ir_current_proc
+global ir_deferred, ir_declare_set
 
-global ir_createflag
-
-global ir_LvalSet
-
-global ir_declare_set
-
-global ir_deferred
 
 record ir_info(start, resume, failure, success, x)
-record ir_loopinfo(scanlevel, nextlabel, continue, in_st, out_st, value,
-                   bounded, rval)
-record ir_scaninfo(oldsubject, oldpos)
-record ir_stacks(tmp, lab)
+record ir_loopinfo(nextlabel, continue, in_st, out_st, value, bounded, rval)
 
-global ir_loop_stack, ir_scan_stack
+record ir_stacks(tmp, current_proc, createflag, declare_set, loop_stack)
 
-global ir_tmptable, ir_loctable, ir_closuretable
 
 # record a_NoOp( )
 procedure ir_a_NoOp(p, st, target, bounded, rval)
@@ -45,70 +34,6 @@ procedure ir_a_Field(p, st, target, bounded, rval)
         ir_Goto(ir_coord(p.coord), p.ir.success)
         ])
     suspend ir_chunk(p.expr.ir.failure, [ ir_Goto(ir_coord(p.coord), p.ir.failure) ])
-end
-
-# record a_Scan( op expr body )       op == "?" or "?:="
-procedure ir_a_Scan(p, st, target, bounded, rval)
-    local lv, rv, tmp, mk
-
-    ir_init(p)
-    tmp := ir_tmp(st)
-    lv := ir_tmp(st)
-    mk := ir_tmp(st)
-    if p.op == "?" then {
-        rv := target
-    } else {
-        rv := (\target | ir_tmp(st))
-    }
-
-    p.ir.x := ir_scaninfo()
-    p.ir.x.oldpos := ir_tmp(st)
-    p.ir.x.oldsubject := ir_tmp(st)
-
-    suspend ir(p.expr, st, lv, &null, if p.op == "?" then "rval" else &null)
-    put(ir_scan_stack, p)
-    suspend ir(p.body, st, rv, if p.op == "?" then bounded else &null, rval)
-    pull(ir_scan_stack)
-
-    \p.coord | runerr(500, p)
-
-    suspend ir_chunk(p.ir.start, [ ir_Goto(ir_coord(p.coord), p.expr.ir.start) ])
-    /bounded & suspend ir_chunk(p.ir.resume, [
-        ir_ScanSwap(ir_coord(p.coord),  p.ir.x.oldsubject, p.ir.x.oldpos ),
-        ir_Goto(ir_coord(p.coord), p.body.ir.resume)
-        ])
-    suspend ir_chunk(p.expr.ir.success, [
-        ir_Key(ir_coord(p.coord), tmp, "pos", &null),
-	ir_Deref(ir_coord(p.coord), p.ir.x.oldpos, tmp),
-        ir_Key(ir_coord(p.coord), tmp, "subject", &null),
-	ir_Deref(ir_coord(p.coord), p.ir.x.oldsubject, tmp),
-        ir_opfn(ir_coord(p.coord), target, &null, ir_operator(":?", 2, rval), [ tmp, lv ],
-                p.expr.ir.resume),
-        ir_Goto(ir_coord(p.coord), p.body.ir.start)
-        ])
-    suspend ir_chunk(p.expr.ir.failure, [ ir_Goto(ir_coord(p.coord), p.ir.failure) ])
-    suspend ir_chunk(p.body.ir.failure, [
-        ir_Key(ir_coord(p.coord), mk, "subject"),
-        ir_Assign(ir_coord(p.coord), mk, p.ir.x.oldsubject),
-
-        ir_Key(ir_coord(p.coord), mk, "pos"),
-        ir_Assign(ir_coord(p.coord), mk, p.ir.x.oldpos),
-        ir_Goto(ir_coord(p.coord), p.expr.ir.resume)
-        ])
-
-    if p.op == "?" then {
-        suspend ir_chunk(p.body.ir.success, [
-            ir_ScanSwap( ir_coord(p.coord), p.ir.x.oldsubject, p.ir.x.oldpos ),
-            ir_Goto(ir_coord(p.coord), p.ir.success)
-            ])
-    } else {
-        # p.op == "?:="
-        suspend ir_chunk(p.body.ir.success, [
-            ir_opfn(ir_coord(p.coord), target, &null, ir_operator(":=", 2, rval), [ lv, rv ], p.body.ir.resume),
-            ir_ScanSwap( ir_coord(p.coord), p.ir.x.oldsubject, p.ir.x.oldpos ),
-            ir_Goto(ir_coord(p.coord), p.ir.success)
-            ])
-    }
 end
 
 # record a_Limitation( expr limit )
@@ -301,11 +226,11 @@ procedure ir_a_Every(p, st, target, bounded, rval)
     /p.body := a_Key("fail", p.coord)
 
     ir_init_loop(p, st, target, bounded, rval)
-    put(ir_loop_stack, p)
+    put(st.loop_stack, p)
     tmp := copy(st)
     suspend ir(p.expr, tmp, &null, &null, "rval")
     suspend ir(p.body, tmp, &null, "always bounded", "rval")
-    pull(ir_loop_stack)
+    pull(st.loop_stack)
 
     suspend ir_chunk(p.ir.x.nextlabel, [ ir_Goto(ir_coord(p.coord), p.expr.ir.resume) ])
     suspend ir_chunk(p.ir.start, [ ir_Goto(ir_coord(p.coord), p.expr.ir.start) ])
@@ -606,8 +531,7 @@ end
 procedure ir_a_Initial(p, st, target, bounded, rval)
     /p.expr := a_NoOp()
 
-    ir_loop_stack := []
-    ir_scan_stack := []
+    st.loop_stack := []
 
     ir_init(p)
     suspend ir(p.expr, st, target, "always bounded", "rval")
@@ -736,14 +660,16 @@ procedure ir_a_ProcDecl(p, st, target, bounded, rval)
 
     if nesting > 1 then {
         counter +:= 1
-	p.ident.id := ir_current_proc || "$nested$" || counter
+	p.ident.id := st.current_proc || "$nested$" || counter
         suspend ir_nested(p, st, target, bounded, rval)
 	nesting -:= 1
 	put(ir_deferred, p)
 	fail
     }
 
-    ir_current_proc := p.ident.id
+    st := ir_stacks(0)
+
+    st.current_proc := p.ident.id
 
     v := set([])
     every i := !p.paramList | !(!p.localsList).idList do {
@@ -758,8 +684,6 @@ procedure ir_a_ProcDecl(p, st, target, bounded, rval)
     }
     insert(ir_declare_set, p.ident.id)
 
-    ir_LvalSet := set([])
-
     locals := []
     statics := []
     every i := !p.localsList do {
@@ -771,18 +695,14 @@ procedure ir_a_ProcDecl(p, st, target, bounded, rval)
     params := []
     every put(params, (!p.paramList).id)
 
-    ir_tmptable := table()
-    ir_loctable := table()
-    ir_closuretable := table()
-
     code := []
-    every put(code, ir(p.code))
+    every put(code, ir(p.code, st))
 
     nesting -:= 1
 
     return ir_Function(ir_coord(p.ident.coord), p.ident.id, params,
 		      p.accumulate, locals, statics, code,
-                      p.code.ir.start, ir_LvalSet)
+                      p.code.ir.start)
 end
 
 # record a_ProcBody( nexprList )
@@ -791,15 +711,14 @@ procedure ir_a_ProcBody(p, st, target, bounded, rval)
 
     every /(!p.nexprList) := a_Key("null", p.coord)
 
-    ir_loop_stack := []
-    ir_scan_stack := []
+
+    st.loop_stack := []
 
     ir_init(p)
 
     L := ir_make_sentinel(p.nexprList)
     every i := 1 to *p.nexprList do {
-        suspend ir(p.nexprList[i], ir_stacks(0,0), &null,
-                 "always bounded", "rval")
+        suspend ir(p.nexprList[i], st, &null, "always bounded", "rval")
     }
 
     suspend ir_chunk(p.ir.start, [ ir_Goto(ir_coord(p.coord), L[1].ir.start) ])
@@ -820,8 +739,8 @@ end
 procedure ir_a_ProcCode(p, st, target, bounded, rval)
     ir_init(p)
 
-    suspend ir(p.init, ir_stacks(0,0), &null, "always bounded", "rval")
-    suspend ir(p.body, ir_stacks(0,0), &null, "always bounded", "rval")
+    suspend ir(p.init, st, &null, "always bounded", "rval")
+    suspend ir(p.body, st, &null, "always bounded", "rval")
 
     suspend ir_chunk(p.ir.start, [
         ir_EnterInit(ir_coord(p.coord), p.body.ir.start),
@@ -858,9 +777,9 @@ end
 # record a_Repeat( expr )
 procedure ir_a_Repeat(p, st, target, bounded, rval)
     ir_init_loop(p, st, target, bounded, rval)
-    put(ir_loop_stack, p)
+    put(st.loop_stack, p)
     suspend ir(p.expr, copy(st), &null, "always bounded", "rval")
-    pull(ir_loop_stack)
+    pull(st.loop_stack)
 
     suspend ir_chunk(p.ir.x.nextlabel, [ ir_Goto(ir_coord(p.coord), p.expr.ir.start) ])
     suspend ir_chunk(p.ir.start, [ ir_Goto(ir_coord(p.coord), p.expr.ir.start) ])
@@ -875,7 +794,7 @@ end
 procedure ir_a_Return(p, st, target, bounded, rval)
     local t, mk
 
-    /ir_createflag |semantic_error("invalid context for return or fail",p.coord)
+    /st.createflag |semantic_error("invalid context for return or fail",p.coord)
 
     /p.expr := a_Key("null", p.coord)
 
@@ -887,64 +806,29 @@ procedure ir_a_Return(p, st, target, bounded, rval)
 
     suspend ir_chunk(p.ir.start, [ ir_Goto(ir_coord(p.coord), p.expr.ir.start) ])
     /bounded & suspend ir_chunk(p.ir.resume, [ ir_Fail(ir_coord(p.coord)) ])
-    if ir_scan_stack[1] then {
-        suspend ir_chunk(p.expr.ir.success, [
-            ir_Key(ir_coord(p.coord), mk, "subject"),
-            ir_Assign(ir_coord(p.coord), mk, ir_scan_stack[1].ir.x.oldsubject),
-            ir_Key(ir_coord(p.coord), mk, "pos"),
-            ir_Assign(ir_coord(p.coord), mk, ir_scan_stack[1].ir.x.oldpos),
-            ir_Succeed(ir_coord(p.coord), t, &null)
-            ])
-        suspend ir_chunk(p.expr.ir.failure, [
-            ir_Key(ir_coord(p.coord), mk, "subject"),
-            ir_Assign(ir_coord(p.coord), mk, ir_scan_stack[1].ir.x.oldsubject),
-            ir_Key(ir_coord(p.coord), mk, "pos"),
-            ir_Assign(ir_coord(p.coord), mk, ir_scan_stack[1].ir.x.oldpos),
-            ir_Fail(ir_coord(p.coord))
-            ])
-    } else {
         suspend ir_chunk(p.expr.ir.success, [
             ir_Succeed(ir_coord(p.coord), t, &null)
             ])
         suspend ir_chunk(p.expr.ir.failure, [ ir_Fail(ir_coord(p.coord)) ])
-    }
 end
 
 # record a_Fail( )
 procedure ir_a_Fail(p, st, target, bounded, rval)
     local mk
 
-    /ir_createflag |semantic_error("invalid context for return or fail",p.coord)
+    /st.createflag |semantic_error("invalid context for return or fail",p.coord)
 
     ir_init(p)
 
-    if ir_scan_stack[1] then {
-        mk := ir_tmp(st)
-        suspend ir_chunk(p.ir.start, [
-            ir_Key(ir_coord(p.coord), mk, "subject"),
-            ir_Assign(ir_coord(p.coord), mk, ir_scan_stack[1].ir.x.oldsubject),
-            ir_Key(ir_coord(p.coord), mk, "pos"),
-            ir_Assign(ir_coord(p.coord), mk, ir_scan_stack[1].ir.x.oldpos),
-            ir_Fail(ir_coord(p.coord))
-            ])
-        /bounded & suspend ir_chunk(p.ir.resume, [
-            ir_Key(ir_coord(p.coord), mk, "subject"),
-            ir_Assign(ir_coord(p.coord), mk, ir_scan_stack[1].ir.x.oldsubject),
-            ir_Key(ir_coord(p.coord), mk, "pos"),
-            ir_Assign(ir_coord(p.coord), mk, ir_scan_stack[1].ir.x.oldpos),
-            ir_Fail(ir_coord(p.coord))
-            ])
-    } else {
         suspend ir_chunk(p.ir.start, [ ir_Fail(ir_coord(p.coord)) ])
         /bounded & suspend ir_chunk(p.ir.resume, [ ir_Fail(ir_coord(p.coord)) ])
-    }
 end
 
 # record a_Suspend( expr body )
 procedure ir_a_Suspend(p, st, target, bounded, rval)
     local t, tmp, susp
 
-    /ir_createflag | semantic_error("invalid context for suspend", p.coord)
+    /st.createflag | semantic_error("invalid context for suspend", p.coord)
 
     /p.body := a_Key("fail", p.coord) & /p.expr := a_Key("null", p.coord)
 
@@ -952,30 +836,17 @@ procedure ir_a_Suspend(p, st, target, bounded, rval)
     t := ir_label(p, "suspend")
     susp := ir_tmp(st)
 
-    put(ir_loop_stack, p)
+    put(st.loop_stack, p)
     tmp := copy(st)
     suspend ir(p.expr, tmp, susp, &null, "rval")
     suspend ir(p.body, tmp, &null, "always bounded", &null)
-    pull(ir_loop_stack)
+    pull(st.loop_stack)
 
     suspend ir_chunk(p.ir.x.nextlabel, [ ir_Goto(ir_coord(p.coord), p.expr.ir.resume) ])
     suspend ir_chunk(p.ir.start, [ ir_Goto(ir_coord(p.coord), p.expr.ir.start) ])
     /bounded & suspend ir_chunk(p.ir.resume, [ ir_IndirectGoto(ir_coord(p.coord), p.ir.x.continue) ])
-    if ir_scan_stack[1] then {
-        suspend ir_chunk(p.expr.ir.success, [
-            ir_ScanSwap( ir_coord(p.coord), ir_scan_stack[1].ir.x.oldsubject,
-                         ir_scan_stack[1].ir.x.oldpos ),
-            ir_Succeed(ir_coord(p.coord), susp, t)
-            ])
-        suspend ir_chunk(t, [
-            ir_ScanSwap( ir_coord(p.coord), ir_scan_stack[1].ir.x.oldsubject,
-                         ir_scan_stack[1].ir.x.oldpos ),
-            ir_Goto(ir_coord(p.coord), p.body.ir.start)
-            ])
-    } else {
         suspend ir_chunk(p.expr.ir.success, [ ir_Succeed(ir_coord(p.coord), susp, t) ])
         suspend ir_chunk(t, [ ir_Goto(ir_coord(p.coord), p.body.ir.start) ])
-    }
     suspend ir_chunk(p.expr.ir.failure, [ ir_Goto(ir_coord(p.coord), p.ir.failure) ])
     suspend ir_chunk(p.body.ir.success, [
         ir_Goto(ir_coord(p.coord), p.expr.ir.resume)
@@ -988,10 +859,10 @@ procedure ir_a_Until(p, st, target, bounded, rval)
     /p.body := a_Key("fail", p.coord)
 
     ir_init_loop(p, st, target, bounded, rval)
-    put(ir_loop_stack, p)
+    put(st.loop_stack, p)
     suspend ir(p.expr, copy(st), &null, "always bounded", "rval")
     suspend ir(p.body, copy(st), &null, "always bounded", "rval")
-    pull(ir_loop_stack)
+    pull(st.loop_stack)
 
     suspend ir_chunk(p.ir.x.nextlabel, [ ir_Goto(ir_coord(p.coord), p.expr.ir.start) ])
     suspend ir_chunk(p.ir.start, [ ir_Goto(ir_coord(p.coord), p.expr.ir.start) ])
@@ -1011,10 +882,10 @@ procedure ir_a_While(p, st, target, bounded, rval)
     /p.body := a_Key("fail", p.coord)
 
     ir_init_loop(p, st, target, bounded, rval)
-    put(ir_loop_stack, p)
+    put(st.loop_stack, p)
     suspend ir(p.expr, copy(st), &null, "always bounded", "rval")
     suspend ir(p.body, copy(st), &null, "always bounded", "rval")
-    pull(ir_loop_stack)
+    pull(st.loop_stack)
 
     suspend ir_chunk(p.ir.x.nextlabel, [ ir_Goto(ir_coord(p.coord), p.expr.ir.start) ])
     suspend ir_chunk(p.ir.start, [ ir_Goto(ir_coord(p.coord), p.expr.ir.start) ])
@@ -1037,9 +908,9 @@ procedure ir_a_Create(p, st, target, bounded, rval)
     ir_init(p)
     t := (\target | ir_tmp(st))
 
-    ir_createflag := 1
+    st.createflag := 1
     suspend ir(p.expr, st, t, &null, &null)
-    ir_createflag := &null
+    st.createflag := &null
 
     suspend ir_chunk(p.ir.start, [
         ir_Create(ir_coord(p.coord), target, p.expr.ir.start),
@@ -1058,10 +929,6 @@ procedure ir_a_Ident(p, st, target, bounded, rval)
         target := &null
     }
 
-    if /rval then {
-	insert(ir_LvalSet, p.id)
-    }
-
     ir_init(p)
 
     suspend ir_chunk(p.ir.start, [
@@ -1075,72 +942,34 @@ end
 procedure ir_a_Next(p, st, target, bounded, rval)
     local curloop, sl, mk
 
-    ir_loop_stack[1] | semantic_error("invalid context for next", p.coord)
+    st.loop_stack[1] | semantic_error("invalid context for next", p.coord)
 
     ir_init(p)
 
-    curloop := ir_loop_stack[-1]
-    sl := curloop.ir.x.scanlevel
-    if ir_scan_stack[sl+1] then {
-        mk := ir_tmp(st)
-        suspend ir_chunk(p.ir.start, [
-            ir_Key(ir_coord(p.coord), mk, "subject"),
-            ir_Assign(ir_coord(p.coord), mk, ir_scan_stack[sl+1].ir.x.oldsubject),
-            ir_Key(ir_coord(p.coord), mk, "pos"),
-            ir_Assign(ir_coord(p.coord), mk, ir_scan_stack[sl+1].ir.x.oldpos),
-            ir_Goto(ir_coord(p.coord), curloop.ir.x.nextlabel)
-            ])
-    } else {
+    curloop := st.loop_stack[-1]
         suspend ir_chunk(p.ir.start, [ ir_Goto(ir_coord(p.coord), curloop.ir.x.nextlabel) ])
-    }
     /bounded & suspend ir_chunk(p.ir.resume, [ ir_Unreachable(ir_coord(p.coord)) ])
 end
 
 # record a_Break( expr )
 procedure ir_a_Break(p, st, target, bounded, rval)
-    local curloop, oldloops, oldscans, tmp, clx, mk
+    local curloop, oldloops, tmp, clx, mk
 
-    ir_loop_stack[1] | semantic_error("invalid context for break", p.coord)
+    st.loop_stack[1] | semantic_error("invalid context for break", p.coord)
 
     /p.expr := a_Key("null", p.coord)
 
     ir_init(p)
 
-    curloop := ir_loop_stack[-1] 
-    oldloops := ir_loop_stack
-    oldscans := ir_scan_stack
-    ir_loop_stack := ir_loop_stack[1:-1] 
-    ir_scan_stack := ir_scan_stack[1:curloop.ir.x.scanlevel] 
+    curloop := st.loop_stack[-1] 
+    oldloops := st.loop_stack
+    st.loop_stack := st.loop_stack[1:-1] 
     tmp := copy(curloop.ir.x.in_st)
     clx := curloop.ir.x
     suspend ir(p.expr, tmp, clx.value, clx.bounded, clx.rval)
     ir_max_st(clx.out_st, tmp)
-    ir_loop_stack := oldloops
-    ir_scan_stack := oldscans
+    st.loop_stack := oldloops
 
-    if ir_scan_stack[clx.scanlevel+1] then {
-        mk := ir_tmp(st)
-        if /clx.bounded then {
-            suspend ir_chunk(p.ir.start, [
-                ir_Key(ir_coord(p.coord), mk, "subject"),
-                ir_Assign(ir_coord(p.coord), mk,
-                        ir_scan_stack[clx.scanlevel+1].ir.x.oldsubject),
-                ir_Key(ir_coord(p.coord), mk, "pos"),
-                ir_Assign(ir_coord(p.coord), mk, ir_scan_stack[clx.scanlevel+1].ir.x.oldpos),
-                ir_MoveLabel(ir_coord(p.coord), clx.continue, p.ir.resume),
-                ir_Goto(ir_coord(p.coord), p.expr.ir.start)
-                ])
-        } else {
-            suspend ir_chunk(p.ir.start, [
-                ir_Key(ir_coord(p.coord), mk, "subject"),
-                ir_Assign(ir_coord(p.coord), mk,
-                        ir_scan_stack[clx.scanlevel+1].ir.x.oldsubject),
-                ir_Key(ir_coord(p.coord), mk, "pos"),
-                ir_Assign(ir_coord(p.coord), mk, ir_scan_stack[clx.scanlevel+1].ir.x.oldpos),
-                ir_Goto(ir_coord(p.coord), p.expr.ir.start)
-                ])
-        }
-    } else {
         if /clx.bounded then {
             suspend ir_chunk(p.ir.start, [
                 ir_MoveLabel(ir_coord(p.coord), clx.continue, p.ir.resume),
@@ -1151,7 +980,6 @@ procedure ir_a_Break(p, st, target, bounded, rval)
                 ir_Goto(ir_coord(p.coord), p.expr.ir.start)
                 ])
         }
-    }
     /clx.bounded & suspend ir_chunk(p.ir.resume, [ ir_Goto(ir_coord(p.coord), p.expr.ir.resume) ])
     suspend ir_chunk(p.expr.ir.success, [ ir_Goto(ir_coord(p.coord), curloop.ir.success) ])
     suspend ir_chunk(p.expr.ir.failure, [ ir_Goto(ir_coord(p.coord), curloop.ir.failure) ])
@@ -1457,7 +1285,6 @@ procedure ir(p, st, target, bounded, rval)
     "a_NoOp" : suspend ir_a_NoOp(p, st, target, bounded, rval)
     "a_Field" : suspend ir_a_Field(p, st, target, bounded, rval)
     "a_Call" : suspend ir_a_Call(p, st, target, bounded, rval)
-    "a_Scan" : suspend ir_a_Scan(p, st, target, bounded, rval)
     "a_Limitation" : suspend ir_a_Limitation(p, st, target, bounded, rval)
     "a_Not" : suspend ir_a_Not(p, st, target, bounded, rval)
     "a_CoexpList" : suspend ir_a_CoexpList(p, st, target, bounded, rval)
@@ -1537,7 +1364,6 @@ procedure ir_init_loop(p, st, target, bounded, rval)
     p.ir.x := ir_loopinfo()
     /bounded & (p.ir.x.continue := ir_tmploc(st))
     p.ir.x.nextlabel := ir_label(p, "next")
-    p.ir.x.scanlevel := *ir_scan_stack
     p.ir.x.in_st := copy(st)
     p.ir.x.out_st := st
     p.ir.x.value := target
@@ -1578,20 +1404,17 @@ end
 
 procedure ir_tmp(st)
     st.tmp +:= 1
-    /ir_tmptable[st.tmp] := ir_Tmp("tmp" || st.tmp)
-    return ir_tmptable[st.tmp]
+    return ir_Tmp("tmp" || st.tmp)
 end
 
 procedure ir_tmploc(st)
-    st.lab +:= 1
-    /ir_loctable[st.lab] := ir_TmpLabel("loc" || st.lab)
-    return ir_loctable[st.lab]
+    st.tmp +:= 1
+    return ir_TmpLabel("loc" || st.tmp)
 end
 
 procedure ir_tmpclosure(st)
-    st.lab +:= 1
-    /ir_closuretable[st.lab] := ir_TmpClosure("closure" || st.lab)
-    return ir_closuretable[st.lab]
+    st.tmp +:= 1
+    return ir_TmpClosure("closure" || st.tmp)
 end
 
 procedure ir_make_sentinel(L)
