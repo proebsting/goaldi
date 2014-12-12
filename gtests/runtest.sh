@@ -4,7 +4,7 @@
 
 #  check for necessary binaries
 GOBIN=${GOPATH%%:*}/bin
-GTRAN=$GOBIN/goaldi
+GOALDI=$GOBIN/goaldi
 GTRAN=$GOBIN/gtran
 GEXEC=$GOBIN/gexec
 ls -l $GOALDI $GTRAN $GEXEC || exit
@@ -26,7 +26,7 @@ for F in $*; do
 	else
 		exec </dev/null
 	fi
-    if goaldi $F.gdi >$F.out 2>$F.err; then
+    if $GOALDI $F.gdi >$F.out 2>$F.err; then
 	if cmp -s $F.std $F.out; then
 	    echo "ok"
 	    rm $F.out
