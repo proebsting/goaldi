@@ -1430,7 +1430,6 @@ end
 
 procedure ir_max_st(st, t)
     st.tmp <:= t.tmp
-    st.lab <:= t.lab
 end
 
 procedure ir_coord(p)
