@@ -33,7 +33,6 @@ record ir_OpFunction(coord, lhs, lhsclosure, fn, argList, rval, failLabel)
 record ir_Call(coord, lhs, lhsclosure, fn, argList, failLabel)
 record ir_ResumeValue(coord, lhs, lhsclosure, closure, failLabel)
 
-record ir_EnterInit(coord, startLabel)
 record ir_Goto(coord, targetLabel)
 record ir_IndirectGoto(coord, targetTmpLabel)
 record ir_Succeed(coord, expr, resumeLabel)

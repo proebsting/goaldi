@@ -155,11 +155,6 @@ procedure optim_def_use(p, uses, defs)
 	    }
     "ir_CoFail" :    { }
 
-    "ir_EnterInit" : { 
-	    uses[p.startLabel] +:= 1
-	    }
-#    "ir_EnterInit" : { optim_def_use(p.startLabel, uses, uses, defs) }
-
     "ir_Unreachable":{ }
 
     default :   { runerr(500, p); }
@@ -234,7 +229,6 @@ procedure optim_rewrite(p, rename)
             p.resumeLabel := optim_rename(p.resumeLabel, rename);}
     "ir_CoFail" :    { }
     "ir_Unreachable":{ }
-    "ir_EnterInit" : { p.startLabel := optim_rename(p.startLabel, rename) }
 
     default :   { runerr(500,p); }
     }
@@ -248,7 +242,6 @@ procedure optim_goto_elimination(t, start)
     optim_goto_transitive(t, new, start)
     optim_test_elimination(new, start)
     if i := new[start] &
-       type(i[1]) == "ir_EnterInit" &
        type(i[2]) == "ir_Goto" &
        i[1].startLabel === i[2].targetLabel then {
         new[start] := [ i[2] ]
@@ -385,10 +378,6 @@ procedure optim_goto_transitive(t, new, lab)
 		p.resumeLabel := optim_goto_chain(p.resumeLabel, t)
 		optim_goto_transitive(t, new, p.resumeLabel)
 		}
-	    "ir_EnterInit" : {  # ir_EnterInit : ( startLabel )
-		p.startLabel := optim_goto_chain(p.startLabel, t)
-		optim_goto_transitive(t, new, p.startLabel)
-		}
 	    default : runerr(500, p)
 	    }
     }
@@ -456,9 +445,6 @@ procedure optim_refcountX(refcount, p)
         }
     "ir_CoRet" : {  # ir_CoRet : ( value resumeLabel )
 	refcount[p.resumeLabel] +:= 1
-        }
-    "ir_EnterInit" : {  # ir_EnterInit : ( startLabel )
-	refcount[p.startLabel] +:= 1
         }
     default : runerr(500, p)
     }
