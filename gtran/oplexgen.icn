@@ -68,6 +68,7 @@ procedure init_lex_tables()
                ["\\",              "BACKSLASH", "b" ],
                ["!",               "BANG",      "b" ],
                ["|",               "BAR",       "b" ],
+               ["~|",              "TILDEBAR",  "" ],
                ["^",               "CARET",     "b" ],
                ["^:=",             "AUGCARET", "b" ],
                [":",               "COLON",     ""  ],
