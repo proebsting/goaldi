@@ -4,8 +4,14 @@
 #
 #  results are deterministic if the random number generator is predictable
 
-procedure main()
-	local i, n, c1, c2, c3, c9
+procedure main() {
+	# local i, n, c1, c2, c3, c9
+	local i
+	local n
+	local c1
+	local c2
+	local c3
+	local c9
 
 	every c1 | c2 | c9 := channel(1)
 	c3 := channel(5)
@@ -36,9 +42,9 @@ procedure main()
 		n := @c9 : write("oops: closed c9 returned ", n)
 		default  : write("ok: got default when files closed")
 	}
-end
+}
 
-procedure drain(name, ch)
+procedure drain(name, ch) {
 	ch.close()
 	every writes(" ", "   drain" | name | ":" | !ch | "\n")
-end
+}

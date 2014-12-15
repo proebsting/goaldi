@@ -7,8 +7,12 @@
 #  from standard input with the alphabet separated from the length by
 #  a colon.
 
-procedure main()
-	local line, alpha, n, f
+procedure main() {
+	# local line, alpha, n, f
+	local line
+	local alpha
+	local n
+	local f
 	while line := read() do {
 		f := split(line, ":")
 		if (*f = 2) & (n := integer(f[2])) then {
@@ -19,10 +23,16 @@ procedure main()
 			stop("erroneous input: ", line)
 		}
 	}
-end
+}
 
-procedure meander(alpha,n)
-	local result, t, i, c, k
+procedure meander(alpha,n) {
+	# local result, t, i, c, k
+	local result
+	local t
+	local i
+	local c
+	local k
+
 	i := k := *alpha
 	t := n-1
 	result := repl(alpha[1],t)
@@ -32,4 +42,4 @@ procedure meander(alpha,n)
 	   else {result ||:= c; i := k}
 	}
 	return result
-end
+}

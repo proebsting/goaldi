@@ -50,8 +50,10 @@
 
 global n, solution
 
-procedure main(arg)
-   local i, opts
+procedure main(arg) {
+   # local i, opts
+   local i
+   local opts
 
    n := integer(\arg) | 6
    if n <= 0 then stop("-n needs a positive numeric parameter")
@@ -59,13 +61,17 @@ procedure main(arg)
    solution := list(n)		# ... and a list of column solutions
    write(n,"-Queens:")
    every q(1)			# start by placing queen in first column
-end
+}
 
 # q(c) - place a queen in column c.
 #
-procedure q(c)
+procedure q(c) {
    local r
-   static up, down, rows
+   # static up, down, rows
+   static up
+   static down
+   static rows
+
    if /rows := list(n,0) then {
       /up := list(2*n-1,0)
       /down := list(2*n-1,0)
@@ -76,12 +82,16 @@ procedure q(c)
          if c = n then show()
          else q(c + 1)		# try to place next queen.
       }
-end
+}
 
 # show the solution on a chess board.
 #
-procedure show()
-   static count, line, border
+procedure show() {
+   # static count, line, border
+   static count
+   static line
+   static border
+
    if /count := 0 then {
       line := repl("|   ",n) || "|"
       border := repl("----",n) || "-"
@@ -93,4 +103,4 @@ procedure show()
       write("  ", border)
    }
    write()
-end
+}

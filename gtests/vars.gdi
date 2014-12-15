@@ -1,7 +1,7 @@
 #SRC: goaldi original
 global a, g
 
-procedure main()
+procedure main() {
 	a := "Ahoy"
  	g := "Gladiola"
 	p()
@@ -9,18 +9,18 @@ procedure main()
 	p()
 	q()
 	println("m:", a, g)
-end
+}
 
-procedure p()
+procedure p() {
 	local a
 	static s
 	println("p:", \a | "--", g, \s | "--")
 	a := "Ain't gonna see this"
 	g := "Gorgonzola"
 	s := "Sarasota"
-end
+}
 
-procedure q()
+procedure q() {
 	local a
 	static t
 	a := "Asparagus"
@@ -28,4 +28,4 @@ procedure q()
 	a := "Ain't gonna see this either"
 	g := "Gouda"
 	t := "Turnip"
-end
+}

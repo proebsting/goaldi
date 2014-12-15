@@ -2,8 +2,12 @@
 #
 # Map test
 
-procedure main()
-   local k, kv, x, y
+procedure main() {
+   # local k, kv, x, y
+   local k
+   local kv
+   local x
+   local y
 
    x := map()
    tdump("initial", x)
@@ -74,14 +78,14 @@ procedure main()
    tdump("30s", x)
    tdump("50s", y)
 
-end
+}
 
 
 #  dump a map, assuming that keys are drawn from: &nil, 0 - 9, "a" - "e"
 #
 #  also checks member()
 
-procedure tdump(label, T)
+procedure tdump(label, T) {
    local x
 
    printf("%10s :%2.0f :", label, *T)
@@ -95,4 +99,4 @@ procedure tdump(label, T)
          }
    write()
    return
-end
+}

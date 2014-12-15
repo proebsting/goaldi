@@ -3,8 +3,10 @@
 #  Tests random list selection and assignment.
 #  Sensitive to randomness implementation.
 
-procedure main()
-	local l, c
+procedure main() {
+	# local l, c
+	local l
+	local c
 
 	l := []
 	show(l)
@@ -12,11 +14,11 @@ procedure main()
 		show(l)
 	every c := !"pqrstuvwxyz" do
 		?l := c & show(l)
-end
+}
 
 #  show random samples and then whole list
-procedure show(l)
+procedure show(l) {
 	every 1 to 12 do
 		writes(?l | "-")
 	every writes("  " | !l | "\n")
-end
+}

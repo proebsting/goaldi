@@ -2,8 +2,10 @@
 
 # lexical comparison test
 
-procedure main()
-   local s, t
+procedure main() {
+   # local s, t
+   local s
+   local t
 
    write("    s1    s2    <<   <<=    ==   ~==   >>=    >>")
 
@@ -19,9 +21,9 @@ procedure main()
       wr(s >> t  | &null)
       write()
       }
-   end
+   }
 
-procedure wr(s)
+procedure wr(s) {
    printf("%6v", \s | "---")
    return
-end
+}

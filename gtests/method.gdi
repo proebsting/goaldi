@@ -6,8 +6,14 @@ record point()
 record square(w)
 record circle(r, color)
 
-procedure main()
-	local c1, c2, s1, s2, m
+procedure main() {
+	# local c1, c2, s1, s2, m
+	local c1
+	local c2
+	local s1
+	local s2
+	local m
+
 	c1 := circle(2)
 	c2 := circle(7, "red")
 	s1 := square(4)
@@ -16,21 +22,21 @@ procedure main()
 	m := c1.draw
 	c1.color := "purple"
 	m(3,4)
-end
+}
 
-procedure point.draw(x, y)
+procedure point.draw(x, y) {
 	show(self, x, y, "P")
-end
+}
 
-procedure circle.draw(x, y)
+procedure circle.draw(x, y) {
 	show(self, x, y, "C")
 	self.r +:= 1
-end
+}
 
-procedure square.draw(x, y)
+procedure square.draw(x, y) {
 	show(self, x, y, "Q")
-end
+}
 
-procedure show(o, x, y, c)
+procedure show(o, x, y, c) {
     printf("at %.0f,%.0f: %s: %#v\n", x, y, c, o)
-end
+}

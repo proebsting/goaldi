@@ -1,7 +1,7 @@
 #SRC: goaldi original
 #  numlib.gdi -- test numeric library functions
 
-procedure main() 
+procedure main() {
 	write("\narithmetic:")
 	every testarith(-&phi | "0" | 1.0 | 2 | &e | &pi)
 	write("\ntrigonometry:")
@@ -15,40 +15,45 @@ procedure main()
 	write()
 	write("\ngcd:")
 	testgcd()
-end
+}
 
-procedure testout(v)
+procedure testout(v) {
 	writes(v, ":")
 	every apply(type | image | number | string, v)
 	write()
 	return
-end
+}
 
-procedure testarith(v)
+procedure testarith(v) {
 	writes(v, ":")
 	every apply(abs | integer | ceil | floor | log | sqrt | cbrt | exp, v)
 	write()
 	return
-end
+}
 
-procedure testtrig(v)
+procedure testtrig(v) {
 	writes(v, ":")
 	every apply(sin | cos | tan | asin | acos | atan, v)
 	write()
 	return
-end
+}
 
-procedure testpot()
-	local x, y
+procedure testpot() {
+	# local x, y
+	local x
+	local y
+
 	writes("hypot: ")
 	every (x := 2 | 3 | 4) & (y := 3 | 5 | 8) do
 		writes(" ",x,":",y,":",hypot(x,y))
 	write()
 	return
-end
+}
 
-procedure testrad()
-    local d, r
+procedure testrad() {
+    # local d, r
+    local d
+    local r
 	writes("dtortod:")
 	every d := -45 | 0 | 30 | 60 | 90 | 360/&pi | 180 do {
 		r := dtor(d)
@@ -56,9 +61,9 @@ procedure testrad()
 	}
 	write()
 	return
-end
+}
 
-procedure testlogb(v)
+procedure testlogb(v) {
 	local b
 	writes(v, ":")
 	every b := &nil | &e | 2 | 4 | 10 do {
@@ -66,18 +71,18 @@ procedure testlogb(v)
 	}
 	write()
 	return
-end
+}
 
-procedure testa2(x,y)
+procedure testa2(x,y) {
    return writes(" (",x,",",y,")",atan(x,y))
-end
+}
 
-procedure apply(p, x, y)
+procedure apply(p, x, y) {
 	writes(" ", string(p)[3:0], "()", p(x, y) | "--")
 	return
-end
+}
 
-procedure testgcd()
+procedure testgcd() {
 	writes(" a.", gcd(0))
 	writes(" b.", gcd(1))
 	writes(" c.", gcd(3))
@@ -93,4 +98,4 @@ procedure testgcd()
 	writes(" m.", gcd(0,0,0))
 	write()
 	return
-end
+}

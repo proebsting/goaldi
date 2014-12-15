@@ -6,8 +6,13 @@
 #	This program tabulates the words in standard input and writes the results.
 #	The definition of a "word" is naive.
 
-procedure main()
-	local line, words, rx, w, kv
+procedure main() {
+	# local line, words, rx, w, kv
+	local line
+	local words
+	local rx
+	local w
+	local kv
 
 	words := map()
 	rx := regex("[\\W]+")
@@ -18,4 +23,4 @@ procedure main()
 	}
 	every kv := !words.sort() do 
 	printf("%6.0f  %s\n", kv.value, kv.key)
-end
+}

@@ -1,7 +1,11 @@
 #SRC: goaldi original
 # tests swapping and reversible assignment
-procedure main()
-    local a, b, c
+procedure main() {
+#    local a, b, c
+local a
+local b
+local c
+
     write()
     a := " algebra "
     b := " botany "
@@ -15,4 +19,4 @@ procedure main()
     write(5, a, b, c)
     a <-> b <-> c & write(6, a, b, c) & (1 < 0)
     write(7, a, b, c)
-end
+}

@@ -6,7 +6,7 @@ global ir_deferred, ir_declare_set
 record ir_info(start, resume, failure, success, x)
 record ir_loopinfo(nextlabel, continue, in_st, out_st, value, bounded, rval)
 
-record ir_stacks(tmp, current_proc, createflag, declare_set, loop_stack)
+record ir_stacks(tmp, current_proc, createflag, declare_set, loop_stack, localSet, staticSet)
 
 
 # record a_NoOp( )
@@ -668,11 +668,13 @@ procedure ir_a_ProcDecl(p, st, target, bounded, rval)
     }
 
     st := ir_stacks(0)
+    st.localSet := set([])
+    st.staticSet := set([])
 
     st.current_proc := p.ident.id
 
     v := set([])
-    every i := !p.paramList | !(!p.localsList).idList do {
+    every i := !p.paramList do {
         if member(v, i.id) then {
             semantic_error(image(i.id) || ": redeclared identifier", i.coord)
         }
@@ -684,14 +686,6 @@ procedure ir_a_ProcDecl(p, st, target, bounded, rval)
     }
     insert(ir_declare_set, p.ident.id)
 
-    locals := []
-    statics := []
-    every i := !p.localsList do {
-        case type(i) of {
-        "a_Statics" : every put(statics, (!i.idList).id)
-        "a_Locals" : every put(locals, (!i.idList).id)
-        }
-    }
     params := []
     every put(params, (!p.paramList).id)
 
@@ -699,6 +693,11 @@ procedure ir_a_ProcDecl(p, st, target, bounded, rval)
     every put(code, ir(p.code, st))
 
     nesting -:= 1
+
+    locals := []
+    every put(locals, !st.localSet)
+    statics := []
+    every put(statics, !st.staticSet)
 
     return ir_Function(ir_coord(p.ident.coord), p.ident.id, params,
 		      p.accumulate, locals, statics, code,
@@ -735,20 +734,16 @@ procedure ir_a_ProcBody(p, st, target, bounded, rval)
     suspend ir_chunk(L[-1].ir.failure, [ ir_Goto(ir_coord(p.coord), p.ir.failure) ])
 end
 
-# record a_ProcCode( init body )
+# record a_ProcCode( body )
 procedure ir_a_ProcCode(p, st, target, bounded, rval)
     ir_init(p)
 
-    suspend ir(p.init, st, &null, "always bounded", "rval")
+    st.loop_stack := []
+
     suspend ir(p.body, st, &null, "always bounded", "rval")
 
-    suspend ir_chunk(p.ir.start, [
-        ir_EnterInit(ir_coord(p.coord), p.body.ir.start),
-        ir_Goto(ir_coord(p.coord), p.init.ir.start)
-        ])
-    /bounded & suspend ir_chunk(p.ir.resume, [ ir_Unreachable(ir_coord(p.coord)) ])
-    suspend ir_chunk(p.init.ir.success, [ ir_Goto(ir_coord(p.coord), p.body.ir.start) ])
-    suspend ir_chunk(p.init.ir.failure, [ ir_Goto(ir_coord(p.coord), p.body.ir.start) ])
+    suspend ir_chunk(p.ir.start, [ ir_Goto(ir_coord(p.coord), p.body.ir.start) ])
+    suspend ir_chunk(p.ir.resume, [ ir_Unreachable(ir_coord(p.coord)) ])
     suspend ir_chunk(p.body.ir.success, [ ir_Fail(ir_coord(p.coord)) ])
     suspend ir_chunk(p.body.ir.failure, [ ir_Fail(ir_coord(p.coord)) ])
 end
@@ -919,6 +914,19 @@ procedure ir_a_Create(p, st, target, bounded, rval)
     /bounded & suspend ir_chunk(p.ir.resume, [ ir_Goto(ir_coord(p.coord), p.ir.failure) ])
     suspend ir_chunk(p.expr.ir.success, [ ir_CoRet(ir_coord(p.coord), t, p.expr.ir.resume) ])
     suspend ir_chunk(p.expr.ir.failure, [ ir_CoFail(ir_coord(p.coord)) ])
+end
+
+
+# record a_Local( id )
+procedure ir_a_Local(p, st, target, bounded, rval)
+    insert(st.localSet, p.id) # should check for collisions
+    suspend ir_a_Ident(p, st, target, bounded, rval)
+end
+
+# record a_Static( id )
+procedure ir_a_Static(p, st, target, bounded, rval)
+    insert(st.staticSet, p.id) # should check for collisions
+    suspend ir_a_Ident(p, st, target, bounded, rval)
 end
 
 # record a_Ident( id )
@@ -1324,6 +1332,8 @@ procedure ir(p, st, target, bounded, rval)
                                                    bounded, rval)
     "a_Key" : suspend ir_a_Key(p, st, target, bounded, rval)
     "a_Arglist" : suspend ir_a_Arglist(p, st, target, bounded, rval)
+    "a_Local" : suspend ir_a_Local(p, st, target, bounded, rval)
+    "a_Static" : suspend ir_a_Static(p, st, target, bounded, rval)
     default : runerr(500, p)
     }
 end

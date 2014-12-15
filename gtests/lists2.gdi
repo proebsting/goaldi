@@ -2,8 +2,12 @@
 #
 #  List test from Icon
 
-procedure main()
-   local i, x, y, z
+procedure main() {
+   # local i, x, y, z
+   local i
+   local x
+   local y
+   local z
 
    limage("a", list())
    limage("b", list(2))
@@ -80,11 +84,11 @@ procedure main()
    limage("y", y)
    limage("z", z)
 
-end
+}
 
-procedure limage(label, lst)
+procedure limage(label, lst) {
    writes(label, ". [", *lst, "]")
    every writes(" ", image(!lst))
    write()
    return
-end
+}

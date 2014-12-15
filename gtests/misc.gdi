@@ -4,8 +4,10 @@ record message(who,gap,what)
 record recordAsVariable()
 global recordAsVariable
 
-procedure main()
-   local i, x
+procedure main() {
+   # local i, x
+   local i
+   local x
 
    x := 1
    x +:= |1		# tickled optimizer bug.
@@ -60,20 +62,22 @@ procedure main()
    exit()
    write("oops!")
    dummy()
-end
+}
 
-procedure tstreturn()
+procedure tstreturn() {
    return fn()
-end
+}
 
-procedure fn()
+procedure fn() {
    suspend "OK to get here"
    write("Should not get here when called from a 'return'")
-end
+}
 
 # test Icon's (odd) two-pass argument evaluation process.
-procedure evaluation(a,b)
-     local x,y
+procedure evaluation(a,b) {
+     # local x,y
+     local x
+     local y
 
      write("argument evaluation test")
      write(x, x:=1)
@@ -89,25 +93,25 @@ procedure evaluation(a,b)
      write(y[3], y[3] := 7)
      x := y
      write(x[5], y[5] := 8)
-end
+}
 
-procedure dummy()
+procedure dummy() {
    image(every 1) | 2	# this triggered a problem once upon a time.
-end
+}
 
-procedure args(x[])	# later replaced by proc("args",0)
+procedure args(x[]) {	# later replaced by proc("args",0)
    local s
    s := ""
    every s ||:= image(!x) do
       s ||:= " "
    return s[1:-1] | ""
-end
+}
 
-procedure pairs(e)
+procedure pairs(e) {
    while write(@e[1], " ", @e[2])
-end
+}
 
-procedure nullsuspend()
+procedure nullsuspend() {
    suspend
    suspend
-end
+}

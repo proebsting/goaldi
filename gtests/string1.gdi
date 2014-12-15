@@ -2,8 +2,10 @@
 
 # string test -- including operations on string *constants*
 
-procedure main()
-   local s, t
+procedure main() {
+   # local s, t
+   local s
+   local t
 
    s := "abcde"
    write("type ", type(s))
@@ -51,4 +53,4 @@ procedure main()
    write("c4: ", image("cd" || "ef"))
    write("c5: ", image(3.14 || 159))
    #write("c6: ", image('abc' || 'def'))
-end
+}

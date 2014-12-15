@@ -27,7 +27,6 @@ procedure init_lex_tables()
                ["fail",            "FAIL",      "be"],
                ["global",          "GLOBAL",    "b"  ],
                ["if",              "IF",        "b" ],
-               ["initial",         "INITIAL",   "b" ],
                ["invocable",       "INVOCABLE", "b"  ],
                ["link",            "LINK",      "b"  ],
                ["local",           "LOCAL",     "b" ],

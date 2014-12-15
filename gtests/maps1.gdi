@@ -2,8 +2,16 @@
 #
 #  Map operations
 
-procedure main()
-	local t, u, c, i, k, kv, l
+procedure main() {
+	# local t, u, c, i, k, kv, l
+	local t
+	local u
+	local c
+	local i
+	local k
+	local kv
+	local l
+
 	t := map()
 	println("\t\t\t\t", type(t), t, *t, image(t))
 	ck(t)
@@ -47,10 +55,13 @@ procedure main()
 	#  every !12 do
 	#  	kv := ?t & writes(" ", kv.key, ":", kv.value)
 	#  write()
-end
+}
 
-procedure ck(t)			#: show map indexed by 1..4 and "E".."H"
-	local k, kv
+procedure ck(t) {		#: show map indexed by 1..4 and "E".."H"
+	# local k, kv
+	local k
+	local kv
+
 	writes(*t, " ")
 	every k := !"1234" | !4 | !"EFGH" do {
 		writes(t.member(k) | "-")
@@ -60,4 +71,4 @@ procedure ck(t)			#: show map indexed by 1..4 and "E".."H"
 	every kv := !t.sort() do
 		writes(" ", kv.key, ":", kv.value)
 	write()
-end
+}

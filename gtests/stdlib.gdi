@@ -1,7 +1,7 @@
 #SRC: goaldi original
 #  stdlib.gdi -- miscellaneous library functions
 
-procedure main() 
+procedure main()  {
 	testprint()
 	write("\nstrings:")
 	every teststring("aBc" | "d33" | 47 | 3)
@@ -9,9 +9,9 @@ procedure main()
 	every testcnv(&nil | "" | "abc" | "12" | "23.4" | 0 | 1 |
 		&phi | &e | &pi | &stdin | &stdout | &stderr)
 	exit()
-end
+}
 
-procedure testprint()
+procedure testprint() {
 	writes("ab", 34, "ef", &phi)
 	write("gh", 90, "kl", &pi)
 	print("mn", 37, "qr", &phi)
@@ -20,23 +20,23 @@ procedure testprint()
 	printf("%10.3f %g %.0f %s\n", &phi, &pi, 12345, "abcde")
 	fprintf(&stdout, "%10.3f %g %.0f %s\n", &phi, &pi, 12345, "abcde")
 	write(image(sprintf("%.4f", &e)))
-end
+}
 
-procedure teststring(v)
+procedure teststring(v) {
 	writes(v, ":")
 	every apply(equalfold | repl | toupper | tolower | trim, v, "3")
 	write()
 	return
-end
+}
 
-procedure testcnv(v)
+procedure testcnv(v) {
 	writes(v, ":")
 	every apply(type | image | number | string, v)
 	write()
 	return
-end
+}
 
-procedure apply(p, x, y)
+procedure apply(p, x, y) {
 	writes(" ", string(p)[3:0], "()", p(x, y) | "--")
 	return
-end
+}

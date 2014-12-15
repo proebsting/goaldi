@@ -3,8 +3,12 @@
 
 record Circle(x, y, r)
 
-procedure main()
-	local a, m, v, fmt
+procedure main() {
+	# local a, m, v, fmt
+	local a
+	local m
+	local v
+	local fmt
 
 	m := map()
 	m[1] := "a"
@@ -28,4 +32,4 @@ procedure main()
 			v.image()  | "[failed]", "") 
 		write(v)
 	}
-end
+}

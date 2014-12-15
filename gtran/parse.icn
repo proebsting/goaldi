@@ -59,6 +59,8 @@ procedure parse_cclause()
                               lex_SUSPEND, lex_TILDE, lex_UNION, lex_UNTIL,
                               lex_WHILE,
 			      lex_SELECT,
+			      lex_LOCAL,
+			      lex_STATIC,
 			      lex_LCOMP,
 			      lex_PROCEDURE])
     }
@@ -239,6 +241,8 @@ procedure parse_expr10()
                               lex_RETURN, lex_STRINGLIT, lex_SUSPEND, lex_UNTIL,
                               lex_WHILE,
 			      lex_SELECT,
+			      lex_LOCAL,
+			      lex_STATIC,
 			      lex_LCOMP,
 			      lex_PROCEDURE ])
     expr10_set2 := set([lex_AT, lex_NOT, lex_BAR, lex_DOT, lex_BANG,
@@ -277,6 +281,16 @@ procedure parse_expr10()
     } else {
         parse_error("\""||parse_tok_rec.str||"\": expression expected")
     }
+end
+
+procedure parse_braced()
+    local e, coord
+
+    coord := parse_tok_rec.coord
+    parse_match_token(lex_LBRACE)
+    e := parse_compound()
+    parse_match_token(lex_RBRACE)
+    return a_Compound(e, coord)
 end
 
 procedure parse_expr11()
@@ -318,6 +332,20 @@ procedure parse_expr11()
         id := parse_eat_token()
         return a_Ident(id, coord)
         }
+    lex_LOCAL   :   # IDENT 
+        {
+        coord := parse_tok_rec.coord
+        parse_eat_token()
+        id := parse_match_token(lex_IDENT)
+        return a_Local(id, coord)
+        }
+    lex_STATIC   :   # STATIC 
+        {
+        coord := parse_tok_rec.coord
+        parse_eat_token()
+        id := parse_match_token(lex_IDENT)
+        return a_Static(id, coord)
+        }
     lex_NEXT    :   # NEXT 
         {
         coord := parse_tok_rec.coord
@@ -341,11 +369,7 @@ procedure parse_expr11()
         }
     lex_LBRACE  :   # LBRACE  compound  RBRACE 
         {
-        coord := parse_tok_rec.coord
-        parse_eat_token()
-        e := parse_compound()
-        parse_match_token(lex_RBRACE)
-        return a_Compound(e, coord)
+	return parse_braced()
         }
     lex_LBRACK  :   # LBRACK  exprlist  RBRACK 
         {
@@ -423,6 +447,8 @@ procedure parse_expr11suffix(lhs)
                                   lex_SUSPEND, lex_TILDE, lex_UNION, lex_UNTIL,
                                   lex_WHILE,
 				  lex_SELECT,
+				  lex_LOCAL,
+				  lex_STATIC,
 				  lex_LCOMP,
 				  lex_PROCEDURE ])
         expr11suffix_set2 := set([lex_COLON, lex_MCOLON, lex_PCOLON])
@@ -701,19 +727,6 @@ procedure parse_do_if()
     return a_If(ex, theparse_nexpr, elseparse_expr, coord)
 end
 
-procedure parse_do_initial()
-# [  INITIAL  expr  SEMICOL ] 
-    local e, coord
-
-    if parse_tok_rec === lex_INITIAL then {
-        coord := parse_tok_rec.coord
-        parse_eat_token()
-        e := parse_expr()
-        parse_match_token(lex_SEMICOL)
-    }
-    return a_Initial(e, parse_tok_rec.coord)
-end
-
 procedure parse_do_invocable()
 #  INVOCABLE  invocop {  COMMA  invocop } 
     local l, op, coord
@@ -791,31 +804,6 @@ procedure parse_lnkfile()
     }
 end
 
-procedure parse_locals()
-# {  retention  idlist  SEMICOL } 
-    local ret, l, vars, coord
-
-    l := []
-    while parse_tok_rec === lex_LOCAL | parse_tok_rec === lex_STATIC do {
-    if parse_tok_rec === lex_LOCAL then {
-        coord := parse_tok_rec.coord
-        parse_eat_token()
-        vars := parse_idlist()
-        parse_match_token(lex_SEMICOL)
-        ret := a_Locals(vars, coord)
-        put(l, ret)
-    } else {
-        coord := parse_tok_rec.coord
-        parse_eat_token()
-        vars := parse_idlist()
-        parse_match_token(lex_SEMICOL)
-        ret := a_Statics(vars, coord)
-        put(l, ret)
-    }
-    }
-    return l
-end
-
 procedure parse_nexpr()
 # [  expr ] 
     static nexpr_set
@@ -832,6 +820,8 @@ procedure parse_nexpr()
                       lex_STRINGLIT, lex_SUSPEND, lex_TILDE, lex_UNION,
                       lex_UNTIL, lex_WHILE,
 		      lex_SELECT,
+		      lex_LOCAL,
+		      lex_STATIC,
 		      lex_LCOMP,
 		      lex_PROCEDURE ])
     }
@@ -856,7 +846,7 @@ end
 
 procedure parse_do_proc(noident)
     local ident, paramList, accumulate, loc, init, nexprList, e, coord, idcoord
-    local endcoord
+    local endcoord, body
     static do_proc_set
 
     initial {
@@ -871,6 +861,8 @@ procedure parse_do_proc(noident)
                         lex_SNE, lex_STAR, lex_STRINGLIT, lex_SUSPEND,
                         lex_TILDE, lex_UNION, lex_UNTIL, lex_WHILE,
 			lex_SELECT,
+			lex_LOCAL,
+			lex_STATIC,
 			lex_LCOMP,
 			lex_PROCEDURE ])
     }
@@ -901,21 +893,28 @@ procedure parse_do_proc(noident)
         # add an initial "self" parameter; note NOT a reserved word
         push(paramList, a_Ident("self", idcoord))
     }
+
     parse_match_token(lex_RPAREN)
-    parse_match_token(lex_SEMICOL)
-    loc := parse_locals()
-    init := parse_do_initial()
-    nexprList := []
-    while member(do_proc_set, parse_tok_rec) do {
-        e := parse_nexpr()
-        put(nexprList, e)
+#     parse_match_token(lex_SEMICOL)
+    if parse_tok_rec === lex_SEMICOL then {
+        # horrible hack to get rid of inserted semicolon when
+        # opening brace is on the next line
         parse_match_token(lex_SEMICOL)
     }
+
+    body := parse_braced()
+#    nexprList := []
+#    while member(do_proc_set, parse_tok_rec) do {
+#        e := parse_nexpr()
+#        put(nexprList, e)
+#        parse_match_token(lex_SEMICOL)
+#    }
     endcoord := parse_tok_rec.coord
-    parse_match_token(lex_END)
-    return a_ProcDecl(ident, paramList, accumulate, loc,
-                      a_ProcCode(init, a_ProcBody(nexprList, endcoord), endcoord), coord,
-                      endcoord)
+#    parse_match_token(lex_END)
+    return a_ProcDecl(ident, paramList, accumulate,
+                      # a_ProcCode(a_ProcBody(nexprList, endcoord), endcoord),
+                      a_ProcCode(body, endcoord),
+		      coord, endcoord)
 end
 
 procedure parse_program()

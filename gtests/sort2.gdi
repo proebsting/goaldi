@@ -5,7 +5,7 @@
 
 global letters, digits
 
-procedure main(args)
+procedure main(args) {
    letters := "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
    digits := "0123456789"
    listtest()
@@ -13,14 +13,20 @@ procedure main(args)
    maptest()
    copytest()
    messtest()
-end
+}
 
 
 
 #  listtest() -- test sorting of lists and sets
 
-procedure listtest()
-   local n, x, S, L1, L2, L3
+procedure listtest() {
+   # local n, x, S, L1, L2, L3
+   local n
+   local x
+   local S
+   local L1
+   local L2
+   local L3
 
    every n := (0 to 10) | 23 | 47 | 91 do {
 
@@ -38,7 +44,7 @@ procedure listtest()
       check(L2, L3)
 
    }
-end
+}
 
 
 #  rectest() -- test sorting of records
@@ -48,7 +54,7 @@ record r1(a)
 record r2(a,b)
 record r5(a,b,c,d,e)
 
-procedure rectest()
+procedure rectest() {
    write()
    wlist(r0().sort())
    wlist(r0().copy().sort())
@@ -59,13 +65,16 @@ procedure rectest()
    wlist(r5("t","e","p","a","d").sort())
    wlist(r5("t","e","p","a","d").copy().sort())
    return
-end
+}
 
 
 #  maptest() -- test sorting of maps (formerly tables)
 
-procedure maptest()
-   local T, L, t
+procedure maptest() {
+   # local T, L, t
+   local T
+   local L
+   local t
 
    T := map()
    T[7] := "h"
@@ -89,26 +98,31 @@ procedure maptest()
    L := T.sort(1); every t:= !L do writes(" ", t.key, " ", t.value); write()
    L := T.sort(2); every t:= !L do writes(" ", t.key, " ", t.value); write()
    return
-end
+}
 
 
 
 #  randval() -- return random integer, real, or string value
 
-procedure randval()
+procedure randval() {
    return case ?3 of {
       1:  ?999					# 000 - 999
       2:  ?99 / 10.0				# 0.0 - 9.9
       3:  ?letters || ?letters || ?letters	# "AAA" - "ZZZ"
       }
-end
+}
 
 
 #  check that two lists have identical components
 #  and that they are in ascending order
 
-procedure check(a, b)
-   local i, ai, ai1, bi, d
+procedure check(a, b) {
+   # local i, ai, ai1, bi, d
+   local i
+   local ai
+   local ai1
+   local bi
+   local d
 
    if *a ~= *b then
       stop("different sizes: ", image(a), " / ", image(b))
@@ -128,23 +142,31 @@ procedure check(a, b)
          }
       }
    return
-end
+}
 
 
 #  write list
 
-procedure wlist(L)
+procedure wlist(L) {
    writes(*L, ":")
    every writes(" ", !L | "\n")
    return
-end
+}
 
 
 
 #  test copy(), especially that copies are really distinct
 
-procedure copytest()
-   local L1, L2, S1, S2, T1, T2, R1, R2
+procedure copytest() {
+   # local L1, L2, S1, S2, T1, T2, R1, R2
+   local L1
+   local L2
+   local S1
+   local S2
+   local T1
+   local T2
+   local R1
+   local R2
 
    write()
 
@@ -168,14 +190,18 @@ procedure copytest()
    every writes(" ", "T2:" | image(!T2.sort()) | "\n")
 
    return
-end
+}
 
 
 
 #  sort different types together
 
-procedure messtest()
-   local L0, L1, L2, L3
+procedure messtest() {
+   # local L0, L1, L2, L3
+   local L0
+   local L1
+   local L2
+   local L3
 
    write()
    L0 := []
@@ -203,10 +229,12 @@ procedure messtest()
 
    wsortf(L1, 2)
    return
-end
+}
 
-procedure wsortf(L, n)
-   local e, s
+procedure wsortf(L, n) {
+   # local e, s
+   local e
+   local s
 
    write()
    every e := !L.sort(n) do {
@@ -216,4 +244,4 @@ procedure wsortf(L, n)
       write(s)
       }
    return
-end
+}

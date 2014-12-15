@@ -4,8 +4,13 @@
 
 #  note that Goaldi follows Jcon (not Icon) in failing on wraparound for [+:]
 
-procedure main()
-   local i, j, k, s, t
+procedure main() {
+   # local i, j, k, s, t
+   local i
+   local j
+   local k
+   local s
+   local t
 
    s := "abcde"
    t := "ABCDE"
@@ -64,4 +69,4 @@ procedure main()
    s := "fghij"
    every s[2:4] := !"456" do { write("Q ", s); s := "klmno" }
    
-end
+}

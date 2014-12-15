@@ -3,8 +3,11 @@
 record simple(f)
 record rec(f1, f2)
 
-procedure main()
-   local a, b, c
+procedure main() {
+   # local a, b, c
+   local a
+   local b
+   local c
 
    a := rec()
    a.f1 := 1
@@ -47,4 +50,4 @@ procedure main()
    write(image(a))
    write(image(b))
    write(image(c))
-end
+}

@@ -6,8 +6,11 @@
 #  This program illustrates the use of maps as sets in implementing the
 #  classical sieve algorithm for computing prime numbers.
 
-procedure main(limit)
-	local s, i
+procedure main(limit) {
+	# local s, i
+	local s
+	local i
+
 	/limit := 100
 	s := map()
 	every s[2 to limit] := 1
@@ -15,4 +18,4 @@ procedure main(limit)
 		every s.delete(i + i to limit by i)
 	write("In the first ", limit, " integers there are ", *s, " primes:")
 	every write((!s.sort()).key)
-end
+}

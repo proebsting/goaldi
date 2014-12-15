@@ -2,8 +2,14 @@
 #
 #   test of L.sort() and M.sort()
 
-procedure main()
-	local a, b, c, n, l, m
+procedure main() {
+	# local a, b, c, n, l, m
+	local a
+	local b
+	local c
+	local n
+	local l
+	local m
 
 	a := [3,1,4,1,5,9,2,6,5,3,5]
 	write("a1: ", image(a))
@@ -23,12 +29,12 @@ procedure main()
 	show("l2:", l.sort(2))
 	show("m1:", m.sort(1))
 	show("m2:", m.sort(2))
-end
+}
 
-procedure show(label, kvlist) 
+procedure show(label, kvlist)  {
 	local kv
 	writes(label)
 	every kv := !kvlist do
 		writes("  ", kv.key, ":", kv.value)
 	return write()
-end
+}

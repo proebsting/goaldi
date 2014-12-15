@@ -1,7 +1,7 @@
 #SRC: goaldi original
 #  channel test
 
-procedure main()
+procedure main() {
 	local ch
 	write("[new1]")
 	ch := channel(5)
@@ -33,15 +33,15 @@ procedure main()
 	write("===")
 	write("ch1 === ch1:  ", if ch === ch then "identical" else "distinct")
 	write("ch1 === ch2:  ", if ch === create(1) then "identical" else "distinct")
-end
+}
 
 #  try reading one value from channel, showing size  
-procedure try(ch)
+procedure try(ch) {
 	write(image(ch), " size=", *ch, "   =>   ", image(@ch) | "[failed]")
-end
+}
 
 #  drain channel and print, without showing size  (more deterministic)
-procedure drain(ch)
+procedure drain(ch) {
 	while write(image(ch), "  =>  ", image(ch.get()))
 	write(image(ch), "  =>  [failed]")
-end
+}

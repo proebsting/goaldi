@@ -48,27 +48,27 @@ global
    dd,                          # List of queens in each down diagonal
    ud                           # List of queens in each up diagonal
 
-procedure main (arg)           # Program arguments
+procedure main (arg) {           # Program arguments
    n := integer (\arg) | 6
    rw := list (n)
    dd := list (2*n-1)
    ud := list (2*n-1)
    solvequeen (1)
-   end # procedure main
+   } # procedure main
 
 # placequeen(c) -- Place a queen in every permissible position in column c.
 # Suspend with each result.
-procedure placequeen (c)        # Column at which to place queen
+procedure placequeen (c) {        # Column at which to place queen
    local r                      # Possible placement row
    
    every r := 1 to n do
       suspend (/rw [r] <- /dd [r+c-1] <- /ud [n+r-c] <- c)
    fail
-   end # procedure placequeen
+   } # procedure placequeen
 
 # solvequeen(c) -- Place the c'th and following column queens on the board.
 # Write board if have completed it.  Suspends all viable results
-procedure solvequeen (c)        # Column for next queen placement
+procedure solvequeen (c) {        # Column for next queen placement
    if (c > n) then {
       # Have placed all required queens.  Write the board, and resume search.
       writeboard ()
@@ -76,15 +76,14 @@ procedure solvequeen (c)        # Column for next queen placement
       }
    suspend placequeen (c) & solvequeen (c+1)
    fail
-   end # procedure solvequeen
+   } # procedure solvequeen
 
 # writeboard() -- Write an image of the board with the queen positions
 # represented by Qs.
-procedure writeboard ()
-   local
-      r,                        # Index over rows during print
-      c,                        # Column of queen in row r
-      row                       # Depiction of row as its created
+procedure writeboard () {
+   local r                        # Index over rows during print
+   local c                        # Column of queen in row r
+   local row                       # Depiction of row as its created
 
    write (repl ("--", n), "-")
    every r := 1 to n do {
@@ -95,4 +94,4 @@ procedure writeboard ()
       write (repl ("--", n), "-")
       }
    write ()
-   end # procedure writeboard
+   } # procedure writeboard

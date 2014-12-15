@@ -2,7 +2,7 @@
 # test assignments to trapped variables
 # original source unknown; found 2013 in an ancient to-do collection
 
-procedure tvtbl_test ()
+procedure tvtbl_test () {
 local T
 
     #
@@ -41,11 +41,13 @@ local T
     write ( "Insertion test:   \t", T [] )
     write ( )
 
-end
+}
 
 
-procedure subs_test (  )
-local T, s
+procedure subs_test (  ) {
+# local T, s
+local T
+local s
 
     write ( "TVSUBS test" )     
     T := map()
@@ -59,11 +61,11 @@ local T, s
     # Lots more cases should be added here.
 
     return    
-end
+}
 
 
-procedure main (  )
+procedure main (  ) {
     tvtbl_test ( )
     subs_test ( )
     return
-end
+}

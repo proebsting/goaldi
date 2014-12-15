@@ -1,8 +1,10 @@
 #SRC: goaldi original
 #  i/o test
 
-procedure main()
-	local f, s
+procedure main() {
+	# local f, s
+	local f
+	local s
 
 	# simple reading
 	write("a. ", read())
@@ -69,9 +71,9 @@ procedure main()
 	every write("reread: ", !f)
 	f.close()
 
-end
+}
 
-procedure show(s)
+procedure show(s) {
 	write(*s, ": ", image(s))
 	return
-end
+}

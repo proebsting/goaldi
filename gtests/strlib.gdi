@@ -1,6 +1,14 @@
 #SRC: goaldi original
-procedure main()
-	local i, c1, c2, n1, n2, el, f
+procedure main() {
+	# local i, c1, c2, n1, n2, el, f
+	local i
+	local c1
+	local c2
+	local n1
+	local n2
+	local el
+	local f
+
 	el := "argon, boron, carbon, freon, krypton, silicon, teflon"
 	write("repl:    ", repl("la, ", 11), "hey Jude")
 	every write("reverse: ", reverse("abcde"[1+:(0 to 6)]) | "--")
@@ -15,4 +23,4 @@ procedure main()
 		n2 := ord(c2)
 		println("char/ord:", i, image(c1), n1, image(c2), n2)
 	}
-end
+}

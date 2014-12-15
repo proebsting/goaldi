@@ -4,9 +4,14 @@
 
 global g, r
 
-procedure main()
+procedure main() {
 	static s
-	local a, b, c, p, q
+	# local a, b, c, p, q
+	local a
+	local b
+	local c
+	local p
+	local q
 
 	a := 100
 	b := 200
@@ -14,7 +19,7 @@ procedure main()
 	g := 1000
 	s := 2000
 
-	p := procedure(x)
+	p := procedure(x) {
 		static t
 		local b
 		println("P0.", g, s, a, b, c, x, t, b)
@@ -25,13 +30,13 @@ procedure main()
 		b := 7389
 		t +:= 1
 		println("P1.", g, s, a, b, c, x, t, b)
-	end;
+	}
 
 	println("M0.", g, s, a, b, c)
 	p(1000)
 	println("M1.", g, s, a, b, c)
 
-	q := procedure(y)
+	q := procedure(y) {
 		static u
 		local d
 		println("Q1.", g, s, a, b, c, y, u, d)
@@ -40,7 +45,7 @@ procedure main()
 		s +:= 20
 		d := 700
 		b +:= 10
-		r := procedure(z)
+		r := procedure(z) {
 			static v
 			println("R1.", g, s, a, b, c, y, u, d, z, v)
 			/v := 0
@@ -50,10 +55,10 @@ procedure main()
 			d +:= 1
 			v +:= 1
 			println("R1.", g, s, a, b, c, y, u, d, z, v)
-		end;
+		}
 		u +:= 12
 		println("Q1.", g, s, a, b, c, y, u, d)
-	end;
+	}
 
 	println("M2.", g, s, a, b, c)
 	p(3000)
@@ -70,4 +75,4 @@ procedure main()
 	println("M8.", g, s, a, b, c)
 	r(9000)
 	println("M9.", g, s, a, b, c)
-end
+}

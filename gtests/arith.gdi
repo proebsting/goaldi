@@ -1,8 +1,10 @@
 #SRC: icon/arith.icn
 # test arithmetic operators and numeric coercion
 
-procedure main()
-   local i, j
+procedure main() {
+local i
+local j
+   # local i, j
 
    numtest(0, 0)
    numtest(0, 1)
@@ -39,9 +41,9 @@ procedure main()
    every pow(-3 to 3, -3 to 3)
    every pow(.5 | 1 | 1.5, (-3 to 3) / 2.0)
    every pow(-1.5 | -1.0 | -.5 | 0.0, -3 to 3)
-end
+}
 
-procedure numtest(a, b)
+procedure numtest(a, b) {
    wr5(+a)
    wr5(b)
    wr5(abs(a))
@@ -60,23 +62,23 @@ procedure numtest(a, b)
    wr5(a > b  | "---")
    write()
    return
-end
+}
 
-procedure bitcombo(i, j)
+procedure bitcombo(i, j) {
    every wr5(i | j | icom(i) | icom(j) |
       iand(i,j) | ior(i,j) | ixor(i,j) | iclear(i,j))
    write()
    return
-end
+}
 
-procedure wr5(n)			# write in 5 chars
+procedure wr5(n) {			# write in 5 chars
    local s
    s := n || ""
    printf(" %4s", s)
    return
-end
+}
 
-procedure pow(m, n)
+procedure pow(m, n) {
    local v
 
    if m = 0 & n <= 0 then
@@ -84,12 +86,12 @@ procedure pow(m, n)
    v := m ^ n
    printf("%f ^ %f = %f\n", m, n, v)
    return
-end
+}
 
-procedure shifttest()
+procedure shifttest() {
    local n
 
    every n := 10 to -10 by -1 do
 	  printf("shift %-2.0f %5.0f %8.0f %8.0f\n",
 	     n, ishift(1, n), ishift(1703, n), ishift(-251, n))
-end
+}

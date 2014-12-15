@@ -2,8 +2,15 @@
 #
 #  Tests most list operations and methods except random selection.
 
-procedure main()
-	local a, b, c, i, j, l, l2
+procedure main() {
+	# local a, b, c, i, j, l, l2
+	local a
+	local b
+	local c
+	local i
+	local j
+	local l
+	local l2
 
 	write("A:")
 	show(list())
@@ -89,13 +96,13 @@ procedure main()
 	every write(image(b | !b))
 
 	write ! ["all ", "done", "!"]
-end
+}
 
-procedure show(l)
+procedure show(l) {
 	local i
 	writes("\t", *l, ":  ")
 	every i := -9 to 9 do
 		writes(l[i] | "-", " ")
 	writes(" : ")
 	every writes(" ", !l | "\n")
-end
+}

@@ -7,12 +7,16 @@ record one(z)
 
 global line, count
 
-procedure main()
-end
-procedure expr1(a, b)
-   local x,y,z
+procedure main() {
+}
+procedure expr1(a, b) {
+   # local x,y,z
+   local x
+   local y
+   local z
+
    static e1
-   initial e1 := 0
+   /e1 := 0
    ()
    {}
    ();()
@@ -32,9 +36,9 @@ procedure expr1(a, b)
    *x
    +x
    -x
-end
+}
 
-procedure expr2(a, b[])
+procedure expr2(a, b[]) {
    .x
    /x
    =x
@@ -79,9 +83,9 @@ procedure expr2(a, b[])
    i +:= j
    i -:= j
    i *:= j
-end
+}
 
-procedure expr3()
+procedure expr3() {
    i /:= j
    i %:= j
    i ^:= j
@@ -112,9 +116,9 @@ procedure expr3()
    suspend x
    suspend x do y
    fail
-end
+}
 
-procedure expr4()
+procedure expr4() {
    while e1 do break
    while e1 do break e2
    while e1 do next
@@ -151,4 +155,4 @@ procedure expr4()
    3.5
    2.5e4
    4e-10
-end
+}
