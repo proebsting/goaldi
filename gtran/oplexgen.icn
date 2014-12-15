@@ -22,7 +22,6 @@ procedure init_lex_tables()
                ["default",         "DEFAULT",   "b" ],
                ["do",              "DO",        ""  ],
                ["else",            "ELSE",      ""  ],
-               ["end",             "END",       "be" ],
                ["every",           "EVERY",     "b" ],
                ["fail",            "FAIL",      "be"],
                ["global",          "GLOBAL",    "b"  ],
