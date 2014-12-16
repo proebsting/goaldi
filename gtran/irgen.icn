@@ -678,41 +678,46 @@ procedure ir_a_Csetlit(p, st, target, bounded, rval)
 end
 
 procedure ir_nested(p, st, target, bounded, rval)
-    if type(target) == "ir_ProcDecl" then target := &null
+end
+
+# record a_ProcDecl( ident paramList accumulate localsList code )
+procedure ir_a_ProcDeclNested(p, st, target, bounded, rval)
+    local f
+    static counter
+
+    initial {
+	counter := 0
+    }
+    counter +:= 1
 
     ir_init(p)
+
+    if type(target) == "ir_ProcDecl" then target := &null
+
+    p.ident.id := st.current_proc || "$nested$" || counter
 
     suspend ir_chunk(p.ir.start, [
         ir_MakeClosure(ir_coord(p.coord), target, p.ident.id),
         ir_Goto(ir_coord(p.coord), p.ir.success)
         ])
     /bounded & suspend ir_chunk(p.ir.resume, [ ir_Goto(ir_coord(p.coord), p.ir.failure) ])
+
+    st := ir_stacks(0)
+    f := ir_a_ProcDecl0(p, st)
+    push(ir_deferred, f)
 end
 
 # record a_ProcDecl( ident paramList accumulate localsList code )
 procedure ir_a_ProcDecl(p, st, target, bounded, rval)
-    local locals, statics, params, i, v, code
-    static nesting, counter
-    initial {
-    	nesting := 0
-	counter := 0
-    }
-
-    nesting +:= 1
-
-    if nesting > 1 then {
-        counter +:= 1
-	p.ident.id := st.current_proc || "$nested$" || counter
-        suspend ir_nested(p, st, target, bounded, rval)
-	nesting -:= 1
-	put(ir_deferred, p)
-	fail
-    }
-
     st := ir_stacks(0)
+    suspend ir_a_ProcDecl0(p, st)
+end
+
+procedure ir_a_ProcDecl0(p, st, target, bounded, rval)
+    local locals, statics, params, i, v, code
+
     st.localSet := set([])
     st.staticSet := set([])
-
     st.current_proc := p.ident.id
 
     v := set([])
@@ -733,8 +738,6 @@ procedure ir_a_ProcDecl(p, st, target, bounded, rval)
 
     code := []
     every put(code, ir(p.code, st))
-
-    nesting -:= 1
 
     locals := []
     every put(locals, !st.localSet)
@@ -1353,7 +1356,7 @@ procedure ir(p, st, target, bounded, rval)
     "a_Reallit" : suspend ir_a_Reallit(p, st, target, bounded, rval)
     "a_Stringlit" : suspend ir_a_Stringlit(p, st, target, bounded, rval)
     "a_Csetlit" : suspend ir_a_Csetlit(p, st, target, bounded, rval)
-    "a_ProcDecl" : suspend ir_a_ProcDecl(p, st, target, bounded, rval)
+    "a_ProcDecl" : suspend ir_a_ProcDeclNested(p, st, target, bounded, rval)
     "a_ProcBody" : suspend ir_a_ProcBody(p, st, target, bounded, rval)
     "a_ProcCode" : suspend ir_a_ProcCode(p, st, target, bounded, rval)
     "a_Repeat" : suspend ir_a_Repeat(p, st, target, bounded, rval)
@@ -1498,8 +1501,8 @@ procedure ast2ir(parse, flagList)
 
     while p := @parse do {
         suspend ir_outer(p)
-	while *ir_deferred > 0 do {
-		suspend ir_outer(get(ir_deferred))
+	while k := pop(ir_deferred) do {
+		suspend k
 	}
     }
 end
