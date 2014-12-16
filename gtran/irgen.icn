@@ -4,7 +4,7 @@ global ir_deferred, ir_declare_set
 
 
 record ir_info(start, resume, failure, success, x)
-record ir_loopinfo(nextlabel, continue, in_st, out_st, value, bounded, rval)
+record ir_loopinfo(nextlabel, continue, value, bounded, rval)
 
 record ir_stacks(tmp, current_proc, createflag, declare_set, loop_stack, localSet, staticSet)
 
@@ -193,7 +193,7 @@ end
 
 # record a_Case( expr clauseList dflt )
 procedure ir_a_Case(p, st, target, bounded, rval)
-    local t, L, i, tmp1, tmp2, e, v, x
+    local t, L, i, e, v, x
     local oiu
 
     /p.dflt := a_Key("fail", p.coord)
@@ -205,15 +205,11 @@ procedure ir_a_Case(p, st, target, bounded, rval)
 
     suspend ir(p.expr, st, e, "always bounded", "rval")
 
-    tmp2 := copy(st)
     every i := 1 to *p.clauseList do {
-        suspend ir(p.clauseList[i].expr, copy(st), v, &null, "rval")
-        tmp1 := copy(st)
-        suspend ir(p.clauseList[i].body, tmp1, target, bounded, rval)
-        ir_max_st(tmp2, tmp1)
+        suspend ir(p.clauseList[i].expr, st, v, &null, "rval")
+        suspend ir(p.clauseList[i].body, st, target, bounded, rval)
     }
     suspend ir(p.dflt, st, target, bounded, rval)
-    ir_max_st(st, tmp2)
 
     suspend ir_chunk(p.ir.start, [ ir_Goto(ir_coord(p.coord), p.expr.ir.start) ])
     /bounded & suspend ir_chunk(p.ir.resume, [ ir_IndirectGoto(ir_coord(p.coord), t) ])
@@ -531,7 +527,7 @@ end
 
 # record a_If( expr thenexpr elseexpr )
 procedure ir_a_If(p, st, target, bounded, rval)
-    local t, tmp
+    local t
 
     /p.elseexpr := a_Key("fail", p.coord)
 
@@ -539,10 +535,8 @@ procedure ir_a_If(p, st, target, bounded, rval)
     /bounded & (t := ir_tmploc(st))
 
     suspend ir(p.expr, copy(st), &null, "always bounded", "rval")
-    tmp := copy(st)
-    suspend ir(p.thenexpr, tmp, target, bounded, rval)
+    suspend ir(p.thenexpr, st, target, bounded, rval)
     suspend ir(p.elseexpr, st, target, bounded, rval)
-    ir_max_st(st, tmp)
 
     suspend ir_chunk(p.ir.start, [ ir_Goto(ir_coord(p.coord), p.expr.ir.start) ])
     /bounded & suspend ir_chunk(p.ir.resume, [ ir_IndirectGoto(ir_coord(p.coord), t) ])
@@ -1006,7 +1000,7 @@ end
 
 # record a_Break( expr )
 procedure ir_a_Break(p, st, target, bounded, rval)
-    local curloop, oldloops, tmp, clx, mk
+    local curloop, oldloops, clx, mk
 
     st.loop_stack[1] | semantic_error("invalid context for break", p.coord)
 
@@ -1017,10 +1011,8 @@ procedure ir_a_Break(p, st, target, bounded, rval)
     curloop := st.loop_stack[-1] 
     oldloops := st.loop_stack
     st.loop_stack := st.loop_stack[1:-1] 
-    tmp := copy(curloop.ir.x.in_st)
     clx := curloop.ir.x
-    suspend ir(p.expr, tmp, clx.value, clx.bounded, clx.rval)
-    ir_max_st(clx.out_st, tmp)
+    suspend ir(p.expr, st, clx.value, clx.bounded, clx.rval)
     st.loop_stack := oldloops
 
         if /clx.bounded then {
@@ -1420,8 +1412,6 @@ procedure ir_init_loop(p, st, target, bounded, rval)
     p.ir.x := ir_loopinfo()
     /bounded & (p.ir.x.continue := ir_tmploc(st))
     p.ir.x.nextlabel := ir_label(p, "next")
-    p.ir.x.in_st := copy(st)
-    p.ir.x.out_st := st
     p.ir.x.value := target
     p.ir.x.bounded := bounded
     p.ir.x.rval := rval
@@ -1482,10 +1472,6 @@ end
 procedure semantic_error(msg, coord)
     writes(&errout, "File ", (\coord).file, "; Line ", coord.line)
     stop(" # ", msg)
-end
-
-procedure ir_max_st(st, t)
-    st.tmp <:= t.tmp
 end
 
 procedure ir_coord(p)
