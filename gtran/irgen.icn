@@ -2,12 +2,12 @@
 
 global ir_deferred, ir_declare_set
 
-
 record ir_info(start, resume, failure, success, x)
 record ir_loopinfo(nextlabel, continue, value, bounded, rval)
 
-record ir_stacks(tmp, current_proc, createflag, declare_set, loop_stack, localSet, staticSet)
+record ir_stacks(tmp, current_proc, createflag, declare_set, loop_stack, localSet, staticSet, syms)
 
+record ir_scope(parent, T)
 
 # record a_NoOp( )
 procedure ir_a_NoOp(p, st, target, bounded, rval)
@@ -69,7 +69,7 @@ end
 procedure ir_a_Not(p, st, target, bounded, rval)
     ir_init(p)
 
-    suspend ir(p.expr, copy(st), &null, "always bounded", "rval")
+    suspend ir(p.expr, st, &null, "always bounded", "rval")
 
     suspend ir_chunk(p.ir.start, [ ir_Goto(ir_coord(p.coord), p.expr.ir.start) ])
     /bounded & suspend ir_chunk(p.ir.resume, [ ir_Goto(ir_coord(p.coord), p.ir.failure) ])
@@ -259,15 +259,12 @@ end
 
 # record a_Every( expr body )
 procedure ir_a_Every(p, st, target, bounded, rval)
-    local tmp
-
     /p.body := a_Key("fail", p.coord)
 
     ir_init_loop(p, st, target, bounded, rval)
     put(st.loop_stack, p)
-    tmp := copy(st)
-    suspend ir(p.expr, tmp, &null, &null, "rval")
-    suspend ir(p.body, tmp, &null, "always bounded", "rval")
+    suspend ir(p.expr, st, &null, &null, "rval")
+    suspend ir(p.body, st, &null, "always bounded", "rval")
     pull(st.loop_stack)
 
     suspend ir_chunk(p.ir.x.nextlabel, [ ir_Goto(ir_coord(p.coord), p.expr.ir.resume) ])
@@ -534,7 +531,7 @@ procedure ir_a_If(p, st, target, bounded, rval)
     ir_init(p)
     /bounded & (t := ir_tmploc(st))
 
-    suspend ir(p.expr, copy(st), &null, "always bounded", "rval")
+    suspend ir(p.expr, st, &null, "always bounded", "rval")
     suspend ir(p.thenexpr, st, target, bounded, rval)
     suspend ir(p.elseexpr, st, target, bounded, rval)
 
@@ -671,12 +668,9 @@ procedure ir_a_Csetlit(p, st, target, bounded, rval)
     /bounded & suspend ir_chunk(p.ir.resume, [ ir_Goto(ir_coord(p.coord), p.ir.failure) ])
 end
 
-procedure ir_nested(p, st, target, bounded, rval)
-end
-
 # record a_ProcDecl( ident paramList accumulate localsList code )
 procedure ir_a_ProcDeclNested(p, st, target, bounded, rval)
-    local f
+    local f, scope
     static counter
 
     initial {
@@ -696,7 +690,9 @@ procedure ir_a_ProcDeclNested(p, st, target, bounded, rval)
         ])
     /bounded & suspend ir_chunk(p.ir.resume, [ ir_Goto(ir_coord(p.coord), p.ir.failure) ])
 
+    scope := st.syms
     st := ir_stacks(0)
+    st.syms := scope
     f := ir_a_ProcDecl0(p, st)
     push(ir_deferred, f)
 end
@@ -708,18 +704,24 @@ procedure ir_a_ProcDecl(p, st, target, bounded, rval)
 end
 
 procedure ir_a_ProcDecl0(p, st, target, bounded, rval)
-    local locals, statics, params, i, v, code
+    local locals, statics, params, i, v, code, s
 
     st.localSet := set([])
     st.staticSet := set([])
     st.current_proc := p.ident.id
 
     v := set([])
+    st.syms := ir_scope(st.syms)
+    st.syms.T := table()
+    params := []
     every i := !p.paramList do {
         if member(v, i.id) then {
             semantic_error(image(i.id) || ": redeclared identifier", i.coord)
         }
         insert(v, i.id)
+        s := i.id || ":" || image(st.syms.T)
+	st.syms.T[i.id] := s
+	put(params, s)
     }
     if member(ir_declare_set, p.ident.id) then {
 	semantic_error(image(name) || ": inconsistent redeclaration",
@@ -727,11 +729,10 @@ procedure ir_a_ProcDecl0(p, st, target, bounded, rval)
     }
     insert(ir_declare_set, p.ident.id)
 
-    params := []
-    every put(params, (!p.paramList).id)
 
     code := []
     every put(code, ir(p.code, st))
+    st.syms := st.syms.parent
 
     locals := []
     every put(locals, !st.localSet)
@@ -812,7 +813,7 @@ end
 procedure ir_a_Repeat(p, st, target, bounded, rval)
     ir_init_loop(p, st, target, bounded, rval)
     put(st.loop_stack, p)
-    suspend ir(p.expr, copy(st), &null, "always bounded", "rval")
+    suspend ir(p.expr, st, &null, "always bounded", "rval")
     pull(st.loop_stack)
 
     suspend ir_chunk(p.ir.x.nextlabel, [ ir_Goto(ir_coord(p.coord), p.expr.ir.start) ])
@@ -836,7 +837,7 @@ procedure ir_a_Return(p, st, target, bounded, rval)
     t := ir_tmp(st)
     mk := ir_tmp(st)
 
-    suspend ir(p.expr, copy(st), t, "always bounded", &null)
+    suspend ir(p.expr, st, t, "always bounded", &null)
 
     suspend ir_chunk(p.ir.start, [ ir_Goto(ir_coord(p.coord), p.expr.ir.start) ])
     /bounded & suspend ir_chunk(p.ir.resume, [ ir_Fail(ir_coord(p.coord)) ])
@@ -860,7 +861,7 @@ end
 
 # record a_Suspend( expr body )
 procedure ir_a_Suspend(p, st, target, bounded, rval)
-    local t, tmp, susp
+    local t, susp
 
     /st.createflag | semantic_error("invalid context for suspend", p.coord)
 
@@ -871,9 +872,8 @@ procedure ir_a_Suspend(p, st, target, bounded, rval)
     susp := ir_tmp(st)
 
     put(st.loop_stack, p)
-    tmp := copy(st)
-    suspend ir(p.expr, tmp, susp, &null, "rval")
-    suspend ir(p.body, tmp, &null, "always bounded", &null)
+    suspend ir(p.expr, st, susp, &null, "rval")
+    suspend ir(p.body, st, &null, "always bounded", &null)
     pull(st.loop_stack)
 
     suspend ir_chunk(p.ir.x.nextlabel, [ ir_Goto(ir_coord(p.coord), p.expr.ir.resume) ])
@@ -894,8 +894,8 @@ procedure ir_a_Until(p, st, target, bounded, rval)
 
     ir_init_loop(p, st, target, bounded, rval)
     put(st.loop_stack, p)
-    suspend ir(p.expr, copy(st), &null, "always bounded", "rval")
-    suspend ir(p.body, copy(st), &null, "always bounded", "rval")
+    suspend ir(p.expr, st, &null, "always bounded", "rval")
+    suspend ir(p.body, st, &null, "always bounded", "rval")
     pull(st.loop_stack)
 
     suspend ir_chunk(p.ir.x.nextlabel, [ ir_Goto(ir_coord(p.coord), p.expr.ir.start) ])
@@ -917,8 +917,8 @@ procedure ir_a_While(p, st, target, bounded, rval)
 
     ir_init_loop(p, st, target, bounded, rval)
     put(st.loop_stack, p)
-    suspend ir(p.expr, copy(st), &null, "always bounded", "rval")
-    suspend ir(p.body, copy(st), &null, "always bounded", "rval")
+    suspend ir(p.expr, st, &null, "always bounded", "rval")
+    suspend ir(p.body, st, &null, "always bounded", "rval")
     pull(st.loop_stack)
 
     suspend ir_chunk(p.ir.x.nextlabel, [ ir_Goto(ir_coord(p.coord), p.expr.ir.start) ])
@@ -955,21 +955,49 @@ procedure ir_a_Create(p, st, target, bounded, rval)
     suspend ir_chunk(p.expr.ir.failure, [ ir_CoFail(ir_coord(p.coord)) ])
 end
 
-
 # record a_Local( id )
 procedure ir_a_Local(p, st, target, bounded, rval)
-    insert(st.localSet, p.id) # should check for collisions
+    local s
+
+    /st.syms.T := table()
+
+    /st.syms.T[p.id] | semantic_error(image(p.id) || ": redeclared identifier", p.coord)
+
+    s := p.id || ":" || image(st.syms.T)
+    st.syms.T[p.id] := s
+
+    insert(st.localSet, s)
     suspend ir_a_Ident(p, st, target, bounded, rval)
 end
 
 # record a_Static( id )
 procedure ir_a_Static(p, st, target, bounded, rval)
-    insert(st.staticSet, p.id) # should check for collisions
+    local s
+
+    /st.syms.T := table()
+
+    /st.syms.T[p.id] | semantic_error(image(p.id) || ": redeclared identifier", p.coord)
+
+    s := p.id || ":" || image(st.syms.T)
+    st.syms.T[p.id] := s
+
+    insert(st.staticSet, s)
     suspend ir_a_Ident(p, st, target, bounded, rval)
+end
+
+procedure ir_lookup(st, name)
+    local s
+    while \st do {
+        if s := \(\st.T)[name] then return s
+	st := st.parent
+    }
+    return name
 end
 
 # record a_Ident( id )
 procedure ir_a_Ident(p, st, target, bounded, rval)
+    local s
+
     if type(\target) ~== "ir_Tmp" then {
         # #%#%# prevents nasty interaction with targeting.
         # %#%#% probably a symptom of bad design....
@@ -978,8 +1006,10 @@ procedure ir_a_Ident(p, st, target, bounded, rval)
 
     ir_init(p)
 
+    s := ir_lookup(st.syms, p.id)
+
     suspend ir_chunk(p.ir.start, [
-        ir_Var(ir_coord(p.coord), target, p.id),
+        ir_Var(ir_coord(p.coord), target, s),
         ir_Goto(ir_coord(p.coord), p.ir.success)
         ])
     /bounded & suspend ir_chunk(p.ir.resume, [ ir_Goto(ir_coord(p.coord), p.ir.failure) ])
@@ -1164,20 +1194,22 @@ end
 
 # record a_Compound( exprList )
 procedure ir_a_Compound(p, st, target, bounded, rval)
-    local L, i
+    local L, i, start
+
+    st.syms := ir_scope(st.syms)
 
     every /(!p.exprList) := a_Key("null", p.coord)
 
     ir_init(p)
 
     every i := 1 to *p.exprList-1 do {
-        suspend ir(p.exprList[i], copy(st), &null, "always bounded", "rval")
+        suspend ir(p.exprList[i], st, &null, "always bounded", "rval")
     }
     suspend ir(p.exprList[-1], st, target, bounded, rval)
 
     L := p.exprList
     *L > 0 | stop("fatal error in ir_a_Compound")
-    suspend ir_chunk(p.ir.start, [ ir_Goto(ir_coord(p.coord), L[1].ir.start) ])
+
     /bounded & suspend ir_chunk(p.ir.resume, [ ir_Goto(ir_coord(p.coord), L[-1].ir.resume) ])
 
     every i := 1 to *p.exprList-1 do {
@@ -1189,6 +1221,16 @@ procedure ir_a_Compound(p, st, target, bounded, rval)
     suspend ir_chunk(L[-1].ir.success, [ ir_Goto(ir_coord(p.coord), p.ir.success) ])
     suspend ir_chunk(L[-1].ir.failure, [ ir_Goto(ir_coord(p.coord), p.ir.failure) ])
 
+    start := []
+    every i := !\st.syms.T do {
+        if member(st.localSet, i) then {
+	    # add NewVar(i) insn to start
+	}
+    }
+    put(start, ir_Goto(ir_coord(p.coord), L[1].ir.start))
+    suspend ir_chunk(p.ir.start, start)
+
+    st.syms := st.syms.parent
 end
 
 # record a_Key( id )
