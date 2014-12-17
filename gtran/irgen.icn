@@ -826,6 +826,26 @@ procedure ir_a_RepeatX(p, st, target, bounded, rval)
     suspend ir_chunk(p.body.ir.failure, [ ir_Goto(ir_coord(p.coord), p.ir.start) ])
 end
 
+# record a_OnError( expr )
+procedure ir_a_OnError(p, st, target, bounded, rval)
+    local t, mk
+
+    ir_init(p)
+    t := ir_tmp(st)
+
+    suspend ir(p.expr, st, t, "always bounded", "rval")
+
+    suspend ir_chunk(p.ir.start,        [ ir_Goto(ir_coord(p.coord), p.expr.ir.start) ])
+    # should this really fail on resumption?
+    suspend ir_chunk(p.ir.resume,       [ ir_Goto(ir_coord(p.coord), p.ir.failure) ])
+
+    suspend ir_chunk(p.expr.ir.failure, [ ir_Goto(ir_coord(p.coord), p.ir.failure) ])
+    suspend ir_chunk(p.expr.ir.success, [ 
+	ir_OnError(ir_coord(p.coord), t),
+    	ir_Goto(ir_coord(p.coord), p.ir.success)
+	])
+end
+
 # record a_Return( expr )
 procedure ir_a_Return(p, st, target, bounded, rval)
     local t, mk
@@ -1428,6 +1448,7 @@ procedure ir(p, st, target, bounded, rval)
     "a_ProcCode" : suspend ir_a_ProcCode(p, st, target, bounded, rval)
     "a_Repeat" : suspend ir_a_Repeat(p, st, target, bounded, rval)
     "a_Return" : suspend ir_a_Return(p, st, target, bounded, rval)
+    "a_OnError" : suspend ir_a_OnError(p, st, target, bounded, rval)
     "a_Fail" : suspend ir_a_Fail(p, st, target, bounded, rval)
     "a_Suspend" : suspend ir_a_Suspend(p, st, target, bounded, rval)
     "a_While" : suspend ir_a_While(p, st, target, bounded, rval)
