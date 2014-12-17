@@ -57,6 +57,7 @@ procedure parse_cclause()
                               lex_REALLIT, lex_REPEAT, lex_RETURN, lex_SEQ,
                               lex_SLASH, lex_SNE, lex_STAR, lex_STRINGLIT,
                               lex_SUSPEND, lex_TILDE, lex_UNION, lex_UNTIL,
+			      lex_SLASHSLASH,
                               lex_WHILE,
 			      lex_SELECT,
 			      lex_LOCAL,
@@ -212,6 +213,7 @@ procedure parse_expr1()
                             lex_AUGPLUS, lex_AUGQMARK, lex_AUGSEQ, lex_AUGSGE,
                             lex_AUGSGT, lex_AUGSLASH, lex_AUGSLE, lex_AUGSLT,
                             lex_AUGSNE, lex_AUGSTAR, lex_AUGUNION,
+			    lex_AUGSLASHSLASH,
                             lex_REVASSIGN, lex_REVSWAP, lex_SWAP, lex_ATCOLON])
     }
     #  expr2 {  expr1op  expr1 } (Right Associative)
@@ -251,6 +253,7 @@ procedure parse_expr10()
                               lex_SEQ, lex_SNE, lex_EQUIV, lex_QMARK,
                               lex_NEQUIV, lex_BACKSLASH])
     expr10_set3 := set([lex_CONCAT, lex_LCONCAT, lex_UNION, lex_INTER,
+			      lex_SLASHSLASH,
                               lex_DIFF])
     }
 
@@ -271,6 +274,7 @@ procedure parse_expr10()
         op := parse_eat_token()
         operand := parse_expr10()
         case tmp_tok of {
+        lex_SLASHSLASH    : return a_Unop("/", operand, coord)
         lex_CONCAT  : return a_RepAlt(operand, coord)
         lex_LCONCAT : return a_RepAlt(operand, coord)
         lex_UNION     : return a_Unop("+", operand, coord)
@@ -445,6 +449,7 @@ procedure parse_expr11suffix(lhs)
                                   lex_REPEAT, lex_RETURN, lex_SEQ, lex_SLASH,
                                   lex_SNE, lex_STAR, lex_STRINGLIT,
                                   lex_SUSPEND, lex_TILDE, lex_UNION, lex_UNTIL,
+				  lex_SLASHSLASH,
                                   lex_WHILE,
 				  lex_SELECT,
 				  lex_LOCAL,
@@ -636,7 +641,7 @@ procedure parse_expr7()
     static expr7_set
 
     initial {
-        expr7_set := set([lex_INTER, lex_MOD, lex_SLASH, lex_STAR])
+        expr7_set := set([lex_INTER, lex_MOD, lex_SLASH, lex_STAR, lex_SLASHSLASH])
     }
 
     ret := parse_expr8()
@@ -833,6 +838,7 @@ procedure parse_nexpr()
                       lex_RETURN, lex_SEQ, lex_SLASH, lex_SNE, lex_STAR,
                       lex_STRINGLIT, lex_SUSPEND, lex_TILDE, lex_UNION,
                       lex_UNTIL, lex_WHILE,
+		      lex_SLASHSLASH,
 		      lex_SELECT,
 		      lex_LOCAL,
 		      lex_STATIC,
@@ -874,6 +880,7 @@ procedure parse_do_proc(noident)
                         lex_RETURN, lex_SEMICOL, lex_SEQ, lex_SLASH,
                         lex_SNE, lex_STAR, lex_STRINGLIT, lex_SUSPEND,
                         lex_TILDE, lex_UNION, lex_UNTIL, lex_WHILE,
+			lex_SLASHSLASH,
 			lex_SELECT,
 			lex_LOCAL,
 			lex_STATIC,

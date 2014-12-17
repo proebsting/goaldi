@@ -120,6 +120,8 @@ procedure init_lex_tables()
                ["?:=",             "AUGQMARK",  ""  ],
                ["/",               "SLASH",     "b" ],
                ["/:=",             "AUGSLASH", ""  ],
+               ["//",              "SLASHSLASH",   "b" ],
+               ["//:=",            "AUGSLASHSLASH", ""  ],
                ["*",               "STAR",      "b" ],
                ["*:=",             "AUGSTAR",  ""  ],
                [":=:",             "SWAP",      ""  ],
