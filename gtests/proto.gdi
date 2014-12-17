@@ -76,6 +76,7 @@ procedure expr2(a, b[]) {
    x === y
    x ~=== y
    x | y
+   x ~| y
    i to j
    i to j by k
    x := y

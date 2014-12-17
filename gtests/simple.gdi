@@ -39,6 +39,14 @@ local x
    every writes(" ", ":" | seq(2.5, .375) \ 5)
    write()
 
+   writes("alt & xalt: ")
+   every writes(" a", !3 | !3)
+   every writes(" b", !3 ~| !3)
+   every writes(" c", !1 ~| !3)
+   every writes(" d", !0 ~| !3)
+   every writes(" e", !3 ~| !0)
+   write()
+
    p4()
    p4(1)
    p4(2,3)
