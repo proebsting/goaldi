@@ -99,7 +99,7 @@ procedure ir_a_Alt(p, st, target, bounded, rval)
     }
 
     suspend ir_chunk(p.ir.start, [ ir_Goto(ir_coord(p.coord), p.eList[1].ir.start) ])
-    /bounded & suspend ir_chunk(p.ir.resume, [ ir_IndirectGoto(ir_coord(p.coord), t) ])
+    /bounded & suspend ir_chunk(p.ir.resume, [ ir_IndirectGoto(ir_coord(p.coord), t, []) ])
 
     every i := 1 to *p.eList do {
         if /bounded then {
@@ -129,14 +129,14 @@ procedure ir_a_ExcAlt(p, st, target, bounded, rval)
         suspend ir(p.eList[i], st, target, bounded, rval)
     }
 
-    /bounded & suspend ir_chunk(p.ir.resume, [ ir_IndirectGoto(ir_coord(p.coord), R) ])
+    /bounded & suspend ir_chunk(p.ir.resume, [ ir_IndirectGoto(ir_coord(p.coord), R, []) ])
 
     t := &null
     every i := *p.eList to 1 by -1 do {
 	if /t then {
             suspend ir_chunk(p.eList[i].ir.failure,[ir_Goto(ir_coord(p.coord), p.ir.failure)])
 	} else {
-            suspend ir_chunk(p.eList[i].ir.failure,[ir_IndirectGoto(ir_coord(p.coord), F)])
+            suspend ir_chunk(p.eList[i].ir.failure,[ir_IndirectGoto(ir_coord(p.coord), F, [])])
 	}
 
 	oldt := t
@@ -179,7 +179,7 @@ procedure ir_a_RepAlt(p, st, target, bounded, rval)
             ir_MoveLabel(ir_coord(p.coord), t, p.ir.start),
             ir_Goto(ir_coord(p.coord), p.ir.success)
             ])
-        suspend ir_chunk(p.expr.ir.failure, [ ir_IndirectGoto(ir_coord(p.coord), t) ])
+        suspend ir_chunk(p.expr.ir.failure, [ ir_IndirectGoto(ir_coord(p.coord), t, []) ])
     } else {
         suspend ir_chunk(p.ir.start, [
             ir_Goto(ir_coord(p.coord), p.expr.ir.start)
@@ -212,7 +212,7 @@ procedure ir_a_Case(p, st, target, bounded, rval)
     suspend ir(p.dflt, st, target, bounded, rval)
 
     suspend ir_chunk(p.ir.start, [ ir_Goto(ir_coord(p.coord), p.expr.ir.start) ])
-    /bounded & suspend ir_chunk(p.ir.resume, [ ir_IndirectGoto(ir_coord(p.coord), t) ])
+    /bounded & suspend ir_chunk(p.ir.resume, [ ir_IndirectGoto(ir_coord(p.coord), t, []) ])
 
     suspend ir_chunk(p.expr.ir.failure, [ ir_Goto(ir_coord(p.coord), p.ir.failure) ])
 
@@ -269,7 +269,7 @@ procedure ir_a_Every(p, st, target, bounded, rval)
 
     suspend ir_chunk(p.ir.x.nextlabel, [ ir_Goto(ir_coord(p.coord), p.expr.ir.resume) ])
     suspend ir_chunk(p.ir.start, [ ir_Goto(ir_coord(p.coord), p.expr.ir.start) ])
-    /bounded & suspend ir_chunk(p.ir.resume, [ ir_IndirectGoto(ir_coord(p.coord), p.ir.x.continue) ])
+    /bounded & suspend ir_chunk(p.ir.resume, [ ir_IndirectGoto(ir_coord(p.coord), p.ir.x.continue, []) ])
     suspend ir_chunk(p.expr.ir.success, [ ir_Goto(ir_coord(p.coord), p.body.ir.start) ])
     suspend ir_chunk(p.expr.ir.failure, [ ir_Goto(ir_coord(p.coord), p.ir.failure) ])
     suspend ir_chunk(p.body.ir.success, [
@@ -536,7 +536,7 @@ procedure ir_a_If(p, st, target, bounded, rval)
     suspend ir(p.elseexpr, st, target, bounded, rval)
 
     suspend ir_chunk(p.ir.start, [ ir_Goto(ir_coord(p.coord), p.expr.ir.start) ])
-    /bounded & suspend ir_chunk(p.ir.resume, [ ir_IndirectGoto(ir_coord(p.coord), t) ])
+    /bounded & suspend ir_chunk(p.ir.resume, [ ir_IndirectGoto(ir_coord(p.coord), t, []) ])
     if /bounded then {
         suspend ir_chunk(p.expr.ir.success, [
             ir_MoveLabel(ir_coord(p.coord), t, p.thenexpr.ir.resume),
@@ -818,7 +818,7 @@ procedure ir_a_Repeat(p, st, target, bounded, rval)
 
     suspend ir_chunk(p.ir.x.nextlabel, [ ir_Goto(ir_coord(p.coord), p.expr.ir.start) ])
     suspend ir_chunk(p.ir.start, [ ir_Goto(ir_coord(p.coord), p.expr.ir.start) ])
-    /bounded & suspend ir_chunk(p.ir.resume, [ ir_IndirectGoto(ir_coord(p.coord), p.ir.x.continue) ])
+    /bounded & suspend ir_chunk(p.ir.resume, [ ir_IndirectGoto(ir_coord(p.coord), p.ir.x.continue, []) ])
     suspend ir_chunk(p.expr.ir.success, [
         ir_Goto(ir_coord(p.coord), p.ir.start)
         ])
@@ -878,7 +878,7 @@ procedure ir_a_Suspend(p, st, target, bounded, rval)
 
     suspend ir_chunk(p.ir.x.nextlabel, [ ir_Goto(ir_coord(p.coord), p.expr.ir.resume) ])
     suspend ir_chunk(p.ir.start, [ ir_Goto(ir_coord(p.coord), p.expr.ir.start) ])
-    /bounded & suspend ir_chunk(p.ir.resume, [ ir_IndirectGoto(ir_coord(p.coord), p.ir.x.continue) ])
+    /bounded & suspend ir_chunk(p.ir.resume, [ ir_IndirectGoto(ir_coord(p.coord), p.ir.x.continue, []) ])
         suspend ir_chunk(p.expr.ir.success, [ ir_Succeed(ir_coord(p.coord), susp, t) ])
         suspend ir_chunk(t, [ ir_Goto(ir_coord(p.coord), p.body.ir.start) ])
     suspend ir_chunk(p.expr.ir.failure, [ ir_Goto(ir_coord(p.coord), p.ir.failure) ])
@@ -900,7 +900,7 @@ procedure ir_a_Until(p, st, target, bounded, rval)
 
     suspend ir_chunk(p.ir.x.nextlabel, [ ir_Goto(ir_coord(p.coord), p.expr.ir.start) ])
     suspend ir_chunk(p.ir.start, [ ir_Goto(ir_coord(p.coord), p.expr.ir.start) ])
-    /bounded & suspend ir_chunk(p.ir.resume, [ ir_IndirectGoto(ir_coord(p.coord), p.ir.x.continue) ])
+    /bounded & suspend ir_chunk(p.ir.resume, [ ir_IndirectGoto(ir_coord(p.coord), p.ir.x.continue, []) ])
     suspend ir_chunk(p.expr.ir.success, [
         ir_Goto(ir_coord(p.coord), p.ir.failure)
         ])
@@ -923,7 +923,7 @@ procedure ir_a_While(p, st, target, bounded, rval)
 
     suspend ir_chunk(p.ir.x.nextlabel, [ ir_Goto(ir_coord(p.coord), p.expr.ir.start) ])
     suspend ir_chunk(p.ir.start, [ ir_Goto(ir_coord(p.coord), p.expr.ir.start) ])
-    /bounded & suspend ir_chunk(p.ir.resume, [ ir_IndirectGoto(ir_coord(p.coord), p.ir.x.continue) ])
+    /bounded & suspend ir_chunk(p.ir.resume, [ ir_IndirectGoto(ir_coord(p.coord), p.ir.x.continue, []) ])
     suspend ir_chunk(p.expr.ir.success, [
         ir_Goto(ir_coord(p.coord), p.body.ir.start)
         ])
@@ -1101,7 +1101,7 @@ procedure ir_a_Select(p, st, target, bounded, rval)
     ir_init(p)
 
     /bounded & (t := ir_tmploc(st))
-    /bounded & suspend ir_chunk(p.ir.resume, [ ir_IndirectGoto(ir_coord(p.coord), t) ])
+    /bounded & suspend ir_chunk(p.ir.resume, [ ir_IndirectGoto(ir_coord(p.coord), t, []) ])
 
     select := ir_label(p, "select")
 
