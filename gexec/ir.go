@@ -14,6 +14,10 @@ var irlist = [...]interface{}{
 	&ir_Global{},
 	&ir_Function{},
 	&ir_chunk{},
+	&ir_NoOp{},
+	&ir_OnError{},
+	&ir_EnterScope{},
+	&ir_ExitScope{},
 	&ir_Var{},
 	&ir_Key{},
 	&ir_IntLit{},
@@ -86,6 +90,7 @@ type ir_Function struct {
 	Accumulate string // may be nil
 	LocalList  []string
 	StaticList []string
+	GlobalList []string
 	CodeList   []ir_chunk
 	CodeStart  string
 	Lvalset    []string
@@ -94,6 +99,26 @@ type ir_Function struct {
 type ir_chunk struct {
 	Label    string
 	InsnList []interface{} // heterogeneous
+}
+
+type ir_NoOp struct {
+	Coord   string
+	Comment string
+}
+
+type ir_OnError struct {
+	Coord string
+	Fn    string
+}
+
+type ir_EnterScope struct {
+	Coord    string
+	NameList []string
+}
+
+type ir_ExitScope struct {
+	Coord    string
+	NameList []string
 }
 
 type ir_Var struct {
@@ -215,6 +240,7 @@ type ir_Goto struct {
 type ir_IndirectGoto struct {
 	Coord          string
 	TargetTmpLabel string
+	LabelList      []string
 }
 
 type ir_Succeed struct {

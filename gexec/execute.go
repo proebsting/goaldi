@@ -42,6 +42,8 @@ func execute(f *pr_frame, label string) (g.Value, *g.Closure) {
 					panic(&g.RunErr{
 						"Unrecognized interpreter instruction",
 						fmt.Sprintf("%#v", i)})
+				case ir_NoOp:
+					// nothing to do
 				case ir_Fail:
 					return nil, nil
 				case ir_Succeed:
@@ -109,6 +111,10 @@ func execute(f *pr_frame, label string) (g.Value, *g.Closure) {
 						panic(&g.RunErr{"Undeclared identifier", i.Name})
 					}
 					f.temps[i.Lhs] = v
+				case ir_EnterScope:
+					//#%#%#% NOT YET IMPLEMENTED
+				case ir_ExitScope:
+					//#%#% potential later optimization: discard references
 				case ir_Move:
 					f.temps[i.Lhs] = f.temps[i.Rhs]
 				case ir_MoveLabel:
