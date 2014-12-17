@@ -1227,8 +1227,11 @@ procedure ir_a_Compound(p, st, target, bounded, rval)
 	    # add NewVar(i) insn to start
 	}
     }
-    put(start, ir_Goto(ir_coord(p.coord), L[1].ir.start))
-    suspend ir_chunk(p.ir.start, start)
+    suspend ir_chunk(p.ir.start, [
+        ir_EnterScope(ir_coord(p.coord), []),
+        ir_NoOp(ir_coord(p.coord), "test"),
+        ir_Goto(ir_coord(p.coord), L[1].ir.start)
+    ])
 
     st.syms := st.syms.parent
 end

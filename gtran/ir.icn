@@ -7,6 +7,11 @@ record ir_Global(coord, nameList)
 record ir_Function(coord, name, paramList, accumulate, localList, staticList, globalList,
 		  codeList, codeStart, lvalset)
 record ir_chunk(label, insnList)
+
+record ir_NoOp(coord, comment)
+record ir_OnError(coord, fn)
+record ir_EnterScope(coord, nameList)
+record ir_ExitScope(coord, nameList)
  
 record ir_Tmp(name)
 record ir_TmpLabel(name)
