@@ -136,10 +136,9 @@ procedure expr4() {
    if e1 then e2
    if e1 then e2 else e3
    repeat e
+   repeat e1 until e2
    while e1
    while e1 do e2
-   until e1
-   until e1 do e2
    every e1
    every e1 do e2
    x

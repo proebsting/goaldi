@@ -56,7 +56,7 @@ procedure parse_cclause()
                               lex_NMNE, lex_NOT, lex_PLUS, lex_QMARK,
                               lex_REALLIT, lex_REPEAT, lex_RETURN, lex_SEQ,
                               lex_SLASH, lex_SNE, lex_STAR, lex_STRINGLIT,
-                              lex_SUSPEND, lex_TILDE, lex_UNION, lex_UNTIL,
+                              lex_SUSPEND, lex_TILDE, lex_UNION, 
 			      lex_SLASHSLASH,
                               lex_WHILE,
 			      lex_SELECT,
@@ -240,7 +240,7 @@ procedure parse_expr10()
                               lex_CSETLIT, lex_EVERY, lex_FAIL, lex_IDENT,
                               lex_IF, lex_INTLIT, lex_LBRACE, lex_LBRACK,
                               lex_LPAREN, lex_NEXT, lex_REALLIT, lex_REPEAT,
-                              lex_RETURN, lex_STRINGLIT, lex_SUSPEND, lex_UNTIL,
+                              lex_RETURN, lex_STRINGLIT, lex_SUSPEND, 
                               lex_WHILE,
 			      lex_SELECT,
 			      lex_LOCAL,
@@ -317,8 +317,6 @@ procedure parse_expr11()
         return parse_do_select()
     lex_WHILE   :   # while 
         return parse_do_while()
-    lex_UNTIL   :   # until 
-        return parse_do_until()
     lex_EVERY   :   # every 
         return parse_do_every()
     lex_REPEAT  :   # repeat 
@@ -448,7 +446,7 @@ procedure parse_expr11suffix(lhs)
                                   lex_NOT, lex_PLUS, lex_QMARK, lex_REALLIT,
                                   lex_REPEAT, lex_RETURN, lex_SEQ, lex_SLASH,
                                   lex_SNE, lex_STAR, lex_STRINGLIT,
-                                  lex_SUSPEND, lex_TILDE, lex_UNION, lex_UNTIL,
+                                  lex_SUSPEND, lex_TILDE, lex_UNION, 
 				  lex_SLASHSLASH,
                                   lex_WHILE,
 				  lex_SELECT,
@@ -837,7 +835,7 @@ procedure parse_nexpr()
                       lex_NOT, lex_PLUS, lex_QMARK, lex_REALLIT, lex_REPEAT,
                       lex_RETURN, lex_SEQ, lex_SLASH, lex_SNE, lex_STAR,
                       lex_STRINGLIT, lex_SUSPEND, lex_TILDE, lex_UNION,
-                      lex_UNTIL, lex_WHILE,
+                      lex_WHILE,
 		      lex_SLASHSLASH,
 		      lex_SELECT,
 		      lex_LOCAL,
@@ -879,7 +877,7 @@ procedure parse_do_proc(noident)
                         lex_NOT, lex_PLUS, lex_QMARK, lex_REALLIT, lex_REPEAT,
                         lex_RETURN, lex_SEMICOL, lex_SEQ, lex_SLASH,
                         lex_SNE, lex_STAR, lex_STRINGLIT, lex_SUSPEND,
-                        lex_TILDE, lex_UNION, lex_UNTIL, lex_WHILE,
+                        lex_TILDE, lex_UNION, lex_WHILE,
 			lex_SLASHSLASH,
 			lex_SELECT,
 			lex_LOCAL,
@@ -979,12 +977,16 @@ procedure parse_do_record()
 end
 
 procedure parse_do_repeat()
-    local e, coord
+    local b, e, coord
     #  REPEAT  expr 
     coord := parse_tok_rec.coord
     parse_match_token(lex_REPEAT)
-    e := parse_expr()
-    return a_Repeat(e, coord)
+    b := parse_expr()
+    if parse_tok_rec === lex_UNTIL then {
+        parse_match_token(lex_UNTIL)
+        e := parse_expr()
+    }
+    return a_Repeat(b, e, coord)
 end
 
 procedure parse_do_return()
@@ -1017,21 +1019,6 @@ procedure parse_do_return()
     default :
         parse_error("Expecting lex_FAIL, lex_RETURN, or SUSPEND")
     }
-end
-
-#  UNTIL  expr [  DO  expr ] 
-procedure parse_do_until()
-    local e, dparse_expr, coord
-
-    coord := parse_tok_rec.coord
-    parse_match_token(lex_UNTIL)
-    e := parse_expr()
-    dparse_expr := &null
-    if parse_tok_rec === lex_DO then {
-        parse_eat_token()
-        dparse_expr := parse_expr()
-    }
-    return a_Until(e, dparse_expr, coord)
 end
 
 #  WHILE  expr [  DO  expr ] 
