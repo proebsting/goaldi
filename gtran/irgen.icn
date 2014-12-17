@@ -5,7 +5,7 @@ global ir_deferred, ir_declare_set
 record ir_info(start, resume, failure, success, x)
 record ir_loopinfo(nextlabel, continue, value, bounded, rval)
 
-record ir_stacks(tmp, current_proc, createflag, declare_set, loop_stack, localSet, staticSet, syms)
+record ir_stacks(tmp, current_proc, createflag, declare_set, loop_stack, localSet, staticSet, globalSet, syms)
 
 record ir_scope(parent, T)
 
@@ -704,10 +704,11 @@ procedure ir_a_ProcDecl(p, st, target, bounded, rval)
 end
 
 procedure ir_a_ProcDecl0(p, st, target, bounded, rval)
-    local locals, statics, params, i, v, code, s
+    local locals, statics, globals, params, i, v, code, s
 
     st.localSet := set([])
     st.staticSet := set([])
+    st.globalSet := set([])
     st.current_proc := p.ident.id
 
     v := set([])
@@ -738,9 +739,11 @@ procedure ir_a_ProcDecl0(p, st, target, bounded, rval)
     every put(locals, !st.localSet)
     statics := []
     every put(statics, !st.staticSet)
+    globals := []
+    every put(globals, !st.globalSet)
 
     return ir_Function(ir_coord(p.ident.coord), p.ident.id, params,
-		      p.accumulate, locals, statics, [], code,
+		      p.accumulate, locals, statics, globals, code,
                       p.code.ir.start)
 end
 
@@ -1031,11 +1034,13 @@ procedure ir_a_Static(p, st, target, bounded, rval)
 end
 
 procedure ir_lookup(st, name)
-    local s
-    while \st do {
-        if s := \(\st.T)[name] then return s
-	st := st.parent
+    local s, syms
+    syms := st.syms
+    while \syms do {
+        if s := \(\syms.T)[name] then return s
+	syms := syms.parent
     }
+    insert(st.globalSet, name)
     return name
 end
 
@@ -1051,7 +1056,7 @@ procedure ir_a_Ident(p, st, target, bounded, rval)
 
     ir_init(p)
 
-    s := ir_lookup(st.syms, p.id)
+    s := ir_lookup(st, p.id)
 
     suspend ir_chunk(p.ir.start, [
         ir_Var(ir_coord(p.coord), target, s),
