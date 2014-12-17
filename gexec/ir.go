@@ -30,7 +30,6 @@ var irlist = [...]interface{}{
 	&ir_OpFunction{},
 	&ir_Call{},
 	&ir_ResumeValue{},
-	&ir_EnterInit{},
 	&ir_Goto{},
 	&ir_IndirectGoto{},
 	&ir_Succeed{},
@@ -206,11 +205,6 @@ type ir_ResumeValue struct {
 	Lhsclosure string
 	Closure    string
 	FailLabel  string // may be nil
-}
-
-type ir_EnterInit struct {
-	Coord      string
-	StartLabel string
 }
 
 type ir_Goto struct {
