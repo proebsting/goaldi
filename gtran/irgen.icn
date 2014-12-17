@@ -1194,9 +1194,11 @@ end
 
 # record a_Compound( exprList )
 procedure ir_a_Compound(p, st, target, bounded, rval)
-    local L, i, start
+    local L, i, locals, failure
 
     st.syms := ir_scope(st.syms)
+
+    failure := ir_label(p, "exit")
 
     every /(!p.exprList) := a_Key("null", p.coord)
 
@@ -1219,18 +1221,21 @@ procedure ir_a_Compound(p, st, target, bounded, rval)
         suspend ir_chunk(L[i].ir.failure, [ ir_Goto(ir_coord(p.coord), L[i+1].ir.start) ])
     }
     suspend ir_chunk(L[-1].ir.success, [ ir_Goto(ir_coord(p.coord), p.ir.success) ])
-    suspend ir_chunk(L[-1].ir.failure, [ ir_Goto(ir_coord(p.coord), p.ir.failure) ])
+    suspend ir_chunk(L[-1].ir.failure, [ ir_Goto(ir_coord(p.coord), failure) ])
 
-    start := []
+    locals := []
     every i := !\st.syms.T do {
         if member(st.localSet, i) then {
-	    # add NewVar(i) insn to start
+	    put(locals, i)
 	}
     }
     suspend ir_chunk(p.ir.start, [
-        ir_EnterScope(ir_coord(p.coord), []),
-        ir_NoOp(ir_coord(p.coord), "test"),
+        ir_EnterScope(ir_coord(p.coord), locals),
         ir_Goto(ir_coord(p.coord), L[1].ir.start)
+    ])
+    suspend ir_chunk(failure, [
+        ir_ExitScope(ir_coord(p.coord), locals),
+        ir_Goto(ir_coord(p.coord), p.ir.failure)
     ])
 
     st.syms := st.syms.parent
