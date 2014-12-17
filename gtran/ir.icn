@@ -4,7 +4,7 @@ record ir_Invocable(coord, nameList, all)
 record ir_Link(coord, nameList)
 record ir_Record(coord, name, fieldList)
 record ir_Global(coord, nameList)
-record ir_Function(coord, name, paramList, accumulate, localList, staticList,
+record ir_Function(coord, name, paramList, accumulate, localList, staticList, globalList,
 		  codeList, codeStart, lvalset)
 record ir_chunk(label, insnList)
  

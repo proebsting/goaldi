@@ -740,7 +740,7 @@ procedure ir_a_ProcDecl0(p, st, target, bounded, rval)
     every put(statics, !st.staticSet)
 
     return ir_Function(ir_coord(p.ident.coord), p.ident.id, params,
-		      p.accumulate, locals, statics, code,
+		      p.accumulate, locals, statics, [], code,
                       p.code.ir.start)
 end
 
