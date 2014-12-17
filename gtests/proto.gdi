@@ -8,7 +8,9 @@ record one(z)
 global line, count
 
 procedure main() {
+	write()
 }
+
 procedure expr1(a, b) {
    # local x,y,z
    local x
