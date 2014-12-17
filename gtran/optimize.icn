@@ -154,6 +154,12 @@ procedure optim_def_use(p, uses, defs)
 	    uses[p.resumeLabel] +:= 1
 	    }
     "ir_CoFail" :    { }
+    "ir_NoOp" :    { }
+    "ir_EnterScope" :    { }
+    "ir_ExitScope" :    { }
+    "ir_OnError" :   { 
+	    uses[p.fn] +:= 1
+            }
 
     "ir_Unreachable":{ }
 
@@ -229,6 +235,12 @@ procedure optim_rewrite(p, rename)
             p.resumeLabel := optim_rename(p.resumeLabel, rename);}
     "ir_CoFail" :    { }
     "ir_Unreachable":{ }
+    "ir_NoOp" :    { }
+    "ir_EnterScope" :    { }
+    "ir_ExitScope" :    { }
+    "ir_OnError" :   { 
+            p.fn := optim_rename(p.fn, rename)
+            }
 
     default :   { runerr(500,p); }
     }
@@ -332,6 +344,10 @@ procedure optim_goto_transitive(t, new, lab)
 	    "ir_IndirectGoto" |
 	    "ir_Assign" |
 	    "ir_MakeClosure" |
+	    "ir_NoOp" |
+	    "ir_EnterScope" |
+	    "ir_ExitScope" |
+	    "ir_OnError" |
 	    "ir_Deref" : {
 		# nothing
 		}
@@ -446,6 +462,10 @@ procedure optim_refcountX(refcount, p)
     "ir_CoRet" : {  # ir_CoRet : ( value resumeLabel )
 	refcount[p.resumeLabel] +:= 1
         }
+    "ir_NoOp" :    { }
+    "ir_EnterScope" :    { }
+    "ir_ExitScope" :    { }
+    "ir_OnError" :   { }
     default : runerr(500, p)
     }
 end
