@@ -1016,6 +1016,10 @@ procedure ir_a_Create(p, st, target, bounded, rval)
     suspend ir_chunk(p.expr.ir.failure, [ ir_CoFail(ir_coord(p.coord)) ])
 end
 
+procedure mkSuffix(t)
+    return ":" || (image(t) ? (tab(upto(&digits)) & tab(upto('('))))
+end
+
 # record a_Local( id )
 procedure ir_a_Local(p, st, target, bounded, rval)
     local s
@@ -1025,6 +1029,7 @@ procedure ir_a_Local(p, st, target, bounded, rval)
     /st.syms.T[p.id] | semantic_error(image(p.id) || ": redeclared identifier", p.coord)
 
     s := p.id || ":" || image(st.syms.T)
+    s := p.id || mkSuffix(st.syms.T)
     st.syms.T[p.id] := s
 
     insert(st.localSet, s)
@@ -1040,6 +1045,7 @@ procedure ir_a_Static(p, st, target, bounded, rval)
     /st.syms.T[p.id] | semantic_error(image(p.id) || ": redeclared identifier", p.coord)
 
     s := p.id || ":" || image(st.syms.T)
+    s := p.id || mkSuffix(st.syms.T)
     st.syms.T[p.id] := s
 
     insert(st.staticSet, s)
