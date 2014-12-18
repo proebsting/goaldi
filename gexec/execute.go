@@ -123,7 +123,7 @@ func execute(f *pr_frame, label string) (g.Value, *g.Closure) {
 					}
 				case ir_ExitScope:
 					for _, name := range i.NameList {
-						f.vars[name] = nil;	// allow garbage collection
+						f.vars[name] = nil // allow garbage collection
 					}
 				case ir_Move:
 					f.temps[i.Lhs] = f.temps[i.Rhs]
