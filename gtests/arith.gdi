@@ -44,9 +44,9 @@ local j
 }
 
 procedure numtest(a, b) {
-   wr5(+a)
-   wr5(b)
-   wr5(abs(a))
+   wr4(+a)
+   wr4(b)
+   wr4(abs(a))
    wr5(-b)
    wr5(a + b)
    wr5(a - b)
@@ -55,11 +55,11 @@ procedure numtest(a, b) {
    if b ~= 0 then wr5(a % b) else wr5("---")
    wr5(-b)
    wr5(a < b  | "---")
-   wr5(a <= b | "---")
-   wr5(a = b  | "---")
-   wr5(a ~= b | "---")
-   wr5(a >= b | "---")
-   wr5(a > b  | "---")
+   wr4(a <= b | "---")
+   wr4(a = b  | "---")
+   wr4(a ~= b | "---")
+   wr4(a >= b | "---")
+   wr4(a > b  | "---")
    write()
    return
 }
@@ -71,11 +71,12 @@ procedure bitcombo(i, j) {
    return
 }
 
+procedure wr4(n) {			# write in 4 chars
+   return printf(" %3s", string(n))
+}
+
 procedure wr5(n) {			# write in 5 chars
-   local s
-   s := n || ""
-   printf(" %4s", s)
-   return
+   return printf(" %4s", string(n))
 }
 
 procedure pow(m, n) {
