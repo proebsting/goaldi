@@ -9,6 +9,9 @@ GTRAN=$GOBIN/gtran
 GEXEC=$GOBIN/gexec
 ls -l $GOALDI $GTRAN $GEXEC || exit
 
+#	ensure scipt exits immediately on interrupt (needed on Mac)
+trap 'exit' INT
+
 #	if no test files specified, run them all
 if [ $# = 0 ]; then
 	set - *.std
