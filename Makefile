@@ -1,9 +1,9 @@
 #  Goaldi Makefile
 #
 #  Assumptions:
-#	go is in search path (typically located in /usr/local/go/bin)
 #	$GOPATH is set per Go documentation
 #	$GOPATH/bin (first GOPATH component) is destination for built programs
+#	go, icon, and $GOPATH/bin are all in search path
 
 PKG = goaldi
 PROGS = $(PKG)/gexec
