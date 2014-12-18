@@ -2,17 +2,24 @@
 #
 #  goaldi [options] file [arg...] -- compile and execute Goaldi program
 #
-#  -c	compile only, producing IR on file.gir (interpreter options ignored)
-#  -d	compile only, producing Dot directives on file.dot
-#  -N	no optimization
-#
-#  Options -l -t -v -A -D -F -J -P -T are passed along to the interpreter.
-#
+#  To see options, run with no arguments.
 #  Assumes that gtran and gexec are in the search path.
 
 FLAGS=cdNltvADFJPT
-USAGE="usage: $0 [-$FLAGS] file [arg...]"
 TMP=/tmp/gdi.$$.gir
+
+#  define usage abort
+usage() {
+	exec >&2
+	cat <<==EOF==
+Usage: $0 [-$FLAGS] file [arg...]
+  -c  compile only, producing IR on file.gir (interpreter options ignored)
+  -d  compile only, producing Dot directives on file.dot
+  -N  no optimization
+==EOF==
+	gexec -? 2>&1 | sed -n 's/=false: /  /p'
+	exit 1
+}
 
 #  process options
 XOPTS=
@@ -25,11 +32,11 @@ while getopts $FLAGS C; do
 	d)			DFLAG=$C;;
 	N)			OPT="";;
 	[ltvADFJPT])	XOPTS="$XOPTS -$C";;
-	?)			echo 1>&2 $USAGE; exit 1;;
+	?)			usage;;
     esac
 done
 shift $(($OPTIND - 1))
-test $# -lt 1 && echo 1>&2 $USAGE && exit 1
+test $# -lt 1 && usage
 
 I=$1
 DOT="gtran preproc $I : yylex : parse : ast2ir $OPT : dot_File : stdout"
