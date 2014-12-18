@@ -1288,8 +1288,6 @@ procedure ir_a_Compound(p, st, target, bounded, rval)
             ])
         suspend ir_chunk(L[i].ir.failure, [ ir_Goto(ir_coord(p.coord), L[i+1].ir.start) ])
     }
-    suspend ir_chunk(L[-1].ir.success, [ ir_Goto(ir_coord(p.coord), p.ir.success) ])
-    suspend ir_chunk(L[-1].ir.failure, [ ir_Goto(ir_coord(p.coord), failure) ])
 
     locals := []
     every i := !\st.syms.T do {
@@ -1297,6 +1295,19 @@ procedure ir_a_Compound(p, st, target, bounded, rval)
 	    put(locals, i)
 	}
     }
+
+    # should the following have ExitScope if this is bounded?
+    if /bounded then {
+        suspend ir_chunk(L[-1].ir.success, [
+            ir_ExitScope(ir_coord(p.coord), locals),
+	    ir_Goto(ir_coord(p.coord), p.ir.success)
+	    ])
+    } else {
+        suspend ir_chunk(L[-1].ir.success, [ ir_Goto(ir_coord(p.coord), p.ir.success) ])
+    }
+
+    suspend ir_chunk(L[-1].ir.failure, [ ir_Goto(ir_coord(p.coord), failure) ])
+
     suspend ir_chunk(p.ir.start, [
         ir_EnterScope(ir_coord(p.coord), locals),
         ir_Goto(ir_coord(p.coord), L[1].ir.start)
