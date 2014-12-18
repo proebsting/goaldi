@@ -16,4 +16,11 @@ procedure main() {
 		write(i, "c. ", x, " ", y)
 	}
 	write("99. ", x, " ", y)
+	local L := []
+	every local j := 1 to 4 do {
+		local x := j
+		local f := procedure () { return x }
+		L.put(f)
+	}
+	every write("f: ", (!L)())
 }

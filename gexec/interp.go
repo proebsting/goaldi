@@ -57,9 +57,9 @@ func interp(env *g.Env, pr *pr_Info, outer map[string]interface{},
 
 	// initialize procedure frame
 	var f pr_frame
-	f.env = env
-	f.info = pr
-	f.args = args
+	f.env = env   // environment
+	f.info = pr   // static procedure info
+	f.args = args // argument list
 
 	// initialize variable dictionary with inherited variables;
 	// any of these may be subsequently hidden (replaced)
@@ -68,7 +68,10 @@ func interp(env *g.Env, pr *pr_Info, outer map[string]interface{},
 		f.vars[k] = v
 	}
 
-	// add static variables
+	// our own locals are not defined here;
+	// they are later added dynamically by ir_EnterScope instructions
+
+	// define static variables
 	for k, v := range pr.statics {
 		f.vars[k] = v
 	}

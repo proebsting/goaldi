@@ -103,8 +103,17 @@ func undeclared(pr *pr_Info) {
 
 //  irProcedure makes a runtime procedure from static info and inherited vars
 func irProcedure(pr *pr_Info, outer map[string]interface{}) *g.VProcedure {
+
+	// copy (references to) any inherited variables
+	vars := make(map[string]interface{})
+	if outer != nil {
+		for k, v := range outer {
+			vars[k] = v
+		}
+	}
+
 	return g.NewProcedure(pr.name,
 		func(env *g.Env, args ...g.Value) (g.Value, *g.Closure) {
-			return interp(env, pr, outer, args...)
+			return interp(env, pr, vars, args...)
 		})
 }
