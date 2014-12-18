@@ -8,6 +8,12 @@ import (
 	"reflect"
 )
 
+//  coexecute wraps an execute call to catch a panic in a co-expression
+func coexecute(f *pr_frame, label string) (g.Value, *g.Closure) {
+	defer g.Catcher(f.env)
+	return execute(f, label)
+}
+
 //  execute IR instructions for procedure or co-expression
 func execute(f *pr_frame, label string) (g.Value, *g.Closure) {
 

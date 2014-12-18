@@ -99,9 +99,3 @@ func interp(env *g.Env, pr *pr_Info, outer map[string]interface{},
 	// execute the IR code
 	return execute(&f, pr.ir.CodeStart)
 }
-
-//  coexecute wraps an execute call to catch a panic in a co-expression
-func coexecute(f *pr_frame, label string) (g.Value, *g.Closure) {
-	defer g.Catcher(f.env)
-	return execute(f, label)
-}
