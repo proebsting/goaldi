@@ -1,0 +1,44 @@
+okay1
+okay2
+i=4 [while/do]
+i=5 [while/do]
+i=6 [while/do]
+i=7 [repeat/until]
+i=8 [repeat/until]
+i=9 [repeat/until #2]
+i=10 [repeat #3a]
+i=11 [repeat #3b]
+i=12 [repeat #3a]
+i=13 [repeat #3b]
+i=14 [repeat #3a]
+i=15 [repeat #3b]
+i=16 [repeat #3c]
+i=17 [repeat #3a]
+i=18 [repeat #3b]
+i=19 [repeat #3c]
+i=20 [repeat #3a]
+a b c d e fghij
+pqrst
+
+%nil       : ~          : %nil
+0.0        : 0          : 0
+1.0        : 1          : 1
+2          : 2          : 2
+default    : 2.718      : 2.718281828459045
+&pi        : 3.142      : 3.141592653589793
+""         :            : ""
+default    : 0          : "0"
+"1"        : 1          : "1"
+default    : 2          : "2"
+rec        : C:rec      : constructor rec()
+%stdin     : F:%stdin   : file(%stdin,r)
+main       : P:main     : procedure main()
+write      : P:write    : procedure write()
+default    : rec{}      : rec{a:~}
+r          : rec{}      : rec{a:45}
+c          : CH:0       : channel(0)
+cx         : CH:0       : channel(0)
+t          : M:2        : map{a:aaa,x:xyz}
+default    : L:0        : []
+default    : V:pop      : methodvalue (L:22).pop
+L          : L:22       : [~,0,1,2,2.718,3.142,,0,1,2,C:rec,F:%stdin,P:main,P:write,rec{},rec{},CH:0,CH:0,M:2,L:0,V:pop,L:22]
