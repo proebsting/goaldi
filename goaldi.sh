@@ -55,4 +55,8 @@ fi
 
 #  translate and execute
 trap 'X=$?; rm -f $TMP; exit $X' 0 1 2 15
-$TRAN >$TMP && exec gexec $XOPTS $TMP "$@"
+if $TRAN >$TMP; then
+	exec gexec $XOPTS $TMP "$@"
+else
+	exit 125		# exit 125 designates compilation error
+fi

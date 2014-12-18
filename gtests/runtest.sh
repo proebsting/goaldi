@@ -39,8 +39,11 @@ for F in $*; do
 			echo "output differs"
 			FAILURES="$FAILURES $F"
 		fi
+	elif [ $? = 125 ]; then
+		echo "compilation error"
+		FAILURES="$FAILURES $F"
 	else
-		echo "error exit"
+		echo "execution error"
 		FAILURES="$FAILURES $F"
 	fi
 done
