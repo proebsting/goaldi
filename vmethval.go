@@ -46,6 +46,22 @@ func (v *VMethVal) Copy() Value {
 	return v
 }
 
+//  VMethVal.Identical -- check equality for === operator
+func (s *VMethVal) Identical(x Value) Value {
+	t, ok := x.(*VMethVal)
+	if !ok {
+		return nil // different types
+	}
+	if Identical(s.Val, t.Val) == nil {
+		return nil // different values
+	}
+	if s.Name == t.Name {
+		return s // same method of same value
+	} else {
+		return nil // different methods
+	}
+}
+
 //  VMethVal.Import returns itself
 func (v *VMethVal) Import() Value {
 	return v
