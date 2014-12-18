@@ -54,5 +54,5 @@ if [ -n "$CFLAG" ]; then	# -c: produce file.gir, and quit
 fi
 
 #  translate and execute
-trap 'rm -f $TMP; exit' 0 1 2 15
+trap 'X=$?; rm -f $TMP; exit $X' 0 1 2 15
 $TRAN >$TMP && exec gexec $XOPTS $TMP "$@"
