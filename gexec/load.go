@@ -72,6 +72,7 @@ func dumptree(indent string, x interface{}) {
 		}
 		fmt.Printf("\n%s   local %v\n", indent, t.LocalList)
 		fmt.Printf("%s   static %v\n", indent, t.StaticList)
+		fmt.Printf("%s   unbound %v\n", indent, t.GlobalList)
 		dumptree(indent, t.CodeList)
 	case ir_chunk:
 		fmt.Printf("%s%s:\n", indent, t.Label)
