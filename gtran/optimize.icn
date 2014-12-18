@@ -105,7 +105,6 @@ procedure optim_def_use(p, uses, defs)
     "ir_Var" :   { defs[\p.lhs] +:= 1
 	    }
     "ir_Key" :   { defs[\p.lhs] +:= 1
-	    uses[\p.failLabel] +:= 1
 	    }
     "ir_IntLit" :    { defs[\p.lhs] +:= 1
 	    }
@@ -191,7 +190,6 @@ procedure optim_rewrite(p, rename)
     "ir_IndirectGoto" :  { }
     "ir_Var" :   { p.lhs := optim_rename(\p.lhs, rename) }
     "ir_Key" :   { p.lhs := optim_rename(\p.lhs, rename) 
-            p.failLabel := optim_rename(\p.failLabel, rename);
 	    }
     "ir_IntLit" :    { p.lhs := optim_rename(\p.lhs, rename) }
     "ir_RealLit" :   { p.lhs := optim_rename(\p.lhs, rename) }
@@ -212,7 +210,6 @@ procedure optim_rewrite(p, rename)
             }
     "ir_Field" : { p.lhs := optim_rename(\p.lhs, rename)
             p.expr := optim_rename(p.expr, rename)
-            p.failLabel := optim_rename(\p.failLabel, rename)
             }
     "ir_Call" |
     "ir_OpFunction":{p.lhs := optim_rename(\p.lhs, rename);
@@ -365,12 +362,10 @@ procedure optim_goto_transitive(t, new, lab)
 		p.resumeLabel := optim_goto_chain(\p.resumeLabel, t)
 		optim_goto_transitive(t, new, \p.resumeLabel)
 		}
-	    "ir_Field" : {  # ir_Field : ( lhs expr field failLabel )
-		p.failLabel := optim_goto_chain(\p.failLabel, t)
-		optim_goto_transitive(t, new, \p.failLabel)
+	    "ir_Field" : {  # ir_Field : ( lhs expr field )
 		}
+	    "ir_Key" : {}
 	    "ir_Call" |
-	    "ir_Key" |
 	    "ir_OpFunction" : {  # ir_OpFunction : ( lhs fn argList failLabel )
 		p.failLabel := optim_goto_chain(\p.failLabel, t)
 		optim_goto_transitive(t, new, \p.failLabel)
@@ -442,11 +437,10 @@ procedure optim_refcountX(refcount, p)
     "ir_Succeed" : {  # ir_Succeed : ( expr resumeLabel )
 	refcount[p.resumeLabel] +:= 1
         }
-    "ir_Field" : {  # ir_Field : ( lhs expr field failLabel )
-	refcount[p.failLabel] +:= 1
+    "ir_Field" : {  # ir_Field : ( lhs expr field )
         }
+    "ir_Key" : {}
     "ir_Call" |
-    "ir_Key" |
     "ir_OpFunction" : {  # ir_OpFunction : ( lhs fn argList failLabel )
 	refcount[p.failLabel] +:= 1
         }
@@ -475,7 +469,7 @@ procedure optim_test_elimination(t, start)
 
 	every chunk := !t &
 	      type(chunk[-1]) == "ir_Goto" &
-	      type(chunk[-2]) == ("ir_Call" | "ir_OpFunction" | "ir_Key") &
+	      type(chunk[-2]) == ("ir_Call" | "ir_OpFunction" ) &
 	      chunk[-1].targetLabel === \chunk[-2].failLabel do {
 	    chunk[-2].failLabel := &null
 	}
