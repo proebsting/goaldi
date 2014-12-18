@@ -10,8 +10,15 @@ PROGS = $(PKG)/gexec
 # GOBIN expands in shell to {first component of $GOPATH}/bin
 GOBIN = $${GOPATH%%:*}/bin
 
-#  default action: build all, run test suite, run expt if present
-default:  build test expt
+#  default action: set up, build all, run test suite, run expt.gdi if present
+default:  setup build test expt
+
+#  configure Git pre-commit hook
+HOOKMASTER = ./pre-commit.hook
+HOOKFILE = .git/hooks/pre-commit
+setup:	$(HOOKFILE)
+$(HOOKFILE):	$(HOOKMASTER)
+	cp $(HOOKMASTER) $(HOOKFILE)
 
 #  build and install Goaldi
 build:
