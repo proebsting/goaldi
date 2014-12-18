@@ -4,6 +4,7 @@
 *.out
 *.err
 *.gir
+*.dot
 *.u[12]
 PROFILE
 gtran/do_ops.icn
