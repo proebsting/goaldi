@@ -96,11 +96,6 @@ func interp(env *g.Env, pr *pr_Info, outer map[string]interface{},
 		f.vars[pr.params[n]] = g.Trapped(vp)
 	}
 
-	// initialize locals
-	for _, name := range pr.locals {
-		f.vars[name] = g.Trapped(g.NewVariable(g.NilValue))
-	}
-
 	// execute the IR code
 	return execute(&f, pr.ir.CodeStart)
 }

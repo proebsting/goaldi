@@ -112,9 +112,13 @@ func execute(f *pr_frame, label string) (g.Value, *g.Closure) {
 					}
 					f.temps[i.Lhs] = v
 				case ir_EnterScope:
-					//#%#%#% NOT YET IMPLEMENTED
+					for _, name := range i.NameList {
+						f.vars[name] = g.Trapped(g.NewVariable(g.NilValue))
+					}
 				case ir_ExitScope:
-					//#%#% potential later optimization: discard references
+					for _, name := range i.NameList {
+						f.vars[name] = nil;	// allow garbage collection
+					}
 				case ir_Move:
 					f.temps[i.Lhs] = f.temps[i.Rhs]
 				case ir_MoveLabel:
