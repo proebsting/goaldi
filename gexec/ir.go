@@ -84,16 +84,16 @@ type ir_Global struct {
 }
 
 type ir_Function struct {
-	Coord      string
-	Name       string
-	ParamList  []string
-	Accumulate string // may be nil
-	LocalList  []string
-	StaticList []string
-	GlobalList []string
-	CodeList   []ir_chunk
-	CodeStart  string
-	Lvalset    []string
+	Coord       string
+	Name        string
+	ParamList   []string
+	Accumulate  string // may be nil
+	LocalList   []string
+	StaticList  []string
+	UnboundList []string
+	CodeList    []ir_chunk
+	CodeStart   string
+	Lvalset     []string
 }
 
 type ir_chunk struct {
