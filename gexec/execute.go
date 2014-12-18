@@ -89,7 +89,6 @@ func execute(f *pr_frame, label string) (g.Value, *g.Closure) {
 						panic(&g.RunErr{"Unrecognized dynamic variable",
 							"%" + i.Name})
 					}
-					//#%#% ignoring failure and FailLabel
 					if i.Lhs != "" {
 						f.temps[i.Lhs] = v
 					}
@@ -163,9 +162,6 @@ func execute(f *pr_frame, label string) (g.Value, *g.Closure) {
 						if i.Lhs != "" {
 							f.temps[i.Lhs] = v
 						}
-					} else if i.FailLabel != "" {
-						label = i.FailLabel
-						break Chunk
 					}
 				case ir_Call:
 					f.coord = i.Coord

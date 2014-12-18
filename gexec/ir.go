@@ -128,10 +128,9 @@ type ir_Var struct {
 }
 
 type ir_Key struct {
-	Coord     string
-	Lhs       string // may be nil
-	Name      string
-	FailLabel string // may be nil
+	Coord string
+	Lhs   string // may be nil
+	Name  string
 }
 
 type ir_IntLit struct {
@@ -197,12 +196,11 @@ type ir_MakeList struct {
 }
 
 type ir_Field struct {
-	Coord     string
-	Lhs       string // may be nil
-	Expr      string
-	Field     string
-	Rval      string // may be nil
-	FailLabel string
+	Coord string
+	Lhs   string // may be nil
+	Expr  string
+	Field string
+	Rval  string // may be nil
 }
 
 type ir_OpFunction struct {
