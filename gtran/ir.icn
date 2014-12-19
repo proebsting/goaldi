@@ -5,7 +5,7 @@ record ir_Link(coord, nameList)
 record ir_Record(coord, name, fieldList)
 record ir_Global(coord, nameList)
 record ir_Function(coord, name, paramList, accumulate,
-               localList, staticList, unboundList, codeList, codeStart, lvalset)
+               localList, staticList, unboundList, codeList, codeStart, lvalset, parent)
 record ir_chunk(label, insnList)
 
 record ir_NoOp(coord, comment)

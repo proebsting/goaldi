@@ -5,7 +5,7 @@ global ir_deferred, ir_declare_set
 record ir_info(start, resume, failure, success, x)
 record ir_loopinfo(nextlabel, continue, value, bounded, rval, indirects)
 
-record ir_stacks(tmp, current_proc, createflag, declare_set, loop_stack, localSet, staticSet, globalSet, syms)
+record ir_stacks(tmp, current_proc, createflag, declare_set, loop_stack, localSet, staticSet, globalSet, syms, parent)
 
 record ir_scope(parent, T)
 
@@ -683,7 +683,7 @@ end
 
 # record a_ProcDecl( ident paramList accumulate localsList code )
 procedure ir_a_ProcDeclNested(p, st, target, bounded, rval)
-    local f, scope
+    local f, scope, st1
     static counter
 
     initial {
@@ -704,9 +704,10 @@ procedure ir_a_ProcDeclNested(p, st, target, bounded, rval)
     /bounded & suspend ir_chunk(p.ir.resume, [ ir_Goto(ir_coord(p.coord), p.ir.failure) ])
 
     scope := st.syms
-    st := ir_stacks(0)
-    st.syms := scope
-    f := ir_a_ProcDecl0(p, st)
+    st1 := ir_stacks(0)
+    st1.parent := st.current_proc
+    st1.syms := scope
+    f := ir_a_ProcDecl0(p, st1)
     push(ir_deferred, f)
 end
 
@@ -757,7 +758,9 @@ procedure ir_a_ProcDecl0(p, st, target, bounded, rval)
 
     return ir_Function(ir_coord(p.ident.coord), p.ident.id, params,
 		      p.accumulate, locals, statics, globals, code,
-                      p.code.ir.start)
+                      p.code.ir.start,
+		      # st.parent # GMT: add this to get the parent
+		      )
 end
 
 # record a_ProcBody( nexprList )
