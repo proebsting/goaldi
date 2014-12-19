@@ -5,7 +5,7 @@
 #  To see options, run with no arguments.
 #  Assumes that gtran and gexec are in the search path.
 
-FLAGS=cdNltvADFJPT
+FLAGS=acdNltvADFJPT
 TMP=/tmp/gdi.$$.gir
 
 #  define usage abort
@@ -13,9 +13,10 @@ usage() {
 	exec >&2
 	cat <<==EOF==
 Usage: $0 [-$FLAGS] file [arg...]
-  -c  compile only, producing IR on file.gir (interpreter options ignored)
-  -d  compile only, producing Dot directives on file.dot
   -N  no optimization
+  -c  compile only, producing IR on file.gir
+  -a  compile only, producing IR on file.gir and assembly listing on file.gia
+  -d  compile only, producing Dot directives on file.dot
 ==EOF==
 	gexec -? 2>&1 | sed -n 's/=false: /  /p'
 	exit 1
@@ -23,11 +24,13 @@ Usage: $0 [-$FLAGS] file [arg...]
 
 #  process options
 XOPTS=
+AFLAG=
 CFLAG=
 DFLAG=
 OPT=": optim -O"
 while getopts $FLAGS C; do
     case $C in
+	a)			AFLAG=$C;;
 	c)			CFLAG=$C;;
 	d)			DFLAG=$C;;
 	N)			OPT="";;
@@ -39,18 +42,24 @@ shift $(($OPTIND - 1))
 test $# -lt 1 && usage
 
 I=$1
+B=${I%.*}
 DOT="gtran cat $I : yylex : parse : ast2ir $OPT : dot_File : stdout"
 TRAN="gtran cat $I : yylex : parse : ast2ir $OPT : json_File : stdout"
 shift
 
 export COEXPSIZE=300000
 
-if [ -n "$DFLAG" ]; then	# -d: produce file.dot, and quit
-    exec $DOT >${I%.*}.dot
+if [ -n "$AFLAG" ]; then	# -a: produce file.gir and file.gia, then quit
+    $TRAN >$B.gir && gexec $XOPTS -l -A $B.gir >$B.gia
+	exit
 fi
 
 if [ -n "$CFLAG" ]; then	# -c: produce file.gir, and quit
-    exec $TRAN >${I%.*}.gir
+    exec $TRAN >$B.gir
+fi
+
+if [ -n "$DFLAG" ]; then	# -d: produce file.dot, and quit
+    exec $DOT >$B.dot
 fi
 
 #  translate and execute

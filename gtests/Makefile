@@ -7,7 +7,8 @@ runall:
 	./runtest.sh
 
 gir:	; $(MAKE) F=c X=gir derivatives   # make .gir for every .gdi file
-dot:	; $(MAKE) F=d X=dot derivatives   # make .gir for every .gdi file
+gia:	; $(MAKE) F=a X=gia derivatives   # make .gia for every .gdi file
+dot:	; $(MAKE) F=d X=dot derivatives   # make .dot for every .gdi file
 
 F=c
 X=gir
@@ -19,4 +20,4 @@ derivatives:	# run goaldi -$F on every *.gdi to make *.$X
 	ls *.$X
 
 clean:
-	rm -f *.gir *.out *.err *.tmp *.dot
+	rm -f *.tmp *.out *.err *.gir *.gia *.dot

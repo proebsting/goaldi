@@ -3,6 +3,7 @@
 *.tmp
 *.out
 *.err
+*.gia
 *.gir
 *.dot
 *.u[12]
