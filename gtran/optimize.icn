@@ -84,9 +84,6 @@ procedure optim_def_use(p, uses, defs)
     "ir_MoveLabel" :  { defs[\p.lhs] +:= 1
 	    uses[p.label] +:= 1
             }
-    "ir_Assign" :  { uses[p.target] +:= 1
-	    uses[p.value] +:= 1
-            }
     "ir_Deref" :  { defs[\p.lhs] +:= 1
 	    uses[p.value] +:= 1
             }
@@ -181,8 +178,6 @@ procedure optim_rewrite(p, rename)
             p.rhs := optim_rename(p.rhs, rename) }
     "ir_MoveLabel" :  { p.lhs := optim_rename(\p.lhs, rename);
             p.label := optim_rename(p.label, rename) }
-    "ir_Assign" :  { p.target := optim_rename(p.target, rename);
-            p.value := optim_rename(p.value, rename) }
     "ir_Deref" :  { p.lhs := optim_rename(\p.lhs, rename);
             p.value := optim_rename(p.value, rename) }
     "ir_ScanSwap" :  { }
@@ -339,7 +334,6 @@ procedure optim_goto_transitive(t, new, lab)
 	    "ir_TmpLabel" |
 	    "ir_Move" |
 	    "ir_IndirectGoto" |
-	    "ir_Assign" |
 	    "ir_MakeClosure" |
 	    "ir_NoOp" |
 	    "ir_EnterScope" |
@@ -412,10 +406,6 @@ procedure optim_refcountX(refcount, p)
     "ir_MakeClosure" |
     "ir_TmpLabel" : {
 	# nothing
-    }
-    "ir_Assign" : {
-	refcount[p.target] +:= 1
-	refcount[p.value] +:= 1
     }
     "ir_Deref" : {
 	refcount[p.value] +:= 1
