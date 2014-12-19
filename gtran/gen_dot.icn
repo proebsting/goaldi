@@ -128,7 +128,7 @@ procedure dot_function(name, params, accumulate, locals, statics, code,
 
     write("digraph ", name, " {")
     write("ratio=auto;")
-    write("page=\"8.5,11\";")
+    # write("page=\"8.5,11\";")	# breaks output into letter-sized pages
     dot_emit_table := table()
     every i := !code do {
         dot_emit_table[i.label] := i.insnList
