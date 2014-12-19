@@ -94,6 +94,7 @@ type ir_Function struct {
 	CodeList    []ir_chunk
 	CodeStart   string
 	Lvalset     []string
+	Parent      string
 }
 
 type ir_chunk struct {
