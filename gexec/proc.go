@@ -5,7 +5,6 @@ package main
 import (
 	"fmt"
 	g "goaldi"
-	"regexp"
 )
 
 //  information about a procedure that is shared by all invocations
@@ -23,9 +22,6 @@ type pr_Info struct {
 
 //  global index of procedure information
 var ProcTable = make(map[string]*pr_Info)
-
-//  pattern for extracting name of enclosing procedure
-var enclpat = regexp.MustCompile(`^(.*)\$nested\$[0-9]*$`)
 
 //  declareProc initializes and returns a procedure info structure
 func declareProc(ir *ir_Function) *pr_Info {
@@ -47,9 +43,8 @@ func declareProc(ir *ir_Function) *pr_Info {
 	}
 	ProcTable[ir.Name] = pr
 	// if nested, we also know all idents known to enclosing procedure
-	matches := enclpat.FindStringSubmatch(pr.name) // check pattern of proc name
-	if matches != nil {                            // if nested
-		pr.outer = ProcTable[matches[1]]   // look up parent info
+	if ir.Parent != "" { // if nested
+		pr.outer = ProcTable[ir.Parent]    // link parent info
 		for name := range pr.outer.known { // every identifier known there
 			pr.known[name] = true // is known here, too
 		}
