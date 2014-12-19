@@ -61,4 +61,4 @@ do_ops.icn: oplexgen
 #  cleanup
 
 clean:
-	rm -rf *.u[12] do_ops.icn oplexgen
+	rm -rf *.u[12] do_ops.icn oplexgen gtran
