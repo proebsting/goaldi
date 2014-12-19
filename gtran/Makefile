@@ -18,7 +18,6 @@ BASESRC = \
 
 LEXSRC = \
 	do_ops.icn \
-	preprocessor.icn \
 	lexer.icn
 
 PARSESRC = \
@@ -32,13 +31,9 @@ IRGENSRC = \
 
 CODEGENSRC = \
 	gen_json.icn \
-	gen_bc.icn \
 	gen_symbolic.icn \
 	gen_dot.icn \
-	gen_ucode.icn \
-	optimize.icn \
-	interface.icn \
-	bytecode.icn 
+	optimize.icn
 
 TRANSRC = $(BASESRC) \
 	$(LEXSRC)  \
@@ -48,8 +43,7 @@ TRANSRC = $(BASESRC) \
 	jtran_main.icn
 
 LINKSRC = \
-	linker.icn \
-	bytecode.icn
+	linker.icn
 
 TRANOBJ = $(TRANSRC:.icn=.u2)
 LINKOBJ = $(LINKSRC:.icn=.u2)
@@ -105,12 +99,6 @@ bmark:	jtran jjtran
 oplexgen: oplexgen.icn
 	$(ICONT) -o oplexgen oplexgen.icn
 
-interfacegen: interfacegen.icn
-	$(ICONT) -o interfacegen interfacegen.icn
-
-interface.icn: interfacegen
-	./interfacegen > interface.icn
-
 do_ops.icn: oplexgen
 	./oplexgen > do_ops.icn
 
@@ -118,5 +106,5 @@ do_ops.icn: oplexgen
 #  cleanup
 
 clean:
-	rm -rf *.u[12] *.zip tmp do_ops.icn interface.icn 
-	rm -rf jtran jjtran jlink jjlink interfacegen oplexgen
+	rm -rf *.u[12] *.zip tmp do_ops.icn
+	rm -rf jtran jjtran jlink jjlink oplexgen
