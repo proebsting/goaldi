@@ -6,15 +6,77 @@ procedure dot_emit(label, code)
     dot_emit_table[label] := code
 end
 
+procedure n(x)
+   return ((\x).name | "_")
+end
+
 procedure dot_dump(i)
-    return map(ir_dump(i), "<>", "()")
+    case type(i) of {
+    default: runerr(500, i)
+    "ir_Label" : return i.value
+    "ir_MoveLabel" : {
+	    return "MoveLabel " ||
+	          n(i.lhs) ||
+		  " " ||
+		  i.label.value
+    }
+    "ir_Move" : {
+	    return "Move " ||
+	          n(i.lhs) ||
+		  " " ||
+		  n(i.rhs)
+    }
+    "ir_ResumeValue" : {
+	    return "ResumeValue " ||
+	          n(i.lhs) ||
+		  " " ||
+		  n(i.lhsclosure) ||
+		  " " ||
+		  n(i.closure)
+    }
+    "ir_OpFunction" : {
+	    return "Op" ||
+	          " " ||
+	          n(i.lhs) ||
+		  " " ||
+		  n(i.lhsclosure) ||
+		  " " ||
+		  i.fn ||
+		  " " ||
+		  "[...]"
+    }
+    "ir_Call" : {
+	    return "Call" ||
+	          " " ||
+	          n(i.lhs) ||
+		  " " ||
+		  n(i.lhsclosure) ||
+		  " " ||
+		  n(i.fn) ||
+		  " " ||
+		  "[...]"
+    }
+    "ir_MakeClosure" |
+    "ir_Key" |
+    "ir_Var" : return type(i)[4:0] || " " || n(i.lhs) || " " || i.name
+    "ir_StrLit" |  # going to cause problems...
+    "ir_CsetLit" |  # going to cause problems...
+    "ir_RealLit" |
+    "ir_IntLit" : return type(i)[4:0] || " " || n(i.lhs) || " " || i.val
+    "ir_Goto" |
+    "ir_IndirectGoto" |
+    "ir_Fail" |
+    "ir_EnterScope" |
+    "ir_ExitScope" : return type(i)[4:0]
+    }
 end
 
 procedure dot_output(t)
     local label, code, lab, s, i, insn
 
     every label := key(t) & code := t[label] do {
-        lab := image(dot_dump(label))
+        lab := label.value
+
         writes(lab)
         writes(" [shape=record,label=")
         s := "{ <f0> "
@@ -26,20 +88,17 @@ procedure dot_output(t)
         s ||:= " }"
         writes(image(s))
         write("];")
+
         every i := 1 to *code do {
             insn := code[i]
             case type(insn) of {
-            "ir_MoveLabel" : {
-                if type(\insn.lhs) == "ir_TmpLabel" then {
-                    write(image(dot_dump(insn.lhs)),
-                          "->",
-                          image(dot_dump(insn.rhs)))
-                }
+            "ir_IndirectGoto" : {
+                every write(lab, ":f", i, " ->", image(dot_dump(!insn.labelList)))
                 }
             "ir_Goto" : {
                 write(lab, ":f", i, " ->", image(dot_dump(insn.targetLabel)))
                 }
-            "ir_Field" |
+            "ir_Call" |
             "ir_OpFunction" |
             "ir_ResumeValue" : {
                 write(lab, ":f", i,
@@ -57,12 +116,6 @@ procedure dot_output(t)
                       " ->",
                       image(dot_dump(insn.resumeLabel)),
                       " [label=resumeLabel]")
-                }
-            "ir_EnterInit" : {
-                write(lab, ":f", i,
-                      " ->",
-                      image(dot_dump(insn.startLabel)),
-                      " [label=start]")
                 }
             }
         }
