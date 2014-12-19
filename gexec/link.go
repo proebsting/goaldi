@@ -53,10 +53,8 @@ func link(parts [][]interface{}) {
 }
 
 //  irDecl -- process IR file declaration
-//	install declared global variables in global dictionary
-//		#%#% as trapped variables; is that really the best way?
+//	install declared global variables as trapped references in global dictionary
 //	install procedures in proc info table
-//	note references to undeclared identifiers
 func irDecl(decl interface{}) {
 	switch x := decl.(type) {
 	case ir_Global:
@@ -66,22 +64,14 @@ func irDecl(decl interface{}) {
 			}
 		}
 	case ir_Function:
-		pr := declareProc(&x)
-		for _, chunk := range x.CodeList {
-			for _, insn := range chunk.InsnList {
-				if i, ok := insn.(ir_Var); ok {
-					if !pr.known[i.Name] {
-						Undeclared[i.Name] = true
-					}
-				}
-			}
+		declareProc(&x)
+		for _, id := range x.UnboundList {
+			Undeclared[id] = true
 		}
 	case ir_Record:
 		StructList = append(StructList, &x)
-	case ir_Invocable, ir_Link:
-		//#%#%#% nothing?
-	default:
-		panic(fmt.Sprintf("gdecl1: %#v", x))
+	default: // including ir_Invocable, ir_Link
+		panic(fmt.Sprintf("unrecognized: %#v", x))
 	}
 }
 

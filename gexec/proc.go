@@ -13,7 +13,6 @@ type pr_Info struct {
 	outer    *pr_Info                 // enclosing procedure, if any
 	ir       *ir_Function             // intermediate code structure
 	insns    map[string][]interface{} // map from labels to IR code chunks
-	known    map[string]bool          // set of locally declared identifiers
 	statics  map[string]interface{}   // table of statics (including globals)
 	locals   []string                 // list of local names
 	params   []string                 // list of parameter names
@@ -31,24 +30,7 @@ func declareProc(ir *ir_Function) *pr_Info {
 	pr.variadic = (ir.Accumulate != "")
 	pr.params = pr.ir.ParamList
 	pr.locals = pr.ir.LocalList
-	pr.known = make(map[string]bool)
-	for _, name := range pr.params {
-		pr.known[name] = true
-	}
-	for _, name := range pr.locals {
-		pr.known[name] = true
-	}
-	for _, name := range ir.StaticList {
-		pr.known[name] = true
-	}
 	ProcTable[ir.Name] = pr
-	// if nested, we also know all idents known to enclosing procedure
-	if ir.Parent != "" { // if nested
-		pr.outer = ProcTable[ir.Parent]    // link parent info
-		for name := range pr.outer.known { // every identifier known there
-			pr.known[name] = true // is known here, too
-		}
-	}
 	return pr
 }
 
@@ -56,7 +38,11 @@ func declareProc(ir *ir_Function) *pr_Info {
 func setupProc(pr *pr_Info) {
 
 	// report undeclared identifiers
-	undeclared(pr)
+	for _, id := range pr.ir.UnboundList {
+		if GlobalDict[id] == nil {
+			warning("in " + pr.name + ": undeclared identifier " + id)
+		}
+	}
 
 	// make a trapped variable for every static
 	pr.statics = make(map[string]interface{})
@@ -76,23 +62,6 @@ func setupProc(pr *pr_Info) {
 	if opt_verbose {
 		fmt.Printf("\n%s()  %d param  %d local  %d static\n",
 			pr.name, len(pr.params), len(pr.locals), len(pr.statics))
-	}
-}
-
-//  undeclared reports identifiers never declared anywhere
-func undeclared(pr *pr_Info) {
-	for _, chunk := range pr.ir.CodeList {
-		for _, insn := range chunk.InsnList {
-			if i, ok := insn.(ir_Var); ok {
-				if !pr.known[i.Name] && Undeclared[i.Name] {
-					//%#% warn now, later fatal
-					warning(fmt.Sprintf("%v %s undeclared",
-						i.Coord, i.Name))
-					// inhibit repeated warnings
-					delete(Undeclared, i.Name)
-				}
-			}
-		}
 	}
 }
 

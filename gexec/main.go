@@ -9,8 +9,6 @@ import (
 	"runtime/pprof"
 )
 
-type UNKNOWN interface{} // temporary designation for type TBD
-
 //  globals
 
 var GlobalDict = make(map[string]g.Value)
