@@ -39,8 +39,8 @@ shift $(($OPTIND - 1))
 test $# -lt 1 && usage
 
 I=$1
-DOT="gtran preproc $I : yylex : parse : ast2ir $OPT : dot_File : stdout"
-TRAN="gtran preproc $I : yylex : parse : ast2ir $OPT : json_File : stdout"
+DOT="gtran cat $I : yylex : parse : ast2ir $OPT : dot_File : stdout"
+TRAN="gtran cat $I : yylex : parse : ast2ir $OPT : json_File : stdout"
 shift
 
 export COEXPSIZE=300000

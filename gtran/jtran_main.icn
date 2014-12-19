@@ -3,14 +3,16 @@
 invocable all
 
 procedure cat(getline, args)
-    local f, p
+    local fname, f, p
 
-    while f := !args do {
-        suspend |open(f)
+    every fname := !args do {
+        f := open(fname) | stop("cannot open ", fname)
+        suspend "#line 0 " || image(fname)
+        suspend !f
     }
     if *args = 0 then {
         if /getline then {
-            suspend |&input
+            suspend !&input
         } else {
             while p := @getline do {
                 suspend p
