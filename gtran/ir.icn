@@ -50,8 +50,6 @@ record ir_Select(coord, caseList)
 record ir_SelectCase(coord, kind, lhs, rhs, bodyLabel)
 record ir_NoValue(coord, lhs)
 
-record ir_ScanSwap(coord, subject, pos)
-
 record ir_Unreachable(coord)
 
 record ir_coordinate(file, line, column)

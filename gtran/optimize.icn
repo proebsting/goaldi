@@ -87,12 +87,6 @@ procedure optim_def_use(p, uses, defs)
     "ir_Deref" :  { defs[\p.lhs] +:= 1
 	    uses[p.value] +:= 1
             }
-    "ir_ScanSwap" :  {
-	    uses[p.subject] +:= 1
-	    uses[p.pos] +:= 1
-	    defs[p.subject] +:= 1
-	    defs[p.pos] +:= 1
-            }
     "ir_Goto" :  {
 	    uses[p.targetLabel] +:= 1
 	    }
@@ -180,7 +174,6 @@ procedure optim_rewrite(p, rename)
             p.label := optim_rename(p.label, rename) }
     "ir_Deref" :  { p.lhs := optim_rename(\p.lhs, rename);
             p.value := optim_rename(p.value, rename) }
-    "ir_ScanSwap" :  { }
     "ir_Goto" :  { }
     "ir_IndirectGoto" :  { }
     "ir_Var" :   { p.lhs := optim_rename(\p.lhs, rename) }
@@ -329,7 +322,6 @@ procedure optim_goto_transitive(t, new, lab)
 	    "ir_StrLit" |
 	    "ir_CsetLit" |
 	    "ir_NoValue" |
-	    "ir_ScanSwap" |
 	    "ir_Tmp" |
 	    "ir_TmpLabel" |
 	    "ir_Move" |
@@ -401,7 +393,6 @@ procedure optim_refcountX(refcount, p)
     "ir_StrLit" |
     "ir_CsetLit" |
     "ir_NoValue" |
-    "ir_ScanSwap" |
     "ir_Tmp" |
     "ir_MakeClosure" |
     "ir_TmpLabel" : {
