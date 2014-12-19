@@ -40,11 +40,13 @@ TRANOBJ = $(TRANSRC:.icn=.u2)
 
 #  the Goaldi translator
 
-default:  gtran
+default:  install
+
+install:  gtran
+	D=$${GOPATH%%:*}/bin/gtran; set -x; cmp -s gtran $$D || cp gtran $$D
 
 gtran:	$(TRANOBJ)
 	$(ICONT) -o gtran $(TRANOBJ)
-	cp gtran $${GOPATH%%:*}/bin/gtran
 
 
 # programs that build programs
