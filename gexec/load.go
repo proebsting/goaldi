@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"os"
 	"reflect"
+	"strings"
 )
 
 //  load -- read a single JSON-encoded IR file as a tree of objects
@@ -64,8 +65,8 @@ func dumptree(indent string, x interface{}) {
 			dumptree(indent, v)
 		}
 	case ir_Function:
-		fmt.Printf("\n%sproc %s  %v  start %v\n",
-			indent, t.Name, t.Coord, t.CodeStart)
+		fmt.Printf("\n%sproc %s {%v}  parent:%s  start:%v\n",
+			indent, t.Name, t.Coord, t.Parent, t.CodeStart)
 		fmt.Printf("%s   param %v", indent, t.ParamList)
 		if t.Accumulate != "" {
 			fmt.Printf(" [accumulate]")
@@ -78,7 +79,11 @@ func dumptree(indent string, x interface{}) {
 		fmt.Printf("%s%s:\n", indent, t.Label)
 		dumptree(indent+"   ", t.InsnList)
 	default:
-		fmt.Printf("%s%T %v\n", indent, x, x)
+		s := fmt.Sprintf("%T %v", x, x)
+		if strings.HasPrefix(s, "main.ir_") {
+			s = s[8:]
+		}
+		fmt.Printf("%s%s\n", indent, s)
 	}
 }
 
