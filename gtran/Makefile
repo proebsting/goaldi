@@ -33,18 +33,18 @@ TRANSRC = $(BASESRC) \
 	$(PARSESRC) \
 	$(IRGENSRC) \
 	$(CODEGENSRC) \
-	jtran_main.icn
+	gtran.icn
 
 TRANOBJ = $(TRANSRC:.icn=.u2)
 
 
 #  the Goaldi translator
 
-default:  jtran
+default:  gtran
 
-jtran:	$(TRANOBJ)
-	$(ICONT) -o jtran $(TRANOBJ)
-	cp jtran $${GOPATH%%:*}/bin/gtran
+gtran:	$(TRANOBJ)
+	$(ICONT) -o gtran $(TRANOBJ)
+	cp gtran $${GOPATH%%:*}/bin/gtran
 
 
 # programs that build programs

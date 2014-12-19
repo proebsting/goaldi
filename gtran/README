@@ -1,4 +1,4 @@
-jcon/tran -- Jcon translator directory
+goaldi/gtran -- Goaldi translator directory
 
-This directory contains source code for the Jcon translator
-and linker, all written in Icon.
+This directory contains source code for the Goaldi translator.
+It generates intermediate code as a JSON file.

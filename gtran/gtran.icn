@@ -1,4 +1,4 @@
-#  jtran_main.icn -- (generic) driver for Jcon.
+#  gtran.icn -- (generic) driver for Goaldi translator.
 
 invocable all
 
