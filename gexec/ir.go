@@ -93,7 +93,6 @@ type ir_Function struct {
 	UnboundList []string
 	CodeList    []ir_chunk
 	CodeStart   string
-	Lvalset     []string
 	Parent      string
 }
 

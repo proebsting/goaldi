@@ -758,7 +758,7 @@ procedure ir_a_ProcDecl0(p, st, target, bounded, rval)
 
     return ir_Function(ir_coord(p.ident.coord), p.ident.id, params,
 		      p.accumulate, locals, statics, globals, code,
-                      p.code.ir.start, &null, st.parent)
+                      p.code.ir.start, st.parent)
 end
 
 # record a_ProcBody( nexprList )
