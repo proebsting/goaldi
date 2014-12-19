@@ -1,16 +1,9 @@
-#  jcon/tran/Makefile -- for building the Jcon translator and linker
-#
-#  To build translator and linker:	make
-#  To build them using Jcon:		make jj
-#  To benchmark the two versions:	make bmark
-
+#  gtran Makefile
 
 ICONT = icont -u -s
-JCONT = ../bin/jcont -s
 
-.SUFFIXES: .icn .u2 .zip
+.SUFFIXES: .icn .u2
 .icn.u2:	; $(ICONT) -c $<
-.icn.zip:	; $(JCONT) -c $<
 
 
 BASESRC = \
@@ -42,56 +35,16 @@ TRANSRC = $(BASESRC) \
 	$(CODEGENSRC) \
 	jtran_main.icn
 
-LINKSRC = \
-	linker.icn
-
 TRANOBJ = $(TRANSRC:.icn=.u2)
-LINKOBJ = $(LINKSRC:.icn=.u2)
-
-TRANZIP = $(TRANSRC:.icn=.zip)
-LINKZIP = $(LINKSRC:.icn=.zip)
 
 
-# usual versions built by icont
+#  the Goaldi translator
 
 default:  jtran
-
-all:	jtran jlink
 
 jtran:	$(TRANOBJ)
 	$(ICONT) -o jtran $(TRANOBJ)
 	cp jtran $${GOPATH%%:*}/bin/gtran
-
-jlink:	$(LINKOBJ)
-	$(ICONT) -o jlink $(LINKOBJ)
-	# cp jlink ../bin
-
-
-# versions built by Jcon (not built by default)
-
-jj:	jjtran jjlink
-
-jjtran:	$(TRANZIP)
-	$(JCONT) -o jjtran $(TRANZIP)
-	# cp jjtran ../bin
-
-jjlink:	$(LINKZIP)
-	$(JCONT) -o jjlink $(LINKZIP)
-	# cp jjlink ../bin
-
-
-# benchmarking
-
-BSRC = irgen.icn
-ARGS = preproc $(BSRC) : yylex : parse : ast2ir : \
-	bc_File -O -class:'l$$$(BSRC:.icn=)' -dir:./tmp/
-
-bmark:	jtran jjtran
-	test -d tmp || mkdir tmp
-	rm -rf tmp/*
-	BLKSIZE=6000000 STRSIZE=1000000 COEXPSIZE=50000 time ./jtran $(ARGS)
-	rm -rf tmp/*
-	time ./jjtran $(ARGS)
 
 
 # programs that build programs
@@ -106,5 +59,4 @@ do_ops.icn: oplexgen
 #  cleanup
 
 clean:
-	rm -rf *.u[12] *.zip tmp do_ops.icn
-	rm -rf jtran jjtran jlink jjlink oplexgen
+	rm -rf *.u[12] do_ops.icn oplexgen
