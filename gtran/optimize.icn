@@ -464,6 +464,7 @@ procedure optim(irgen, flagList)
         "ir_Global" |
         "ir_Record" |
         "ir_Invocable" |
+        "ir_Package" |
         "ir_Link" : {
 		suspend p
 	}

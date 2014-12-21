@@ -33,6 +33,7 @@ procedure init_lex_tables()
                ["not",             "NOT",       "b" ],
                ["of",              "OF",        ""  ],
                ["onerror",         "ONERROR",   "b"  ],
+               ["package",         "PACKAGE",   "b"  ],
                ["procedure",       "PROCEDURE", "b"  ],
                ["record",          "RECORD",    "b"  ],
                ["repeat",          "REPEAT",    "b" ],

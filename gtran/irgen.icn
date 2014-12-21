@@ -525,6 +525,11 @@ procedure ir_a_Unop(p, st, target, bounded, rval)
     suspend ir_chunk(p.operand.ir.failure, [ ir_Goto(ir_coord(p.coord), p.ir.failure) ])
 end
 
+# record a_Package( name )
+procedure ir_a_Package(p, st, target, bounded, rval)
+    return ir_Global(ir_coord(p.name.coord), p.name.id)
+end
+
 # record a_Global( idList )
 procedure ir_a_Global(p, st, target, bounded, rval)
     local globals
@@ -1456,6 +1461,7 @@ procedure ir_outer(p)
     "a_Global" : suspend ir_a_Global(p)
     "a_Record" : suspend ir_a_Record(p)
     "a_Invocable" : suspend ir_a_Invocable(p)
+    "a_Package" : suspend ir_a_Package(p)
     "a_Link" : suspend ir_a_Link(p)
     default : runerr(500, p)
     }
