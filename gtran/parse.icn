@@ -690,9 +690,48 @@ procedure parse_expr9()
     return ret
 end
 
-procedure parse_exprlist()
-    local l, e
+procedure new_parse_exprlist()
+    local L, e
     #  nexpr {  COMMA  nexpr } 
+    #  [ expr { COMMA expr } [ COMMA ] ]
+    static expr_set
+
+    initial {
+    expr_set := set([lex_AND, lex_AT, lex_BACKSLASH, lex_BANG, lex_BAR,
+                      lex_BREAK, lex_CARET, lex_CASE, lex_CONCAT, lex_CREATE,
+                      lex_CSETLIT, lex_DIFF, lex_DOT, lex_EQUIV, lex_EVERY,
+                      lex_FAIL, lex_IDENT, lex_IF, lex_INTER, lex_INTLIT,
+                      lex_LBRACE, lex_LBRACK, lex_LCONCAT, lex_LPAREN,
+                      lex_MINUS, lex_NEQUIV, lex_NEXT, lex_NMEQ, lex_NMNE,
+                      lex_NOT, lex_PLUS, lex_QMARK, lex_REALLIT, lex_REPEAT,
+                      lex_RETURN, lex_SEQ, lex_SLASH, lex_SNE, lex_STAR,
+                      lex_STRINGLIT, lex_SUSPEND, lex_TILDE, lex_UNION,
+                      lex_WHILE,
+		      lex_SLASHSLASH,
+		      lex_SELECT,
+		      lex_ONERROR,
+		      lex_LOCAL,
+		      lex_STATIC,
+		      lex_LCOMP,
+		      lex_PROCEDURE ])
+    }
+    
+    L := []
+    while member(expr_set, parse_tok_rec) do {
+        e := parse_expr()
+	put(L, e)
+	if (parse_tok_rec === lex_COMMA) then {
+            parse_eat_token()
+	} else {
+	    break
+	}
+    }
+    return L
+end
+
+procedure old_parse_exprlist()
+    local l, e
+
     e := parse_nexpr()
     if \e | (parse_tok_rec === lex_COMMA) then {
         l := [ e ]
@@ -703,6 +742,26 @@ procedure parse_exprlist()
         parse_eat_token()
         e := parse_nexpr()
         put(l, e)
+    }
+    return l
+end
+
+procedure parse_exprlist()
+    local l, e
+
+    e := parse_nexpr()
+    if \e | (parse_tok_rec === lex_COMMA) then {
+        l := [ e ]
+    } else {
+        l := []
+    }
+    while parse_tok_rec === lex_COMMA do {
+        parse_eat_token()
+        e := parse_nexpr()
+        put(l, e)
+    }
+    if /l[-1] then {
+        l := l[1:-1]
     }
     return l
 end
