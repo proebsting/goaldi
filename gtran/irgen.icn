@@ -722,7 +722,7 @@ procedure ir_a_ProcDecl(p, st, target, bounded, rval)
     suspend ir_a_ProcDecl0(p, st)
 end
 
-procedure ir_a_ProcDecl0(p, st, target, bounded, rval)
+procedure ir_a_ProcDecl0(p, st)
     local locals, statics, globals, params, i, v, code, s
 
     st.localSet := set([])
@@ -739,7 +739,7 @@ procedure ir_a_ProcDecl0(p, st, target, bounded, rval)
             semantic_error(image(i.id) || ": redeclared identifier", i.coord)
         }
         insert(v, i.id)
-        s := i.id || ":" || image(st.syms.T)
+        s := i.id || mkSuffix(st.syms.T)
 	st.syms.T[i.id] := s
 	put(params, s)
     }
@@ -749,10 +749,15 @@ procedure ir_a_ProcDecl0(p, st, target, bounded, rval)
     }
     insert(ir_declare_set, p.ident.id)
 
+    return ir_a_ProcDecl1(p, st, p.code, params, p.accumulate, p.ident.coord)
+end
+
+procedure ir_a_ProcDecl1(p, st, body, params, accumulate, coord)
+    local code, locals, statics, globals
 
     code := []
-    every put(code, ir(p.code, st))
-    st.syms := st.syms.parent
+    every put(code, ir(body, st))
+    st.syms := st.syms.parent # this is very odd, why is it here?  Should it be in the caller?
 
     locals := []
     every put(locals, !st.localSet)
@@ -761,9 +766,9 @@ procedure ir_a_ProcDecl0(p, st, target, bounded, rval)
     globals := []
     every put(globals, !st.globalSet)
 
-    return ir_Function(ir_coord(p.ident.coord), p.ident.id, params,
-		      p.accumulate, locals, statics, globals, code,
-                      p.code.ir.start, st.parent)
+    return ir_Function(ir_coord(coord), st.current_proc, params,
+		      accumulate, locals, statics, globals, code,
+                      body.ir.start, st.parent)
 end
 
 # record a_ProcBody( nexprList )
