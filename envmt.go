@@ -62,5 +62,5 @@ func init() {
 	EnvInit("stderr", Trapped(&STDERR))
 
 	// error recovery
-	EnvInit("error", NilValue)
+	EnvInit("error", Trapped(NewVariable(NilValue)))
 }

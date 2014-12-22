@@ -89,7 +89,7 @@ func NilResult(env *Env, args ...Value) (Value, *Closure) {
 //  ErrResult() -- return &error
 func ErrResult(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("errresult", args)
-	return Return(env.VarMap["error"])
+	return Return(env.VarMap["error"].(IVariable).Deref())
 }
 
 //  Sleep(n) -- delay execution for n seconds (may be fractional)
