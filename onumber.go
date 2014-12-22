@@ -27,7 +27,7 @@ func (v1 *VNumber) Size() Value {
 func (v1 *VNumber) Choose(unused IVariable) Value {
 	n := v1.Val()
 	if n < 0 {
-		panic(&RunErr{"!n < 0", v1})
+		panic(&RunErr{"?n < 0", v1})
 	} else if n == 0 {
 		return NewNumber(rand.Float64())
 	} else /* n > 0 */ {
