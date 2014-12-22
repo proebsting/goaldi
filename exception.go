@@ -37,6 +37,17 @@ type CallFrame struct {
 	args  []Value     // procedure arguments
 }
 
+//  Cause(x) returns the original panic underlying a chain of CallFrame structs.
+func Cause(x interface{}) interface{} {
+	for {
+		if f, ok := x.(*CallFrame); ok {
+			x = f.cause
+		} else {
+			return x
+		}
+	}
+}
+
 //  Run wraps a Goaldi procedure in an environment and an exception catcher,
 //  and calls it from Go
 func Run(p Value, arglist []Value) {

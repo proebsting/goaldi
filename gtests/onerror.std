@@ -1,0 +1,27 @@
+expect failure:
+   got "[FAILED]"
+   %error = RunErr: ToBy: by 0 (<nil>)
+expect nil:
+   got %nil
+   %error = RunErr: ToBy: by 0 (<nil>)
+expect panic value:
+   got &goaldi.RunErr{Msg:"ToBy: by 0", Offv:interface {}(nil)}
+   %error = RunErr: ToBy: by 0 (<nil>)
+expect raspberry:
+   got "pbpbpbpbpttttt"
+   %error = RunErr: ToBy: by 0 (<nil>)
+expect catch message:
+   got "caught: &goaldi.RunErr{Msg:\"ToBy: by 0\", Offv:interface {}(nil)}"
+   %error = RunErr: ToBy: by 0 (<nil>)
+expect rethrow:
+   caught panic; now reissuing
+   UNCAUGHT PANIC: &goaldi.RunErr{Msg:"RunErr: ToBy: by 0 (<nil>)", Offv:interface {}(nil)}
+expect custom panic:
+   caught panic; throwing another
+   UNCAUGHT PANIC: &goaldi.RunErr{Msg:"CUSTOM PANIC", Offv:interface {}(nil)}
+expect type error:
+   got &runtime.TypeAssertionError{interfaceString:"", concreteString:"*goaldi.VNumber", assertedString:"*goaldi.VProcedure", missingMethod:""}
+   %error = interface conversion: interface is *goaldi.VNumber, not *goaldi.VProcedure
+expect 17:
+   got 17
+   %error = RunErr: ToBy: by 0 (<nil>)

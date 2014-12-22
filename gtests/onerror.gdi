@@ -1,0 +1,64 @@
+#SRC: goaldi original
+#
+#	test panic recovery ("onerr p")
+
+procedure main () {
+	try("failure", noresult)
+	try("nil", nilresult)
+	try("panic value", errresult)
+	try("raspberry", myrasp)
+	try("catch message", mycatch)
+	try("rethrow", rethrow)
+	try("custom panic", altpanic)
+	try("type error", 5)
+	try("17", suspender)
+}
+
+#	try(label, proc) -- with tracing, force error and report result of catch
+procedure try(label, rproc) {
+	onerror tryfailed
+	write("expect ", label, ":")
+	local v := boom(rproc) | "[FAILED]"
+	write("   got ", image(v))
+	write("   %error = ", &error)
+}
+
+#   report try failure (panic not caught, or rethrown)
+procedure tryfailed() {
+	write("   UNCAUGHT PANIC: ", image(&error))
+}
+
+#	register rproc, force error
+procedure boom(rproc) {
+	onerror errresult	# superseded unless rproc is invalid
+	onerror rproc
+	2 to 1 by 0
+}
+
+#	return raspberry
+procedure myrasp() {
+	return "pbpbpbpbpttttt"
+}
+
+#	return catch message showing %error
+procedure mycatch() {
+	return "caught: " || image(&error)
+}
+
+#	re-throw panic
+procedure rethrow() {
+	write("   caught panic; now reissuing")
+	runerr(&error)
+}
+
+#	throw a different exception instead
+procedure altpanic() {
+	write("   caught panic; throwing another")
+	runerr("CUSTOM PANIC")
+}
+
+#	try suspending (shoudn't resume)
+procedure suspender() {
+	suspend 17 to 23 do
+		write("RESUMED?!")
+}
