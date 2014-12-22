@@ -1,13 +1,11 @@
-//  util.go -- general-purpose utility routines
+//  iutil.go -- interpreter utility routines
 
 package main
 
 import (
 	"fmt"
 	"os"
-	"reflect"
 	"runtime/pprof"
-	"sort"
 	"syscall"
 	"time"
 	"unicode"
@@ -26,26 +24,6 @@ func abort(e interface{}) {
 	fmt.Fprintln(os.Stderr, e)
 	pprof.StopCPUProfile()
 	os.Exit(1)
-}
-
-//  sortedKeys generates in order (over a channel) the keys of a map[string].
-//  usage:  for k := range sortedKeys(mymap) { ... }
-func sortedKeys(m interface{}) chan string {
-	vlist := reflect.ValueOf(m).MapKeys()
-	n := len(vlist)
-	slist := make([]string, n)
-	for i, k := range vlist {
-		slist[i] = k.String()
-	}
-	sort.Strings(slist)
-	ch := make(chan string, n)
-	go func() {
-		for _, k := range slist {
-			ch <- k
-		}
-		close(ch)
-	}()
-	return ch
 }
 
 //  assert panics if the test argument is false

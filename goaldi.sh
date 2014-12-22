@@ -5,7 +5,7 @@
 #  To see options, run with no arguments.
 #  Assumes that gtran and gexec are in the search path.
 
-FLAGS=acdNltvADFJPT
+FLAGS=acdNltvADEFJPT
 TMP=/tmp/gdi.$$.gir
 
 #  define usage abort
@@ -34,7 +34,7 @@ while getopts $FLAGS C; do
 	c)			CFLAG=$C;;
 	d)			DFLAG=$C;;
 	N)			OPT="";;
-	[ltvADFJPT])	XOPTS="$XOPTS -$C";;
+	[ltvADEFJPT])	XOPTS="$XOPTS -$C";;
 	?)			usage;;
     esac
 done

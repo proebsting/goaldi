@@ -31,6 +31,13 @@ func main() {
 		defer pprof.StopCPUProfile()
 	}
 
+	// show library environment
+	if opt_envmt {
+		g.ShowLibrary(os.Stdout)
+		g.ShowEnvironment(os.Stdout)
+		fmt.Println()
+	}
+
 	// load the IR code
 	parts := make([][]interface{}, 0)
 	if len(files) == 0 {
@@ -53,7 +60,7 @@ func main() {
 	// list the globals
 	if opt_verbose {
 		fmt.Printf("\nGLOBALS:")
-		for name := range sortedKeys(GlobalDict) {
+		for name := range g.SortedKeys(GlobalDict) {
 			fmt.Printf(" %s", name)
 			if _, ok := GlobalDict[name].(*g.VProcedure); ok {
 				fmt.Print("()")

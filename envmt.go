@@ -2,6 +2,11 @@
 
 package goaldi
 
+import (
+	"fmt"
+	"io"
+)
+
 //  execution environment
 //
 //  #%#% This needs more thought, especially if it is to be dynamic.
@@ -63,4 +68,20 @@ func init() {
 
 	// error recovery
 	EnvInit("error", Trapped(NewVariable(NilValue)))
+}
+
+//	ShowEnvironment(f) -- list standard environment on file f
+func ShowEnvironment(f io.Writer) {
+	fmt.Fprintln(f)
+	fmt.Fprintln(f, "Standard Environment")
+	fmt.Fprintln(f, "------------------------------")
+	for k := range SortedKeys(StdEnv) {
+		cv := "c"
+		v := StdEnv[k]
+		if t, ok := v.(*VTrapped); ok {
+			cv = "v"
+			v = t.Deref()
+		}
+		fmt.Fprintf(f, "%%%-8s %s  %#v\n", k, cv, v)
+	}
 }

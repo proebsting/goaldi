@@ -5,6 +5,7 @@ package goaldi
 import (
 	"archive/zip"
 	"fmt"
+	"io"
 	"os"
 	"time"
 )
@@ -15,7 +16,7 @@ var StdLib = make(map[string]*VProcedure)
 //  LibProcedure registers a standard library procedure taking Goaldi arguments.
 //  This must be done before linking (e.g. via init func) to be effective.
 func LibProcedure(name string, p Procedure) {
-	StdLib[name] = NewProcedure(name, p)
+	StdLib[name] = NewProcedure(name, p, p)
 }
 
 //  LibGoFunc registers a Go function as a standard library procedure.
@@ -47,6 +48,17 @@ func init() {
 	LibGoFunc("getppid", os.Getppid)
 	// Heavy-duty package interfaces
 	LibGoFunc("zipreader", zip.OpenReader)
+}
+
+//  ShowLibrary(f) -- list all library functions on file f
+func ShowLibrary(f io.Writer) {
+	fmt.Fprintln(f)
+	fmt.Fprintln(f, "Standard Library")
+	fmt.Fprintln(f, "------------------------------")
+	for k := range SortedKeys(StdLib) {
+		v := StdLib[k]
+		fmt.Fprintf(f, "%-12s %s\n", k, v.ImplBy())
+	}
 }
 
 //  Type(v) -- return the name of v's type, as a string

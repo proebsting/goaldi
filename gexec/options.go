@@ -14,6 +14,7 @@ var opt_timings bool // -t: show CPU timings
 var opt_verbose bool // -v: issue verbose commentary
 var opt_adump bool   // -A: dump assembly-style IR code
 var opt_debug bool   // -D: set debug flag (dump Go stack on panic)
+var opt_envmt bool   // -E: show initial environment before loading
 var opt_tally bool   // -F: tally (static) IR field usage
 var opt_jdump bool   // -J: dump JSON in outline form
 var opt_profile bool // -P: produce CPU profile on ./PROFILE
@@ -35,6 +36,7 @@ func options() (files []string, args []string) {
 	flag.BoolVar(&opt_verbose, "v", false, "issue verbose commentary")
 	flag.BoolVar(&opt_adump, "A", false, "dump assembly-style IR code")
 	flag.BoolVar(&opt_debug, "D", false, "dump Go stack on panic")
+	flag.BoolVar(&opt_envmt, "E", false, "show initial environment")
 	flag.BoolVar(&opt_tally, "F", false, "tally IR field usage")
 	flag.BoolVar(&opt_jdump, "J", false, "dump JSON IR in outline form")
 	flag.BoolVar(&opt_profile, "P", false, "produce CPU profile on ./PROFILE")
