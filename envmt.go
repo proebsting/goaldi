@@ -60,4 +60,7 @@ func init() {
 	EnvInit("stdin", Trapped(&STDIN))
 	EnvInit("stdout", Trapped(&STDOUT))
 	EnvInit("stderr", Trapped(&STDERR))
+
+	// error recovery
+	EnvInit("error", NilValue)
 }

@@ -30,8 +30,11 @@ func init() {
 	LibProcedure("type", Type)
 	LibProcedure("copy", Copy)
 	LibProcedure("image", Image)
-	LibProcedure("runerr", Runerr)
+	LibProcedure("noresult", NoResult)
+	LibProcedure("nilresult", NilResult)
+	LibProcedure("errresult", ErrResult)
 	LibProcedure("exit", Exit)
+	LibProcedure("runerr", Runerr)
 	LibProcedure("sleep", Sleep)
 	// Go library functions
 	LibGoFunc("getenv", os.Getenv)
@@ -71,6 +74,22 @@ func Copy(env *Env, args ...Value) (Value, *Closure) {
 func Image(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("image", args)
 	return Return(NewString(fmt.Sprintf("%#v", ProcArg(args, 0, NilValue))))
+}
+
+//  NoResult() -- fail immediately
+func NoResult(env *Env, args ...Value) (Value, *Closure) {
+	return Fail()
+}
+
+//  NilResult() -- return nilresult
+func NilResult(env *Env, args ...Value) (Value, *Closure) {
+	return Return(NilValue)
+}
+
+//  ErrResult() -- return &error
+func ErrResult(env *Env, args ...Value) (Value, *Closure) {
+	defer Traceback("errresult", args)
+	return Return(env.VarMap["error"])
 }
 
 //  Sleep(n) -- delay execution for n seconds (may be fractional)

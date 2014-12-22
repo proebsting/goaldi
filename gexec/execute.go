@@ -15,12 +15,23 @@ func coexecute(f *pr_frame, label string) (g.Value, *g.Closure) {
 }
 
 //  execute IR instructions for procedure or co-expression
-func execute(f *pr_frame, label string) (g.Value, *g.Closure) {
+func execute(f *pr_frame, label string) (rv g.Value, rc *g.Closure) {
 
 	// set up traceback recovery
 	defer func() {
 		if p := recover(); p != nil {
-			panic(g.Catch(p, f.offv, f.coord, f.info.name, f.args))
+			if f.onerr != nil {
+				// find true panic value hiding under traceback info
+				p = g.Cause(p)
+				// save panic value in &error
+				f.env.VarMap["error"] = p
+				// call recovery procedure and return its result
+				rv, _ = f.onerr.Call(f.env)
+				rc = nil
+			} else {
+				// add traceback information and re-throw exception
+				panic(g.Catch(p, f.offv, f.coord, f.info.name, f.args))
+			}
 		}
 	}()
 
@@ -60,6 +71,9 @@ func execute(f *pr_frame, label string) (g.Value, *g.Closure) {
 						label = i.ResumeLabel
 						return v, self
 					}
+				case ir_OnError:
+					f.offv = g.Deref(f.temps[i.Fn])
+					f.onerr = f.offv.(*g.VProcedure)
 				case ir_Create:
 					fnew := newframe(f)
 					fnew.cxout = g.NewChannel(0)

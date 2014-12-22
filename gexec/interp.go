@@ -17,12 +17,14 @@ type pr_frame struct {
 	coord string                 // last known source location
 	offv  g.Value                // offending value for traceback
 	cxout g.VChannel             // co-expression output pipe
+	onerr *g.VProcedure          // recovery procedure
 }
 
-//  newframe(f) -- duplicate a procedure frame
+//  newframe(f) -- duplicate a procedure frame for "create e"
 func newframe(f *pr_frame) *pr_frame {
-	fnew := &pr_frame{}
-	*fnew = *f
+	fnew := &pr_frame{} // allocate new frame
+	*fnew = *f          // duplicate values
+	f.onerr = nil       // don't copy recovery procedure
 	fnew.vars = make(map[string]interface{})
 	for k, v := range f.vars {
 		fnew.vars[k] = v
