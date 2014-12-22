@@ -8,12 +8,12 @@ procedure main() {
 	local p
 
 	rex("a(x*)b(y|z)c", "-axxxbyc-", "-abzc-")
-	rex("(a|bcdef|g|ab|c|d|e|efg|fg)*", "abcdefg")
+	rex("(a|bcdef|g|ab|c|d|e|efg|fg)*", "abcdefg", )
 	rex("\\d+(\\.\\d*)?(e\\d+)?", "5", "2.71", "3e9", "x59", "16r99", "eleven")
 	v := "([aeiou]*)"
 	c := "([bcdfghj-np-tv-z]*)"
 	p := "p" ||  v || c || "ch"
-	rex(p, "punch", "patch", "peach", "pitch", "porch", "pooch", "prunch")
+	rex(p, "punch", "patch", "peach", "pitch", "porch", "pooch", "prunch", )
 }
 
 procedure rex(expr, s[]) {
