@@ -1,7 +1,14 @@
-//  vstring.go -- VString, the Goaldi type "string"
+//	vstring.go -- VString, the Goaldi type "string"
 //
-//  Strings contain sequences of Unicode characters (Code Points or Runes)
+//	Strings contain sequences of Unicode characters (Code Points or Runes)
 //
+//	Implementation:  A []byte slice with an additional optional []int16 slice
+//	(which is used if any character is wider than 8 bits).
+//	This allows linear-time access but requires conversion to/from Go strings.
+//
+//	Viable alternative not chosen: a rune array, fast and easy but space-costly.
+//	Difficult alternative not chosen: Go strings with annotations for quicker
+//	*s, s[i], etc. operations.
 
 package goaldi
 

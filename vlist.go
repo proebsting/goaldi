@@ -1,4 +1,10 @@
-//  vlist.go -- VList, the Goaldi type "list"
+//	vlist.go -- VList, the Goaldi type "list"
+//
+//	Implementation:
+//	A list is a slice of values accompanied by a "reversal" flag.
+//	Lookups are simple.  Stack and queue operations append or trim the slice.
+//	Switching between put and push reverses the list in place for appending.
+//	All other modifications, and lookups, are O(1) in amortized cost.
 
 package goaldi
 

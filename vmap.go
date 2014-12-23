@@ -1,4 +1,10 @@
-//  vmap.go -- VMap, the Goaldi type "map"
+//	vmap.go -- VMap, the Goaldi type "map"
+//
+//	Implementation:
+//	A Goaldi map is just a type name VMap attached to a Go map[Value]Value.
+//	This distinguishes it from an external Go map and allows attaching
+//	(internal) methods.  Goaldi string and number indexes are converted
+//	to Go string and float64 values.
 
 package goaldi
 
