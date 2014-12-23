@@ -38,6 +38,9 @@ func init() {
 	LibProcedure("exit", Exit)
 	LibProcedure("runerr", Runerr)
 	LibProcedure("sleep", Sleep)
+	LibProcedure("date", Date)
+	LibProcedure("time", Time)
+	LibProcedure("now", Now)
 	LibProcedure("cputime", CPUtime)
 	// Go library functions
 	LibGoFunc("getenv", os.Getenv)
@@ -114,6 +117,24 @@ func Sleep(env *Env, args ...Value) (Value, *Closure) {
 	d := time.Duration(n * float64(time.Second))
 	time.Sleep(d)
 	return Return(v)
+}
+
+//  Date() -- return current date in the form yyyy/mm/dd
+func Date(env *Env, args ...Value) (Value, *Closure) {
+	defer Traceback("date", args)
+	return Return(NewString(time.Now().Format("2006/01/02")))
+}
+
+//  Time() -- return current time in the form hh:mm:ss
+func Time(env *Env, args ...Value) (Value, *Closure) {
+	defer Traceback("time", args)
+	return Return(NewString(time.Now().Format("15:04:05")))
+}
+
+//  Now() -- return current time as a Go.Time struct for user formatting
+func Now(env *Env, args ...Value) (Value, *Closure) {
+	defer Traceback("now", args)
+	return Return(time.Now())
 }
 
 //  CPUtime() -- return u+s CPU usage in seconds (may be fractional)
