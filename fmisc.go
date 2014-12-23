@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"syscall"
 	"time"
 )
 
@@ -37,6 +38,7 @@ func init() {
 	LibProcedure("exit", Exit)
 	LibProcedure("runerr", Runerr)
 	LibProcedure("sleep", Sleep)
+	LibProcedure("cputime", CPUtime)
 	// Go library functions
 	LibGoFunc("getenv", os.Getenv)
 	LibGoFunc("setenv", os.Setenv)
@@ -112,6 +114,20 @@ func Sleep(env *Env, args ...Value) (Value, *Closure) {
 	d := time.Duration(n * float64(time.Second))
 	time.Sleep(d)
 	return Return(v)
+}
+
+//  CPUtime() -- return u+s CPU usage in seconds (may be fractional)
+func CPUtime(env *Env, args ...Value) (Value, *Closure) {
+	defer Traceback("cputime", args)
+	var ustruct syscall.Rusage
+	err := syscall.Getrusage(0, &ustruct)
+	if err != nil {
+		panic(err)
+	}
+	user := time.Duration(syscall.TimevalToNsec(ustruct.Utime))
+	sys := time.Duration(syscall.TimevalToNsec(ustruct.Stime))
+	total := user + sys
+	return Return(NewNumber(total.Seconds()))
 }
 
 //  Exit(n) -- terminate program

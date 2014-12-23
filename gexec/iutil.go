@@ -67,7 +67,6 @@ func cpuTime() time.Duration {
 	user := time.Duration(syscall.TimevalToNsec(ustruct.Utime))
 	sys := time.Duration(syscall.TimevalToNsec(ustruct.Stime))
 	return user + sys
-	return 0
 }
 
 //  Capitalize -- convert first character of string to upper case
