@@ -12,8 +12,15 @@ procedure main() {
 	write("date:  ", date())
 	write("time:  ", time())
 	local t := now()
-	write("full:  ", t.Format("Mon 2006-01-02 03:04:05 pm"))
+	write("now:   ", t)
+	write("fmt:   ", t.Format("Mon 2006-01-02 03:04:05 pm"))
 	write("or:    ", t.Format("Monday, January 2, 2006 at 03:04:05 pm"))
+
+	local dt := 100000
+	local du := duration(dt)
+	write(dt, " seconds from now, it will be:")
+	t := t.Add(du)
+	write(t.Format("Monday, January 2, 2006 at 03:04:05 pm"))
 
 	write()
 	local tmid := 0.03

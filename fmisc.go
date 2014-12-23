@@ -41,6 +41,7 @@ func init() {
 	LibProcedure("date", Date)
 	LibProcedure("time", Time)
 	LibProcedure("now", Now)
+	LibProcedure("duration", Duration)
 	LibProcedure("cputime", CPUtime)
 	// Go library functions
 	LibGoFunc("getenv", os.Getenv)
@@ -135,6 +136,26 @@ func Time(env *Env, args ...Value) (Value, *Closure) {
 func Now(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("now", args)
 	return Return(time.Now())
+}
+
+//  Duration(x) -- convert x to a duration, or fail
+//  If x is a string, it is passed directly to time.ParseDuration.
+//  If x is a number, "s" is appended to interpret it as an interval in seconds.
+func Duration(env *Env, args ...Value) (Value, *Closure) {
+	defer Traceback("duration", args)
+	v := ProcArg(args, 0, ZERO)
+	s := ""
+	if n, ok := v.(*VNumber); ok {
+		s = n.String() + "s"
+	} else {
+		s = v.(Stringable).ToString().String()
+	}
+	d, err := time.ParseDuration(s)
+	if err == nil {
+		return Return(d)
+	} else {
+		return Fail()
+	}
 }
 
 //  CPUtime() -- return u+s CPU usage in seconds (may be fractional)
