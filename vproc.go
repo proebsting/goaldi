@@ -185,34 +185,18 @@ func GoShim(name string, f interface{} /*func*/) Procedure {
 func passfunc(t reflect.Type) func(Value) reflect.Value {
 	k := t.Kind()
 	switch k {
-	// #%#% are other numeric types such as rune, int32, etc handled
-	// #%#% acceptably by the default case below?
-	case reflect.Int:
-		return func(v Value) reflect.Value {
-			return reflect.ValueOf(int(v.(Numerable).ToNumber().Val()))
-		}
-	case reflect.Int64:
-		return func(v Value) reflect.Value {
-			return reflect.ValueOf(int64(v.(Numerable).ToNumber().Val()))
-		}
-	case reflect.Float64:
-		return func(v Value) reflect.Value {
-			return reflect.ValueOf(float64(v.(Numerable).ToNumber().Val()))
-		}
-	case reflect.String:
-		return func(v Value) reflect.Value {
-			return reflect.ValueOf(v.(Stringable).ToString().ToUTF8())
-		}
 	case reflect.Bool:
 		return func(v Value) reflect.Value {
 			var b bool
 			switch x := v.(type) {
+			case bool:
+				b = x
 			case vnil:
-				b = true
+				b = false
 			case *VNumber:
 				b = (x.Val() != 0)
 			default:
-				b = false
+				b = true
 			}
 			return reflect.ValueOf(b)
 		}
@@ -223,15 +207,23 @@ func passfunc(t reflect.Type) func(Value) reflect.Value {
 		// check if convertible from numeric
 		if reflect.TypeOf(1.0).ConvertibleTo(t) {
 			return func(v Value) reflect.Value {
-				return reflect.ValueOf(
-					v.(Numerable).ToNumber().Val()).Convert(t)
+				if reflect.TypeOf(v).ConvertibleTo(t) {
+					return reflect.ValueOf(v).Convert(t)
+				} else {
+					return reflect.ValueOf(
+						v.(Numerable).ToNumber().Val()).Convert(t)
+				}
 			}
 		}
 		// otherwise, check if convertible from string
 		if reflect.TypeOf("abc").ConvertibleTo(t) {
 			return func(v Value) reflect.Value {
-				return reflect.ValueOf(
-					v.(Stringable).ToString().ToUTF8()).Convert(t)
+				if reflect.TypeOf(v).ConvertibleTo(t) {
+					return reflect.ValueOf(v).Convert(t)
+				} else {
+					return reflect.ValueOf(
+						v.(Stringable).ToString().ToUTF8()).Convert(t)
+				}
 			}
 		}
 		// otherwise, use default conversion
