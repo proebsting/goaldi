@@ -31,6 +31,7 @@ func init() {
 	LibProcedure("log", Log)
 	LibProcedure("atan", Atan)
 	LibProcedure("gcd", GCD)
+	LibProcedure("randgen", RandGen)
 	LibProcedure("rtod", RtoD)
 	LibProcedure("dtor", DtoR)
 	LibProcedure("iand", IAnd)
@@ -145,6 +146,14 @@ func GCD(env *Env, args ...Value) (Value, *Closure) {
 		}
 	}
 	return Return(NewNumber(float64(a)))
+}
+
+//  RandGen(i) -- new random generator seeded by i
+//  Returns a new Go math.rand/Rand object whose methods may be called.
+func RandGen(env *Env, args ...Value) (Value, *Closure) {
+	defer Traceback("randgen", args)
+	i := int64(ProcArg(args, 0, ZERO).(Numerable).ToNumber().Val())
+	return Return(rand.New(rand.NewSource(i)))
 }
 
 //  DtoR(r1) -- convert degrees to radians

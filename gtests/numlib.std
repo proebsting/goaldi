@@ -32,3 +32,12 @@ atan2:
 
 gcd:
  a.0 b.1 c.3 d.5 e.3 f.3 g.3 h.3 i.3 j.2 k.6 l.1 m.0
+
+randgen:
+   stdgen: 554 407 760 652 644 
+   randgen(%nil): external : 99 99 418 325 692 
+   randgen(0): external : 99 99 418 325 692 
+   randgen(1): external : 878 636 407 983 895 
+   randgen(1): external : 878 636 407 983 895 
+   randgen(314159): external : 385 384 979 620 32 
+   stdgen: 554 407 760 652 644 
