@@ -3,11 +3,10 @@
 #  stomp a few entries randomly,
 #  and print it out
 
-procedure main()
-	local e, i
-	e := environ()
+procedure main() {
+	local e := environ()
 	write("Unix environment (", *e, " entries):")
-	every i := 11 to 100 by 13 do
+	every local i := 11 to 100 by 13 do
 		e[i] := "===============[REDACTED]==============="
 	every !5 do
 		?e := "===============[STOMPED]==============="
@@ -15,4 +14,4 @@ procedure main()
 	# every write(">> ", !e)
 	i := 0
 	while (i +:= 1) & write(i, ".  ", e[i])
-end
+}
