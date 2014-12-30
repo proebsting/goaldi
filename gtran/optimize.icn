@@ -238,11 +238,12 @@ procedure optim_goto_elimination(t, start)
     new := table()
     optim_goto_transitive(t, new, start)
     optim_test_elimination(new, start)
-    if i := new[start] &
-       type(i[2]) == "ir_Goto" &
-       i[1].startLabel === i[2].targetLabel then {
-        new[start] := [ i[2] ]
-    }
+# Todd believe the following is obsolete without initial clause in procedures
+#    if i := new[start] &
+#       type(i[2]) == "ir_Goto" &
+#       i[1].startLabel === i[2].targetLabel then {
+#        new[start] := [ i[2] ]
+#    }
     optim_fallthrough(new)
     return new
 end
@@ -465,6 +466,7 @@ procedure optim(irgen, flagList)
         "ir_Record" |
         "ir_Invocable" |
         "ir_Package" |
+        "ir_Initial" |
         "ir_Link" : {
 		suspend p
 	}

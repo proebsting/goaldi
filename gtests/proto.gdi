@@ -123,7 +123,7 @@ procedure expr3() {
 
 procedure expr4() {
    while e1 do break
-   while e1 do break e2
+   # while e1 do break e2
    while e1 do next
    case e of {
      x:   fail

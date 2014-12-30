@@ -325,7 +325,7 @@ procedure ir_a_Call(p, st, target, bounded, rval)
     if type(p.args) == "a_CoexpList" then {
         L := []
         every put(L, a_Create(!p.args.exprList, p.coord))
-        p.args := a_Arglist([a_ListConstructor(L, p.coord)])
+        p.args := a_Arglist([a_ListConstructor(L, p.coord)], &null)
     }
 
     ir_init(p)
@@ -357,7 +357,7 @@ procedure ir_a_Call(p, st, target, bounded, rval)
     suspend ir_chunk(L[ 1].ir.failure, [ ir_Goto(ir_coord(p.coord), p.ir.failure) ])
     suspend ir_chunk(L[-1].ir.success, [
 	# ir_Deref(ir_coord(p.coord), fn, fn), #%#%# is this necessary?
-        ir_Call(ir_coord(p.coord), value, clsr, fn, args, L[-1].ir.resume),
+        ir_Call(ir_coord(p.coord), value, clsr, fn, args, p.args.nameList, L[-1].ir.resume),
         ir_Move(ir_coord(p.coord), target, value),
         ir_Goto(ir_coord(p.coord), p.ir.success)
         ])
@@ -527,16 +527,32 @@ end
 
 # record a_Package( name )
 procedure ir_a_Package(p, st, target, bounded, rval)
-    return ir_Global(ir_coord(p.name.coord), p.name.id)
+    return ir_Package(ir_coord(p.name.coord), p.name.id)
 end
 
 # record a_Global( idList )
 procedure ir_a_Global(p, st, target, bounded, rval)
-    local globals
+    local globals, fn, i
+    static counter
+    initial counter := 0
 
     globals := []
     every put(globals, (!p.idList).id)
-    return ir_Global(ir_coord(p.coord), globals)
+
+    /st | runerr(500, p)
+    if \p.expr then {
+        st := ir_stacks(0)
+        st.localSet := set([])
+        st.staticSet := set([])
+        st.globalSet := set([])
+
+        st.current_proc := &date || "$" || counter
+        counter +:= 1
+
+        fn := ir_a_ProcDecl1(st, p.expr, [], &null, p.coord)
+        suspend fn
+    }
+    return ir_Global(ir_coord(p.coord), globals, \(\st).current_proc | &null)
 end
 
 # record a_If( expr thenexpr elseexpr )
@@ -580,19 +596,23 @@ end
 
 # record a_Initial( expr )
 procedure ir_a_Initial(p, st, target, bounded, rval)
-    /p.expr := a_NoOp()
+    local fn, i
+    static counter
+    initial counter := 0
 
-    st.loop_stack := []
+    /st | runerr(500, p)
+    st := ir_stacks(0)
+    st.localSet := set([])
+    st.staticSet := set([])
+    st.globalSet := set([])
 
-    ir_init(p)
-    suspend ir(p.expr, st, target, "always bounded", "rval")
+    st.current_proc := &date || "$" || counter
+    counter +:= 1
 
-    suspend ir_chunk(p.ir.start, [ ir_Goto(ir_coord(p.coord), p.expr.ir.start) ])
-    /bounded & suspend ir_chunk(p.ir.resume, [ ir_Unreachable(ir_coord(p.coord)) ])
-    suspend ir_chunk(p.expr.ir.success, [
-        ir_Goto(ir_coord(p.coord), p.ir.success)
-        ])
-    suspend ir_chunk(p.expr.ir.failure, [ ir_Goto(ir_coord(p.coord), p.ir.success) ])
+    fn := ir_a_ProcDecl1(st, p.expr, [], &null, p.coord)
+    suspend fn
+    i := ir_Initial(ir_coord(p.coord), st.current_proc)
+    return i
 end
 
 # record a_Invocable( invocList )
@@ -723,7 +743,7 @@ procedure ir_a_ProcDecl(p, st, target, bounded, rval)
 end
 
 procedure ir_a_ProcDecl0(p, st)
-    local locals, statics, globals, params, i, v, code, s
+    local locals, statics, globals, params, i, v, code, s, f
 
     st.localSet := set([])
     st.staticSet := set([])
@@ -749,15 +769,16 @@ procedure ir_a_ProcDecl0(p, st)
     }
     insert(ir_declare_set, p.ident.id)
 
-    return ir_a_ProcDecl1(p, st, p.code, params, p.accumulate, p.ident.coord)
+    f := ir_a_ProcDecl1(st, p.code, params, p.accumulate, p.ident.coord)
+    st.syms := st.syms.parent # this is very odd, why is it here?  Should it be in the caller?
+    return f
 end
 
-procedure ir_a_ProcDecl1(p, st, body, params, accumulate, coord)
+procedure ir_a_ProcDecl1(st, body, params, accumulate, coord)
     local code, locals, statics, globals
 
     code := []
     every put(code, ir(body, st))
-    st.syms := st.syms.parent # this is very odd, why is it here?  Should it be in the caller?
 
     locals := []
     every put(locals, !st.localSet)
@@ -769,36 +790,6 @@ procedure ir_a_ProcDecl1(p, st, body, params, accumulate, coord)
     return ir_Function(ir_coord(coord), st.current_proc, params,
 		      accumulate, locals, statics, globals, code,
                       body.ir.start, st.parent)
-end
-
-# record a_ProcBody( nexprList )
-procedure ir_a_ProcBody(p, st, target, bounded, rval)
-    local L, i
-
-    every /(!p.nexprList) := a_Key("null", p.coord)
-
-
-    st.loop_stack := []
-
-    ir_init(p)
-
-    L := ir_make_sentinel(p.nexprList)
-    every i := 1 to *p.nexprList do {
-        suspend ir(p.nexprList[i], st, &null, "always bounded", "rval")
-    }
-
-    suspend ir_chunk(p.ir.start, [ ir_Goto(ir_coord(p.coord), L[1].ir.start) ])
-    /bounded & suspend ir_chunk(p.ir.resume, [ ir_Unreachable(ir_coord(p.coord)) ])
-    every i := 1 to *L-1 do {
-        suspend ir_chunk(L[i].ir.success, [
-            ir_Goto(ir_coord(p.coord), L[i+1].ir.start)
-            ])
-        suspend ir_chunk(L[i].ir.failure, [ ir_Goto(ir_coord(p.coord), L[i+1].ir.start) ])
-    }
-    suspend ir_chunk(L[-1].ir.success, [
-        ir_Goto(ir_coord(p.coord), p.ir.success)
-        ])
-    suspend ir_chunk(L[-1].ir.failure, [ ir_Goto(ir_coord(p.coord), p.ir.failure) ])
 end
 
 # record a_ProcCode( body )
@@ -1099,17 +1090,81 @@ end
 procedure ir_a_Next(p, st, target, bounded, rval)
     local curloop, sl, mk
 
-    st.loop_stack[1] | semantic_error("invalid context for next", p.coord)
-
     ir_init(p)
+    if /p.name then {
+	    st.loop_stack[1] | semantic_error("invalid context for next", p.coord)
 
-    curloop := st.loop_stack[-1]
-        suspend ir_chunk(p.ir.start, [ ir_Goto(ir_coord(p.coord), curloop.ir.x.nextlabel) ])
+	    curloop := st.loop_stack[-1]
+    } else {
+        if \(curloop <- st.loop_stack[*st.loop_stack to 1 by -1]).name == p.name then {
+	    # set curloop above
+	} else {
+	    semantic_error("undeclared next identifier", p.coord)
+	}
+    }
+    suspend ir_chunk(p.ir.start, [ ir_Goto(ir_coord(p.coord), curloop.ir.x.nextlabel) ])
     /bounded & suspend ir_chunk(p.ir.resume, [ ir_Unreachable(ir_coord(p.coord)) ])
 end
 
 # record a_Break( expr )
 procedure ir_a_Break(p, st, target, bounded, rval)
+    local curloop, sl, mk
+
+    ir_init(p)
+    if /p.name then {
+	    st.loop_stack[1] | semantic_error("invalid context for break", p.coord)
+
+	    curloop := st.loop_stack[-1]
+    } else {
+        if \(curloop <- st.loop_stack[*st.loop_stack to 1 by -1]).name == p.name then {
+	    # set curloop above
+	} else {
+	    semantic_error("undeclared break identifier", p.coord)
+	}
+    }
+    suspend ir_chunk(p.ir.start, [ ir_Goto(ir_coord(p.coord), curloop.ir.failure) ])
+    /bounded & suspend ir_chunk(p.ir.resume, [ ir_Unreachable(ir_coord(p.coord)) ])
+end
+
+# record a_Generate( expr name )
+procedure ir_a_Generate(p, st, target, bounded, rval)
+    local curloop, sl, mk
+
+    /p.expr := a_Key("null", p.coord)
+    ir_init(p)
+
+    if /p.name then {
+	    st.loop_stack[1] | semantic_error("invalid context for generate", p.coord)
+
+	    curloop := st.loop_stack[-1]
+    } else {
+        if \(curloop <- st.loop_stack[*st.loop_stack to 1 by -1]).name == p.name then {
+	    # set curloop above
+	} else {
+	    semantic_error("undeclared generate identifier", p.coord)
+	}
+    }
+    clx := curloop.ir.x
+    suspend ir(p.expr, st, clx.value, clx.bounded, clx.rval)
+
+    if /clx.bounded then {
+        put(clx.indirects, p.ir.resume)
+        suspend ir_chunk(p.ir.start, [
+           ir_MoveLabel(ir_coord(p.coord), clx.continue, p.ir.resume),
+           ir_Goto(ir_coord(p.coord), p.expr.ir.start)
+        ])
+    } else {
+        suspend ir_chunk(p.ir.start, [
+            ir_Goto(ir_coord(p.coord), p.expr.ir.start)
+        ])
+    }
+    /clx.bounded & suspend ir_chunk(p.ir.resume, [ ir_Goto(ir_coord(p.coord), p.expr.ir.resume) ])
+    suspend ir_chunk(p.expr.ir.success, [ ir_Goto(ir_coord(p.coord), curloop.ir.success) ])
+    suspend ir_chunk(p.expr.ir.failure, [ ir_Goto(ir_coord(p.coord), p.ir.failure) ])
+end
+
+# record a_Break( expr )
+procedure ir_a_BreakX(p, st, target, bounded, rval)
     local curloop, oldloops, clx, mk
 
     st.loop_stack[1] | semantic_error("invalid context for break", p.coord)
@@ -1468,6 +1523,7 @@ procedure ir_outer(p)
     "a_Invocable" : suspend ir_a_Invocable(p)
     "a_Package" : suspend ir_a_Package(p)
     "a_Link" : suspend ir_a_Link(p)
+    "a_Initial" : suspend ir_a_Initial(p)
     default : runerr(500, p)
     }
 end
@@ -1496,7 +1552,6 @@ procedure ir(p, st, target, bounded, rval)
     "a_Stringlit" : suspend ir_a_Stringlit(p, st, target, bounded, rval)
     "a_Csetlit" : suspend ir_a_Csetlit(p, st, target, bounded, rval)
     "a_ProcDecl" : suspend ir_a_ProcDeclNested(p, st, target, bounded, rval)
-    "a_ProcBody" : suspend ir_a_ProcBody(p, st, target, bounded, rval)
     "a_ProcCode" : suspend ir_a_ProcCode(p, st, target, bounded, rval)
     "a_Repeat" : suspend ir_a_Repeat(p, st, target, bounded, rval)
     "a_Return" : suspend ir_a_Return(p, st, target, bounded, rval)
@@ -1508,6 +1563,7 @@ procedure ir(p, st, target, bounded, rval)
     "a_Ident" : suspend ir_a_Ident(p, st, target, bounded, rval)
     "a_Next" : suspend ir_a_Next(p, st, target, bounded, rval)
     "a_Break" : suspend ir_a_Break(p, st, target, bounded, rval)
+    "a_Generate" : suspend ir_a_Generate(p, st, target, bounded, rval)
     "a_ToBy" : suspend ir_a_ToBy(p, st, target, bounded, rval)
     "a_Mutual" : suspend ir_a_Mutual(p, st, target, bounded, rval)
     "a_Compound" : suspend ir_a_Compound(p, st, target, bounded, rval)

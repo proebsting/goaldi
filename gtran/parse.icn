@@ -3,6 +3,8 @@
 global parse_tok        # This is the co_expression that represents the scanner
 global parse_tok_rec    # This is the current token record
 
+record parse_named(nameList, exprList)
+
 procedure parse(lex)
     local d
 
@@ -58,6 +60,7 @@ procedure parse_cclause()
                               lex_SLASH, lex_SNE, lex_STAR, lex_STRINGLIT,
                               lex_SUSPEND, lex_TILDE, lex_UNION, 
 			      lex_SLASHSLASH,
+			      lex_GENERATE,
                               lex_WHILE,
 			      lex_SELECT,
 			      lex_ONERROR,
@@ -168,6 +171,7 @@ procedure parse_decl()
     lex_PROCEDURE : return parse_do_proc()
     lex_GLOBAL    : return parse_do_global()
     lex_LINK      : return parse_do_link()
+    lex_INITIAL   : return parse_do_initial()
     lex_INVOCABLE : return parse_do_invocable()
     default   : parse_error("Expecting parse_declaration")
     }
@@ -175,9 +179,13 @@ end
 
 procedure parse_do_every()
 #  EVERY  expr [  DO  expr ] 
-    local e, body, coord
+    local e, body, coord, id
     coord := parse_tok_rec.coord
-    parse_eat_token()
+    parse_match_token(lex_EVERY)
+	if parse_tok_rec === lex_COLON then {
+            parse_eat_token()
+	    id := parse_match_token(lex_IDENT)
+	}
     e := parse_expr()
     if parse_tok_rec === lex_DO then {
         parse_match_token(lex_DO)
@@ -185,7 +193,7 @@ procedure parse_do_every()
     } else {
         body := &null
     }
-    return a_Every(e, body, coord)
+    return a_Every(e, body, id, coord)
 end
 
 procedure parse_expr()
@@ -242,6 +250,7 @@ procedure parse_expr10()
                               lex_IF, lex_INTLIT, lex_LBRACE, lex_LBRACK,
                               lex_LPAREN, lex_NEXT, lex_REALLIT, lex_REPEAT,
                               lex_RETURN, lex_STRINGLIT, lex_SUSPEND, 
+			      lex_GENERATE,
                               lex_WHILE,
 			      lex_SELECT,
 			      lex_ONERROR,
@@ -356,14 +365,32 @@ procedure parse_expr11()
         {
         coord := parse_tok_rec.coord
         parse_eat_token()
-        return a_Next(coord)
+	if parse_tok_rec === lex_COLON then {
+            parse_eat_token()
+	    id := parse_match_token(lex_IDENT)
+	}
+        return a_Next(id, coord)
+        }
+    lex_GENERATE   :   # GENERATE  [ : IDENT ] nexpr
+        {
+        coord := parse_tok_rec.coord
+        parse_eat_token()
+	if parse_tok_rec === lex_COLON then {
+            parse_eat_token()
+	    id := parse_match_token(lex_IDENT)
+	}
+	e := parse_nexpr()
+        return a_Generate(e, id, coord)
         }
     lex_BREAK   :   # BREAK  nexpr 
         {
         coord := parse_tok_rec.coord
         parse_eat_token()
-        e := parse_nexpr()
-        return a_Break(e, coord)
+	if parse_tok_rec === lex_COLON then {
+            parse_eat_token()
+	    id := parse_match_token(lex_IDENT)
+	}
+        return a_Break(id, coord)
         }
     lex_LPAREN  :   # LPAREN  exprlist  RPAREN 
         {
@@ -452,6 +479,7 @@ procedure parse_expr11suffix(lhs)
                                   lex_SNE, lex_STAR, lex_STRINGLIT,
                                   lex_SUSPEND, lex_TILDE, lex_UNION, 
 				  lex_SLASHSLASH,
+				  lex_GENERATE,
                                   lex_WHILE,
 				  lex_SELECT,
 				  lex_ONERROR,
@@ -479,9 +507,13 @@ procedure parse_expr11suffix(lhs)
         {
         coord := parse_tok_rec.coord
         parse_eat_token()
-        l := parse_exprlist()
+        l := parse_named_exprlist()
         parse_match_token(lex_RPAREN)
-        return a_Call(lhs, a_Arglist(l), coord)
+	if type(l) == "parse_named" then {
+            return a_Call(lhs, a_Arglist(l.exprList, l.nameList), coord)
+	} else {
+            return a_Call(lhs, a_Arglist(l, &null), coord)
+	}
         }
     lex_DOT :   # DOT  IDENT 
         {
@@ -708,6 +740,7 @@ procedure new_parse_exprlist()
                       lex_STRINGLIT, lex_SUSPEND, lex_TILDE, lex_UNION,
                       lex_WHILE,
 		      lex_SLASHSLASH,
+		      lex_GENERATE,
 		      lex_SELECT,
 		      lex_ONERROR,
 		      lex_LOCAL,
@@ -742,6 +775,51 @@ procedure old_parse_exprlist()
         parse_eat_token()
         e := parse_nexpr()
         put(l, e)
+    }
+    return l
+end
+
+procedure parse_named_exprlist0(id)
+    local e, N, E
+    parse_match_token(lex_COLON)
+    N := []
+    E := []
+    e := parse_expr()
+    put(N, id.id)
+    put(E, e)
+
+    while parse_tok_rec === lex_COMMA do {
+        parse_eat_token()
+	if parse_tok_rec ~=== lex_IDENT then {
+	    break
+	}
+	id := parse_match_token(lex_IDENT)
+        parse_match_token(lex_COLON)
+        e := parse_nexpr()
+        put(N, id)
+        put(E, e)
+    }
+    return parse_named(N, E)
+end
+
+procedure parse_named_exprlist()
+    local l, e
+
+    e := parse_nexpr()
+    if \e & type(e) == "a_Ident" & parse_tok_rec === lex_COLON then {
+        return parse_named_exprlist0(e)
+    } else if \e | (parse_tok_rec === lex_COMMA) then {
+        l := [ e ]
+    } else {
+        l := []
+    }
+    while parse_tok_rec === lex_COMMA do {
+        parse_eat_token()
+        e := parse_nexpr()
+        put(l, e)
+    }
+    if /l[-1] then {
+        l := l[1:-1]
     }
     return l
 end
@@ -781,11 +859,16 @@ end
 
 #  GLOBAL  idlist, coord
 procedure parse_do_global()
-    local coord
+    local coord, e, L 
 
     coord := parse_tok_rec.coord
     parse_match_token(lex_GLOBAL)
-    return a_Global(parse_idlist(), coord)
+    L := parse_idlist()
+    if parse_tok_rec === lex_ASSIGN then {
+        parse_match_token(lex_ASSIGN)
+	e := parse_expr()
+    }
+    return a_Global(L, a_ProcCode(\e) | &null, coord)
 end
 
 procedure parse_idlist()
@@ -855,6 +938,16 @@ procedure parse_invocop()
     }
 end
 
+procedure parse_do_initial()
+# INITIAL expr
+    local coord, e
+
+    coord := parse_tok_rec.coord
+    parse_match_token(lex_INITIAL)
+    e := parse_braced()
+    return a_Initial(a_ProcCode(e), coord)
+end
+
 procedure parse_do_link()
 #  LINK  lnkfile {  COMMA  lnkfile } 
     local l, lnkf, coord
@@ -914,6 +1007,7 @@ procedure parse_nexpr()
                       lex_STRINGLIT, lex_SUSPEND, lex_TILDE, lex_UNION,
                       lex_WHILE,
 		      lex_SLASHSLASH,
+		      lex_GENERATE,
 		      lex_SELECT,
 		      lex_ONERROR,
 		      lex_LOCAL,
@@ -957,6 +1051,7 @@ procedure parse_do_proc(noident)
                         lex_SNE, lex_STAR, lex_STRINGLIT, lex_SUSPEND,
                         lex_TILDE, lex_UNION, lex_WHILE,
 			lex_SLASHSLASH,
+			lex_GENERATE,
 			lex_SELECT,
 			lex_ONERROR,
 			lex_LOCAL,
@@ -1021,7 +1116,7 @@ procedure parse_program()
     local d
 
     initial {
-        program_set := set([lex_GLOBAL, lex_INVOCABLE, lex_LINK, lex_PROCEDURE,
+        program_set := set([lex_GLOBAL, lex_INVOCABLE, lex_LINK, lex_PROCEDURE, lex_INITIAL,
                             lex_RECORD])
     }
 
@@ -1060,16 +1155,20 @@ procedure parse_do_record()
 end
 
 procedure parse_do_repeat()
-    local b, e, coord
+    local b, e, coord, id
     #  REPEAT  expr 
     coord := parse_tok_rec.coord
     parse_match_token(lex_REPEAT)
+	if parse_tok_rec === lex_COLON then {
+            parse_eat_token()
+	    id := parse_match_token(lex_IDENT)
+	}
     b := parse_expr()
     if parse_tok_rec === lex_UNTIL then {
         parse_match_token(lex_UNTIL)
         e := parse_expr()
     }
-    return a_Repeat(b, e, coord)
+    return a_Repeat(b, e, id, coord)
 end
 
 procedure parse_do_onerror()
@@ -1082,7 +1181,7 @@ procedure parse_do_onerror()
 end
 
 procedure parse_do_return()
-    local e, coord, doparse_expr
+    local e, coord, doparse_expr, id
 
     coord := parse_tok_rec.coord
     case parse_tok_rec of {
@@ -1100,13 +1199,17 @@ procedure parse_do_return()
     lex_SUSPEND :   # SUSPEND  expr [  DO  expr ] 
         {
         parse_eat_token()
+	if parse_tok_rec === lex_COLON then {
+            parse_eat_token()
+	    id := parse_match_token(lex_IDENT)
+	}
         e := parse_nexpr()
         doparse_expr := &null
         if parse_tok_rec === lex_DO then {
             parse_eat_token()
             doparse_expr := parse_expr()
         }
-        return a_Suspend(e, doparse_expr, coord)
+        return a_Suspend(e, doparse_expr, id, coord)
         }
     default :
         parse_error("Expecting lex_FAIL, lex_RETURN, or SUSPEND")
@@ -1115,17 +1218,21 @@ end
 
 #  WHILE  expr [  DO  expr ] 
 procedure parse_do_while()
-    local e, dparse_expr, coord
+    local e, dparse_expr, coord, id
 
     coord := parse_tok_rec.coord
     parse_match_token(lex_WHILE)
+	if parse_tok_rec === lex_COLON then {
+            parse_eat_token()
+	    id := parse_match_token(lex_IDENT)
+	}
     e := parse_expr()
         dparse_expr := &null
     if parse_tok_rec === lex_DO then {
         parse_eat_token()
         dparse_expr := parse_expr()
     }
-    return a_While(e, dparse_expr, coord)
+    return a_While(e, dparse_expr, id, coord)
 end
 
 procedure parse_match_token(which_token)
