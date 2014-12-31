@@ -802,7 +802,7 @@ procedure parse_named_exprlist0(id)
     return parse_named(N, E)
 end
 
-procedure parse_named_exprlist()
+procedure parse_named_exprlistX()
     local l, e
 
     e := parse_nexpr()
@@ -822,6 +822,39 @@ procedure parse_named_exprlist()
         l := l[1:-1]
     }
     return l
+end
+
+procedure parse_named_exprlist()
+    local L, N, e
+
+    L := []
+    N := []
+    repeat {
+        e := parse_nexpr()
+        if parse_tok_rec === lex_COMMA then {
+            put(L, e)
+        } else if \e then {
+	    if type(e) == "a_Ident" & parse_tok_rec === lex_COLON then {
+    	        put(N, e.id)
+	        parse_match_token(lex_COLON)
+	        e := parse_expr()
+	        put(L, e)
+	    } else {
+	        put(L, e)
+	    }
+        } else {
+	}
+	if parse_tok_rec ~=== lex_COMMA then {
+	    break
+	}
+	parse_match_token(lex_COMMA)
+    }
+
+    if *N > 0 then {
+        return parse_named(N, L)
+    } else {
+        return L
+    }
 end
 
 procedure parse_exprlist()
