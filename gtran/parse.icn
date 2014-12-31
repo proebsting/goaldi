@@ -61,6 +61,7 @@ procedure parse_cclause()
                               lex_SUSPEND, lex_TILDE, lex_UNION, 
 			      lex_SLASHSLASH,
 			      lex_GENERATE,
+			      lex_LAMBDA,
                               lex_WHILE,
 			      lex_SELECT,
 			      lex_ONERROR,
@@ -251,6 +252,7 @@ procedure parse_expr10()
                               lex_LPAREN, lex_NEXT, lex_REALLIT, lex_REPEAT,
                               lex_RETURN, lex_STRINGLIT, lex_SUSPEND, 
 			      lex_GENERATE,
+			      lex_LAMBDA,
                               lex_WHILE,
 			      lex_SELECT,
 			      lex_ONERROR,
@@ -440,6 +442,9 @@ procedure parse_expr11()
     lex_PROCEDURE : {
             return parse_do_proc("noident")
         }
+    lex_LAMBDA : {
+            return parse_do_lambda()
+        }
     default : {
         parse_error("Expecting parse_expression")
     }
@@ -480,6 +485,7 @@ procedure parse_expr11suffix(lhs)
                                   lex_SUSPEND, lex_TILDE, lex_UNION, 
 				  lex_SLASHSLASH,
 				  lex_GENERATE,
+				  lex_LAMBDA,
                                   lex_WHILE,
 				  lex_SELECT,
 				  lex_ONERROR,
@@ -741,6 +747,7 @@ procedure new_parse_exprlist()
                       lex_WHILE,
 		      lex_SLASHSLASH,
 		      lex_GENERATE,
+		      lex_LAMBDA,
 		      lex_SELECT,
 		      lex_ONERROR,
 		      lex_LOCAL,
@@ -1041,6 +1048,7 @@ procedure parse_nexpr()
                       lex_WHILE,
 		      lex_SLASHSLASH,
 		      lex_GENERATE,
+		      lex_LAMBDA,
 		      lex_SELECT,
 		      lex_ONERROR,
 		      lex_LOCAL,
@@ -1067,6 +1075,62 @@ procedure parse_pdcolist()
     return l
 end
 
+procedure parse_do_lambda()
+    local paramList, accumulate, loc, init, nexprList, e, coord, idcoord
+    local endcoord, body
+    static do_proc_set
+
+    initial {
+    do_proc_set := set([lex_AND, lex_AT, lex_BACKSLASH, lex_BANG, lex_BAR,
+                        lex_BREAK, lex_CARET, lex_CASE, lex_CONCAT, lex_CREATE,
+                        lex_CSETLIT, lex_DIFF, lex_DOT, lex_EQUIV, lex_EVERY,
+                        lex_FAIL, lex_IDENT, lex_IF, lex_INTER, lex_INTLIT,
+                        lex_LBRACE, lex_LBRACK, lex_LCONCAT, lex_LPAREN,
+                        lex_MINUS, lex_NEQUIV, lex_NEXT, lex_NMEQ, lex_NMNE,
+                        lex_NOT, lex_PLUS, lex_QMARK, lex_REALLIT, lex_REPEAT,
+                        lex_RETURN, lex_SEMICOL, lex_SEQ, lex_SLASH,
+                        lex_SNE, lex_STAR, lex_STRINGLIT, lex_SUSPEND,
+                        lex_TILDE, lex_UNION, lex_WHILE,
+			lex_SLASHSLASH,
+			lex_GENERATE,
+			lex_LAMBDA,
+			lex_SELECT,
+			lex_ONERROR,
+			lex_LOCAL,
+			lex_STATIC,
+			lex_LCOMP,
+			lex_PROCEDURE ])
+    }
+    #  lambdahead  expr 
+    coord := parse_tok_rec.coord
+    parse_match_token(lex_LAMBDA)
+
+    parse_match_token(lex_LPAREN)
+    paramList := []
+    if parse_tok_rec === lex_IDENT then {
+        paramList := parse_idlist()
+        if parse_tok_rec === lex_LBRACK then {
+            parse_eat_token()
+            parse_match_token(lex_RBRACK)
+            accumulate := 1
+        }
+    }
+    parse_match_token(lex_RPAREN)
+
+#     parse_match_token(lex_SEMICOL)
+    if parse_tok_rec === lex_SEMICOL then {
+        # horrible hack to get rid of inserted semicolon when
+        # opening brace is on the next line
+        parse_match_token(lex_SEMICOL)
+    }
+
+    body := parse_expr()
+    endcoord := parse_tok_rec.coord
+    return a_ProcDecl( a_Ident(&null, idcoord) , paramList, accumulate,
+                      a_ProcCode(a_Suspend(body, &null, &null, coord), endcoord),
+		      coord, endcoord)
+end
+
 procedure parse_do_proc(noident)
     local ident, paramList, accumulate, loc, init, nexprList, e, coord, idcoord
     local endcoord, body
@@ -1085,6 +1149,7 @@ procedure parse_do_proc(noident)
                         lex_TILDE, lex_UNION, lex_WHILE,
 			lex_SLASHSLASH,
 			lex_GENERATE,
+			lex_LAMBDA,
 			lex_SELECT,
 			lex_ONERROR,
 			lex_LOCAL,

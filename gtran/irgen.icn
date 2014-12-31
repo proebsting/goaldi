@@ -1128,7 +1128,7 @@ end
 
 # record a_Generate( expr name )
 procedure ir_a_Generate(p, st, target, bounded, rval)
-    local curloop, sl, mk
+    local curloop, sl, mk, clx
 
     /p.expr := a_Key("null", p.coord)
     ir_init(p)
