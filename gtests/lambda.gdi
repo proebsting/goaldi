@@ -1,0 +1,14 @@
+#SRC: goaldi original
+#
+#	lambda test
+
+procedure main() {
+    local a := 7
+	write(" a = ", a)
+	local by3 := lambda(i, j) { a := i to j by 3 }
+	every writes(" ", by3(1, 20) | "\n")
+	write(" a = ", a)
+	local by7 := lambda(i, j) { local a := i to j by 7 }
+	every writes(" ", by7(21, 50) | "\n")
+	write(" a = ", a)
+}
