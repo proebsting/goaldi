@@ -268,8 +268,9 @@ type ir_CoFail struct {
 }
 
 type ir_Select struct {
-	Coord    string
-	CaseList []ir_SelectCase
+	Coord     string
+	CaseList  []ir_SelectCase
+	FailLabel string
 }
 
 type ir_SelectCase struct {

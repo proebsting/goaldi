@@ -247,7 +247,9 @@ func getArgs(f *pr_frame, nd int, arglist []interface{}) []g.Value {
 func irSelect(f *pr_frame, ir ir_Select) string {
 
 	// set up data structures for reflect.Select
-	cases := make([]reflect.SelectCase, len(ir.CaseList))
+	n := len(ir.CaseList)
+	cases := make([]reflect.SelectCase, n, n+1)
+	seenDefault := false
 	for i, sc := range ir.CaseList {
 		f.coord = sc.Coord
 		switch sc.Kind {
@@ -270,9 +272,13 @@ func irSelect(f *pr_frame, ir ir_Select) string {
 		case "default":
 			cases[i] = reflect.SelectCase{
 				Dir: reflect.SelectDefault}
+			seenDefault = true
 		default:
 			panic(&g.RunErr{"Bad selectcase kind", sc.Kind})
 		}
+	}
+	if !seenDefault {
+		cases = append(cases, reflect.SelectCase{Dir: reflect.SelectDefault})
 	}
 	// repeat until we get anything other than a read on a closed channel
 	for {
@@ -280,6 +286,10 @@ func irSelect(f *pr_frame, ir ir_Select) string {
 		// call select through the reflection interface
 		i, v, recvOK := reflect.Select(cases)
 		// select has returned, having chosen case i
+		if i == n {
+			// this is the default case we added, because there was none
+			return ir.FailLabel // so the select expression fails
+		}
 		sc := ir.CaseList[i]
 		f.coord = sc.Coord
 		if sc.Kind == "receive" {
