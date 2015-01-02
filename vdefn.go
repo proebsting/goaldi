@@ -52,7 +52,13 @@ func (v *VDefn) String() string {
 
 //  VDefn.GoString -- convert to Go string for image() and printf("%#v")
 func (v *VDefn) GoString() string {
-	return "constructor " + v.Name + "()"
+	s := "constructor " + v.Name + "("
+	d := ""
+	for _, t := range v.Flist {
+		s = s + d + t
+		d = ","
+	}
+	return s + ")"
 }
 
 //  VDefn.Rank returns rDefn

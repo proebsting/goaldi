@@ -30,7 +30,7 @@ default    : 2.718      : 2.718281828459045
 default    : 0          : "0"
 "1"        : 1          : "1"
 default    : 2          : "2"
-rec        : C:rec      : constructor rec()
+rec        : C:rec      : constructor rec(a)
 %stdin     : F:%stdin   : file(%stdin,r)
 main       : P:main     : procedure main()
 write      : P:write    : procedure write(?)
