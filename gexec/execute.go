@@ -151,7 +151,12 @@ func execute(f *pr_frame, label string) (rv g.Value, rc *g.Closure) {
 				case ir_IndirectGoto:
 					label = i.TargetTmpLabel
 					label = f.temps[label].(string)
-					break Chunk
+					for _, s := range i.LabelList {
+						if s == label {
+							break Chunk
+						}
+					}
+					panic("ir_IndirectGoto: label not in list: " + label)
 				case ir_MakeClosure:
 					//#%#% potential later optimization:
 					//#%#% only pass in *referenced* variables
