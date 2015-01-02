@@ -46,6 +46,9 @@ func execute(f *pr_frame, label string) (rv g.Value, rc *g.Closure) {
 				fmt.Printf("[%d] %s:\n", f.env.ThreadID, label)
 			}
 			ilist := f.info.insns[label] // look up label
+			if len(ilist) == 0 {
+				panic("No instructions for IR label: " + label)
+			}
 		Chunk:
 			for _, insn := range ilist { // execute insns in chunk
 				if opt_trace {
