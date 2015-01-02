@@ -140,7 +140,7 @@ procedure ir_a_ExcAlt(p, st, target, bounded, rval)
 	if /t then {
             suspend ir_chunk(p.eList[i].ir.failure,[ir_Goto(ir_coord(p.coord), p.ir.failure)])
 	} else {
-            suspend ir_chunk(p.eList[i].ir.failure,[ir_IndirectGoto(ir_coord(p.coord), F, [p.eList[i+1].ir.start, p.ir.failure])])
+            suspend ir_chunk(p.eList[i].ir.failure,[ir_IndirectGoto(ir_coord(p.coord), F, [t, p.ir.failure])])
 	}
 
 	put(indirectsR, p.eList[i].ir.resume)
