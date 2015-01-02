@@ -37,9 +37,7 @@ procedure meander(alpha,n) {
 	t := n-1
 	result := repl(alpha[1],t)
 	while c := alpha[i] do {
-	   if contains(result, result[-t:0] || c) ~= 0
-	   then i -:= 1
-	   else {result ||:= c; i := k}
+	   if contains(result, result[-t:0] || c) ~= 0 then i -:= 1 else {result ||:= c; i := k}
 	}
 	return result
 }

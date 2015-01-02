@@ -99,6 +99,9 @@ procedure parse_do_select()
     parse_match_token(lex_LBRACE)
     caseList := []
     repeat {
+	if parse_tok_rec === lex_RBRACE then {
+	    break
+	}
         element := parse_selcase()
         if element.kind === "default" then {
             (/dflt := element) | parse_error("more than one default clause")

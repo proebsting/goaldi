@@ -29,21 +29,23 @@ procedure main() {
 
    every i := -6 to 6 do {
       s := "abcde"
-      if s[i] := t[i] then
+      if s[i] := t[i] then {
          write("J ", i, ". ", s)
-      else
+      } else {
          write("J ", i, ". --")
+      }
       }
 
    every i := 1 to 6 do {
       every j := 1 to 6 do {
 	 s := "abcde"
 	 writes("K ", i, " ", j, ". ")
-	 if s[i:j] := "(*)" then
+	 if s[i:j] := "(*)" then {
 	    write(s)
-	 else
+	 } else {
 	    write(s, " [failed]")
          }
+	 }
       }
 
    every i := 1 to 6 do {
@@ -51,10 +53,11 @@ procedure main() {
          every k := 1 to 6 do {
 	    s := "abcde"
 	    writes("L ", i, " ", j, " ", k, ". ")
-	    if s[i:j][k:2] := "(*)" then
+	    if s[i:j][k:2] := "(*)" then {
 	       write(s)
-	    else
+	    } else {
 	       write(s, " [failed]")
+	    }
 	    }
          }
       }

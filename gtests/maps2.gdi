@@ -93,10 +93,9 @@ procedure tdump(label, T) {
       if x === ((!T).key) then {
          writes(" [", image(x), "]", image(T[x]))
 	 T.member(x) | writes(":NONMEMBER")
-         }
-      else {
+      } else {
 	 T.member(x) & writes(" MEMBER:", image(x))
-         }
+      }
    write()
    return
 }

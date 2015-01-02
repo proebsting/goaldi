@@ -79,8 +79,7 @@ procedure q(c) {
    every 0 = rows[r := 1 to n] = up[n+r-c] = down[r+c-1] &
       rows[r] <- up[n+r-c] <- down[r+c-1] <- 1        do {
          solution[c] := r	# record placement.
-         if c = n then show()
-         else q(c + 1)		# try to place next queen.
+         if c = n then show() else q(c + 1)		# try to place next queen.
       }
 }
 

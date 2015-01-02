@@ -18,18 +18,16 @@ procedure main() {
 
 procedure rex(expr, s[]) {
 	local e
-	if e := regex(expr) then
-		every try(e, !s)
-	else
-		write("FAILED: ", expr)
+	if e := regex(expr) then every try(e, !s) else write("FAILED: ", expr)
 }
 
 procedure try(re, s) {
 	local a
 	writes(re, " : ", image(s), " :")
-	if a := \re.FindStringSubmatch(s) then
+	if a := \re.FindStringSubmatch(s) then {
 		every writes(" ", image(!a) | "\n")
-	else
+	} else {
 		write(" [no match]")
+	}
 	return
 }
