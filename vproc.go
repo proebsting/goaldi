@@ -9,14 +9,16 @@ import (
 
 //  Procedure value
 type VProcedure struct {
-	Name  string      // registered name
-	Entry Procedure   // function to call
-	Ufunc interface{} // underlying function
+	Name   string      // registered name
+	Pnames *[]string   // parameter names (nil if unknown)
+	Entry  Procedure   // function to call
+	Ufunc  interface{} // underlying function
 }
 
-//  NewProcedure(name, entry, ufunc) -- construct a procedure value
-func NewProcedure(name string, entry Procedure, ufunc interface{}) *VProcedure {
-	return &VProcedure{name, entry, ufunc}
+//  NewProcedure(name, pnames, entry, ufunc) -- construct a procedure value
+func NewProcedure(name string, pnames *[]string,
+	entry Procedure, ufunc interface{}) *VProcedure {
+	return &VProcedure{name, pnames, entry, ufunc}
 }
 
 //  VProcedure.String -- default conversion to Go string returns "P:procname"
@@ -26,7 +28,16 @@ func (v *VProcedure) String() string {
 
 //  VProcedure.GoString -- convert to string for image() and printf("%#v")
 func (v *VProcedure) GoString() string {
-	return "procedure " + v.Name + "()"
+	s := "procedure " + v.Name + "("
+	if v.Pnames == nil {
+		return s + "?)" // params unknown
+	}
+	d := ""
+	for _, t := range *v.Pnames {
+		s = s + d + t
+		d = ","
+	}
+	return s + ")"
 }
 
 //  VProcedure.ImplBy -- return name of implementing underlying function
@@ -107,7 +118,7 @@ func GoMethod(val Value, name string, meth reflect.Method) Value {
 
 //  GoProcedure(name, func) -- construct a procedure from a Go function
 func GoProcedure(name string, f interface{}) *VProcedure {
-	return NewProcedure(name, GoShim(name, f), f)
+	return NewProcedure(name, nil, GoShim(name, f), f)
 }
 
 //  GoShim(name, func) -- make a shim for converting args to a Go function

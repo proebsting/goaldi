@@ -3,7 +3,7 @@
 
 record Circle(x, y, r)
 
-procedure main() {
+procedure main(args) {
 	# local a, m, v, fmt
 	local a
 	local m
@@ -15,7 +15,7 @@ procedure main() {
 	m[2] := "b"
 
 	# make a collection, and sort it
-	a := [, 1, &pi, 6.02214129e23, "abc", &stdin, [].push, main,
+	a := [, 1, &pi, 6.02214129e23, "abc", &stdin, [].push, main, write,
 		channel(3), Circle, Circle(3,4,5), [1,2,3], m, !m.sort()]
 	a := a.sort()
 

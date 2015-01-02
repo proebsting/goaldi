@@ -219,7 +219,8 @@ type ir_Call struct {
 	Lhsclosure string
 	Fn         string
 	ArgList    []interface{} // heterogeneous
-	FailLabel  string        // may be nil
+	NameList   []string
+	FailLabel  string // may be nil
 }
 
 type ir_ResumeValue struct {

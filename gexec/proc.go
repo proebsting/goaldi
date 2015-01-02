@@ -5,6 +5,7 @@ package main
 import (
 	"fmt"
 	g "goaldi"
+	"strings"
 )
 
 //  information about a procedure that is shared by all invocations
@@ -68,6 +69,12 @@ func setupProc(pr *pr_Info) {
 //  irProcedure makes a runtime procedure from static info and inherited vars
 func irProcedure(pr *pr_Info, outer map[string]interface{}) *g.VProcedure {
 
+	// make a list of unadorned parameter names
+	pnames := make([]string, len(pr.params))
+	for i, s := range pr.params {
+		pnames[i] = s[:strings.Index(s, ":")]
+	}
+
 	// copy (references to) any inherited variables
 	vars := make(map[string]interface{})
 	if outer != nil {
@@ -76,7 +83,7 @@ func irProcedure(pr *pr_Info, outer map[string]interface{}) *g.VProcedure {
 		}
 	}
 
-	return g.NewProcedure(pr.name,
+	return g.NewProcedure(pr.name, &pnames,
 		func(env *g.Env, args ...g.Value) (g.Value, *g.Closure) {
 			return interp(env, pr, vars, args...)
 		}, nil)
