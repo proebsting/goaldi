@@ -240,12 +240,6 @@ procedure optim_goto_elimination(t, start)
     new := table()
     optim_goto_transitive(t, new, start)
     optim_test_elimination(new, start)
-# Todd believe the following is obsolete without initial clause in procedures
-#    if i := new[start] &
-#       type(i[2]) == "ir_Goto" &
-#       i[1].startLabel === i[2].targetLabel then {
-#        new[start] := [ i[2] ]
-#    }
     optim_fallthrough(new)
     return new
 end
@@ -290,24 +284,12 @@ procedure optim_goto_chain(lab, t)
     return lab
 end
 
-procedure optim_goto_chain_defer(lab, t)
-    local chunk, seen
-
-    seen := set([])
-    while chunk := \t[lab] &
-          type(chunk[1]) == "ir_Goto" &
-	  not member(seen, chunk[1].targetLabel) &
-          type(chunk[1].targetLabel) ~== "ir_TmpLabel" do {
-        lab := chunk[1].targetLabel
-        insert(seen, lab)
-    }
-    return lab
-end
-
 procedure optim_goto_transitive(t, new, lab)
     local p, sc
 
-    if /t[lab] | \new[lab] then {
+    \t[lab] | runerr(500, lab)
+
+    if \new[lab] then {
 	return
     }
     new[lab] := t[lab]
@@ -338,9 +320,10 @@ procedure optim_goto_transitive(t, new, lab)
 		# nothing
 		}
 	    "ir_Label" : {  # ir_Label : ( value )
+	            runerr(500, p)
 		}
 	    "ir_MoveLabel" : {  # ir_MoveLabel : ( lhs label )
-		p.label := optim_goto_chain_defer(p.label, t)
+		p.label := optim_goto_chain(p.label, t)
 		optim_goto_transitive(t, new, p.label)
 		}
 	    "ir_Goto" : {  # ir_Goto : ( targetLabel )
@@ -365,6 +348,7 @@ procedure optim_goto_transitive(t, new, lab)
 		}
 	    "ir_Select" : {  # ir_Select : ( caselist ) 
 		p.failLabel := optim_goto_chain(\p.failLabel, t)
+		optim_goto_transitive(t, new, \p.failLabel)
 	    	every sc := !p.caseList do {
 		    # ir_SelectCase : ( kind lhs rhs bodyLabel )
 		    sc.bodyLabel := optim_goto_chain(sc.bodyLabel, t)
@@ -372,7 +356,7 @@ procedure optim_goto_transitive(t, new, lab)
 		    }
 		}
 	    "ir_Create" : {  # ir_Create : ( lhs location )
-		p.coexpLabel := optim_goto_chain_defer(p.coexpLabel, t)
+		p.coexpLabel := optim_goto_chain(p.coexpLabel, t)
 		optim_goto_transitive(t, new, p.coexpLabel)
 		}
 	    "ir_CoRet" : {  # ir_CoRet : ( value resumeLabel )
