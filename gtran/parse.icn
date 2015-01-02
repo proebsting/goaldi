@@ -927,6 +927,9 @@ procedure parse_idlist()
     while parse_tok_rec === lex_COMMA do {
         parse_eat_token()
         coord := parse_tok_rec.coord
+	if parse_tok_rec ~=== lex_IDENT then {
+	    break
+	}
         id := a_Ident(parse_match_token(lex_IDENT), coord)
         put(l, id)
     }
