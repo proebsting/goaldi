@@ -129,6 +129,7 @@ procedure optim_def_use(p, uses, defs)
 	    every uses[!p.argList] +:= 1
 	    }
     "ir_Select" :   { 
+	    uses[\p.failLabel] +:= 1
 	    every sc := !p.caseList do {
 	        uses[\sc.lhs] +:= 1
 	        uses[\sc.rhs] +:= 1
@@ -207,6 +208,7 @@ procedure optim_rewrite(p, rename)
             p.failLabel := optim_rename(\p.failLabel, rename);
             }
     "ir_Select" :  {	#%#% untested
+            p.failLabel := optim_rename(\p.failLabel, rename);
 	    every sc := !p.caseList do {
 	        sc.lhs := optim_rename(\sc.lhs, rename);
 	        sc.rhs := optim_rename(\sc.rhs, rename);
@@ -362,6 +364,7 @@ procedure optim_goto_transitive(t, new, lab)
 		optim_goto_transitive(t, new, \p.failLabel)
 		}
 	    "ir_Select" : {  # ir_Select : ( caselist ) 
+		p.failLabel := optim_goto_chain(\p.failLabel, t)
 	    	every sc := !p.caseList do {
 		    # ir_SelectCase : ( kind lhs rhs bodyLabel )
 		    sc.bodyLabel := optim_goto_chain(sc.bodyLabel, t)
@@ -430,6 +433,7 @@ procedure optim_refcountX(refcount, p)
 	refcount[\p.failLabel] +:= 1
         }
     "ir_Select": {
+	refcount[\p.failLabel] +:= 1
 	every refcount[(!p.caseList).bodyLabel] +:= 1
         }
     "ir_Create" : {  # ir_Create : ( lhs coexpLabel )

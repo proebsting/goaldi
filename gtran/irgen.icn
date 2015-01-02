@@ -1294,7 +1294,7 @@ procedure ir_a_Select(p, st, target, bounded, rval)
     }
     /bounded & suspend ir_chunk(p.ir.resume, [ ir_IndirectGoto(ir_coord(p.coord), t, indirects) ])
 
-    suspend ir_chunk(select, [ ir_Select(ir_coord(p.coord), caseList) ])
+    suspend ir_chunk(select, [ ir_Select(ir_coord(p.coord), caseList, p.ir.failure) ])
 
     if p.caseList[1] then {
         suspend ir_chunk(p.ir.start, [ ir_Goto(ir_coord(p.coord), p.caseList[1].left.ir.start) ])
