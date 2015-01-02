@@ -43,3 +43,5 @@
     drain c3 : 77 88 99 
     drain c9 : 34 
 ok: got default when files closed
+ok: no-default select failed as expected
+ok: empty select failed as expected

@@ -42,6 +42,13 @@ procedure main() {
 		n := @c9 : write("oops: closed c9 returned ", n)
 		default  : write("ok: got default when files closed")
 	}
+
+	select {
+		n := @c1 : write("oops: closed c1 returned ", n)
+		n := @c9 : write("oops: closed c9 returned ", n)
+	} | write("ok: no-default select failed as expected")
+
+	write(select{} | "ok: empty select failed as expected")
 }
 
 procedure drain(name, ch) {
