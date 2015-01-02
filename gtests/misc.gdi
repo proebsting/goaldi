@@ -1,6 +1,11 @@
 #SRC: icon/misc.icn
 
-record message(who,gap,what)
+record message(
+	who,	# something
+	gap,	# something else
+	what,	# something more
+)
+
 record recordAsVariable()
 global recordAsVariable
 
