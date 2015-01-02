@@ -4,6 +4,7 @@ procedure optim_optimize(t, start)
     local new, i
 
     new := t
+    # for unknown reasons, but definitely a bug, the following two lines cannot be reordered.
     new := optim_dead_assignment(new, start)
     new := optim_goto_elimination(new, start)
     new := optim_copy_propagation(new, start)
@@ -234,9 +235,20 @@ procedure optim_rewrite(p, rename)
     return p;
 end
 
+procedure optim_indirect_elimination(t)
+    local chunk, insn
+
+    every chunk := !t & insn := chunk[-1] &
+          type(insn) == "ir_IndirectGoto" &
+          *insn.labelList = 1 do {
+        chunk[-1] := ir_Goto(insn.coord, insn.labelList[1])
+    }
+end
+
 procedure optim_goto_elimination(t, start)
     local new, i
 
+    optim_indirect_elimination(t)
     new := table()
     optim_goto_transitive(t, new, start)
     optim_test_elimination(new, start)
@@ -310,7 +322,6 @@ procedure optim_goto_transitive(t, new, lab)
 	    "ir_Tmp" |
 	    "ir_TmpLabel" |
 	    "ir_Move" |
-	    "ir_IndirectGoto" |
 	    "ir_MakeClosure" |
 	    "ir_NoOp" |
 	    "ir_EnterScope" |
@@ -322,6 +333,11 @@ procedure optim_goto_transitive(t, new, lab)
 	    "ir_Label" : {  # ir_Label : ( value )
 	            runerr(500, p)
 		}
+	    "ir_IndirectGoto" : {
+	            every i := 1 to *p.labelList do {
+		        p.labelList[i] := optim_goto_chain(p.labelList[i], t)
+		    }
+	        }
 	    "ir_MoveLabel" : {  # ir_MoveLabel : ( lhs label )
 		p.label := optim_goto_chain(p.label, t)
 		optim_goto_transitive(t, new, p.label)
@@ -435,11 +451,11 @@ procedure optim_refcountX(refcount, p)
 end
 
 procedure optim_test_elimination(t, start)
-	local chunk
+	local chunk, insn
 
 	every chunk := !t &
 	      type(chunk[-1]) == "ir_Goto" &
-	      type(chunk[-2]) == ("ir_Call" | "ir_OpFunction" ) &
+	      type(chunk[-2]) == ("ir_Call" | "ir_OpFunction" | "ir_Select") &
 	      chunk[-1].targetLabel === \chunk[-2].failLabel do {
 	    chunk[-2].failLabel := &null
 	}
