@@ -128,6 +128,9 @@ func Diagnose(f io.Writer, v interface{}) bool {
 		asst := extract(s, "assertedString")
 		fmt.Fprintf(f, "Type %s does not implement %s\n", conc, asst)
 		return true
+	case string:
+		fmt.Fprintf(f, "PANIC: %v\n", x)
+		return false
 	default:
 		fmt.Fprintf(f, "%T: %v\n", x, x)
 		return false
