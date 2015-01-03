@@ -132,6 +132,9 @@ func (v *VFile) Read(p []byte) (int, error) {
 
 //  VFile.ReadLine() returns the next line from this file, or nil at EOF.
 func (v *VFile) ReadLine() *VString {
+	if v.Reader == nil {
+		panic(&RunErr{"Not open for reading", v})
+	}
 	s, e := v.Reader.ReadString('\n')
 	if e == nil {
 		n := len(s) - 1              // position of trailing \n
