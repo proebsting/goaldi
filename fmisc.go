@@ -183,7 +183,10 @@ func Exit(env *Env, args ...Value) (Value, *Closure) {
 func Runerr(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("runerr", args)
 	x := ProcArg(args, 0, err_fatal)
-	v := ProcArg(args, 1, nil)
+	v := ProcArg(args, 1, NilValue)
+	if len(args) < 2 {
+		v = nil // distingish no argument from explicit %nil
+	}
 	if n, ok := x.(*VNumber); ok {
 		x = NewString(fmt.Sprintf("Fatal error %v", n))
 	}

@@ -20,7 +20,11 @@ type RunErr struct {
 
 //  RunErr.String() returns a string form of a RunErr
 func (e *RunErr) String() string {
-	return fmt.Sprintf("RunErr: %s (%v)", e.Msg, e.Offv)
+	if e.Offv != nil {
+		return fmt.Sprintf("RunErr: %s (%v)", e.Msg, e.Offv)
+	} else {
+		return fmt.Sprintf("RunErr: %s", e.Msg)
+	}
 }
 
 //  RunErr.Error() implements the interface that makes a RunErr a Go "error"
