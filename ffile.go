@@ -188,6 +188,10 @@ func (f *VFile) FRead(args ...Value) (Value, *Closure) {
 //  Useful for reading binary files.
 //  Fails at EOF when no more data is available.
 func (f *VFile) FReadb(args ...Value) (Value, *Closure) {
+	defer Traceback("f.readb", args)
+	if f.Reader == nil {
+		panic(&RunErr{"Not open for reading", f})
+	}
 	n := int(ProcArg(args, 0, ONE).(Numerable).ToNumber().Val())
 	b := make([]byte, n)
 	n, err := f.Reader.Read(b)
@@ -204,6 +208,9 @@ func (f *VFile) FReadb(args ...Value) (Value, *Closure) {
 //  Writes the low 8 bits of each character of s to file f.
 func (f *VFile) FWriteb(args ...Value) (Value, *Closure) {
 	defer Traceback("f.writeb", args)
+	if f.Writer == nil {
+		panic(&RunErr{"Not open for writing", f})
+	}
 	s := ProcArg(args, 0, NilValue).(Stringable).ToString()
 	Ock(f.Writer.Write(s.ToBinary()))
 	return Return(f)
