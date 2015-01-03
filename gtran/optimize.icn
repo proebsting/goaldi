@@ -178,6 +178,7 @@ procedure optim_rewrite(p, rename)
             p.value := optim_rename(p.value, rename) }
     "ir_Goto" :  { }
     "ir_IndirectGoto" :  { }
+    "ir_MakeClosure" :   { p.lhs := optim_rename(\p.lhs, rename) }
     "ir_Var" :   { p.lhs := optim_rename(\p.lhs, rename) }
     "ir_Key" :   { p.lhs := optim_rename(\p.lhs, rename) 
 	    }
