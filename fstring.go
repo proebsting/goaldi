@@ -44,18 +44,12 @@ func init() {
 	LibGoFunc("trim", strings.Trim)
 }
 
-//  String(x) -- return argument converted to string, or fail
+//  String(x) -- return argument converted to string (always)
+//  The result is exactly the same value used by write(x) etc.
 func String(env *Env, args ...Value) (Value, *Closure) {
-	// nonstandard entry; on panic, returns default nil values
-	defer func() { recover() }()
+	defer Traceback("string", args)
 	v := ProcArg(args, 0, NilValue)
-	if s, ok := v.(Stringable); ok {
-		return Return(s.ToString())
-	} else if s, ok := v.(fmt.Stringer); ok {
-		return Return(NewString(s.String()))
-	} else {
-		return Return(Import(v).(Stringable).ToString())
-	}
+	return Return(NewString(fmt.Sprint(v)))
 }
 
 //  Char(i) -- return one-character string with Unicode value i
