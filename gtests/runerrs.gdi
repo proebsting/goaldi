@@ -1,0 +1,60 @@
+#SRC: goaldi original
+#
+#  provoke and print, as examples, several run-time errors
+
+record r(a,b,c)
+
+procedure main() {
+	every try(0 to 1000)
+}
+
+procedure try(i) {
+	onerror lambda(e) {
+		# assert e === &error
+		# write()
+		write(i, ". ", &error)
+		# write("    ", image(&error))
+	}
+	provoke(i)
+}
+
+procedure provoke(i) {
+	case i of {
+
+		10: &huh
+
+		20: "x" || main
+		21: 1 + "x"
+		22: 1 + main
+		23: ?(-3)
+		24: select { 666 @: 0 : 0}
+
+		30: char(-1)
+		31: ord("ab")
+		
+		50: &nil to 10
+		51: "x" to 10
+		52: 1 to &nil
+		53: 1 to []
+		54: 1 to 10 by 0
+
+		60: channel()[3]
+		61: 3 @: 7
+		62: [].sort(-1)
+		63: r().huh
+		64: [].huh
+
+		80: open("x", "q")
+		81: open("/no/such/file")
+		82: open("/bin", "w")
+		83: open("/bin/ls", "w")
+		84: open("/dev/null").write()
+		85: !open("/dev/null", "w")
+		86: open("/dev/null").close().read()
+
+		96: runerr("my own error")
+		97: runerr("my nil error", &nil)
+		98: runerr("my pi error", &pi)
+		99: runerr(99, &phi)
+	}
+}
