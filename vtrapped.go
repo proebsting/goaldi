@@ -45,6 +45,13 @@ func (t *VTrapped) Assign(v Value) IVariable {
 	return t
 }
 
+//  NewVariable(x) returns a pointer to a new variable initialized to x.
+func NewVariable(x Value) *Value {
+	v := new(Value)
+	*v = x
+	return v
+}
+
 //  Deref(v) -- dereference a value only if it implements IVariable
 func Deref(v Value) Value {
 	if d, ok := v.(IVariable); ok {
