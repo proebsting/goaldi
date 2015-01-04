@@ -59,15 +59,23 @@ procedure dot_dump(i)
     "ir_MakeClosure" |
     "ir_Key" |
     "ir_Var" : return type(i)[4:0] || " " || n(i.lhs) || " " || i.name
+    "ir_MakeList" : return type(i)[4:0] || " " || n(i.lhs) || " [...]"
+    "ir_Succeed" : return type(i)[4:0] || " " || n(i.expr)
+    "ir_OnError" : return type(i)[4:0] || " " || n(i.fn)
+    "ir_CoRet" : return type(i)[4:0] || " " || n(i.value)
+    "ir_Create" : return type(i)[4:0] || " " || n(i.lhs)
     "ir_StrLit" |  # going to cause problems...
     "ir_CsetLit" |  # going to cause problems...
     "ir_RealLit" |
     "ir_IntLit" : return type(i)[4:0] || " " || n(i.lhs) || " " || i.val
+    "ir_Field" : return type(i)[4:0] || " " || n(i.lhs) || " " || n(i.expr) || " " || i.field
     "ir_Goto" |
     "ir_IndirectGoto" |
     "ir_Fail" |
     "ir_EnterScope" |
+    "ir_CoFail" |
     "ir_ExitScope" : return type(i)[4:0]
+    "ir_Select" : return type(i)[4:0] || " unimplemented"
     }
 end
 
@@ -99,6 +107,7 @@ procedure dot_output(t)
                 write(lab, ":f", i, " ->", image(dot_dump(insn.targetLabel)))
                 }
             "ir_Call" |
+            "ir_Select" |
             "ir_OpFunction" |
             "ir_ResumeValue" : {
                 write(lab, ":f", i,
@@ -110,6 +119,12 @@ procedure dot_output(t)
                       " ->",
                       image(dot_dump(\insn.resumeLabel)),
                       " [label=resumeLabel]")
+                }
+            "ir_Create" : {
+                write(lab, ":f", i,
+                      " ->",
+                      image(dot_dump(insn.coexpLabel)),
+                      " [label=coexpLabel]")
                 }
             "ir_CoRet" : {
                 write(lab, ":f", i,

@@ -316,6 +316,76 @@ procedure ir_a_Sectionop(p, st, target, bounded, rval)
     suspend ir_chunk(p.right.ir.failure, [ ir_Goto(ir_coord(p.coord), p.left.ir.resume) ])
 end
 
+procedure ir_parallel_call(p, st, target, bounded, rval)
+    local value, L, i, fn, args, clsr, argresume, argstart, argsuccess, resumeTmps, t
+
+    argsuccess := ir_label(p, "pcall")
+
+    resumeTmps := table()
+    every i := p.args.exprList[2 to *p.args.exprList] do {
+        resumeTmps[i] := ir_tmploc(st)
+    }
+
+    \p.coord | runerr(500, p)
+    type(p.args) == "a_CoexpList" | runerr(500, p.args)
+
+    every /(!p.args.exprList) := a_Key("null", p.coord)
+
+    ir_init(p)
+    value := ir_tmp(st)
+    clsr := ir_tmpclosure(st)
+    fn := ir_tmp(st)
+    args := []
+    every i := !p.args.exprList do put(args, ir_value(i, st, &null))
+
+    suspend ir(p.fn, st, fn, &null, "rval")
+    every i := 1 to *p.args.exprList do {
+	# the embedded if below seems like an Icon remnant --Todd
+        suspend ir(p.args.exprList[i], st, args[i], &null,
+		   if type(p.args.exprList[i]) == "a_Ident"
+		   then "rval" else &null)
+    }
+
+    L := p.args.exprList
+    \p.coord | runerr(500, p)
+
+    argresume := (L[1].ir.resume | p.fn.ir.resume)
+    argstart := (L[1].ir.start | argsuccess)
+
+    suspend ir_chunk(p.ir.start, [ ir_Goto(ir_coord(p.coord), p.fn.ir.start) ])
+
+    # need to init resumeLabel temps
+    t := []
+    every i := key(resumeTmps) do {
+        put(t, ir_MoveLabel(ir_coord(p.coord), resumeTmps[i], i.ir.start))
+    }
+    suspend ir_chunk(p.fn.ir.success, t ||| [ ir_Goto(ir_coord(p.coord), argstart) ])
+    suspend ir_chunk(p.fn.ir.failure, [ ir_Goto(ir_coord(p.coord), p.ir.failure) ])
+
+    suspend ir_chunk(p.ir.resume, [
+        ir_ResumeValue(ir_coord(p.coord), target, clsr, clsr, argresume),
+        ir_Goto(ir_coord(p.coord), p.ir.success)
+        ])
+    every i := 1 to *L do {
+        suspend ir_chunk(L[i].ir.success, [ ir_IndirectGoto(ir_coord(p.coord), resumeTmps[L[i+1]], [L[i+1].ir.start, L[i+1].ir.resume] ) ])
+        suspend ir_chunk(L[i].ir.failure, [ ir_Goto(ir_coord(p.coord), p.fn.ir.resume) ])
+    }
+    suspend ir_chunk(L[-1].ir.success, [ ir_Goto(ir_coord(p.coord), argsuccess) ])
+
+    t := []
+    every i := key(resumeTmps) do {
+        put(t, ir_MoveLabel(ir_coord(p.coord), resumeTmps[i], i.ir.resume))
+    }
+    suspend ir_chunk(argsuccess, 
+        t ||| [
+	# ir_Deref(ir_coord(p.coord), fn, fn), #%#%# is this necessary?
+	# can't handle named args yet.
+        ir_Call(ir_coord(p.coord), value, clsr, fn, args, [], argresume),
+        ir_Move(ir_coord(p.coord), target, value),
+        ir_Goto(ir_coord(p.coord), p.ir.success)
+        ])
+end
+
 # record a_Call( fn args )
 procedure ir_a_Call(p, st, target, bounded, rval)
     local value, L, i, fn, args, clsr
@@ -323,6 +393,11 @@ procedure ir_a_Call(p, st, target, bounded, rval)
     \p.coord | runerr(500, p)
     every /(!p.args.exprList) := a_Key("null", p.coord)
     if type(p.args) == "a_CoexpList" then {
+
+# try parallel calls
+# suspend ir_parallel_call(p, st, target, bounded, rval)
+# fail
+
         L := []
         every put(L, a_Create(!p.args.exprList, p.coord))
         p.args := a_Arglist([a_ListConstructor(L, p.coord)], &null)
@@ -337,6 +412,7 @@ procedure ir_a_Call(p, st, target, bounded, rval)
 
     suspend ir(p.fn, st, fn, &null, "rval")
     every i := 1 to *p.args.exprList do {
+	# the embedded if below seems like an Icon remnant --Todd
         suspend ir(p.args.exprList[i], st, args[i], &null,
 		   if type(p.args.exprList[i]) == "a_Ident"
 		   then "rval" else &null)

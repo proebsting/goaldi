@@ -298,7 +298,7 @@ procedure optim_goto_chain(lab, t)
 end
 
 procedure optim_goto_transitive(t, new, lab)
-    local p, sc
+    local p, sc, i
 
     \t[lab] | runerr(500, lab)
 
