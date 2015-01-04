@@ -316,6 +316,48 @@ procedure ir_a_Sectionop(p, st, target, bounded, rval)
     suspend ir_chunk(p.right.ir.failure, [ ir_Goto(ir_coord(p.coord), p.left.ir.resume) ])
 end
 
+procedure ir_parallel_op(p, st, target, bounded, rval)
+    local value, L, i, j, resumeTmps, t, success
+
+    \p.coord | runerr(500, p)
+    ir_init(p)
+
+    L := p.exprList
+    every /!L := a_Key("null", p.coord)
+
+    resumeTmps := table()
+    every resumeTmps[L[2 to *L]] := ir_tmploc(st)
+
+    success := ir_label(p, "p_op")
+
+    suspend ir(L[1 to *L-1], st, &null,  bounded, "rval")
+    suspend ir(L[-1],        st, target, bounded, rval)
+
+    t := []
+    every i := key(resumeTmps) do {
+        put(t, ir_MoveLabel(ir_coord(p.coord), resumeTmps[i], i.ir.start))
+    }
+    suspend ir_chunk(p.ir.start, t ||| [
+        ir_Goto(ir_coord(p.coord), L[1].ir.start)
+	])
+
+    suspend ir_chunk(p.ir.resume, [ ir_Goto(ir_coord(p.coord), L[1].resume) ])
+
+    every i := 1 to *L & j := L[i+1] do {
+        suspend ir_chunk(L[i].ir.success, [
+	    ir_IndirectGoto(ir_coord(p.coord), resumeTmps[j], [j.ir.start, j.ir.resume] )
+	    ])
+    }
+    suspend ir_chunk((!L).ir.failure, [ ir_Goto(ir_coord(p.coord), p.ir.failure) ])
+    suspend ir_chunk(L[-1].ir.success, [ ir_Goto(ir_coord(p.coord), success) ])
+
+    t := []
+    every i := key(resumeTmps) do {
+        put(t, ir_MoveLabel(ir_coord(p.coord), resumeTmps[i], i.ir.resume))
+    }
+    suspend ir_chunk(success, t ||| [ ir_Goto(ir_coord(p.coord), p.ir.success) ])
+end
+
 procedure ir_parallel_call(p, st, target, bounded, rval)
     local value, L, i, fn, args, clsr, argresume, argstart, argsuccess, resumeTmps, t
 
