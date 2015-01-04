@@ -160,8 +160,7 @@ func GoShim(name string, f interface{} /*func*/) Procedure {
 			}
 			v = passer[i](a)
 			if !v.IsValid() {
-				panic(&RunErr{"Cannot convert argument",
-					args[i]})
+				panic(&RunErr{"Cannot convert argument", args[i]})
 			}
 			in = append(in, v)
 		}
@@ -170,8 +169,7 @@ func GoShim(name string, f interface{} /*func*/) Procedure {
 			for i := nfixed; i < len(args); i++ {
 				v = passer[nfixed](args[i])
 				if !v.IsValid() {
-					panic(&RunErr{"Cannot convert argument",
-						args[i]})
+					panic(&RunErr{"Cannot convert argument", args[i]})
 				}
 				in = append(in, v)
 			}

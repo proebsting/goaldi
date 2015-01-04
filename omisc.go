@@ -98,17 +98,8 @@ func (v *VNumber) Call(env *Env, args ...Value) (Value, *Closure) {
 //  ToBy -- implement "e1 to e2 by e3"
 func ToBy(e1 Value, e2 Value, e3 Value) (Value, *Closure) {
 	n1 := e1.(Numerable).ToNumber()
-	if n1 == nil {
-		panic(&RunErr{"ToBy: e1 bad", e1})
-	}
 	n2 := e2.(Numerable).ToNumber()
-	if n2 == nil {
-		panic(&RunErr{"ToBy: e2 bad", e2})
-	}
 	n3 := e3.(Numerable).ToNumber()
-	if n3 == nil {
-		panic(&RunErr{"ToBy: e3 bad", e3})
-	}
 	if *n3 == 0 {
 		panic(&RunErr{"ToBy: by 0", nil})
 	}

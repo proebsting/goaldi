@@ -47,7 +47,7 @@ func execute(f *pr_frame, label string) (rv g.Value, rc *g.Closure) {
 			}
 			ilist := f.info.insns[label] // look up label
 			if len(ilist) == 0 {
-				panic("No instructions for IR label: " + label)
+				panic(g.Malfunction("No instructions for IR label: " + label))
 			}
 		Chunk:
 			for _, insn := range ilist { // execute insns in chunk
@@ -59,9 +59,8 @@ func execute(f *pr_frame, label string) (rv g.Value, rc *g.Closure) {
 				f.offv = nil //#%#% prudent, but s/n/b needed
 				switch i := insn.(type) {
 				default: // incl ScanSwap, Assign, Deref, Unreachable
-					panic(&g.RunErr{
-						"Unrecognized interpreter instruction",
-						fmt.Sprintf("%#v", i)})
+					panic(g.Malfunction(fmt.Sprintf(
+						"Unrecognized interpreter instruction: %#v", i)))
 				case ir_NoOp:
 					// nothing to do
 				case ir_Fail:
@@ -156,7 +155,8 @@ func execute(f *pr_frame, label string) (rv g.Value, rc *g.Closure) {
 							break Chunk
 						}
 					}
-					panic("ir_IndirectGoto: label not in list: " + label)
+					panic(g.Malfunction(
+						"ir_IndirectGoto: label not in list: " + label))
 				case ir_MakeClosure:
 					//#%#% potential later optimization:
 					//#%#% only pass in *referenced* variables
@@ -252,6 +252,8 @@ func getArgs(f *pr_frame, nd int, arglist []interface{}) []g.Value {
 }
 
 //  irSelect -- execute select statement, returning label of chosen body
+//  #%#% most of this should be moved to runtime package
+//  #%#% (set up some data structures here and call that)
 func irSelect(f *pr_frame, ir ir_Select) string {
 
 	// set up data structures for reflect.Select
@@ -282,7 +284,7 @@ func irSelect(f *pr_frame, ir ir_Select) string {
 				Dir: reflect.SelectDefault}
 			seenDefault = true
 		default:
-			panic(&g.RunErr{"Bad selectcase kind", sc.Kind})
+			panic(g.Malfunction("Bad selectcase kind: " + sc.Kind))
 		}
 	}
 	if !seenDefault {

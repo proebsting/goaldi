@@ -55,7 +55,7 @@ func setupProc(pr *pr_Info) {
 	pr.insns = make(map[string][]interface{})
 	for _, ch := range pr.ir.CodeList {
 		if pr.insns[ch.Label] != nil {
-			panic("Duplicate IR label: " + ch.Label)
+			panic(g.Malfunction("Duplicate IR label: " + ch.Label))
 		}
 		pr.insns[ch.Label] = ch.InsnList
 	}

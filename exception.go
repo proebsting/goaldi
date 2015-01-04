@@ -12,7 +12,7 @@ import (
 	"strings"
 )
 
-//  RunErr records a Goaldi runtime error
+//  RunErr records a Goaldi runtime error (a problem in the user program)
 type RunErr struct {
 	Msg  string      // explanatory message
 	Offv interface{} // offending value (Goaldi or Go value)
@@ -29,6 +29,19 @@ func (e *RunErr) String() string {
 
 //  RunErr.Error() implements the interface that makes a RunErr a Go "error"
 func (e *RunErr) Error() string {
+	return e.String()
+}
+
+//  A Malfunction indicates an internal Goaldi problem (vs. a user error)
+type Malfunction string
+
+//  Malfunction.String() returns the default string representation.
+func (e Malfunction) String() string {
+	return "Malfunction: " + string(e)
+}
+
+//  Malfunction.Error() makes a Malfunction a Go "error"
+func (e Malfunction) Error() string {
 	return e.String()
 }
 
@@ -132,6 +145,9 @@ func Diagnose(f io.Writer, v interface{}) bool {
 		asst := extract(s, "assertedString")
 		fmt.Fprintf(f, "Type %s does not implement %s\n", conc, asst)
 		return true
+	case Malfunction:
+		fmt.Fprintf(f, "Goaldi runtime malfunction: %s\n", string(x))
+		return false
 	case string:
 		fmt.Fprintf(f, "PANIC: %v\n", x)
 		return false

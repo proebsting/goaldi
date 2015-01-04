@@ -18,7 +18,7 @@ func operator(env *g.Env, f *pr_frame, i *ir_OpFunction) (g.Value, *g.Closure) {
 
 	switch op {
 	default:
-		panic(&g.RunErr{"Unimplemented operator", g.NewString(op)})
+		panic(g.Malfunction("Unimplemented operator: " + op))
 
 	// fundamental operations
 	case "1.":

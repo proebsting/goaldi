@@ -59,7 +59,7 @@ func init() {
 
 //  Number(x) -- return argument converted to number, or fail
 func Number(env *Env, args ...Value) (Value, *Closure) {
-	// nonstandard entry; on panic, returns default nil values
+	// nonstandard entry; on panic, returns default nil values to fail
 	defer func() { recover() }()
 	v := ProcArg(args, 0, NilValue)
 	if n, ok := v.(Numerable); ok {

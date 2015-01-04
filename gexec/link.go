@@ -71,7 +71,7 @@ func irDecl(decl interface{}) {
 	case ir_Record:
 		StructList = append(StructList, &x)
 	default: // including ir_Invocable, ir_Link
-		panic(fmt.Sprintf("unrecognized: %#v", x))
+		panic(g.Malfunction(fmt.Sprintf("unrecognized: %#v", x)))
 	}
 }
 
@@ -133,7 +133,7 @@ func stdProcs() {
 	for _, p := range g.StdLib {
 		if Undeclared[p.Name] {
 			if GlobalDict[p.Name] != nil {
-				panic("undeclared but present: " + p.Name)
+				panic(g.Malfunction("undeclared but present: " + p.Name))
 			}
 			GlobalDict[p.Name] = p
 			delete(Undeclared, p.Name)

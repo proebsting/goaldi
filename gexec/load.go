@@ -6,6 +6,7 @@ import (
 	"bufio"
 	"encoding/json"
 	"fmt"
+	g "goaldi"
 	"os"
 	"reflect"
 	"strings"
@@ -161,11 +162,11 @@ func jstructs(jtree interface{}) interface{} {
 func structFor(m map[string]interface{}) interface{} {
 	tag := m["tag"].(string)
 	if tag == "" {
-		panic(fmt.Sprintf("no tag in %v", m))
+		panic(g.Malfunction(fmt.Sprintf("no tag in %v", m)))
 	}
 	rtype := irtable[tag]
 	if rtype == nil {
-		panic(fmt.Sprintf("unrecognized IR tag %s", tag))
+		panic(g.Malfunction(fmt.Sprintf("unrecognized IR tag %s", tag)))
 	}
 	resultp := reflect.New(rtype)
 	result := resultp.Elem()
@@ -183,7 +184,7 @@ func setField(f reflect.Value, key string, val interface{}) {
 		return // nothing to do
 	}
 	if !f.CanSet() {
-		panic("cannot set key " + key)
+		panic(g.Malfunction("cannot set key " + key))
 	}
 	t := f.Type()
 	if t.Kind() != reflect.Slice || t.Elem().Kind() == reflect.Interface {
