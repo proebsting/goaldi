@@ -204,6 +204,24 @@ procedure parse_do_every()
 end
 
 procedure parse_expr()
+#  expr1a {  ANDAND  expr1 } 
+    local ret, L
+
+    ret := parse_expr1x()
+    if parse_tok_rec === lex_ANDAND then {
+        L := [ret]
+        while parse_tok_rec === lex_ANDAND do {
+            op := parse_eat_token()
+            ret := parse_expr1x()
+            put(L, ret)
+        }
+        return a_Parallel(L, ret.coord)
+    } else {
+        return ret
+    }
+end
+
+procedure parse_expr1x()
 #  expr1a {  AND  expr1 } 
     local ret, op, right
 
@@ -490,6 +508,7 @@ procedure parse_expr11suffix(lhs)
                                   lex_SNE, lex_STAR, lex_STRINGLIT,
                                   lex_SUSPEND, lex_TILDE, lex_UNION, 
 				  lex_SLASHSLASH,
+				  lex_ANDAND,
 				  lex_GENERATE,
 				  lex_LAMBDA,
                                   lex_WHILE,
@@ -752,6 +771,7 @@ procedure new_parse_exprlist()
                       lex_STRINGLIT, lex_SUSPEND, lex_TILDE, lex_UNION,
                       lex_WHILE,
 		      lex_SLASHSLASH,
+		      lex_ANDAND,
 		      lex_GENERATE,
 		      lex_LAMBDA,
 		      lex_SELECT,
@@ -1056,6 +1076,7 @@ procedure parse_nexpr()
                       lex_STRINGLIT, lex_SUSPEND, lex_TILDE, lex_UNION,
                       lex_WHILE,
 		      lex_SLASHSLASH,
+		      lex_ANDAND,
 		      lex_GENERATE,
 		      lex_LAMBDA,
 		      lex_SELECT,
@@ -1101,6 +1122,7 @@ procedure parse_do_lambda()
                         lex_SNE, lex_STAR, lex_STRINGLIT, lex_SUSPEND,
                         lex_TILDE, lex_UNION, lex_WHILE,
 			lex_SLASHSLASH,
+			lex_ANDAND,
 			lex_GENERATE,
 			lex_LAMBDA,
 			lex_SELECT,
@@ -1157,6 +1179,7 @@ procedure parse_do_proc(noident)
                         lex_SNE, lex_STAR, lex_STRINGLIT, lex_SUSPEND,
                         lex_TILDE, lex_UNION, lex_WHILE,
 			lex_SLASHSLASH,
+			lex_ANDAND,
 			lex_GENERATE,
 			lex_LAMBDA,
 			lex_SELECT,
