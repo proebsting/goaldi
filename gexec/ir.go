@@ -114,6 +114,7 @@ type ir_OnError struct {
 type ir_EnterScope struct {
 	Coord    string
 	NameList []string
+	Scope    string
 }
 
 type ir_ExitScope struct {
@@ -125,12 +126,14 @@ type ir_Var struct {
 	Coord string
 	Lhs   string
 	Name  string
+	Scope string
 }
 
 type ir_Key struct {
 	Coord string
 	Lhs   string // may be nil
 	Name  string
+	Scope string
 }
 
 type ir_IntLit struct {
@@ -221,6 +224,7 @@ type ir_Call struct {
 	ArgList    []interface{} // heterogeneous
 	NameList   []string
 	FailLabel  string // may be nil
+	Scope      string
 }
 
 type ir_ResumeValue struct {
