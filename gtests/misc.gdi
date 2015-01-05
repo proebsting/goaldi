@@ -44,8 +44,6 @@ procedure main() {
    every write(seq(,4) \ 3)
    every write(seq(10,20) \ 3)
 
-   pairs { 1 to 100, 11 to 99 by 11 }
-
    write("repl: ", repl("",5), repl("x",3), repl("foo",0), repl("xyz",4))
    write("reverse: ", reverse(""), reverse("x"), reverse("ab"), reverse(12345));
    every i := 0 to 255 do
@@ -110,10 +108,6 @@ procedure args(x[]) {	# later replaced by proc("args",0)
    every s ||:= image(!x) do
       s ||:= " "
    return s[1:-1] | ""
-}
-
-procedure pairs(e) {
-   while write(@e[1], " ", @e[2])
 }
 
 procedure nullsuspend() {

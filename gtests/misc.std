@@ -34,15 +34,6 @@ i=4: failed
 10
 30
 50
-1 11
-2 22
-3 33
-4 44
-5 55
-6 66
-7 77
-8 88
-9 99
 repl: xxxxyzxyzxyzxyz
 reverse: xba54321
 char: @ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~
