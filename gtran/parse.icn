@@ -67,7 +67,7 @@ procedure parse_cclause()
 			      lex_LAMBDA,
                               lex_WHILE,
 			      lex_SELECT,
-			      lex_ONERROR,
+			      lex_CATCH,
 			      lex_LOCAL,
 			      lex_STATIC,
 			      lex_LCOMP,
@@ -279,7 +279,7 @@ procedure parse_expr10()
 			      lex_LAMBDA,
                               lex_WHILE,
 			      lex_SELECT,
-			      lex_ONERROR,
+			      lex_CATCH,
 			      lex_LOCAL,
 			      lex_STATIC,
 			      lex_LCOMP,
@@ -342,8 +342,8 @@ procedure parse_expr11()
     lex_REALLIT |
     lex_STRINGLIT   :   # literal 
         return parse_literal()
-    lex_ONERROR   : 
-        return parse_do_onerror()
+    lex_CATCH   : 
+        return parse_do_catch()
     lex_FAIL    |
     lex_RETURN  |
     lex_SUSPEND :   # return 
@@ -513,7 +513,7 @@ procedure parse_expr11suffix(lhs)
 				  lex_LAMBDA,
                                   lex_WHILE,
 				  lex_SELECT,
-				  lex_ONERROR,
+				  lex_CATCH,
 				  lex_LOCAL,
 				  lex_STATIC,
 				  lex_LCOMP,
@@ -768,7 +768,7 @@ procedure new_parse_exprlist()
 		      lex_YIELD,
 		      lex_LAMBDA,
 		      lex_SELECT,
-		      lex_ONERROR,
+		      lex_CATCH,
 		      lex_LOCAL,
 		      lex_STATIC,
 		      lex_LCOMP,
@@ -1073,7 +1073,7 @@ procedure parse_nexpr()
 		      lex_YIELD,
 		      lex_LAMBDA,
 		      lex_SELECT,
-		      lex_ONERROR,
+		      lex_CATCH,
 		      lex_LOCAL,
 		      lex_STATIC,
 		      lex_LCOMP,
@@ -1106,7 +1106,7 @@ procedure parse_do_lambda()
 			lex_YIELD,
 			lex_LAMBDA,
 			lex_SELECT,
-			lex_ONERROR,
+			lex_CATCH,
 			lex_LOCAL,
 			lex_STATIC,
 			lex_LCOMP,
@@ -1163,7 +1163,7 @@ procedure parse_do_proc(noident)
 			lex_YIELD,
 			lex_LAMBDA,
 			lex_SELECT,
-			lex_ONERROR,
+			lex_CATCH,
 			lex_LOCAL,
 			lex_STATIC,
 			lex_LCOMP,
@@ -1281,13 +1281,13 @@ procedure parse_do_repeat()
     return a_Repeat(b, e, id, coord)
 end
 
-procedure parse_do_onerror()
+procedure parse_do_catch()
     local e, coord
-    #  ONERROR  expr 
+    #  CATCH  expr 
     coord := parse_tok_rec.coord
-    parse_match_token(lex_ONERROR)
+    parse_match_token(lex_CATCH)
     e := parse_expr()
-    return a_OnError(e, coord)
+    return a_Catch(e, coord)
 end
 
 procedure parse_do_return()

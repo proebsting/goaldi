@@ -16,7 +16,7 @@ procedure main () {
 
 #	try(label, proc) -- with tracing, force error and report result of catch
 procedure try(label, rproc) {
-	onerror tryfailed
+	catch tryfailed
 	write("expect ", label, ":")
 	local v := boom(rproc) | "[FAILED]"
 	write("   got ", image(v))
@@ -32,8 +32,8 @@ procedure tryfailed() {
 
 #	register rproc, force error
 procedure boom(rproc) {
-	onerror errresult	# superseded unless rproc is invalid
-	onerror rproc
+	catch errresult	# superseded unless rproc is invalid
+	catch rproc
 	2 to 1 by 0
 }
 

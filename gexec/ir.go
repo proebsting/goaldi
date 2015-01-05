@@ -15,7 +15,7 @@ var irlist = [...]interface{}{
 	&ir_Function{},
 	&ir_chunk{},
 	&ir_NoOp{},
-	&ir_OnError{},
+	&ir_Catch{},
 	&ir_EnterScope{},
 	&ir_ExitScope{},
 	&ir_Var{},
@@ -106,7 +106,7 @@ type ir_NoOp struct {
 	Comment string
 }
 
-type ir_OnError struct {
+type ir_Catch struct {
 	Coord string
 	Fn    string
 }

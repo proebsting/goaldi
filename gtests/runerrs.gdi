@@ -9,7 +9,7 @@ procedure main() {
 }
 
 procedure try(i) {
-	onerror lambda(e) {
+	catch lambda(e) {
 		# assert e === &error
 		# write()
 		write(i, ". ", &error)

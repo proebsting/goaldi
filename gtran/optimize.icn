@@ -149,7 +149,7 @@ procedure optim_def_use(p, uses, defs)
     "ir_NoOp" :    { }
     "ir_EnterScope" :    { }
     "ir_ExitScope" :    { }
-    "ir_OnError" :   { 
+    "ir_Catch" :   { 
 	    uses[p.fn] +:= 1
             }
 
@@ -227,7 +227,7 @@ procedure optim_rewrite(p, rename)
     "ir_NoOp" :    { }
     "ir_EnterScope" :    { }
     "ir_ExitScope" :    { }
-    "ir_OnError" :   { 
+    "ir_Catch" :   { 
             p.fn := optim_rename(p.fn, rename)
             }
 
@@ -327,7 +327,7 @@ procedure optim_goto_transitive(t, new, lab)
 	    "ir_NoOp" |
 	    "ir_EnterScope" |
 	    "ir_ExitScope" |
-	    "ir_OnError" |
+	    "ir_Catch" |
 	    "ir_Deref" : {
 		# nothing
 		}
@@ -446,7 +446,7 @@ procedure optim_refcountX(refcount, p)
     "ir_NoOp" :    { }
     "ir_EnterScope" :    { }
     "ir_ExitScope" :    { }
-    "ir_OnError" :   { }
+    "ir_Catch" :   { }
     default : runerr(500, p)
     }
 end

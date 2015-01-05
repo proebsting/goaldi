@@ -73,7 +73,7 @@ func execute(f *pr_frame, label string) (rv g.Value, rc *g.Closure) {
 						label = i.ResumeLabel
 						return v, self
 					}
-				case ir_OnError:
+				case ir_Catch:
 					f.offv = g.Deref(f.temps[i.Fn])
 					f.onerr = f.offv.(*g.VProcedure)
 				case ir_Create:
