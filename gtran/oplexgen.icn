@@ -18,6 +18,7 @@ procedure init_lex_tables()
                ["break",           "BREAK",     "be"],
                ["by",              "BY",        ""  ],
                ["case",            "CASE",      "b" ],
+               ["continue",        "CONTINUE",  "be"],
                ["create",          "CREATE",    "b" ],
                ["default",         "DEFAULT",   "b" ],
                ["do",              "DO",        ""  ],
@@ -25,14 +26,12 @@ procedure init_lex_tables()
                ["every",           "EVERY",     "b" ],
                ["fail",            "FAIL",      "be"],
                ["global",          "GLOBAL",    "b"  ],
-               ["generate",        "GENERATE",  "be"],
                ["if",              "IF",        "b" ],
                ["initial",         "INITIAL",   "b"  ],
                ["invocable",       "INVOCABLE", "b"  ],
                ["lambda",          "LAMBDA",    "b"  ],
                ["link",            "LINK",      "b"  ],
                ["local",           "LOCAL",     "b" ],
-               ["continue",        "CONTINUE",  "be"],
                ["not",             "NOT",       "b" ],
                ["of",              "OF",        ""  ],
                ["onerror",         "ONERROR",   "b"  ],
@@ -47,7 +46,9 @@ procedure init_lex_tables()
                ["then",            "THEN",      ""  ],
                ["to",              "TO",        ""  ],
                ["until",           "UNTIL",     "b" ],
-               ["while",           "WHILE",     "b" ]]
+               ["while",           "WHILE",     "b" ],
+               ["yield",           "YIELD",  "be"]
+               ]
 
     # Operators
     operators  := [

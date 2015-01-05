@@ -1119,8 +1119,8 @@ procedure ir_a_Ident(p, st, target, bounded, rval)
     /bounded & suspend ir_chunk(p.ir.resume, [ ir_Goto(ir_coord(p.coord), p.ir.failure) ])
 end
 
-# record a_Next( )
-procedure ir_a_Next(p, st, target, bounded, rval)
+# record a_Continue( )
+procedure ir_a_Continue(p, st, target, bounded, rval)
     local curloop, sl, mk
 
     ir_init(p)
@@ -1159,8 +1159,8 @@ procedure ir_a_Break(p, st, target, bounded, rval)
     /bounded & suspend ir_chunk(p.ir.resume, [ ir_Unreachable(ir_coord(p.coord)) ])
 end
 
-# record a_Generate( expr name )
-procedure ir_a_Generate(p, st, target, bounded, rval)
+# record a_Yield( expr name )
+procedure ir_a_Yield(p, st, target, bounded, rval)
     local curloop, sl, mk, clx
 
     /p.expr := a_Key("null", p.coord)
@@ -1593,9 +1593,9 @@ procedure ir(p, st, target, bounded, rval)
     "a_While" : suspend ir_a_While(p, st, target, bounded, rval)
     "a_Create" : suspend ir_a_Create(p, st, target, bounded, rval)
     "a_Ident" : suspend ir_a_Ident(p, st, target, bounded, rval)
-    "a_Next" : suspend ir_a_Next(p, st, target, bounded, rval)
+    "a_Continue" : suspend ir_a_Continue(p, st, target, bounded, rval)
     "a_Break" : suspend ir_a_Break(p, st, target, bounded, rval)
-    "a_Generate" : suspend ir_a_Generate(p, st, target, bounded, rval)
+    "a_Yield" : suspend ir_a_Yield(p, st, target, bounded, rval)
     "a_ToBy" : suspend ir_a_ToBy(p, st, target, bounded, rval)
     "a_Mutual" : suspend ir_a_Mutual(p, st, target, bounded, rval)
     "a_Parallel" : suspend ir_a_Parallel(p, st, target, bounded, rval)

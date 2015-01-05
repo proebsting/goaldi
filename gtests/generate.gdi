@@ -7,14 +7,14 @@ procedure main() {
 	every writes(" ", 
 		"GO:" |
 		(every local i := 10 to 50 by 10 do {
-			generate i
-			if i == (20 | 40) then generate i + 5
-			if i == 30 then generate i+4 to i+6
+			yield i
+			if i == (20 | 40) then yield i + 5
+			if i == 30 then yield i+4 to i+6
 		}) |
 		(repeat {
-			generate 61 to 64
+			yield 61 to 64
 			break
 		}) |
-		(while n < 78 do generate n +:= 1) |
+		(while n < 78 do yield n +:= 1) |
 		"DONE\n")
 }
