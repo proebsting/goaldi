@@ -1,6 +1,6 @@
 #SRC: goaldi original
 #
-#	test panic recovery ("onerr p")
+#	test panic recovery ("catch p")
 
 procedure main () {
 	try("failure", noresult)
