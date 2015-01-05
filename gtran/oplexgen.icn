@@ -32,7 +32,7 @@ procedure init_lex_tables()
                ["lambda",          "LAMBDA",    "b"  ],
                ["link",            "LINK",      "b"  ],
                ["local",           "LOCAL",     "b" ],
-               ["next",            "NEXT",      "be"],
+               ["continue",        "CONTINUE",  "be"],
                ["not",             "NOT",       "b" ],
                ["of",              "OF",        ""  ],
                ["onerror",         "ONERROR",   "b"  ],

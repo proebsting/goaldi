@@ -26,7 +26,7 @@ procedure main() {
 		write("i=", i+:= 1, " [repeat #3a]")
 		if i > 18 then break
 		write("i=", i+:= 1, " [repeat #3b]")
-		if i < 14 then next
+		if i < 14 then continue
 		write("i=", i+:= 1, " [repeat #3c]")
 	}
 
