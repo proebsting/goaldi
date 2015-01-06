@@ -212,7 +212,7 @@ procedure parse_expr()
     if parse_tok_rec === lex_ANDAND then {
         L := [ret]
         while parse_tok_rec === lex_ANDAND do {
-            op := parse_eat_token()
+            parse_eat_token()
             ret := parse_expr1x()
             put(L, ret)
         }
@@ -502,6 +502,7 @@ end
 
 procedure parse_expr11suffix(lhs)
     local left, right, l, op, id, coord, x, idcoord
+    local lefts, rights
     static expr11suffix_set1, expr11suffix_set2
 
     initial {
@@ -535,18 +536,26 @@ procedure parse_expr11suffix(lhs)
     case parse_tok_rec of {
     lex_LBRACE  :   # LBRACE [  { e : e [ COMMA ] ]  RBRACE 
         {
+	lefts := []
+	rights := []
         coord := parse_tok_rec.coord
         parse_eat_token()
 	if parse_tok_rec ~=== lex_RBRACE then {
-	    while parse_tok_rec ~=== lex_COMMA do {
-	        lexpr := parse_expr()
+	    while parse_tok_rec ~=== lex_RBRACE do {
+	        left := parse_expr()
 	        parse_match_token(lex_COLON)
-	        rexpr := parse_expr()
+	        right := parse_expr()
+		put(lefts, left)
+		put(rights, right)
+		if parse_tok_rec === lex_COMMA then {
+                    parse_eat_token()
+		} else {
+		    break
+		}
 	    }
 	}
         parse_match_token(lex_RBRACE)
-        parse_error("pdco no longer supported")
-        return
+        return a_Paired(lhs, lefts, rights, coord)
         }
     lex_LPAREN  :   # LPAREN  exprlist  RPAREN 
         {

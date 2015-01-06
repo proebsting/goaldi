@@ -9,6 +9,55 @@ record ir_stacks(tmp, current_proc, createflag, declare_set, loop_stack, localSe
 
 record ir_scope(parent, Static, Dynamic)
 
+procedure ir_a_Paired(p, st, target, bounded, rval)
+    local tmp, lhs, rhs, L, R, Ltmp, i, c
+
+    ir_init(p)
+
+    c := ir_coord(p.coord)
+
+    lhs := ir_tmp(st)
+    rhs := ir_tmp(st)
+    Ltmp := ir_tmp(st)
+    tmp := ir_tmp(st)
+
+    suspend ir(p.fn, st, tmp, bounded, "rval")
+
+    suspend ir_chunk(p.ir.start, [ ir_Goto(c, p.fn.ir.start) ])
+    /bounded & suspend ir_chunk(p.ir.resume, [ ir_Goto(c, p.fn.ir.resume) ])
+    suspend ir_chunk(p.fn.ir.failure, [ ir_Goto(c, p.ir.failure) ])
+
+
+    every i := *p.leftList to 1 by -1 do {
+        L := p.leftList[i]
+        R := p.rightList[i]
+        suspend ir(L, st, lhs, &null, "rval")
+        suspend ir(R, st, rhs, &null, "rval")
+        suspend ir_chunk(L.ir.success, [
+            ir_opfn(ir_coord(p.coord), Ltmp, &null, ir_operator("[]", 2, &null), [ tmp, lhs ], L.ir.resume),
+	    ir_Goto(c, R.ir.start)
+	    ])
+        suspend ir_chunk(L.ir.failure, [ ir_Goto(c, p.leftList[i+1].ir.start) ])
+        suspend ir_chunk(R.ir.failure, [ ir_Goto(c, L.ir.resume) ])
+        suspend ir_chunk(R.ir.success, [
+            ir_opfn(ir_coord(p.coord), &null, &null, ir_operator(":=", 2, "rval"), [ Ltmp, rhs ], R.ir.resume),
+	    ir_Goto(c, R.ir.resume)
+	    ])
+    }
+    if *p.leftList > 0 then {
+        suspend ir_chunk(p.leftList[-1].ir.failure, [
+	    ir_Move(c, target, tmp),
+	    ir_Goto(c, p.ir.success)
+	    ])
+        suspend ir_chunk(p.fn.ir.success, [ ir_Goto(c, p.leftList[1].ir.start) ])
+    } else {
+        suspend ir_chunk(p.fn.ir.success, [
+	    ir_Move(c, target, tmp),
+	    ir_Goto(c, p.ir.success)
+	    ])
+    }
+end
+
 # record a_NoOp( )
 procedure ir_a_NoOp(p, st, target, bounded, rval)
     local c
@@ -1057,7 +1106,7 @@ procedure mkSuffix(t)
 end
 
 procedure ir_stname(s)
-    return mkSuffix(\s) | &null
+    return (mkSuffix(\s) | &null)
 end
 
 # record a_Local( id )
@@ -1136,7 +1185,7 @@ procedure ir_a_Ident(p, st, target, bounded, rval)
     ir_init(p)
 
     T := ir_lookupS(st, p.id)
-    s := (\T).Static[p.id] | p.id
+    s := ((\T).Static[p.id] | p.id)
 
     suspend ir_chunk(p.ir.start, [
         ir_Var(ir_coord(p.coord), target, s, ir_stname(T)),
@@ -1583,6 +1632,7 @@ procedure ir(p, st, target, bounded, rval)
     "a_NoOp" : suspend ir_a_NoOp(p, st, target, bounded, rval)
     "a_Field" : suspend ir_a_Field(p, st, target, bounded, rval)
     "a_Call" : suspend ir_a_Call(p, st, target, bounded, rval)
+    "a_Paired" : suspend ir_a_Paired(p, st, target, bounded, rval)
     "a_Limitation" : suspend ir_a_Limitation(p, st, target, bounded, rval)
     "a_Not" : suspend ir_a_Not(p, st, target, bounded, rval)
     "a_Alt" : suspend ir_a_Alt(p, st, target, bounded, rval)
