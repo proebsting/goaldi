@@ -282,6 +282,7 @@ procedure parse_expr10()
 			      lex_SELECT,
 			      lex_CATCH,
 			      lex_LOCAL,
+			      lex_CARET,
 			      lex_DYNAMIC,
 			      lex_STATIC,
 			      lex_LCOMP,
@@ -383,7 +384,8 @@ procedure parse_expr11()
         id := parse_match_token(lex_IDENT)
         return a_Dynamic(id, coord)
         }
-    lex_LOCAL   :   # IDENT 
+    lex_CARET   | 
+    lex_LOCAL   : 
         {
         coord := parse_tok_rec.coord
         parse_eat_token()
