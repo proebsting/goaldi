@@ -69,6 +69,7 @@ procedure parse_cclause()
 			      lex_SELECT,
 			      lex_CATCH,
 			      lex_LOCAL,
+			      lex_DYNAMIC,
 			      lex_STATIC,
 			      lex_LCOMP,
 			      lex_PROCEDURE])
@@ -281,6 +282,7 @@ procedure parse_expr10()
 			      lex_SELECT,
 			      lex_CATCH,
 			      lex_LOCAL,
+			      lex_DYNAMIC,
 			      lex_STATIC,
 			      lex_LCOMP,
 			      lex_PROCEDURE ])
@@ -372,6 +374,14 @@ procedure parse_expr11()
         coord := parse_tok_rec.coord
         id := parse_eat_token()
         return a_Ident(id, coord)
+        }
+    lex_DYNAMIC   :   # DYNAMIC 
+        {
+        coord := parse_tok_rec.coord
+        parse_eat_token()
+	parse_match_token(lex_AND)
+        id := parse_match_token(lex_IDENT)
+        return a_Dynamic(id, coord)
         }
     lex_LOCAL   :   # IDENT 
         {
@@ -515,6 +525,7 @@ procedure parse_expr11suffix(lhs)
 				  lex_SELECT,
 				  lex_CATCH,
 				  lex_LOCAL,
+				  lex_DYNAMIC,
 				  lex_STATIC,
 				  lex_LCOMP,
 				  lex_PROCEDURE ])
@@ -522,8 +533,18 @@ procedure parse_expr11suffix(lhs)
     }
 
     case parse_tok_rec of {
-    lex_LBRACE  :   # LBRACE [  pdcolist ]  RBRACE 
+    lex_LBRACE  :   # LBRACE [  { e : e [ COMMA ] ]  RBRACE 
         {
+        coord := parse_tok_rec.coord
+        parse_eat_token()
+	if parse_tok_rec ~=== lex_RBRACE then {
+	    while parse_tok_rec ~=== lex_COMMA do {
+	        lexpr := parse_expr()
+	        parse_match_token(lex_COLON)
+	        rexpr := parse_expr()
+	    }
+	}
+        parse_match_token(lex_RBRACE)
         parse_error("pdco no longer supported")
         return
         }
@@ -770,6 +791,7 @@ procedure new_parse_exprlist()
 		      lex_SELECT,
 		      lex_CATCH,
 		      lex_LOCAL,
+		      lex_DYNAMIC,
 		      lex_STATIC,
 		      lex_LCOMP,
 		      lex_PROCEDURE ])
@@ -1075,6 +1097,7 @@ procedure parse_nexpr()
 		      lex_SELECT,
 		      lex_CATCH,
 		      lex_LOCAL,
+		      lex_DYNAMIC,
 		      lex_STATIC,
 		      lex_LCOMP,
 		      lex_PROCEDURE ])
@@ -1108,6 +1131,7 @@ procedure parse_do_lambda()
 			lex_SELECT,
 			lex_CATCH,
 			lex_LOCAL,
+			lex_DYNAMIC,
 			lex_STATIC,
 			lex_LCOMP,
 			lex_PROCEDURE ])
@@ -1165,6 +1189,7 @@ procedure parse_do_proc(noident)
 			lex_SELECT,
 			lex_CATCH,
 			lex_LOCAL,
+			lex_DYNAMIC,
 			lex_STATIC,
 			lex_LCOMP,
 			lex_PROCEDURE ])

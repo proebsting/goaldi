@@ -7,7 +7,7 @@ record ir_loopinfo(nextlabel, continue, value, bounded, rval, indirects)
 
 record ir_stacks(tmp, current_proc, createflag, declare_set, loop_stack, localSet, staticSet, globalSet, syms, parent)
 
-record ir_scope(parent, T)
+record ir_scope(parent, Static, Dynamic)
 
 # record a_NoOp( )
 procedure ir_a_NoOp(p, st, target, bounded, rval)
@@ -77,7 +77,7 @@ procedure ir_a_Not(p, st, target, bounded, rval)
         ir_Goto(ir_coord(p.coord), p.ir.failure)
         ])
     suspend ir_chunk(p.expr.ir.failure, [
-        ir_Key(ir_coord(p.coord), target, "null"),
+        ir_Key(ir_coord(p.coord), target, "null", &null),
         ir_Goto(ir_coord(p.coord), p.ir.success)
         ])
 end
@@ -390,7 +390,7 @@ procedure ir_a_Call(p, st, target, bounded, rval)
     suspend ir_chunk(L[ 1].ir.failure, [ ir_Goto(ir_coord(p.coord), p.ir.failure) ])
     suspend ir_chunk(L[-1].ir.success, [
 	# ir_Deref(ir_coord(p.coord), fn, fn), #%#%# is this necessary?
-        ir_Call(ir_coord(p.coord), value, clsr, fn, args, p.args.nameList, L[-1].ir.resume),
+        ir_Call(ir_coord(p.coord), value, clsr, fn, args, p.args.nameList, L[-1].ir.resume, ir_stname(st.syms)),
         ir_Move(ir_coord(p.coord), target, value),
         ir_Goto(ir_coord(p.coord), p.ir.success)
         ])
@@ -785,15 +785,16 @@ procedure ir_a_ProcDecl0(p, st)
 
     v := set([])
     st.syms := ir_scope(st.syms)
-    st.syms.T := table()
+    st.syms.Static := table()
+    st.syms.Dynamic := table()
     params := []
     every i := !p.paramList do {
         if member(v, i.id) then {
             semantic_error(image(i.id) || ": redeclared identifier", i.coord)
         }
         insert(v, i.id)
-        s := i.id || mkSuffix(st.syms.T)
-	st.syms.T[i.id] := s
+        s := i.id || mkSuffix(st.syms)
+	st.syms.Static[i.id] := s
 	put(params, s)
     }
     if member(ir_declare_set, p.ident.id) then {
@@ -1055,17 +1056,21 @@ procedure mkSuffix(t)
     return ":" || (image(t) ? (tab(upto(&digits)) & tab(upto('('))))
 end
 
+procedure ir_stname(s)
+    return mkSuffix(\s) | &null
+end
+
 # record a_Local( id )
 procedure ir_a_Local(p, st, target, bounded, rval)
     local s
 
-    /st.syms.T := table()
+    /st.syms.Static := table()
 
-    /st.syms.T[p.id] | semantic_error(image(p.id) || ": redeclared identifier", p.coord)
+    /st.syms.Static[p.id] | semantic_error(image(p.id) || ": redeclared identifier", p.coord)
 
-    s := p.id || ":" || image(st.syms.T)
-    s := p.id || mkSuffix(st.syms.T)
-    st.syms.T[p.id] := s
+    s := p.id || ":" || image(st.syms)
+    s := p.id || mkSuffix(st.syms)
+    st.syms.Static[p.id] := s
 
     insert(st.localSet, s)
     suspend ir_a_Ident(p, st, target, bounded, rval)
@@ -1075,32 +1080,52 @@ end
 procedure ir_a_Static(p, st, target, bounded, rval)
     local s
 
-    /st.syms.T := table()
+    /st.syms.Static := table()
 
-    /st.syms.T[p.id] | semantic_error(image(p.id) || ": redeclared identifier", p.coord)
+    /st.syms.Static[p.id] | semantic_error(image(p.id) || ": redeclared identifier", p.coord)
 
-    s := p.id || ":" || image(st.syms.T)
-    s := p.id || mkSuffix(st.syms.T)
-    st.syms.T[p.id] := s
+    s := p.id || mkSuffix(st.syms)
+    st.syms.Static[p.id] := s
 
     insert(st.staticSet, s)
     suspend ir_a_Ident(p, st, target, bounded, rval)
 end
 
-procedure ir_lookup(st, name)
+# record a_Dynamic( id )
+procedure ir_a_Dynamic(p, st, target, bounded, rval)
+    /st.syms.Dynamic := table()
+
+    /st.syms.Dynamic[p.id] | semantic_error(image(p.id) || ": redeclared dynamic identifier", p.coord)
+
+    st.syms.Dynamic[p.id] := p.id
+
+    suspend ir_a_Key(p, st, target, bounded, rval)
+end
+
+procedure ir_lookupD(st, name)
     local s, syms
     syms := st.syms
     while \syms do {
-        if s := \(\syms.T)[name] then return s
+        if s := \(\syms.Dynamic)[name] then return syms
+	syms := syms.parent
+    }
+    return &null
+end
+
+procedure ir_lookupS(st, name)
+    local s, syms
+    syms := st.syms
+    while \syms do {
+        if s := \(\syms.Static)[name] then return syms
 	syms := syms.parent
     }
     insert(st.globalSet, name)
-    return name
+    return &null
 end
 
 # record a_Ident( id )
 procedure ir_a_Ident(p, st, target, bounded, rval)
-    local s
+    local s, T
 
     if type(\target) ~== "ir_Tmp" then {
         # #%#%# prevents nasty interaction with targeting.
@@ -1110,10 +1135,11 @@ procedure ir_a_Ident(p, st, target, bounded, rval)
 
     ir_init(p)
 
-    s := ir_lookup(st, p.id)
+    T := ir_lookupS(st, p.id)
+    s := (\T).Static[p.id] | p.id
 
     suspend ir_chunk(p.ir.start, [
-        ir_Var(ir_coord(p.coord), target, s),
+        ir_Var(ir_coord(p.coord), target, s, ir_stname(T)),
         ir_Goto(ir_coord(p.coord), p.ir.success)
         ])
     /bounded & suspend ir_chunk(p.ir.resume, [ ir_Goto(ir_coord(p.coord), p.ir.failure) ])
@@ -1395,7 +1421,7 @@ procedure ir_a_Compound(p, st, target, bounded, rval)
     }
 
     locals := []
-    every i := !\st.syms.T do {
+    every i := !\st.syms.Static do {
         if member(st.localSet, i) then {
 	    put(locals, i)
 	}
@@ -1414,11 +1440,11 @@ procedure ir_a_Compound(p, st, target, bounded, rval)
     suspend ir_chunk(L[-1].ir.failure, [ ir_Goto(ir_coord(p.coord), failure) ])
 
     suspend ir_chunk(p.ir.start, [
-        ir_EnterScope(ir_coord(p.coord), locals),
+        ir_EnterScope(ir_coord(p.coord), locals, ir_stname(st.syms)),
         ir_Goto(ir_coord(p.coord), L[1].ir.start)
     ])
     suspend ir_chunk(failure, [
-        ir_ExitScope(ir_coord(p.coord), locals),
+        ir_ExitScope(ir_coord(p.coord), locals, ir_stname(st.syms)),
         ir_Goto(ir_coord(p.coord), p.ir.failure)
     ])
 
@@ -1427,7 +1453,7 @@ end
 
 # record a_Key( id )
 procedure ir_a_Key(p, st, target, bounded, rval)
-    local closure
+    local s
 
     ir_init(p)
     \p.coord | runerr(500, p)
@@ -1452,20 +1478,11 @@ procedure ir_a_Key(p, st, target, bounded, rval)
         /bounded & suspend ir_chunk(p.ir.resume, [ ir_Unreachable(ir_coord(p.coord)) ])
     }
     default : {
-        closure := ir_tmp(st)
         suspend ir_chunk(p.ir.start, [
-            ir_Key(ir_coord(p.coord), closure, ir_key(p.id)),
-            ir_Move(ir_coord(p.coord), target, closure),
+            ir_Key(ir_coord(p.coord), target, p.id, ir_stname(ir_lookupD(st,p.id))),
             ir_Goto(ir_coord(p.coord), p.ir.success)
 	    ])
-	if key_generator(p.id) then {
-            suspend ir_chunk(p.ir.resume, [
-                ir_ResumeValue(ir_coord(p.coord), target, closure, p.ir.failure),
-                ir_Goto(ir_coord(p.coord), p.ir.success)
-                ])
-	} else {
-            suspend ir_chunk(p.ir.resume, [ ir_Goto(ir_coord(p.coord), p.ir.failure) ])
-	}
+        suspend ir_chunk(p.ir.resume, [ ir_Goto(ir_coord(p.coord), p.ir.failure) ])
     }
     }
 end
@@ -1607,6 +1624,7 @@ procedure ir(p, st, target, bounded, rval)
     "a_Key" : suspend ir_a_Key(p, st, target, bounded, rval)
     "a_Arglist" : suspend ir_a_Arglist(p, st, target, bounded, rval)
     "a_Local" : suspend ir_a_Local(p, st, target, bounded, rval)
+    "a_Dynamic" : suspend ir_a_Dynamic(p, st, target, bounded, rval)
     "a_Static" : suspend ir_a_Static(p, st, target, bounded, rval)
     default : runerr(500, p)
     }
