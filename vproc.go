@@ -128,7 +128,7 @@ func GoShim(name string, f interface{} /*func*/) Procedure {
 	ftype := reflect.TypeOf(f)
 	fval := reflect.ValueOf(f)
 	if fval.Kind() != reflect.Func {
-		panic(&Exception{"Not a func", f})
+		panic(NewExn("Not a func", f))
 	}
 	nargs := ftype.NumIn()
 	nfixed := nargs
@@ -160,7 +160,7 @@ func GoShim(name string, f interface{} /*func*/) Procedure {
 			}
 			v = passer[i](a)
 			if !v.IsValid() {
-				panic(&Exception{"Cannot convert argument", args[i]})
+				panic(NewExn("Cannot convert argument", args[i]))
 			}
 			in = append(in, v)
 		}
@@ -169,7 +169,7 @@ func GoShim(name string, f interface{} /*func*/) Procedure {
 			for i := nfixed; i < len(args); i++ {
 				v = passer[nfixed](args[i])
 				if !v.IsValid() {
-					panic(&Exception{"Cannot convert argument", args[i]})
+					panic(NewExn("Cannot convert argument", args[i]))
 				}
 				in = append(in, v)
 			}

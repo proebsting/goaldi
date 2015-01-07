@@ -12,7 +12,7 @@ func fval(v Value) float64 {
 	if n, ok := v.(Numerable); ok {
 		return float64(*(n.ToNumber()))
 	} else {
-		panic(&Exception{"Not a number", v})
+		panic(NewExn("Not a number", v))
 	}
 }
 
@@ -27,7 +27,7 @@ func (v1 *VNumber) Size() Value {
 func (v1 *VNumber) Choose(unused Value) Value {
 	n := v1.Val()
 	if n < 0 {
-		panic(&Exception{"?n < 0", v1})
+		panic(NewExn("?n < 0", v1))
 	} else if n == 0 {
 		return NewNumber(rand.Float64())
 	} else /* n > 0 */ {

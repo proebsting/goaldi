@@ -101,7 +101,7 @@ func ToBy(e1 Value, e2 Value, e3 Value) (Value, *Closure) {
 	n2 := e2.(Numerable).ToNumber()
 	n3 := e3.(Numerable).ToNumber()
 	if *n3 == 0 {
-		panic(&Exception{"ToBy: by 0", nil})
+		panic(NewExn("ToBy: bad increment", e3))
 	}
 	v1 := *n1
 	v2 := *n2

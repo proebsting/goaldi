@@ -121,7 +121,7 @@ func Send(x Value, v Value) Value {
 	}
 	cv := reflect.ValueOf(x)
 	if cv.Kind() != reflect.Chan {
-		panic(&Exception{"Not a channel", x})
+		panic(NewExn("Not a channel", x))
 	}
 	cv.Send(reflect.ValueOf(Export(v)))
 	return v

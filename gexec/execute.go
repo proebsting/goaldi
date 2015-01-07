@@ -102,8 +102,8 @@ func execute(f *pr_frame, label string) (rv g.Value, rc *g.Closure) {
 					f.coord = i.Coord
 					v := f.env.VarMap[i.Name]
 					if v == nil {
-						panic(&g.Exception{"Unrecognized dynamic variable",
-							"%" + i.Name})
+						panic(g.NewExn("Unrecognized dynamic variable",
+							"%"+i.Name))
 					}
 					if i.Lhs != "" {
 						f.temps[i.Lhs] = v
@@ -131,7 +131,7 @@ func execute(f *pr_frame, label string) (rv g.Value, rc *g.Closure) {
 					}
 					if v == nil {
 						//#%#% eventually make a link-time error
-						panic(&g.Exception{"Undeclared identifier", i.Name})
+						panic(g.NewExn("Undeclared identifier", i.Name))
 					}
 					f.temps[i.Lhs] = v
 				case ir_EnterScope:
@@ -322,7 +322,7 @@ func irSelect(f *pr_frame, ir ir_Select) string {
 func channelValue(ch g.Value) reflect.Value {
 	cv := reflect.ValueOf(ch)
 	if cv.Kind() != reflect.Chan {
-		panic(&g.Exception{"Not a channel", ch})
+		panic(g.NewExn("Not a channel", ch))
 	}
 	return cv
 }

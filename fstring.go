@@ -58,7 +58,7 @@ func Char(env *Env, args ...Value) (Value, *Closure) {
 	var r [1]rune
 	i := int(ProcArg(args, 0, NilValue).(Numerable).ToNumber().Val())
 	if i < 0 || i > int(unicode.MaxRune) {
-		panic(&Exception{"character code out of range", args[0]})
+		panic(NewExn("character code out of range", args[0]))
 	}
 	r[0] = rune(i)
 	return Return(RuneString(r[:]))
@@ -69,7 +69,7 @@ func Ord(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("ord", args)
 	r := ProcArg(args, 0, NilValue).(Stringable).ToString().ToRunes()
 	if len(r) != 1 {
-		panic(&Exception{"string length not 1", args[0]})
+		panic(NewExn("string length not 1", args[0]))
 	}
 	return Return(NewNumber(float64(r[0])))
 }

@@ -14,22 +14,27 @@ import (
 
 //  Exception records a Goaldi panic value
 type Exception struct {
-	Msg  string      // explanatory message
-	Offv interface{} // offending value (Goaldi or Go value)
+	Msg  string  // explanatory message
+	Offv []Value // offending values (Goaldi or Go values)
 }
 
 //  Exception.String() returns a string form of a Exception
 func (e *Exception) String() string {
-	if e.Offv != nil {
-		return fmt.Sprintf("Exception: %s (%v)", e.Msg, e.Offv)
-	} else {
-		return fmt.Sprintf("Exception: %s", e.Msg)
+	s := fmt.Sprintf("Exception(%s", e.Msg)
+	for _, v := range e.Offv {
+		s = fmt.Sprintf("%s,%v", s, v)
 	}
+	return s + ")"
 }
 
-//  Exception.Error() implements the interface that makes a Exception a Go "error"
+//  Exception.Error(), by its existence, makes an Exception a Go "error"
 func (e *Exception) Error() string {
 	return e.String()
+}
+
+//  NewExn(s,v,...) creates and returns an Exception struct
+func NewExn(s string, v ...Value) *Exception {
+	return &Exception{s, v}
 }
 
 //  A Malfunction indicates an internal Goaldi problem (vs. a user error)

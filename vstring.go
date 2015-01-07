@@ -129,7 +129,7 @@ func (v *VString) TryNumber() *VNumber {
 func (v *VString) ToNumber() *VNumber {
 	n := v.TryNumber()
 	if n == nil {
-		panic(&Exception{"Cannot convert to number", v})
+		panic(NewExn("Cannot convert to number", v))
 	} else {
 		return n
 	}

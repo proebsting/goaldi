@@ -51,6 +51,7 @@ procedure provoke(i) {
 		85: !open("/dev/null", "w")
 		86: open("/dev/null").close().read()
 
+		95: throw("my double error", 12, 34)
 		96: throw("my own error")
 		97: throw("my nil error", nil)
 		98: throw("my pi error", &pi)

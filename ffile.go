@@ -109,7 +109,7 @@ func Open(env *Env, args ...Value) (Value, *Closure) {
 		case 'f':
 			fail = true
 		default:
-			panic(&Exception{"Unrecognized flag", string([]rune{f})})
+			panic(NewExn("Unrecognized flag", string([]rune{f})))
 		}
 	}
 	flags = strings.Replace(flags, "f", "", -1) // remove "f" from flags
@@ -190,7 +190,7 @@ func (f *VFile) FRead(args ...Value) (Value, *Closure) {
 func (f *VFile) FReadb(args ...Value) (Value, *Closure) {
 	defer Traceback("f.readb", args)
 	if f.Reader == nil {
-		panic(&Exception{"Not open for reading", f})
+		panic(NewExn("Not open for reading", f))
 	}
 	n := int(ProcArg(args, 0, ONE).(Numerable).ToNumber().Val())
 	b := make([]byte, n)
@@ -209,7 +209,7 @@ func (f *VFile) FReadb(args ...Value) (Value, *Closure) {
 func (f *VFile) FWriteb(args ...Value) (Value, *Closure) {
 	defer Traceback("f.writeb", args)
 	if f.Writer == nil {
-		panic(&Exception{"Not open for writing", f})
+		panic(NewExn("Not open for writing", f))
 	}
 	s := ProcArg(args, 0, NilValue).(Stringable).ToString()
 	Ock(f.Writer.Write(s.ToBinary()))

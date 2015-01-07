@@ -25,7 +25,7 @@ func ParseNumber(s string) (float64, error) {
 	if n == 1 {
 		return f, nil
 	} else {
-		return math.NaN(), &Exception{"Not a number", s}
+		return math.NaN(), NewExn("Not a number", s)
 	}
 
 }
