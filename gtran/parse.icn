@@ -63,6 +63,7 @@ procedure parse_cclause()
                               lex_SLASH, lex_SNE, lex_STAR, lex_STRINGLIT,
                               lex_SUSPEND, lex_TILDE, lex_UNION, 
 			      lex_SLASHSLASH,
+			      lex_NIL,
 			      lex_YIELD,
 			      lex_LAMBDA,
                               lex_WHILE,
@@ -277,6 +278,7 @@ procedure parse_expr10()
                               lex_LPAREN, lex_CONTINUE, lex_REALLIT, lex_REPEAT,
                               lex_RETURN, lex_STRINGLIT, lex_SUSPEND, 
 			      lex_YIELD,
+			      lex_NIL,
 			      lex_LAMBDA,
                               lex_WHILE,
 			      lex_SELECT,
@@ -347,7 +349,11 @@ procedure parse_expr11()
         return parse_literal()
     lex_CATCH   : 
         return parse_do_catch()
-    lex_FAIL    |
+    lex_FAIL    : {
+        coord := parse_tok_rec.coord
+        parse_eat_token()
+        return a_Fail(coord)
+        }
     lex_RETURN  |
     lex_SUSPEND :   # return 
         return parse_do_return()
@@ -458,22 +464,11 @@ procedure parse_expr11()
         parse_match_token(lex_RCOMP)
         return a_ListComprehension(e, coord)
         }
-    lex_AND :   # AND ( FAIL  |  IDENT )
+    lex_AND :   # AND IDENT 
         {
         coord := parse_tok_rec.coord
         parse_eat_token()
-        case parse_tok_rec of {
-        lex_FAIL : {
-            return a_Key(parse_eat_token(), coord)
-        }
-        lex_IDENT : {
-            return a_Key(parse_eat_token(), coord)
-        }
-        default : {
-            parse_error("\"" || parse_tok_rec.str ||
-                        "\": invalid keyword construction")
-        }
-        }
+        return a_Key(parse_match_token(lex_IDENT), coord)
         }
     lex_PROCEDURE : {
             return parse_do_proc("noident")
@@ -521,6 +516,7 @@ procedure parse_expr11suffix(lhs)
                                   lex_SNE, lex_STAR, lex_STRINGLIT,
                                   lex_SUSPEND, lex_TILDE, lex_UNION, 
 				  lex_SLASHSLASH,
+				  lex_NIL,
 				  lex_ANDAND,
 				  lex_YIELD,
 				  lex_LAMBDA,
@@ -795,6 +791,7 @@ procedure new_parse_exprlist()
                       lex_RETURN, lex_SEQ, lex_SLASH, lex_SNE, lex_STAR,
                       lex_STRINGLIT, lex_SUSPEND, lex_TILDE, lex_UNION,
                       lex_WHILE,
+		      lex_NIL,
 		      lex_SLASHSLASH,
 		      lex_ANDAND,
 		      lex_YIELD,
@@ -1101,6 +1098,7 @@ procedure parse_nexpr()
                       lex_RETURN, lex_SEQ, lex_SLASH, lex_SNE, lex_STAR,
                       lex_STRINGLIT, lex_SUSPEND, lex_TILDE, lex_UNION,
                       lex_WHILE,
+		      lex_NIL,
 		      lex_SLASHSLASH,
 		      lex_ANDAND,
 		      lex_YIELD,
@@ -1136,6 +1134,7 @@ procedure parse_do_lambda()
                         lex_SNE, lex_STAR, lex_STRINGLIT, lex_SUSPEND,
                         lex_TILDE, lex_UNION, lex_WHILE,
 			lex_SLASHSLASH,
+			lex_NIL,
 			lex_ANDAND,
 			lex_YIELD,
 			lex_LAMBDA,
@@ -1194,6 +1193,7 @@ procedure parse_do_proc(noident)
                         lex_SNE, lex_STAR, lex_STRINGLIT, lex_SUSPEND,
                         lex_TILDE, lex_UNION, lex_WHILE,
 			lex_SLASHSLASH,
+			lex_NIL,
 			lex_ANDAND,
 			lex_YIELD,
 			lex_LAMBDA,
@@ -1331,11 +1331,6 @@ procedure parse_do_return()
 
     coord := parse_tok_rec.coord
     case parse_tok_rec of {
-    lex_FAIL    :   # FAIL 
-        {
-        parse_eat_token()
-        return a_Fail(coord)
-        }
     lex_RETURN  :   # RETURN  nexpr 
         {
         parse_eat_token()
