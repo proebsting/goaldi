@@ -8,15 +8,10 @@
 #  a colon.
 
 procedure main() {
-	# local line, alpha, n, f
-	local line
-	local alpha
-	local n
-	local f
-	while line := read() do {
-		f := split(line, ":")
-		if (*f = 2) & (n := integer(f[2])) then {
-			alpha := f[1]
+	while local line := read() do {
+		local f := split(line, ":")
+		if (*f = 2) & (local n := integer(f[2])) then {
+			local alpha := f[1]
 			write("meander(", alpha, ",", n, "): ")
 			write(meander(alpha,n)) 
 		} else {
@@ -26,17 +21,10 @@ procedure main() {
 }
 
 procedure meander(alpha,n) {
-	# local result, t, i, c, k
-	local result
-	local t
-	local i
-	local c
-	local k
-
-	i := k := *alpha
-	t := n-1
-	result := repl(alpha[1],t)
-	while c := alpha[i] do {
+	local i := local k := *alpha
+	local t := n-1
+	local result := repl(alpha[1],t)
+	while local c := alpha[i] do {
 	   if contains(result, result[-t:0] || c) ~= 0 then i -:= 1 else {result ||:= c; i := k}
 	}
 	return result

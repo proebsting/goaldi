@@ -3,21 +3,14 @@
 #  simple test of closures
 
 procedure main() {
-	# local p, q, r, mkproc
 	local p
 	local q
 	local r
-	local mkproc
 
-	mkproc := procedure(name) {
-		# local n, pnum
-		local n
-		local pnum
-
-		static pcount
-		/pcount := 0
-		pnum := (pcount +:= 1)
-		n := 0
+	local mkproc := procedure(name) {
+		/static pcount := 0
+		local pnum := (pcount +:= 1)
+		local n := 0
 		return procedure(arg)  {
 			static t
 			/t := 0

@@ -6,20 +6,14 @@ global g, r
 
 procedure main() {
 	static s
-	# local a, b, c, p, q
-	local a
-	local b
-	local c
-	local p
-	local q
 
-	a := 100
-	b := 200
-	c := 300
+	local a := 100
+	local b := 200
+	local c := 300
 	g := 1000
 	s := 2000
 
-	p := procedure(x) {
+	local p := procedure(x) {
 		static t
 		local b
 		println("P0.", g, s, a, b, c, x, t, b)
@@ -36,7 +30,7 @@ procedure main() {
 	p(1000)
 	println("M1.", g, s, a, b, c)
 
-	q := procedure(y) {
+	local q := procedure(y) {
 		static u
 		local d
 		println("Q1.", g, s, a, b, c, y, u, d)

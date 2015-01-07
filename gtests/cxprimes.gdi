@@ -2,14 +2,9 @@
 #  prime number generation using co-expressions
 
 procedure main(limit) {
-   # local s, n, x
-   local s
-   local n
-   local x
-
-   n := number(limit) | 100
-   s := create (2 to n)
-   while (x := @s) do {
+   local n := number(limit) | 100
+   local s := create (2 to n)
+   while (^x := @s) do {
       write(x)
 	  s := create sieve(x, s)
    }

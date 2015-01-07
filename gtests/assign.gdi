@@ -1,15 +1,11 @@
 #SRC: goaldi original
 # tests swapping and reversible assignment
 procedure main() {
-#    local a, b, c
-local a
-local b
-local c
 
     write()
-    a := " algebra "
-    b := " botany "
-    c := " civics "
+    local a := " algebra "
+    local b := " botany "
+    local c := " civics "
     write(1, a, b, c)
     a :=: b
     write(2, a, b, c)
