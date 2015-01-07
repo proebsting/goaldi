@@ -75,7 +75,7 @@ func (v *VList) Sort(args ...Value) (Value, *Closure) {
 	defer Traceback("sort", args)
 	i := int(ProcArg(args, 0, ONE).(Numerable).ToNumber().Val()) - 1
 	if i < 0 {
-		panic(&RunErr{"Nonpositive field index", args[0]})
+		panic(&Exception{"Nonpositive field index", args[0]})
 	}
 	d := &lsort{make([]Value, len(v.data)), i}
 	copy(d.v, v.data)

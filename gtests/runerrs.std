@@ -1,30 +1,30 @@
-10. RunErr: Unrecognized dynamic variable (%huh)
-20. RunErr: Not a string (P:main)
-21. RunErr: Cannot convert to number (x)
-22. RunErr: Not a number (P:main)
-23. RunErr: ?n < 0 (-3)
-24. RunErr: Not a channel (666)
-30. RunErr: character code out of range (-1)
-31. RunErr: string length not 1 (ab)
+10. Exception: Unrecognized dynamic variable (%huh)
+20. Exception: Not a string (P:main)
+21. Exception: Cannot convert to number (x)
+22. Exception: Not a number (P:main)
+23. Exception: ?n < 0 (-3)
+24. Exception: Not a channel (666)
+30. Exception: character code out of range (-1)
+31. Exception: string length not 1 (ab)
 32. interface conversion: *goaldi.VString is not goaldi.IVariable: missing method Assign
 50. interface conversion: *goaldi.vnil is not goaldi.Numerable: missing method ToNumber
-51. RunErr: Cannot convert to number (x)
+51. Exception: Cannot convert to number (x)
 52. interface conversion: *goaldi.vnil is not goaldi.Numerable: missing method ToNumber
 53. interface conversion: *goaldi.VList is not goaldi.Numerable: missing method ToNumber
-54. RunErr: ToBy: by 0
-60. RunErr: Wrong type for indexing (CH:0)
-61. RunErr: Not a channel (3)
-62. RunErr: Nonpositive field index (-1)
-63. RunErr: Field not found: huh (r{})
-64. RunErr: unrecognized method: huh (L:0)
-80. RunErr: Unrecognized flag (q)
+54. Exception: ToBy: by 0
+60. Exception: Wrong type for indexing (CH:0)
+61. Exception: Not a channel (3)
+62. Exception: Nonpositive field index (-1)
+63. Exception: Field not found: huh (r{})
+64. Exception: unrecognized method: huh (L:0)
+80. Exception: Unrecognized flag (q)
 81. open /no/such/file: no such file or directory
 82. open /bin: is a directory
 83. open /bin/ls: permission denied
-84. RunErr: Not open for writing (F:/dev/null)
-85. RunErr: Not open for reading (F:/dev/null)
-86. RunErr: Not open for reading (F:/dev/null)
-96. RunErr: my own error
-97. RunErr: my nil error (~)
-98. RunErr: my pi error (3.142)
-99. RunErr: Fatal error 99 (1.618)
+84. Exception: Not open for writing (F:/dev/null)
+85. Exception: Not open for reading (F:/dev/null)
+86. Exception: Not open for reading (F:/dev/null)
+96. Exception: my own error
+97. Exception: my nil error (~)
+98. Exception: my pi error (3.142)
+99. Exception: Fatal error 99 (1.618)

@@ -32,7 +32,7 @@ func (v *VStruct) Field(f string) Value {
 		return &VMethVal{f, v, m, false}
 	}
 	//  neither one found
-	panic(&RunErr{"Field not found: " + f, v})
+	panic(&Exception{"Field not found: " + f, v})
 }
 
 //  VStruct.Index(u, k) implements an indexed reference S[k]

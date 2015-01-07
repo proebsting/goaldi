@@ -190,7 +190,7 @@ func Throw(env *Env, args ...Value) (Value, *Closure) {
 	if n, ok := x.(*VNumber); ok {
 		x = NewString(fmt.Sprintf("Fatal error %v", n))
 	}
-	panic(&RunErr{fmt.Sprintf("%v", x), v})
+	panic(&Exception{fmt.Sprintf("%v", x), v})
 }
 
 var err_fatal = NewString("Unspecified fatal error")

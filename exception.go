@@ -12,23 +12,23 @@ import (
 	"strings"
 )
 
-//  RunErr records a Goaldi runtime error (a problem in the user program)
-type RunErr struct {
+//  Exception records a Goaldi panic value
+type Exception struct {
 	Msg  string      // explanatory message
 	Offv interface{} // offending value (Goaldi or Go value)
 }
 
-//  RunErr.String() returns a string form of a RunErr
-func (e *RunErr) String() string {
+//  Exception.String() returns a string form of a Exception
+func (e *Exception) String() string {
 	if e.Offv != nil {
-		return fmt.Sprintf("RunErr: %s (%v)", e.Msg, e.Offv)
+		return fmt.Sprintf("Exception: %s (%v)", e.Msg, e.Offv)
 	} else {
-		return fmt.Sprintf("RunErr: %s", e.Msg)
+		return fmt.Sprintf("Exception: %s", e.Msg)
 	}
 }
 
-//  RunErr.Error() implements the interface that makes a RunErr a Go "error"
-func (e *RunErr) Error() string {
+//  Exception.Error() implements the interface that makes a Exception a Go "error"
+func (e *Exception) Error() string {
 	return e.String()
 }
 
@@ -133,7 +133,7 @@ func Diagnose(f io.Writer, v interface{}) bool {
 			fmt.Fprintf(f, ")\n")
 		}
 		return rv
-	case *RunErr:
+	case *Exception:
 		fmt.Fprintln(f, x.Msg)
 		if x.Offv != nil {
 			fmt.Fprintf(f, "Offending value: %#v\n", x.Offv)

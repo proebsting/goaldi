@@ -45,7 +45,7 @@ func Field(x Value, s string) Value {
 		return GetMethod(GoMapMethods, x, s)
 	}
 	// nothing found
-	panic(&RunErr{"Field not found: " + s, x})
+	panic(&Exception{"Field not found: " + s, x})
 }
 
 //  Index(lval,x,y) calls x.Index(lval, y) or falls back to reflection.
@@ -58,7 +58,7 @@ func Index(lval Value, x Value, y Value) Value {
 		return TrapMap(x, y)
 	}
 	if xv.Kind() != reflect.Slice && xv.Kind() != reflect.Array {
-		panic(&RunErr{"Wrong type for indexing", x})
+		panic(&Exception{"Wrong type for indexing", x})
 	}
 	n := xv.Len()
 	i := GoIndex(int(y.(Numerable).ToNumber().Val()), n)
