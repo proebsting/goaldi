@@ -21,7 +21,7 @@ procedure try(label, rproc) {
 	local v := boom(rproc) | "[FAILED]"
 	write("   got ", image(v))
 	write("   %error = ", &error)
-	&error := &nil
+	&error := nil
 	if \&error then write("   %error = ", &error, " AFTER ZAPPING")
 }
 

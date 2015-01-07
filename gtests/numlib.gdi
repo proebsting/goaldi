@@ -68,7 +68,7 @@ procedure testrad() {
 procedure testlogb(v) {
 	local b
 	writes(v, ":")
-	every b := &nil | &e | 2 | 4 | 10 do {
+	every b := nil | &e | 2 | 4 | 10 do {
 		writes(" log(,", b, ")", log(v, b))
 	}
 	write()

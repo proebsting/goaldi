@@ -35,7 +35,7 @@ procedure init_lex_tables()
                ["link",            "LINK",      "b"  ],
                ["local",           "LOCAL",     "b" ],
                ["not",             "NOT",       "b" ],
-               ["NIL",             "NIL",       "b" ],
+               ["nil",             "NIL",       "be" ],
                ["of",              "OF",        ""  ],
                ["package",         "PACKAGE",   "b"  ],
                ["procedure",       "PROCEDURE", "b"  ],

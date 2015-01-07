@@ -1495,6 +1495,15 @@ procedure ir_a_Compound(p, st, target, bounded, rval)
     st.syms := st.syms.parent
 end
 
+procedure ir_a_Nil(p, st, target, bounded, rval)
+    ir_init(p)
+    suspend ir_chunk(p.ir.start, [
+        ir_Key(ir_coord(p.coord), target, "null", &null),
+        ir_Goto(ir_coord(p.coord), p.ir.success)
+        ])
+    suspend ir_chunk(p.ir.resume, [ ir_Goto(ir_coord(p.coord), p.ir.failure) ])
+end
+
 # record a_Key( id )
 procedure ir_a_Key(p, st, target, bounded, rval)
     local s
@@ -1649,6 +1658,7 @@ procedure ir(p, st, target, bounded, rval)
     "a_ProcCode" : suspend ir_a_ProcCode(p, st, target, bounded, rval)
     "a_Repeat" : suspend ir_a_Repeat(p, st, target, bounded, rval)
     "a_Return" : suspend ir_a_Return(p, st, target, bounded, rval)
+    "a_Nil" : suspend ir_a_Nil(p, st, target, bounded, rval)
     "a_Catch" : suspend ir_a_Catch(p, st, target, bounded, rval)
     "a_Fail" : suspend ir_a_Fail(p, st, target, bounded, rval)
     "a_Suspend" : suspend ir_a_Suspend(p, st, target, bounded, rval)

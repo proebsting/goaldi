@@ -23,8 +23,8 @@ procedure main() {
    x := [1,2,3]
    x.push();				limage("-", x)
    x.put();					limage("-", x)
-   x.push(&nil);			limage("A", x)
-   x.put(&nil);				limage("B", x)
+   x.push(nil);			limage("A", x)
+   x.put(nil);				limage("B", x)
    write("\t", image(x.pop()));	limage("C", x)
    write("\t", image(x.get()));	limage("D", x)
    write("\t", image(x.pull()));	limage("E", x)

@@ -129,14 +129,14 @@ procedure check(a, b) {
    every i := 1 to *a do {
       ai := a[i]
       bi := b[i]
-      ai1 := a[i-1] | &nil
+      ai1 := a[i-1] | nil
       if ai ~=== bi then
          stop("element ", i, " differs")
       if type(ai) === type(ai1) then {
          case type(ai) of {
-	    "integer":	d := (ai1 > ai) | &nil
-	    "real":	d := (ai1 > ai) | &nil
-	    "string":	d := (ai1 >> ai) | &nil
+	    "integer":	d := (ai1 > ai) | nil
+	    "real":	d := (ai1 > ai) | nil
+	    "string":	d := (ai1 >> ai) | nil
 	    }
 	 stop("element ", i, " out of order: ", image(\d))
          }
@@ -206,10 +206,10 @@ procedure messtest() {
    write()
    L0 := []
    L1 := [
-      "", "0cs", 4.4, 2.2, "a", &nil, number, wlist, "epsilons", L0.put,
+      "", "0cs", 4.4, 2.2, "a", nil, number, wlist, "epsilons", L0.put,
       r0, "delta", image, "beta", map(5), [], write, "123cs", [3,4], -3^41,
       image, map()[4]:=7, &stdin, 3.3, reverse, r1(1), [], map(),
-      r5, r5(1,23), &nil,
+      r5, r5(1,23), nil,
  	  #%#% create 1 | 2, 5.5,
        "", r2(5,6), -7^23, L0.get,
       "epsilon", [1,2,3], r5(7,8,9), r2, &stdout, 4, , 1,

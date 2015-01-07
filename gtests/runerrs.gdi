@@ -33,9 +33,9 @@ procedure provoke(i) {
 		31: ord("ab")
 		32: ?"abcd" := 5
 		
-		50: &nil to 10
+		50: nil to 10
 		51: "x" to 10
-		52: 1 to &nil
+		52: 1 to nil
 		53: 1 to []
 		54: 1 to 10 by 0
 
@@ -54,7 +54,7 @@ procedure provoke(i) {
 		86: open("/dev/null").close().read()
 
 		96: runerr("my own error")
-		97: runerr("my nil error", &nil)
+		97: runerr("my nil error", nil)
 		98: runerr("my pi error", &pi)
 		99: runerr(99, &phi)
 

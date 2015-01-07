@@ -83,7 +83,7 @@ procedure main() {
 	every (b := []).put(!"cowabunga!")
 	write(image(b))
 	write(image(b.sort()))
-	c := [3, "x", &nil, 5.5, a, "q", 7, &stdin, "t", main, 9, ]
+	c := [3, "x", nil, 5.5, a, "q", 7, &stdin, "t", main, 9, ]
 	write(image(c))
 	write(image(c.sort()))
 

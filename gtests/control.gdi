@@ -41,7 +41,7 @@ procedure main() {
 	local t := map()
 	t["a"] := "aaa"
 	t["x"] := "xyz"
-	local L := [&nil, 0, 1.0, 2, &e, &pi, "", "0", "1", "2",
+	local L := [nil, 0, 1.0, 2, &e, &pi, "", "0", "1", "2",
 		rec, &stdin, main, write, rec(), r, c, cx, t, []]
 	L.put(L.pop)	# append the "pop" method
 	L.put(L)		# and L itself
@@ -55,7 +55,7 @@ procedure main() {
 			2:		"2"
 			&pi:	"&pi"
 			"1":	"\"1\""
-			&nil:	"%nil"
+			nil:	"%nil"
 			main:	"main"
 			write:	"write"
 			&stdin:	"%stdin"

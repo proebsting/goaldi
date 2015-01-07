@@ -35,12 +35,12 @@ procedure main() {
 
    x := map()
    if x.member() then write("NIL IS MEMBER")
-   x[&nil] := &nil			| write("failed 0")
-   x[1] := &nil				| write("failed 1")
-   x[3] := &nil				| write("failed 3")
+   x[nil] := nil			| write("failed 0")
+   x[1] := nil				| write("failed 1")
+   x[3] := nil				| write("failed 3")
    x[5] := 55				| write("failed 5")
    (x[6] := 66 & x[7] := 77) | write("failed 67")
-   x[&nil] := "nil"			| write("failed n")
+   x[nil] := "nil"			| write("failed n")
    if not x.member() then write("NIL IS NOT MEMBER")
    tdump("insert", x)
    x.delete()				| write("failed dn")
@@ -51,12 +51,12 @@ procedure main() {
    x := map(0)
    write(x[47])
    tdump("t0", x)
-   x[&nil] := &nil			| write("failed 0")
-   x[1] := &nil				| write("failed 1")
-   x[3] := &nil				| write("failed 3")
+   x[nil] := nil			| write("failed 0")
+   x[1] := nil				| write("failed 1")
+   x[3] := nil				| write("failed 3")
    x[5] := 55				| write("failed 5")
    (x[6] := 66 & x[7] := 77) | write("failed 67")
-   x[&nil] := "nil"			| write("failed n")
+   x[nil] := "nil"			| write("failed n")
    tdump("t0i", x)
    x.delete()				| write("failed dn")
    x.delete(3, 6)			| write("failed d36")	# del only 3
@@ -81,7 +81,7 @@ procedure main() {
 }
 
 
-#  dump a map, assuming that keys are drawn from: &nil, 0 - 9, "a" - "e"
+#  dump a map, assuming that keys are drawn from: nil, 0 - 9, "a" - "e"
 #
 #  also checks member()
 
@@ -89,7 +89,7 @@ procedure tdump(label, T) {
    local x
 
    printf("%10s :%2.0f :", label, *T)
-   every x := &nil | (0 to 9) | !"abcde" do
+   every x := nil | (0 to 9) | !"abcde" do
       if x === ((!T).key) then {
          writes(" [", image(x), "]", image(T[x]))
 	 T.member(x) | writes(":NONMEMBER")
