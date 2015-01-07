@@ -971,14 +971,9 @@ end
 
 # record a_Fail( )
 procedure ir_a_Fail(p, st, target, bounded, rval)
-    local mk
-
-    /st.createflag |semantic_error("invalid context for return or fail",p.coord)
-
     ir_init(p)
-
-        suspend ir_chunk(p.ir.start, [ ir_Fail(ir_coord(p.coord)) ])
-        /bounded & suspend ir_chunk(p.ir.resume, [ ir_Fail(ir_coord(p.coord)) ])
+    suspend ir_chunk(p.ir.start, [ ir_Goto(ir_coord(p.coord), p.ir.failure) ])
+    /bounded & suspend ir_chunk(p.ir.resume, [ ir_Unreachable(ir_coord(p.coord)) ])
 end
 
 # record a_Suspend( expr body )
