@@ -32,6 +32,15 @@ func (e *Exception) Error() string {
 	return e.String()
 }
 
+//  Exception.GoString() converts an exception for image() or printf(%#v)
+func (e *Exception) GoString() string {
+	s := fmt.Sprintf("Exception(%#v", e.Msg)
+	for _, v := range e.Offv {
+		s = fmt.Sprintf("%s,%#v", s, v)
+	}
+	return s + ")"
+}
+
 //  NewExn(s,v,...) creates and returns an Exception struct
 func NewExn(s string, v ...Value) *Exception {
 	return &Exception{s, v}
