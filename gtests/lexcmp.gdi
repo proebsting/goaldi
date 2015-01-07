@@ -8,12 +8,12 @@ procedure main() {
 	   (local t := "" | "a" | "c" | "x" | "2") do {
       wr(s)
       wr(t)
-      wr(s << t  | &null)
-      wr(s <<= t | &null)
-      wr(s == t  | &null)
-      wr(s ~== t | &null)
-      wr(s >>= t | &null)
-      wr(s >> t  | &null)
+      wr(s << t  | nil)
+      wr(s <<= t | nil)
+      wr(s == t  | nil)
+      wr(s ~== t | nil)
+      wr(s >>= t | nil)
+      wr(s >> t  | nil)
       write()
       }
    }

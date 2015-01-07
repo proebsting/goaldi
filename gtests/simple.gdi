@@ -11,7 +11,7 @@ local x
 
     i := sqrt(2)
     s := "abc"
-    n := &null
+    n := nil
     p := main
     every x := i | s | n | p do
     	println(x, type(x), image(x))

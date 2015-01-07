@@ -26,12 +26,12 @@
  T2: mapElem{key:2,value:j} mapElem{key:8,value:n} mapElem{key:11,value:t} mapElem{key:15,value:M:4} 
 
 
-%nil
-%nil
-%nil
-%nil
-%nil
-%nil
+nil
+nil
+nil
+nil
+nil
+nil
 -3.647299637717079e+19
 -3.647299637717079e+19
 -2.7368747340080914e+19
@@ -171,12 +171,12 @@ r5{a:4,b:5,c:6,d:7,e:8}
 r5{a:7,b:8,c:9,d:~,e:~}
 r5{a:7,b:8,c:9,d:~,e:~}
 
-%nil
-%nil
-%nil
-%nil
-%nil
-%nil
+nil
+nil
+nil
+nil
+nil
+nil
 -3.647299637717079e+19
 -3.647299637717079e+19
 -2.7368747340080914e+19

@@ -2,7 +2,7 @@ expect failure:
    got "[FAILED]"
    %error = RunErr: ToBy: by 0
 expect nil:
-   got %nil
+   got nil
    %error = RunErr: ToBy: by 0
 expect panic value:
    got &goaldi.RunErr{Msg:"ToBy: by 0", Offv:interface {}(nil)}

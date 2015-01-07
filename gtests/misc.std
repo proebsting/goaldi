@@ -46,8 +46,8 @@ wqwerty
 33
 77
 88
-%nil
-%nil
+nil
+nil
 constructor recordAsVariable()
 3
 OK to get here

@@ -35,7 +35,7 @@ gcd:
 
 randgen:
    stdgen: 554 407 760 652 644 
-   randgen(%nil): external : 99 99 418 325 692 
+   randgen(nil): external : 99 99 418 325 692 
    randgen(0): external : 99 99 418 325 692 
    randgen(1): external : 878 636 407 983 895 
    randgen(1): external : 878 636 407 983 895 

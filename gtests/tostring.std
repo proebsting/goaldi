@@ -1,6 +1,6 @@
 type         string       image                    write
 ----         ------       -----                    -----
-nil          ~            %nil                     ~
+nil          ~            nil                      ~
 number       1            1                        1
 number       3.142        3.141592653589793        3.142
 number       6.022e+23    6.02214129e+23           6.022e+23

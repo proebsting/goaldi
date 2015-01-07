@@ -20,7 +20,7 @@ i=20 [repeat #3a]
 a b c d e fghij
 pqrst
 
-%nil       : ~          : %nil
+nil        : ~          : nil
 0.0        : 0          : 0
 1.0        : 1          : 1
 2          : 2          : 2

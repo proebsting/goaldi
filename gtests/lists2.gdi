@@ -15,7 +15,7 @@ procedure main() {
    limage("d", list(4,5))
    limage("d", list(6,7,8))
    limage("e", [])
-   limage("f", [&null])
+   limage("f", [nil])
    limage("g", [1])
    limage("h", [2,3,4,5])
    limage("i", [1,2,3] ||| [4,5,6,7,8])

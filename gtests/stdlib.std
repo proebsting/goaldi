@@ -12,7 +12,7 @@ d33: equalfold()0 repl()d33d33d33 toupper()D33 tolower()d33 trim()d
 3: equalfold()1 repl()333 toupper()3 tolower()3 trim()
 
 conversion:
-~: type()nil image()%nil number()-- string()~
+~: type()nil image()nil number()-- string()~
 : type()string image()"" number()-- string()
 abc: type()string image()"abc" number()-- string()abc
 12: type()string image()"12" number()12 string()12

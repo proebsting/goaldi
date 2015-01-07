@@ -142,8 +142,7 @@ procedure expr4() {
    every e1 do e2
    x
    X_
-   &cset
-   &null
+   nil
    "abc"
    'abc'
    "\n"

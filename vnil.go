@@ -17,9 +17,9 @@ func (v *vnil) String() string {
 	return "~" //#%#% ??
 }
 
-//  vnil.GoString -- convert to string "%nil" for image() and printf("%#v")
+//  vnil.GoString -- convert to string "nil" for image() and printf("%#v")
 func (v *vnil) GoString() string {
-	return "%nil" //#%#% ??
+	return "nil" //#%#% ??
 }
 
 //  vnil.Rank returns rNil
