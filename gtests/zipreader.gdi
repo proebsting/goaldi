@@ -32,6 +32,6 @@ procedure showfile(zf) {
 procedure contents(f) {
 	local i
 	every i := !5 do
-		write(@f) | fail
+		write(@f) | return fail
 	@f & write("   ...   ")
 }

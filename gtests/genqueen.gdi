@@ -63,7 +63,7 @@ procedure placequeen (c) {        # Column at which to place queen
    
    every r := 1 to n do
       suspend (/rw [r] <- /dd [r+c-1] <- /ud [n+r-c] <- c)
-   fail
+   return fail
    } # procedure placequeen
 
 # solvequeen(c) -- Place the c'th and following column queens on the board.
@@ -72,10 +72,10 @@ procedure solvequeen (c) {        # Column for next queen placement
    if (c > n) then {
       # Have placed all required queens.  Write the board, and resume search.
       writeboard ()
-      fail
+      return fail
       }
    suspend placequeen (c) & solvequeen (c+1)
-   fail
+   return fail
    } # procedure solvequeen
 
 # writeboard() -- Write an image of the board with the queen positions

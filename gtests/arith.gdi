@@ -84,7 +84,7 @@ procedure pow(m, n) {
    local v
 
    if m = 0 & n <= 0 then
-      fail
+      return fail
    v := m ^ n
    printf("%f ^ %f = %f\n", m, n, v)
    return

@@ -58,7 +58,7 @@ procedure provoke(i) {
 		98: runerr("my pi error", &pi)
 		99: runerr(99, &phi)
 
-		default: fail
+		default: return fail
 	}
 	write(i, ". unexpected survival")
 }
