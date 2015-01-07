@@ -10,7 +10,7 @@ procedure main() {
 
 procedure try(i) {
 	catch lambda(e) {
-		(e === &error) | runerr("e ~=== &error", e)
+		(e === &error) | throw("e ~=== &error", e)
 		write(i, ". ", &error)
 	}
 	provoke(i)
@@ -51,10 +51,10 @@ procedure provoke(i) {
 		85: !open("/dev/null", "w")
 		86: open("/dev/null").close().read()
 
-		96: runerr("my own error")
-		97: runerr("my nil error", nil)
-		98: runerr("my pi error", &pi)
-		99: runerr(99, &phi)
+		96: throw("my own error")
+		97: throw("my nil error", nil)
+		98: throw("my pi error", &pi)
+		99: throw(99, &phi)
 
 		default: return fail
 	}

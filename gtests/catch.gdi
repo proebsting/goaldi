@@ -42,21 +42,21 @@ procedure myrasp() {
 	return "pbpbpbpbpttttt"
 }
 
-#	return catch message showing %error
-procedure mycatch() {
-	return "caught: " || image(&error)
+#	return catch message showing exception
+procedure mycatch(e) {
+	return "caught: " || image(e)
 }
 
 #	re-throw panic
 procedure rethrow() {
 	write("   caught panic; now reissuing")
-	runerr(&error)
+	throw(&error)
 }
 
 #	throw a different exception instead
 procedure altpanic() {
 	write("   caught panic; throwing another")
-	runerr("CUSTOM PANIC")
+	throw("CUSTOM PANIC")
 }
 
 #	try suspending (shoudn't resume)

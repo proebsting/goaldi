@@ -36,7 +36,7 @@ func init() {
 	LibProcedure("nilresult", NilResult)
 	LibProcedure("errresult", ErrResult)
 	LibProcedure("exit", Exit)
-	LibProcedure("runerr", Runerr)
+	LibProcedure("throw", Throw)
 	LibProcedure("sleep", Sleep)
 	LibProcedure("date", Date)
 	LibProcedure("time", Time)
@@ -179,9 +179,9 @@ func Exit(env *Env, args ...Value) (Value, *Closure) {
 	return Fail() // NOTREACHED
 }
 
-//  Runerr(x, v) -- terminate with error x and offending value v
-func Runerr(env *Env, args ...Value) (Value, *Closure) {
-	defer Traceback("runerr", args)
+//  Throw(x, v) -- terminate with error x and offending value v
+func Throw(env *Env, args ...Value) (Value, *Closure) {
+	defer Traceback("throw", args)
 	x := ProcArg(args, 0, err_fatal)
 	v := ProcArg(args, 1, NilValue)
 	if len(args) < 2 {
