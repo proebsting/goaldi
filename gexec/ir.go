@@ -8,13 +8,11 @@ import (
 
 //  list of IR struct examples for use by JSON input converter
 var irlist = [...]interface{}{
-	&ir_Invocable{},
-	&ir_Link{},
 	&ir_Record{},
 	&ir_Global{},
 	&ir_Function{},
 	&ir_chunk{},
-	&ir_NoOp{},
+	&ir_NoOp{}, // not normally seen, but allowed as a comment
 	&ir_Catch{},
 	&ir_EnterScope{},
 	&ir_ExitScope{},
@@ -24,12 +22,9 @@ var irlist = [...]interface{}{
 	&ir_IntLit{},
 	&ir_RealLit{},
 	&ir_StrLit{},
-	&ir_CsetLit{},
 	&ir_MakeClosure{},
 	&ir_Move{},
 	&ir_MoveLabel{},
-	&ir_Deref{},
-	&ir_Assign{},
 	&ir_MakeList{},
 	&ir_Field{},
 	&ir_OpFunction{},
@@ -44,9 +39,8 @@ var irlist = [...]interface{}{
 	&ir_CoFail{},
 	&ir_Select{},
 	&ir_SelectCase{},
-	&ir_NoValue{},
-	&ir_ScanSwap{},
-	&ir_Unreachable{},
+	&ir_NoValue{},     // seen only if unoptimized; not implemented
+	&ir_Unreachable{}, // seen only if unoptimized; not implemented
 }
 
 //  struct table indexed by type names
@@ -61,17 +55,6 @@ func init() {
 
 //  intermediate representation struct definitions
 //  all fields must be capitalized for access by the reflection package
-
-type ir_Invocable struct {
-	Coord    string
-	NameList []string
-	All      string
-}
-
-type ir_Link struct {
-	Coord    string
-	NameList []string
-}
 
 type ir_Record struct {
 	Coord     string
@@ -162,13 +145,6 @@ type ir_StrLit struct {
 	Val   string // individual bytes of the UTF-8 encoding
 }
 
-type ir_CsetLit struct {
-	Coord string
-	Lhs   string
-	Len   string
-	Val   string
-}
-
 type ir_MakeClosure struct {
 	Coord string
 	Lhs   string
@@ -185,18 +161,6 @@ type ir_MoveLabel struct {
 	Coord string
 	Lhs   string
 	Label string
-}
-
-type ir_Deref struct {
-	Coord string
-	Lhs   string
-	Value string
-}
-
-type ir_Assign struct {
-	Coord  string
-	Target string
-	Value  string
 }
 
 type ir_MakeList struct {
@@ -296,12 +260,6 @@ type ir_SelectCase struct {
 type ir_NoValue struct {
 	Coord string
 	Lhs   string
-}
-
-type ir_ScanSwap struct {
-	Coord   string
-	Subject string
-	Pos     string
 }
 
 type ir_Unreachable struct {
