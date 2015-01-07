@@ -20,6 +20,7 @@ var irlist = [...]interface{}{
 	&ir_ExitScope{},
 	&ir_Var{},
 	&ir_Key{},
+	&ir_NilLit{},
 	&ir_IntLit{},
 	&ir_RealLit{},
 	&ir_StrLit{},
@@ -135,6 +136,11 @@ type ir_Key struct {
 	Lhs   string // may be nil
 	Name  string
 	Scope string
+}
+
+type ir_NilLit struct {
+	Coord string
+	Lhs   string
 }
 
 type ir_IntLit struct {

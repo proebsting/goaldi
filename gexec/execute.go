@@ -108,6 +108,8 @@ func execute(f *pr_frame, label string) (rv g.Value, rc *g.Closure) {
 					if i.Lhs != "" {
 						f.temps[i.Lhs] = v
 					}
+				case ir_NilLit:
+					f.temps[i.Lhs] = g.NilValue
 				case ir_IntLit:
 					f.temps[i.Lhs] = g.NewString(i.Val).ToNumber()
 				case ir_RealLit:
