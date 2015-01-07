@@ -126,7 +126,7 @@ procedure ir_a_Not(p, st, target, bounded, rval)
         ir_Goto(ir_coord(p.coord), p.ir.failure)
         ])
     suspend ir_chunk(p.expr.ir.failure, [
-        ir_Key(ir_coord(p.coord), target, "null", &null),
+        ir_NilLit(ir_coord(p.coord), target),
         ir_Goto(ir_coord(p.coord), p.ir.success)
         ])
 end
@@ -406,7 +406,7 @@ procedure ir_a_Call(p, st, target, bounded, rval)
     local value, L, i, fn, args, clsr
 
     \p.coord | runerr(500, p)
-    every /(!p.args.exprList) := a_Key("null", p.coord)
+    every /(!p.args.exprList) := a_Nil(p.coord)
     type(p.args) == "a_Arglist" | runerr(500, p.args)
 
     ir_init(p)
@@ -522,7 +522,7 @@ procedure ir_a_Binop(p, st, target, bounded, rval)
             "===", "~===", "|||", "||", "@" ])
     }
 
-    /p.right := a_Key("null", p.coord)
+    /p.right := a_Nil(p.coord)
 
     if p.op == "&" then {
         suspend ir_conjunction(p, st, target, bounded, rval)
@@ -556,7 +556,7 @@ end
 procedure ir_unary_coexp(p, st, target, bounded, rval)
     local t
 
-    t := a_Binop("@", a_Key("null", p.coord), p.operand, ir_coord(p.coord))
+    t := a_Binop("@", a_Nil(p.coord), p.operand, ir_coord(p.coord))
     suspend ir(t, st, target, bounded, rval)
     p.ir := t.ir
 end
@@ -953,7 +953,7 @@ procedure ir_a_Return(p, st, target, bounded, rval)
 
     /st.createflag |semantic_error("invalid context for return or fail",p.coord)
 
-    /p.expr := a_Key("null", p.coord)
+    /p.expr := a_Nil(p.coord)
 
     ir_init(p)
     t := ir_tmp(st)
@@ -982,7 +982,7 @@ procedure ir_a_Suspend(p, st, target, bounded, rval)
 
     /st.createflag | semantic_error("invalid context for suspend", p.coord)
 
-    /p.body := a_Fail(p.coord) & /p.expr := a_Key("null", p.coord)
+    /p.body := a_Fail(p.coord) & /p.expr := a_Nil(p.coord)
 
     ir_init_loop(p, st, target, bounded, rval)
     t := ir_label(p, "suspend")
@@ -1233,7 +1233,7 @@ end
 procedure ir_a_Yield(p, st, target, bounded, rval)
     local curloop, sl, mk, clx
 
-    /p.expr := a_Key("null", p.coord)
+    /p.expr := a_Nil(p.coord)
     ir_init(p)
 
     if /p.name then {
@@ -1272,7 +1272,7 @@ procedure ir_a_BreakX(p, st, target, bounded, rval)
 
     st.loop_stack[1] | semantic_error("invalid context for break", p.coord)
 
-    /p.expr := a_Key("null", p.coord)
+    /p.expr := a_Nil(p.coord)
 
     ir_init(p)
 
@@ -1411,9 +1411,9 @@ procedure ir_a_Mutual(p, st, target, bounded, rval)
     local L, i
 
     if *p.exprList = 0 then {
-        p.exprList := [ a_Key("null", p.coord) ]
+        p.exprList := [ a_Nil(p.coord) ]
     } else {
-        every /(!p.exprList) := a_Key("null", p.coord)
+        every /(!p.exprList) := a_Nil(p.coord)
     }
 
     ir_init(p)
@@ -1443,7 +1443,7 @@ procedure ir_a_Compound(p, st, target, bounded, rval)
 
     failure := ir_label(p, "exit")
 
-    every /(!p.exprList) := a_Key("null", p.coord)
+    every /(!p.exprList) := a_Nil(p.coord)
 
     ir_init(p)
 
@@ -1498,7 +1498,7 @@ end
 procedure ir_a_Nil(p, st, target, bounded, rval)
     ir_init(p)
     suspend ir_chunk(p.ir.start, [
-        ir_Key(ir_coord(p.coord), target, "null", &null),
+        ir_NilLit(ir_coord(p.coord), target),
         ir_Goto(ir_coord(p.coord), p.ir.success)
         ])
     suspend ir_chunk(p.ir.resume, [ ir_Goto(ir_coord(p.coord), p.ir.failure) ])
@@ -1529,7 +1529,7 @@ procedure ir_a_ListConstructor(p, st, target, bounded, rval)
     local L, i, args
 
     \p.coord | runerr(500, p)
-    every /(!p.exprList) := a_Key("null", p.coord)
+    every /(!p.exprList) := a_Nil(p.coord)
 
     ir_init(p)
 

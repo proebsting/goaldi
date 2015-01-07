@@ -21,8 +21,10 @@ procedure optim_dead_assignment(t, start)
 	    case type(i) of {
 	    "ir_MoveLabel" |
 	    "ir_IntLit" |
+	    "ir_NilLit" |
 	    "ir_RealLit" |
 	    "ir_StrLit" |
+	    "ir_NilLit" |
 	    "ir_CsetLit" |
 	    "ir_Var" |
 	    "ir_Move" : if /i.lhs then next
@@ -97,6 +99,8 @@ procedure optim_def_use(p, uses, defs)
     "ir_Var" :   { defs[\p.lhs] +:= 1
 	    }
     "ir_Key" :   { defs[\p.lhs] +:= 1
+	    }
+    "ir_NilLit" :    { defs[\p.lhs] +:= 1
 	    }
     "ir_IntLit" :    { defs[\p.lhs] +:= 1
 	    }
@@ -183,6 +187,7 @@ procedure optim_rewrite(p, rename)
     "ir_Key" :   { p.lhs := optim_rename(\p.lhs, rename) 
 	    }
     "ir_IntLit" :    { p.lhs := optim_rename(\p.lhs, rename) }
+    "ir_NilLit" :    { p.lhs := optim_rename(\p.lhs, rename) }
     "ir_RealLit" :   { p.lhs := optim_rename(\p.lhs, rename) }
     "ir_StrLit" :    { p.lhs := optim_rename(\p.lhs, rename) }
     "ir_CsetLit" :   { p.lhs := optim_rename(\p.lhs, rename) }
@@ -316,6 +321,7 @@ procedure optim_goto_transitive(t, new, lab)
 	    "ir_Fail" |
 	    "ir_Var" |
 	    "ir_IntLit" |
+	    "ir_NilLit" |
 	    "ir_RealLit" |
 	    "ir_StrLit" |
 	    "ir_CsetLit" |
@@ -394,6 +400,7 @@ procedure optim_refcountX(refcount, p)
     "ir_Fail" |
     "ir_Var" |
     "ir_IntLit" |
+    "ir_NilLit" |
     "ir_RealLit" |
     "ir_StrLit" |
     "ir_CsetLit" |
