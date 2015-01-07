@@ -250,7 +250,7 @@ procedure ir_a_Case(p, st, target, bounded, rval)
 
     indirects := []
 
-    /p.dflt := a_Key("fail", p.coord)
+    /p.dflt := a_Fail(p.coord)
 
     ir_init(p)
     /bounded & (t := ir_tmploc(st))
@@ -315,7 +315,7 @@ end
 
 # record a_Every( expr body )
 procedure ir_a_Every(p, st, target, bounded, rval)
-    /p.body := a_Key("fail", p.coord)
+    /p.body := a_Fail(p.coord)
 
     ir_init_loop(p, st, target, bounded, rval)
     put(st.loop_stack, p)
@@ -641,7 +641,7 @@ end
 procedure ir_a_If(p, st, target, bounded, rval)
     local t
 
-    /p.elseexpr := a_Key("fail", p.coord)
+    /p.elseexpr := a_Fail(p.coord)
 
     ir_init(p)
     /bounded & (t := ir_tmploc(st))
@@ -982,7 +982,7 @@ procedure ir_a_Suspend(p, st, target, bounded, rval)
 
     /st.createflag | semantic_error("invalid context for suspend", p.coord)
 
-    /p.body := a_Key("fail", p.coord) & /p.expr := a_Key("null", p.coord)
+    /p.body := a_Fail(p.coord) & /p.expr := a_Key("null", p.coord)
 
     ir_init_loop(p, st, target, bounded, rval)
     t := ir_label(p, "suspend")
@@ -1007,7 +1007,7 @@ end
 
 # record a_Until( expr body )
 procedure ir_a_Until(p, st, target, bounded, rval)
-    /p.body := a_Key("fail", p.coord)
+    /p.body := a_Fail(p.coord)
 
     ir_init_loop(p, st, target, bounded, rval)
     put(st.loop_stack, p)
@@ -1030,7 +1030,7 @@ end
 
 # record a_While( expr body )
 procedure ir_a_While(p, st, target, bounded, rval)
-    /p.body := a_Key("fail", p.coord)
+    /p.body := a_Fail(p.coord)
 
     ir_init_loop(p, st, target, bounded, rval)
     put(st.loop_stack, p)
@@ -1054,7 +1054,7 @@ end
 # record a_Repeat( body expr )
 # correct
 procedure ir_a_Repeat(p, st, target, bounded, rval)
-    /p.expr := a_Key("fail", p.coord)
+    /p.expr := a_Fail(p.coord)
 
     ir_init_loop(p, st, target, bounded, rval)
     put(st.loop_stack, p)
@@ -1511,33 +1511,11 @@ procedure ir_a_Key(p, st, target, bounded, rval)
     ir_init(p)
     \p.coord | runerr(500, p)
 
-    case (p.id) of {
-    "line" : {
-	suspend ir_chunk(p.ir.start, [
-	    ir_IntLit(ir_coord(p.coord), target, p.coord.line),
-	    ir_Goto(ir_coord(p.coord), p.ir.success)
-	    ])
-	suspend ir_chunk(p.ir.resume, [ ir_Goto(ir_coord(p.coord), p.ir.failure) ])
-    }
-    "file" : {
-	suspend ir_chunk(p.ir.start, [
-	    ir_StrLit(ir_coord(p.coord), target, *p.coord.file, p.coord.file),
-	    ir_Goto(ir_coord(p.coord), p.ir.success)
-	    ])
-	suspend ir_chunk(p.ir.resume, [ ir_Goto(ir_coord(p.coord), p.ir.failure) ])
-    }
-    "fail" : {
-	suspend ir_chunk(p.ir.start, [ ir_Goto(ir_coord(p.coord), p.ir.failure) ])
-        /bounded & suspend ir_chunk(p.ir.resume, [ ir_Unreachable(ir_coord(p.coord)) ])
-    }
-    default : {
-        suspend ir_chunk(p.ir.start, [
-            ir_Key(ir_coord(p.coord), target, p.id, ir_stname(ir_lookupD(st,p.id))),
-            ir_Goto(ir_coord(p.coord), p.ir.success)
-	    ])
-        suspend ir_chunk(p.ir.resume, [ ir_Goto(ir_coord(p.coord), p.ir.failure) ])
-    }
-    }
+    suspend ir_chunk(p.ir.start, [
+        ir_Key(ir_coord(p.coord), target, p.id, ir_stname(ir_lookupD(st,p.id))),
+        ir_Goto(ir_coord(p.coord), p.ir.success)
+        ])
+    suspend ir_chunk(p.ir.resume, [ ir_Goto(ir_coord(p.coord), p.ir.failure) ])
 end
 
 # record a_Arglist( exprList )
