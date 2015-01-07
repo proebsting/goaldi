@@ -118,7 +118,9 @@ func Diagnose(f io.Writer, v interface{}) bool {
 	case *CallFrame:
 		rv := Diagnose(f, x.cause)
 		if _, ok := x.cause.(*runtime.TypeAssertionError); ok {
-			fmt.Fprintf(f, "Offending value: %#v\n", x.offv)
+			if x.offv != nil {
+				fmt.Fprintf(f, "Offending value: %#v\n", x.offv)
+			}
 		}
 		fmt.Fprintf(f, "Called by %s(", x.pname)
 		for i, a := range x.args {
