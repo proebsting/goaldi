@@ -53,7 +53,7 @@ func (e Malfunction) Error() string {
 //  CallFrame records one frame of traceback information
 type CallFrame struct {
 	cause interface{} // underlying panic call
-	offv  Value       // offending value
+	offv  []Value     // offending value
 	coord string      // source coords (file:line:colm)
 	pname string      // procedure name
 	args  []Value     // procedure arguments
@@ -106,12 +106,12 @@ func Shutdown(e int) {
 //  Traceback is called as a deferred function to catch and annotate a panic
 func Traceback(procname string, arglist []Value) {
 	if p := recover(); p != nil {
-		panic(Catch(p, nil, "", procname, arglist))
+		panic(Catch(p, []Value{}, "", procname, arglist))
 	}
 }
 
 //  Catch annotates a caught panic value with traceback information
-func Catch(p interface{}, ev Value, coord string,
+func Catch(p interface{}, ev []Value, coord string,
 	procname string, arglist []Value) *CallFrame {
 	return &CallFrame{p, ev, coord, procname, arglist}
 }
@@ -123,7 +123,9 @@ func Diagnose(f io.Writer, v interface{}) bool {
 	case *CallFrame:
 		rv := Diagnose(f, x.cause)
 		if _, ok := x.cause.(*runtime.TypeAssertionError); ok {
-			fmt.Fprintf(f, "Offending value: %#v\n", x.offv)
+			for _, v := range x.offv {
+				fmt.Fprintf(f, "Offending value: %#v\n", v)
+			}
 		}
 		fmt.Fprintf(f, "Called by %s(", x.pname)
 		for i, a := range x.args {
@@ -140,8 +142,8 @@ func Diagnose(f io.Writer, v interface{}) bool {
 		return rv
 	case *Exception:
 		fmt.Fprintln(f, x.Msg)
-		if x.Offv != nil {
-			fmt.Fprintf(f, "Offending value: %#v\n", x.Offv)
+		for _, v := range x.Offv {
+			fmt.Fprintf(f, "Offending value: %#v\n", v)
 		}
 		return true
 	case *runtime.TypeAssertionError:

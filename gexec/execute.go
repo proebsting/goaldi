@@ -30,7 +30,8 @@ func execute(f *pr_frame, label string) (rv g.Value, rc *g.Closure) {
 				rc = nil
 			} else {
 				// add traceback information and re-throw exception
-				panic(g.Catch(p, f.offv, f.coord, f.info.name, f.args))
+				panic(g.Catch(p,
+					[]g.Value{f.offv}, f.coord, f.info.name, f.args))
 			}
 		}
 	}()
