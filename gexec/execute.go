@@ -26,7 +26,7 @@ func execute(f *pr_frame, label string) (rv g.Value, rc *g.Closure) {
 				// save panic value in &error
 				f.env.VarMap["error"].(g.IVariable).Assign(p)
 				// call recovery procedure and return its result
-				rv, _ = f.onerr.Call(f.env)
+				rv, _ = f.onerr.Call(f.env, p)
 				rc = nil
 			} else {
 				// add traceback information and re-throw exception

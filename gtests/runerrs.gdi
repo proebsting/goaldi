@@ -10,10 +10,8 @@ procedure main() {
 
 procedure try(i) {
 	catch lambda(e) {
-		# assert e === &error
-		# write()
+		(e === &error) | runerr("e ~=== &error", e)
 		write(i, ". ", &error)
-		# write("    ", image(&error))
 	}
 	provoke(i)
 }
