@@ -24,7 +24,7 @@ func (v1 *VNumber) Size() Value {
 
 //------------------------------------  Choose:  ?e
 
-func (v1 *VNumber) Choose(unused IVariable) Value {
+func (v1 *VNumber) Choose(unused Value) Value {
 	n := v1.Val()
 	if n < 0 {
 		panic(&RunErr{"?n < 0", v1})
@@ -37,7 +37,7 @@ func (v1 *VNumber) Choose(unused IVariable) Value {
 
 //------------------------------------  Dispense:  !e
 
-func (v1 *VNumber) Dispense(unused IVariable) (Value, *Closure) {
+func (v1 *VNumber) Dispense(unused Value) (Value, *Closure) {
 	return ToBy(ONE, v1, ONE)
 }
 

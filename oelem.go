@@ -49,7 +49,7 @@ func Field(x Value, s string) Value {
 }
 
 //  Index(lval,x,y) calls x.Index(lval, y) or falls back to reflection.
-func Index(lval IVariable, x Value, y Value) Value {
+func Index(lval Value, x Value, y Value) Value {
 	if t, ok := x.(IIndex); ok {
 		return t.Index(lval, y)
 	}
@@ -73,7 +73,7 @@ func Index(lval IVariable, x Value, y Value) Value {
 }
 
 //  Choose(lval, x) calls x.Choose(lval) or uses Size() and Index().
-func Choose(lval IVariable, x Value) Value {
+func Choose(lval Value, x Value) Value {
 	if t, ok := x.(IChoose); ok {
 		return t.Choose(lval)
 	}
@@ -86,7 +86,7 @@ func Choose(lval IVariable, x Value) Value {
 }
 
 //  Dispense(lval, x) calls x.Dispense(lval) or steps through Go values.
-func Dispense(lval IVariable, x Value) (Value, *Closure) {
+func Dispense(lval Value, x Value) (Value, *Closure) {
 	if t, ok := x.(IDispense); ok {
 		return t.Dispense(lval)
 	}

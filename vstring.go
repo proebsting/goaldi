@@ -177,8 +177,8 @@ func (v *VString) Export() interface{} {
 //  -------------------------- trapped substrings ---------------------
 
 type vSubStr struct {
-	target IVariable // pointer to target
-	i, j   int       // original subscripts
+	target Value // underlying string
+	i, j   int   // original subscripts
 }
 
 //  vSubStr.Deref() -- extract value of substring for use as an rvalue
@@ -193,11 +193,12 @@ func (ss *vSubStr) String() string {
 
 //  vSubStr.Assign -- store value in target variable
 func (ss *vSubStr) Assign(v Value) IVariable {
-	src := Deref(ss.target).(*VString)
+	tgt := ss.target.(IVariable)
+	src := Deref(tgt).(*VString)
 	ins := v.(Stringable).ToString()
 	//#%#% check that i & j are still valid?
 	snew := scat(src, 0, ss.i, ins, 0, ins.length(), src, ss.j, src.length())
-	ss.target = ss.target.Assign(snew)
+	ss.target = tgt.Assign(snew)
 	ss.j = ss.i + ins.length()
 	return ss
 }
@@ -211,7 +212,7 @@ func (s *VString) length() int {
 
 //  VString.slice -- return substring given Go-style zero-based limits
 //  If lval is non-null, generates a trapped slice reference.
-func (s *VString) slice(lval IVariable, i int, j int) Value {
+func (s *VString) slice(lval Value, i int, j int) Value {
 	if lval != nil {
 		return &vSubStr{lval, i, j} // produce variable
 	}

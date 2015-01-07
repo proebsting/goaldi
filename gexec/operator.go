@@ -10,10 +10,10 @@ import (
 func operator(env *g.Env, f *pr_frame, i *ir_OpFunction) (g.Value, *g.Closure) {
 	op := string('0'+len(i.ArgList)) + i.Fn
 	a := getArgs(f, nonDeref[op], i.ArgList)
-	f.offv = a[0]        // save offending value
-	var lval g.IVariable // lvalue for some operators
-	if i.Rval == "" {    // set it if warranted
-		lval, _ = a[0].(g.IVariable) // and if possible
+	f.offv = a[0] // save potential offending value
+	var lval g.Value
+	if i.Rval == "" {
+		lval = a[0] // pass non-nil lvalue if result is not an rvalue
 	}
 
 	switch op {
@@ -135,6 +135,8 @@ func operator(env *g.Env, f *pr_frame, i *ir_OpFunction) (g.Value, *g.Closure) {
 	}
 }
 
+//  nonDeref gives the number of args that are NOT dereferenced for an operator
+//  (with the default value of zero being correct for operators not listed here)
 var nonDeref = make(map[string]int)
 
 func init() {
@@ -153,7 +155,7 @@ func init() {
 }
 
 //  deltaSlice handles x[i+:k] or x[i-:k] by calling x[i:j]
-func deltaSlice(lval g.IVariable, a []g.Value, sign int) (g.Value, *g.Closure) {
+func deltaSlice(lval g.Value, a []g.Value, sign int) (g.Value, *g.Closure) {
 	x := g.Deref(a[0]).(g.ISlice)
 	i := int(a[1].(g.Numerable).ToNumber().Val())
 	j := i + sign*int(a[2].(g.Numerable).ToNumber().Val())

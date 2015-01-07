@@ -89,7 +89,7 @@ func (v *VDefn) Export() interface{} {
 }
 
 //  VDefn.Dispense() implements !D to generate the field names
-func (v *VDefn) Dispense(unused IVariable) (Value, *Closure) {
+func (v *VDefn) Dispense(unused Value) (Value, *Closure) {
 	var c *Closure
 	i := -1
 	c = &Closure{func() (Value, *Closure) {

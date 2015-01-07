@@ -95,6 +95,11 @@ procedure main() {
 	b[3].put(0,9)
 	every write(image(b | !b))
 
+	write("M:")
+	write([0][1] := 7)  # test asgmt to rvalue L[1] derived from lvalue [9]
+	write(?[2,3,4] := 8)
+	write(![5,6,7] := 9)
+
 	write ! ["all ", "done", "!"]
 }
 

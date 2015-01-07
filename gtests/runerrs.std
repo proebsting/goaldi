@@ -6,6 +6,7 @@
 24. RunErr: Not a channel (666)
 30. RunErr: character code out of range (-1)
 31. RunErr: string length not 1 (ab)
+32. interface conversion: *goaldi.VString is not goaldi.IVariable: missing method Assign
 50. interface conversion: *goaldi.vnil is not goaldi.Numerable: missing method ToNumber
 51. RunErr: Cannot convert to number (x)
 52. interface conversion: *goaldi.vnil is not goaldi.Numerable: missing method ToNumber

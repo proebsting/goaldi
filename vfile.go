@@ -98,7 +98,7 @@ func (v *VFile) Export() interface{} {
 }
 
 //  VFile.Dispense() implements the !f operator
-func (f *VFile) Dispense(unused IVariable) (Value, *Closure) {
+func (f *VFile) Dispense(unused Value) (Value, *Closure) {
 	var c *Closure
 	c = &Closure{func() (Value, *Closure) {
 		s := f.ReadLine()

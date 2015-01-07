@@ -23,7 +23,7 @@ func (s *VString) Size() Value {
 
 //------------------------------------  Choose:  ?e
 
-func (s *VString) Choose(lval IVariable) Value {
+func (s *VString) Choose(lval Value) Value {
 	n := s.length()
 	if n == 0 {
 		return nil // fail
@@ -34,7 +34,7 @@ func (s *VString) Choose(lval IVariable) Value {
 
 //------------------------------------  Dispense:  !e
 
-func (s *VString) Dispense(lval IVariable) (Value, *Closure) {
+func (s *VString) Dispense(lval Value) (Value, *Closure) {
 	i := -1
 	n := s.length()
 	var f *Closure
@@ -66,11 +66,11 @@ func (s *VString) Concat(x Value) Value {
 
 //------------------------------------  Index:  e1[e2]
 
-func (s *VNumber) Index(lval IVariable, x Value) Value {
+func (s *VNumber) Index(lval Value, x Value) Value {
 	return s.ToString().Index(lval, x)
 }
 
-func (s *VString) Index(lval IVariable, x Value) Value {
+func (s *VString) Index(lval Value, x Value) Value {
 	i := int(x.(Numerable).ToNumber().Val())
 	n := s.length()
 	i = GoIndex(i, n)
@@ -83,11 +83,11 @@ func (s *VString) Index(lval IVariable, x Value) Value {
 
 //------------------------------------  Slice:  e1[e2:e3]
 
-func (s *VNumber) Slice(lval IVariable, x Value, y Value) Value {
+func (s *VNumber) Slice(lval Value, x Value, y Value) Value {
 	return s.ToString().Slice(lval, x, y)
 }
 
-func (s *VString) Slice(lval IVariable, x Value, y Value) Value {
+func (s *VString) Slice(lval Value, x Value, y Value) Value {
 	i := int(x.(Numerable).ToNumber().Val())
 	j := int(y.(Numerable).ToNumber().Val())
 	n := s.length()

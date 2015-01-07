@@ -21,7 +21,7 @@ func (v *VList) Take() Value {
 
 //------------------------------------  Choose:  ?L
 
-func (v *VList) Choose(lval IVariable) Value {
+func (v *VList) Choose(lval Value) Value {
 	n := len(v.data)
 	if n == 0 {
 		return nil // fail
@@ -34,7 +34,7 @@ func (v *VList) Choose(lval IVariable) Value {
 
 //------------------------------------  Dispense:  !L
 
-func (v *VList) Dispense(lval IVariable) (Value, *Closure) {
+func (v *VList) Dispense(lval Value) (Value, *Closure) {
 	i := -1
 	var c *Closure
 	c = &Closure{func() (Value, *Closure) {
@@ -52,7 +52,7 @@ func (v *VList) Dispense(lval IVariable) (Value, *Closure) {
 
 //------------------------------------  Index:  L[i]
 
-func (v *VList) Index(lval IVariable, x Value) Value {
+func (v *VList) Index(lval Value, x Value) Value {
 	n := len(v.data)
 	i := int(x.(Numerable).ToNumber().Val())
 	i = GoIndex(i, n)
@@ -67,7 +67,7 @@ func (v *VList) Index(lval IVariable, x Value) Value {
 
 //------------------------------------  Slice:  L[i:j]
 
-func (v *VList) Slice(lval IVariable, x Value, y Value) Value {
+func (v *VList) Slice(lval Value, x Value, y Value) Value {
 	i := int(x.(Numerable).ToNumber().Val())
 	j := int(y.(Numerable).ToNumber().Val())
 	n := len(v.data)

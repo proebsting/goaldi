@@ -36,7 +36,7 @@ func (v *VStruct) Field(f string) Value {
 }
 
 //  VStruct.Index(u, k) implements an indexed reference S[k]
-func (v *VStruct) Index(lval IVariable, x Value) Value {
+func (v *VStruct) Index(lval Value, x Value) Value {
 	n := len(v.Data)
 	// if this is a string, check first for matching field name
 	if s, ok := x.(*VString); ok {
@@ -74,7 +74,7 @@ func (v *VStruct) Size() Value {
 }
 
 //  VStruct.Choose() implements ?S
-func (v *VStruct) Choose(lval IVariable) Value {
+func (v *VStruct) Choose(lval Value) Value {
 	n := len(v.Data)
 	if n == 0 {
 		return nil
@@ -86,7 +86,7 @@ func (v *VStruct) Choose(lval IVariable) Value {
 }
 
 //  VStruct.Dispense() implements !S to generate the field values
-func (v *VStruct) Dispense(lval IVariable) (Value, *Closure) {
+func (v *VStruct) Dispense(lval Value) (Value, *Closure) {
 	var c *Closure
 	i := -1
 	c = &Closure{func() (Value, *Closure) {

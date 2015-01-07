@@ -82,22 +82,22 @@ var _ IVariable = &VTrapped{} // confirm implementation by VTrapped
 
 //  Interfaces for operations that can produce substring variables
 //  when applied to strings.
-//  If the IVariable argument is nil, a value is wanted.
-//  If not, it is just a flag for most datatypes but is the actual
-//  underlying value to be replaced by substring assignment.
+//  If the lval argument is nil, an rvalue is wanted.
+//  If not, it is just an lvalue flag for most operations, but for
+//  substring assignment it is the actual underlying string to replace.
 
 type IChoose interface { // ?x
-	Choose(IVariable) Value
+	Choose(lval Value) Value
 }
 
 type IDispense interface { // !x
-	Dispense(IVariable) (Value, *Closure)
+	Dispense(lval Value) (Value, *Closure)
 }
 
 type IIndex interface { // x[y]
-	Index(IVariable, Value) Value
+	Index(lval Value, y Value) Value
 }
 
 type ISlice interface { // x[i:j]
-	Slice(IVariable, Value, Value) Value
+	Slice(lval Value, i Value, j Value) Value
 }

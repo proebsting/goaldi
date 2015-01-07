@@ -59,7 +59,7 @@ func (h *htresp) Size() Value {
 }
 
 //  htresp.Dispense() generates the headers as name:value.  (!H unary operator.)
-func (h *htresp) Dispense(unused IVariable) (Value, *Closure) {
+func (h *htresp) Dispense(unused Value) (Value, *Closure) {
 	//  range over the headers and feed into a channel
 	ch := make(chan *VString)
 	go func() {
