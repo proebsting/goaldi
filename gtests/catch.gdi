@@ -10,7 +10,7 @@ procedure main () {
 	try("catch message", mycatch)
 	try("rethrow", rethrow)
 	try("custom panic", altpanic)
-	try("type error", 5)
+	try("type conversion error", 5)
 	try("17", suspender)
 }
 
@@ -19,15 +19,12 @@ procedure try(label, rproc) {
 	catch tryfailed
 	write("expect ", label, ":")
 	local v := boom(rproc) | "[FAILED]"
-	write("   got ", image(v))
-	write("   %error = ", &error)
-	&error := nil
-	if \&error then write("   %error = ", &error, " AFTER ZAPPING")
+	write("   got ", v)
 }
 
 #   report try failure (panic not caught, or rethrown)
-procedure tryfailed() {
-	write("   UNCAUGHT PANIC: ", image(&error))
+procedure tryfailed(e) {
+	write("   UNCAUGHT PANIC: ", e)
 }
 
 #	register rproc, force error
@@ -38,29 +35,29 @@ procedure boom(rproc) {
 }
 
 #	return raspberry
-procedure myrasp() {
+procedure myrasp(e) {
 	return "pbpbpbpbpttttt"
 }
 
 #	return catch message showing exception
 procedure mycatch(e) {
-	return "caught: " || image(e)
+	return "caught: " || string(e)
 }
 
 #	re-throw panic
-procedure rethrow() {
+procedure rethrow(e) {
 	write("   caught panic; now reissuing")
-	throw(&error)
+	throw(e)
 }
 
 #	throw a different exception instead
-procedure altpanic() {
+procedure altpanic(e) {
 	write("   caught panic; throwing another")
 	throw("CUSTOM PANIC")
 }
 
 #	try suspending (shoudn't resume)
-procedure suspender() {
+procedure suspender(e) {
 	suspend 17 to 23 do
 		write("RESUMED?!")
 }

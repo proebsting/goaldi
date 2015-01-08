@@ -23,8 +23,6 @@ func execute(f *pr_frame, label string) (rv g.Value, rc *g.Closure) {
 			if f.onerr != nil {
 				// find true panic value hiding under traceback info
 				p = g.Cause(p)
-				// save panic value in &error
-				f.env.VarMap["error"].(g.IVariable).Assign(p)
 				// call recovery procedure and return its result
 				rv, _ = f.onerr.Call(f.env, p)
 				rc = nil

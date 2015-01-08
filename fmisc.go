@@ -94,20 +94,20 @@ func Image(env *Env, args ...Value) (Value, *Closure) {
 	return Return(NewString(fmt.Sprintf("%#v", ProcArg(args, 0, NilValue))))
 }
 
-//  NoResult() -- fail immediately
+//  NoResult(e) -- fail immediately -- can be used as a catch handler
 func NoResult(env *Env, args ...Value) (Value, *Closure) {
 	return Fail()
 }
 
-//  NilResult() -- return nilresult
+//  NilResult(e) -- return nilresult -- can be used as a catch handler
 func NilResult(env *Env, args ...Value) (Value, *Closure) {
 	return Return(NilValue)
 }
 
-//  ErrResult() -- return &error
+//  ErrResult(e) -- return e -- can be used as a catch handler
 func ErrResult(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("errresult", args)
-	return Return(env.VarMap["error"].(IVariable).Deref())
+	return Return(ProcArg(args, 0, NilValue))
 }
 
 //  Sleep(n) -- delay execution for n seconds (may be fractional)

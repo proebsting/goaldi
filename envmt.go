@@ -49,7 +49,8 @@ func EnvInit(name string, v Value) {
 	StdEnv[name] = v
 }
 
-//  Initial values and variables
+//  Initial dynamic variables
+//  These are later to become package-qualified variables instead.
 func init() {
 
 	// math constants
@@ -61,9 +62,6 @@ func init() {
 	EnvInit("stdin", Trapped(&STDIN))
 	EnvInit("stdout", Trapped(&STDOUT))
 	EnvInit("stderr", Trapped(&STDERR))
-
-	// error recovery
-	EnvInit("error", Trapped(NewVariable(NilValue)))
 }
 
 //	ShowEnvironment(f) -- list standard environment on file f

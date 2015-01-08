@@ -10,8 +10,7 @@ procedure main() {
 
 procedure try(i) {
 	catch lambda(e) {
-		(e === &error) | throw("e ~=== &error", e)
-		write(i, ". ", &error)
+		write(i, ". ", e)
 	}
 	provoke(i)
 }
