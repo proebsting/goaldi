@@ -7,15 +7,15 @@ import (
 )
 
 //  Declare standard methods
-var StructMethods = map[string]interface{}{
-	"type":   (*VStruct).Type,
-	"copy":   (*VStruct).Copy,
-	"string": (*VStruct).String,
-	"image":  (*VStruct).GoString,
+var RecordMethods = map[string]interface{}{
+	"type":   (*VRecord).Type,
+	"copy":   (*VRecord).Copy,
+	"string": (*VRecord).String,
+	"image":  (*VRecord).GoString,
 }
 
-//  VStruct.Field() implements a field reference S.k
-func (v *VStruct) Field(f string) Value {
+//  VRecord.Field() implements a field reference S.k
+func (v *VRecord) Field(f string) Value {
 	//  check first for record field
 	d := v.Defn
 	for i, s := range d.Flist {
@@ -28,15 +28,15 @@ func (v *VStruct) Field(f string) Value {
 		return &VMethVal{f, v, m.Entry, true}
 	}
 	//  check for standard method
-	if m := StructMethods[f]; m != nil {
+	if m := RecordMethods[f]; m != nil {
 		return &VMethVal{f, v, m, false}
 	}
 	//  neither one found
 	panic(NewExn("Field not found: "+f, v))
 }
 
-//  VStruct.Index(u, k) implements an indexed reference S[k]
-func (v *VStruct) Index(lval Value, x Value) Value {
+//  VRecord.Index(u, k) implements an indexed reference S[k]
+func (v *VRecord) Index(lval Value, x Value) Value {
 	n := len(v.Data)
 	// if this is a string, check first for matching field name
 	if s, ok := x.(*VString); ok {
@@ -68,13 +68,13 @@ func (v *VStruct) Index(lval Value, x Value) Value {
 	}
 }
 
-//  VStruct.Size() implements *S, returning the number of fields
-func (v *VStruct) Size() Value {
+//  VRecord.Size() implements *S, returning the number of fields
+func (v *VRecord) Size() Value {
 	return NewNumber(float64(len(v.Data)))
 }
 
-//  VStruct.Choose() implements ?S
-func (v *VStruct) Choose(lval Value) Value {
+//  VRecord.Choose() implements ?S
+func (v *VRecord) Choose(lval Value) Value {
 	n := len(v.Data)
 	if n == 0 {
 		return nil
@@ -85,8 +85,8 @@ func (v *VStruct) Choose(lval Value) Value {
 	}
 }
 
-//  VStruct.Dispense() implements !S to generate the field values
-func (v *VStruct) Dispense(lval Value) (Value, *Closure) {
+//  VRecord.Dispense() implements !S to generate the field values
+func (v *VRecord) Dispense(lval Value) (Value, *Closure) {
 	var c *Closure
 	i := -1
 	c = &Closure{func() (Value, *Closure) {

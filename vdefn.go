@@ -1,7 +1,7 @@
-//  vdefn.go -- struct definition (constructor) information
+//  vdefn.go -- record definition (constructor) information
 //
-//  Defines the interpretation of a vstruct object that points to it,
-//  and constructs objects for it.
+//  Defines the interpretation of a VRecord object that points to it,
+//  and constructs instances of it.
 
 package goaldi
 
@@ -17,7 +17,7 @@ func NewDefn(name string, fields []string) *VDefn {
 	return &VDefn{name, fields, make(map[string]*VProcedure)}
 }
 
-//  AddMethod(name, procedure) -- add a method for this struct type
+//  AddMethod(name, procedure) -- add a method for this record type
 //  Returns false if rejected as a duplicate.
 func (v *VDefn) AddMethod(name string, p *VProcedure) bool {
 	for _, s := range v.Flist {
@@ -32,9 +32,9 @@ func (v *VDefn) AddMethod(name string, p *VProcedure) bool {
 	return true
 }
 
-//  VDefn.New(values) -- create a new underlying struct object
-func (v *VDefn) New(a []Value) *VStruct {
-	r := &VStruct{v, make([]Value, len(v.Flist))}
+//  VDefn.New(values) -- create a new underlying record object
+func (v *VDefn) New(a []Value) *VRecord {
+	r := &VRecord{v, make([]Value, len(v.Flist))}
 	for i := range r.Data {
 		if i < len(a) {
 			r.Data[i] = a[i]
@@ -103,7 +103,7 @@ func (v *VDefn) Dispense(unused Value) (Value, *Closure) {
 	return c.Resume()
 }
 
-//  VDefn.Call() implements a struct constructor
+//  VDefn.Call() implements a record constructor
 func (v *VDefn) Call(env *Env, args ...Value) (Value, *Closure) {
 	return Return(v.New(args))
 }

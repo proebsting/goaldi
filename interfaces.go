@@ -38,7 +38,7 @@ var _ ICore = &VFile{}
 var _ ICore = &VProcedure{}
 var _ ICore = &VMethVal{}
 var _ ICore = &VDefn{}
-var _ ICore = &VStruct{}
+var _ ICore = &VRecord{}
 var _ ICore = &VList{}
 var _ ICore = &VMap{}
 

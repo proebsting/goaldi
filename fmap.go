@@ -86,15 +86,15 @@ func GoMapSort(m Value, args ...Value) (Value, *Closure) {
 	for i, kv := range klist {
 		k := Import(kv.Interface())
 		v := Import(mv.MapIndex(kv).Interface())
-		vlist[i] = kvstruct.New([]Value{k, v})
+		vlist[i] = kvRecord.New([]Value{k, v})
 	}
 	return InitList(vlist).Sort(i)
 }
 
 //  -------------------------- key/value pairs ---------------------
 
-//  kvstruct defines the {key,value} struct returned by ?M and !M
-var kvstruct = NewDefn("mapElem", []string{"key", "value"})
+//  kvRecord defines the {key,value} struct returned by ?M and !M
+var kvRecord = NewDefn("mapElem", []string{"key", "value"})
 
 //  ChooseMap returns a key/value pair from any Go (or Goaldi) map
 func ChooseMap(m interface{} /*anymap*/) Value {
@@ -107,7 +107,7 @@ func ChooseMap(m interface{} /*anymap*/) Value {
 	i := rand.Intn(n)
 	k := Import(klist[i].Interface())
 	v := Import(mv.MapIndex(klist[i]).Interface())
-	return kvstruct.New([]Value{k, v})
+	return kvRecord.New([]Value{k, v})
 }
 
 //  DispenseMap generates key/value pairs for any Go (or Goaldi) map
@@ -121,7 +121,7 @@ func DispenseMap(m interface{} /*anymap*/) (Value, *Closure) {
 		if i < len(klist) {
 			k := Import(klist[i].Interface())
 			v := Import(mv.MapIndex(klist[i]).Interface())
-			return kvstruct.New([]Value{k, v}), c
+			return kvRecord.New([]Value{k, v}), c
 		} else {
 			return Fail()
 		}
@@ -142,5 +142,5 @@ func TakeMap(m interface{} /*anymap*/) Value {
 	k := Import(kv.Interface())
 	v := Import(mv.MapIndex(klist[i]).Interface())
 	mv.SetMapIndex(kv, reflect.Value{}) // delete
-	return kvstruct.New([]Value{k, v})
+	return kvRecord.New([]Value{k, v})
 }

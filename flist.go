@@ -115,11 +115,11 @@ func LT(x Value, y Value, i int) bool {
 		return x.(*VMethVal).Name < y.(*VMethVal).Name
 	case rProc:
 		return x.(*VProcedure).Name < y.(*VProcedure).Name
-	case rStruct:
-		xs := x.(*VStruct)
-		ys := y.(*VStruct)
+	case rRecord:
+		xs := x.(*VRecord)
+		ys := y.(*VRecord)
 		if xs.Defn != ys.Defn {
-			// different struct types; order by struct name
+			// different record types; order by type name
 			return xs.Defn.Name < ys.Defn.Name
 		}
 		if i >= 0 && len(xs.Data) > i && len(ys.Data) > i {
@@ -159,7 +159,7 @@ const (
 	rProc
 	rList
 	rMap
-	rStruct
+	rRecord
 	rExternal
 )
 

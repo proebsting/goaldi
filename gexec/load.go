@@ -100,7 +100,7 @@ func jwalk(jtree interface{}) {
 		fmt.Println()
 	}
 	if opt_tally {
-		fmt.Printf("\nStruct field types:\n")
+		fmt.Printf("\nRecord field types:\n")
 		for k, v := range tally {
 			fmt.Printf("field %-45s %3d\n", k, v)
 		}

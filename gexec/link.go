@@ -8,8 +8,8 @@ import (
 	"strings"
 )
 
-//  list of struct (record) declarations seen
-var StructList = make([]*ir_Record, 0)
+//  list of record declarations seen
+var RecordList = make([]*ir_Record, 0)
 
 //  link combines IR files to make a complete program.
 func link(parts [][]interface{}) {
@@ -23,9 +23,9 @@ func link(parts [][]interface{}) {
 		}
 	}
 
-	//  register struct constructors
-	for _, sc := range StructList {
-		registerStruct(sc)
+	//  register the record constructors
+	for _, sc := range RecordList {
+		registerRecord(sc)
 	}
 
 	//  register methods in constructors and procedures in global namespace
@@ -69,7 +69,7 @@ func irDecl(decl interface{}) {
 			Undeclared[id] = true
 		}
 	case ir_Record:
-		StructList = append(StructList, &x)
+		RecordList = append(RecordList, &x)
 	default: // including ir_Invocable, ir_Link
 		panic(g.Malfunction(fmt.Sprintf("unrecognized: %#v", x)))
 	}
@@ -87,7 +87,7 @@ func registerMethod(pr *pr_Info, recname string, methname string) {
 				recname, methname, methname))
 		}
 	} else {
-		fatal(fmt.Sprintf("No struct %s found for method %s.%s()",
+		fatal(fmt.Sprintf("No type %s found for method %s.%s()",
 			recname, recname, methname))
 	}
 }
@@ -110,8 +110,8 @@ func registerProc(pr *pr_Info) {
 	delete(Undeclared, pr.name)
 }
 
-//  registerStruct(sc) -- register struct constructor in globals
-func registerStruct(sc *ir_Record) {
+//  registerRecord(sc) -- register a record constructor in the globals
+func registerRecord(sc *ir_Record) {
 	gv := GlobalDict[sc.Name]
 	if gv == nil {
 		// not declared as global, and not seen before:

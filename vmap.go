@@ -42,7 +42,7 @@ func (m VMap) GoString() string {
 	var b bytes.Buffer
 	fmt.Fprintf(&b, "map{")
 	for _, e := range l.(*VList).data {
-		r := e.(*VStruct)
+		r := e.(*VRecord)
 		fmt.Fprintf(&b, "%v:%v,", r.Data[0], r.Data[1])
 	}
 	s := b.Bytes()
