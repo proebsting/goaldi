@@ -26,6 +26,7 @@ procedure init_lex_tables()
                ["dynamic",         "DYNAMIC",   ""  ],
                ["else",            "ELSE",      ""  ],
                ["every",           "EVERY",     "b" ],
+               ["extends",         "EXTENDS",   "" ],
                ["fail",            "FAIL",      "be"],
                ["global",          "GLOBAL",    "b"  ],
                ["if",              "IF",        "b" ],

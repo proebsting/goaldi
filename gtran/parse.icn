@@ -1291,18 +1291,31 @@ end
 
 procedure parse_do_record()
 #  RECORD  IDENT  LPAREN [  idlist ]  RPAREN 
-    local id, l, coord, idcoord
+    local id, l, coord, idcoord, ex, expkg, excoord
     coord := parse_tok_rec.coord
     parse_match_token(lex_RECORD)
     idcoord := parse_tok_rec.coord
     id := a_Ident(parse_match_token(lex_IDENT), idcoord)
+
+    if parse_tok_rec === lex_EXTENDS then {
+	parse_eat_token()
+        excoord := parse_tok_rec.coord
+	ex := a_Ident(parse_match_token(lex_IDENT), excoord)
+        if parse_tok_rec === lex_DOT then {
+	    parse_eat_token()
+	    expkg := ex
+            excoord := parse_tok_rec.coord
+	    ex := a_Ident(parse_match_token(lex_IDENT), excoord)
+	}
+    }
+
     parse_match_token(lex_LPAREN)
     l := []
     if parse_tok_rec === lex_IDENT then {
         l := parse_idlist()
     }
     parse_match_token(lex_RPAREN)
-    return a_Record(id, l, coord)
+    return a_Record(id, ex, expkg, l, coord)
 end
 
 procedure parse_do_repeat()

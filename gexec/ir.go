@@ -57,9 +57,11 @@ func init() {
 //  all fields must be capitalized for access by the reflection package
 
 type ir_Record struct {
-	Coord     string
-	Name      string
-	FieldList []string
+	Coord      string
+	Name       string
+	Extends    string
+	Extendspkg string
+	FieldList  []string
 }
 
 type ir_Global struct {
