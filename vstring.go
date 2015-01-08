@@ -125,11 +125,11 @@ func (v *VString) TryNumber() *VNumber {
 	}
 }
 
-//  VString.ToNumber -- return conversion to VNumber, or issue RunErr
+//  VString.ToNumber -- return conversion to VNumber, or throw Exception
 func (v *VString) ToNumber() *VNumber {
 	n := v.TryNumber()
 	if n == nil {
-		panic(&RunErr{"Cannot convert to number", v})
+		panic(NewExn("Cannot convert to number", v))
 	} else {
 		return n
 	}

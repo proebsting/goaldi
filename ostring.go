@@ -11,7 +11,7 @@ func sval(v Value) *VString {
 	if n, ok := v.(Stringable); ok {
 		return n.ToString()
 	} else {
-		panic(&RunErr{"Not a string", v})
+		panic(NewExn("Not a string", v))
 	}
 }
 

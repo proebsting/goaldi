@@ -126,14 +126,14 @@ func (v *VFile) Read(p []byte) (int, error) {
 	if v.Reader != nil {
 		return v.Reader.Read(p)
 	} else {
-		panic(&RunErr{"Not open for reading", v})
+		panic(NewExn("Not open for reading", v))
 	}
 }
 
 //  VFile.ReadLine() returns the next line from this file, or nil at EOF.
 func (v *VFile) ReadLine() *VString {
 	if v.Reader == nil {
-		panic(&RunErr{"Not open for reading", v})
+		panic(NewExn("Not open for reading", v))
 	}
 	s, e := v.Reader.ReadString('\n')
 	if e == nil {
@@ -157,7 +157,7 @@ func (v *VFile) Write(p []byte) (int, error) {
 	if v.Writer != nil {
 		return v.Writer.Write(p)
 	} else {
-		panic(&RunErr{"Not open for writing", v})
+		panic(NewExn("Not open for writing", v))
 	}
 }
 
@@ -174,7 +174,7 @@ func (v *VFile) Flush() error {
 //  It marks the file as closed and calls io.Close() on the underlying Closer.
 func (v *VFile) Close() error {
 	if v.Closer == nil {
-		panic(&RunErr{"File not open", v})
+		panic(NewExn("File not open", v))
 	}
 	err := v.Flush()
 	if err != nil {

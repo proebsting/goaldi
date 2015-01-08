@@ -1,27 +1,27 @@
 expect failure:
    got "[FAILED]"
-   %error = RunErr: ToBy: by 0
+   %error = Exception(ToBy: bad increment,0)
 expect nil:
    got nil
-   %error = RunErr: ToBy: by 0
+   %error = Exception(ToBy: bad increment,0)
 expect panic value:
-   got &goaldi.RunErr{Msg:"ToBy: by 0", Offv:interface {}(nil)}
-   %error = RunErr: ToBy: by 0
+   got Exception("ToBy: bad increment",0)
+   %error = Exception(ToBy: bad increment,0)
 expect raspberry:
    got "pbpbpbpbpttttt"
-   %error = RunErr: ToBy: by 0
+   %error = Exception(ToBy: bad increment,0)
 expect catch message:
-   got "caught: &goaldi.RunErr{Msg:\"ToBy: by 0\", Offv:interface {}(nil)}"
-   %error = RunErr: ToBy: by 0
+   got "caught: Exception(\"ToBy: bad increment\",0)"
+   %error = Exception(ToBy: bad increment,0)
 expect rethrow:
    caught panic; now reissuing
-   UNCAUGHT PANIC: &goaldi.RunErr{Msg:"RunErr: ToBy: by 0", Offv:interface {}(nil)}
+   UNCAUGHT PANIC: Exception("ToBy: bad increment",0)
 expect custom panic:
    caught panic; throwing another
-   UNCAUGHT PANIC: &goaldi.RunErr{Msg:"CUSTOM PANIC", Offv:interface {}(nil)}
+   UNCAUGHT PANIC: Exception("CUSTOM PANIC")
 expect type error:
    got &runtime.TypeAssertionError{interfaceString:"", concreteString:"*goaldi.VNumber", assertedString:"*goaldi.VProcedure", missingMethod:""}
    %error = interface conversion: interface is *goaldi.VNumber, not *goaldi.VProcedure
 expect 17:
    got 17
-   %error = RunErr: ToBy: by 0
+   %error = Exception(ToBy: bad increment,0)

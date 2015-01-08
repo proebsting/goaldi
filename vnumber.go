@@ -25,12 +25,12 @@ func ParseNumber(s string) (float64, error) {
 	if n == 1 {
 		return f, nil
 	} else {
-		return math.NaN(), &RunErr{"Not a number", s}
+		return math.NaN(), NewExn("Not a number", s)
 	}
 
 }
 
-//  MustParseNum -- make a float from a string, or throw a RunErr
+//  MustParseNum -- make a float from a string, or throw an Exception
 func MustParseNum(s string) float64 {
 	f, e := ParseNumber(s)
 	if e != nil {

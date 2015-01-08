@@ -89,7 +89,7 @@ func (v *VMethVal) Field(f string) Value {
 func GetMethod(m map[string]interface{}, v Value, s string) *VMethVal {
 	method := m[s]
 	if method == nil {
-		panic(&RunErr{"unrecognized method: " + s, v})
+		panic(NewExn("unrecognized method: "+s, v))
 	}
 	return &VMethVal{s, v, method, false}
 }

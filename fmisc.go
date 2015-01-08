@@ -36,7 +36,7 @@ func init() {
 	LibProcedure("nilresult", NilResult)
 	LibProcedure("errresult", ErrResult)
 	LibProcedure("exit", Exit)
-	LibProcedure("runerr", Runerr)
+	LibProcedure("throw", Throw)
 	LibProcedure("sleep", Sleep)
 	LibProcedure("date", Date)
 	LibProcedure("time", Time)
@@ -179,18 +179,20 @@ func Exit(env *Env, args ...Value) (Value, *Closure) {
 	return Fail() // NOTREACHED
 }
 
-//  Runerr(x, v) -- terminate with error x and offending value v
-func Runerr(env *Env, args ...Value) (Value, *Closure) {
-	defer Traceback("runerr", args)
+//  Throw(x, v...) -- terminate with error x and offending values v
+//  If x is a number or string, a Goaldi exception is created using v.
+//  Otherwise, the value x is thrown directly.
+func Throw(env *Env, args ...Value) (Value, *Closure) {
+	defer Traceback("throw", args)
 	x := ProcArg(args, 0, err_fatal)
-	v := ProcArg(args, 1, NilValue)
-	if len(args) < 2 {
-		v = nil // distingish no argument from explicit %nil
+	switch v := x.(type) {
+	case *VString:
+		panic(&Exception{v.String(), args[1:]})
+	case *VNumber:
+		panic(&Exception{fmt.Sprintf("Fatal error %v", v), args[1:]})
+	default:
+		panic(x)
 	}
-	if n, ok := x.(*VNumber); ok {
-		x = NewString(fmt.Sprintf("Fatal error %v", n))
-	}
-	panic(&RunErr{fmt.Sprintf("%v", x), v})
 }
 
 var err_fatal = NewString("Unspecified fatal error")
