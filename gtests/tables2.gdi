@@ -1,6 +1,6 @@
 #SRC: icon/table.icn
 #
-# Map test
+# Table test
 
 procedure main() {
    # local k, kv, x, y

@@ -1,6 +1,6 @@
 #SRC: goaldi original
 #
-#  Map operations
+#  Table operations
 
 procedure main() {
 	# local t, u, c, i, k, kv, l
