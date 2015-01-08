@@ -1,7 +1,7 @@
-//	vmap.go -- VMap, the Goaldi type "map"
+//	vmap.go -- VTable, the Goaldi type "table"
 //
 //	Implementation:
-//	A Goaldi map is just a type name VMap attached to a Go map[Value]Value.
+//	A Goaldi map is just a type name VTable attached to a Go map[Value]Value.
 //	This distinguishes it from an external Go map and allows attaching
 //	(internal) methods.  Goaldi string and number indexes are converted
 //	to Go string and float64 values.
@@ -14,33 +14,33 @@ import (
 	"reflect"
 )
 
-//  VMap implements a native Goaldi map.
+//  VTable implements a native Goaldi map.
 //  It behaves similarly to an external map except that
 //  only strings and numbers are converted before use as keys.
 //  (Unconverted "identical" values would be seen as distinct.)
-type VMap map[Value]Value
+type VTable map[Value]Value
 
-//  NewMap -- construct a new Goaldi map
-func NewMap() VMap {
+//  NewTable -- construct a new Goaldi map
+func NewTable() VTable {
 	return make(map[Value]Value)
 }
 
-//  VMap.String -- default conversion to Go string returns "M:size"
-func (m VMap) String() string {
-	return fmt.Sprintf("M:%d", len(m))
+//  VTable.String -- default conversion to Go string returns "T:size"
+func (m VTable) String() string {
+	return fmt.Sprintf("T:%d", len(m))
 }
 
-//  VMap.GoString -- convert to Go string for image() and printf("%#v")
+//  VTable.GoString -- convert to Go string for image() and printf("%#v")
 //
 //  For utility and reproducibility, we assume it's worth the cost
 //  to sort the map in key order.
-func (m VMap) GoString() string {
+func (m VTable) GoString() string {
 	if len(m) == 0 {
-		return "map{}"
+		return "table{}"
 	}
 	l, _ := m.Sort(ONE) // sort on key values
 	var b bytes.Buffer
-	fmt.Fprintf(&b, "map{")
+	fmt.Fprintf(&b, "table{")
 	for _, e := range l.(*VList).data {
 		r := e.(*VRecord)
 		fmt.Fprintf(&b, "%v:%v,", r.Data[0], r.Data[1])
@@ -50,42 +50,42 @@ func (m VMap) GoString() string {
 	return string(s)
 }
 
-//  VMap.Rank returns rMap
-func (v VMap) Rank() int {
-	return rMap
+//  VTable.Rank returns rTable
+func (v VTable) Rank() int {
+	return rTable
 }
 
-//  VMap.Type -- return "map"
-func (m VMap) Type() Value {
+//  VTable.Type -- return "table"
+func (m VTable) Type() Value {
 	return type_map
 }
 
-var type_map = NewString("map")
+var type_map = NewString("table")
 
-//  VMap.Copy returns a duplicate of itself
-func (m VMap) Copy() Value {
-	r := NewMap()
+//  VTable.Copy returns a duplicate of itself
+func (m VTable) Copy() Value {
+	r := NewTable()
 	for k, v := range m {
 		r[k] = v
 	}
 	return r
 }
 
-//  VMap.Import returns itself
-func (v VMap) Import() Value {
+//  VTable.Import returns itself
+func (v VTable) Import() Value {
 	return v
 }
 
-//  VMap.Export returns itself.
+//  VTable.Export returns itself.
 //  Go extensions may wish to use v.Index().Deref(), v.Delete(), etc.
 //  to ensure proper conversion of keys.
-func (v VMap) Export() interface{} {
+func (v VTable) Export() interface{} {
 	return v
 }
 
 //  -------------------------- trapped references ---------------------
 
-//  vMapTrap is a trapped map reference m[k] to a Goaldi or Go map
+//  vMapTrap is a trapped map reference m[k] to a Goaldi table or Go map
 type vMapTrap struct {
 	mapv reflect.Value // underlying Go map
 	keyv reflect.Value // key converted to appropriate Go type
@@ -94,7 +94,7 @@ type vMapTrap struct {
 //  TrapMap(m,k) creates a trapped variable for m[k]
 func TrapMap(m Value, key Value) *vMapTrap {
 	mv := reflect.ValueOf(m)
-	if _, ok := mv.Interface().(VMap); ok {
+	if _, ok := mv.Interface().(VTable); ok {
 		// this is a native map; must convert string or number key
 		switch t := key.(type) {
 		case *VString:
@@ -117,7 +117,7 @@ func (t *vMapTrap) Exists() bool {
 func (t *vMapTrap) Deref() Value {
 	v := t.mapv.MapIndex(t.keyv)
 	if v.IsValid() {
-		return Import(v.Interface()) // identity function for VMap values
+		return Import(v.Interface()) // identity function for VTable values
 	} else {
 		return NilValue // not found in map
 	}

@@ -10,7 +10,7 @@ procedure main(args) {
 	local v
 	local fmt
 
-	m := map()
+	m := table()
 	m[1] := "a"
 	m[2] := "b"
 

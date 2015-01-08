@@ -40,7 +40,7 @@ var _ ICore = &VMethVal{}
 var _ ICore = &VDefn{}
 var _ ICore = &VRecord{}
 var _ ICore = &VList{}
-var _ ICore = &VMap{}
+var _ ICore = &VTable{}
 
 type IRank interface {
 	Rank() int // return rank of type for sorting

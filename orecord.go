@@ -14,7 +14,7 @@ var RecordMethods = map[string]interface{}{
 	"image":  (*VRecord).GoString,
 }
 
-//  VRecord.Field() implements a field reference S.k
+//  VRecord.Field() implements a field reference R.k
 func (v *VRecord) Field(f string) Value {
 	//  check first for record field
 	d := v.Defn
@@ -35,7 +35,7 @@ func (v *VRecord) Field(f string) Value {
 	panic(NewExn("Field not found: "+f, v))
 }
 
-//  VRecord.Index(u, k) implements an indexed reference S[k]
+//  VRecord.Index(u, k) implements an indexed reference R[k]
 func (v *VRecord) Index(lval Value, x Value) Value {
 	n := len(v.Data)
 	// if this is a string, check first for matching field name
@@ -68,12 +68,12 @@ func (v *VRecord) Index(lval Value, x Value) Value {
 	}
 }
 
-//  VRecord.Size() implements *S, returning the number of fields
+//  VRecord.Size() implements *R, returning the number of fields
 func (v *VRecord) Size() Value {
 	return NewNumber(float64(len(v.Data)))
 }
 
-//  VRecord.Choose() implements ?S
+//  VRecord.Choose() implements ?R
 func (v *VRecord) Choose(lval Value) Value {
 	n := len(v.Data)
 	if n == 0 {
@@ -85,7 +85,7 @@ func (v *VRecord) Choose(lval Value) Value {
 	}
 }
 
-//  VRecord.Dispense() implements !S to generate the field values
+//  VRecord.Dispense() implements !R to generate the field values
 func (v *VRecord) Dispense(lval Value) (Value, *Closure) {
 	var c *Closure
 	i := -1

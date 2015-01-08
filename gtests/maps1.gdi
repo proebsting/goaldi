@@ -12,7 +12,7 @@ procedure main() {
 	local kv
 	local l
 
-	t := map()
+	t := table()
 	println("\t\t\t\t", type(t), t, *t, image(t))
 	ck(t)
 	every i := !4 do {
@@ -57,7 +57,7 @@ procedure main() {
 	#  write()
 }
 
-procedure ck(t) {		#: show map indexed by 1..4 and "E".."H"
+procedure ck(t) {		#: show table indexed by 1..4 and "E".."H"
 	# local k, kv
 	local k
 	local kv

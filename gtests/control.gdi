@@ -38,7 +38,7 @@ procedure main() {
 
 	local r := rec(45)
 	local c := create 1 | 2
-	local t := map()
+	local t := table()
 	t["a"] := "aaa"
 	t["x"] := "xyz"
 	local L := [nil, 0, 1.0, 2, &e, &pi, "", "0", "1", "2",

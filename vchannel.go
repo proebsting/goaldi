@@ -15,7 +15,7 @@ func NewChannel(i int) VChannel {
 	return VChannel(make(chan Value, i))
 }
 
-//  VChannel.String -- default conversion to Go string returns "M:size"
+//  VChannel.String -- default conversion to Go string returns "CH:size"
 func (c VChannel) String() string {
 	return fmt.Sprintf("CH:%d", cap(c))
 }

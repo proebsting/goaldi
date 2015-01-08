@@ -12,6 +12,6 @@ methodvalue  V:push       methodvalue (L:0).push   V:push
 procedure    P:main       procedure main(args)     P:main
 procedure    P:write      procedure write(?)       P:write
 list         L:3          [1,2,3]                  L:3
-map          M:2          map{1:a,2:b}             M:2
+table        T:2          table{1:a,2:b}           T:2
 Circle       Circle{}     Circle{x:3,y:4,r:5}      Circle{}
-mapElem      mapElem{}    mapElem{key:1,value:a}   mapElem{}
+tableElem    tableElem{}  tableElem{key:1,value:a} tableElem{}

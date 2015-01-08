@@ -14,7 +14,7 @@ local T
     # that has includes two different values for T [] is therefore incorrect.
     #
     write ( "TVTBL test 1" )
-    T := map()
+    T := table()
 
     write ( "Assignment test:  \t", T [], "\t", T [] := "Assigned" )
     write ( "Reassignment test:\t", T [], "\t", T [] := "Reassigned" )
@@ -50,7 +50,7 @@ local T
 local s
 
     write ( "TVSUBS test" )     
-    T := map()
+    T := table()
     T [ 7 ] := "....."
     T [ 7 ] [ 4 ] := "X"
     write ( "Subs of new table elem:      ", T [ 7 ] )

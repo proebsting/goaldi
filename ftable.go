@@ -8,48 +8,48 @@ import (
 )
 
 //  Declare methods
-var MapMethods = map[string]interface{}{
-	"type":   VMap.Type,
-	"copy":   VMap.Copy,
-	"string": VMap.String,
-	"image":  VMap.GoString,
-	"member": VMap.Member,
-	"delete": VMap.Delete,
-	"sort":   VMap.Sort,
+var TableMethods = map[string]interface{}{
+	"type":   VTable.Type,
+	"copy":   VTable.Copy,
+	"string": VTable.String,
+	"image":  VTable.GoString,
+	"member": VTable.Member,
+	"delete": VTable.Delete,
+	"sort":   VTable.Sort,
 }
 
-//  VMap.Field implements method calls
-func (m VMap) Field(f string) Value {
-	return GetMethod(MapMethods, m, f)
+//  VTable.Field implements method calls
+func (m VTable) Field(f string) Value {
+	return GetMethod(TableMethods, m, f)
 }
 
 //  init() declares the constructor function
 func init() {
 	// Goaldi procedures
-	LibProcedure("map", Map)
+	LibProcedure("table", Table)
 }
 
-//  Declare methods on Go Maps
+//  Declare methods on Go Tables
 var GoMapMethods = map[string]interface{}{
 	"member": GoMapMember,
 	"delete": GoMapDelete,
 	"sort":   GoMapSort,
 }
 
-//  Map() returns a new map
-func Map(env *Env, args ...Value) (Value, *Closure) {
-	defer Traceback("map", args)
-	return Return(NewMap())
+//  Table() returns a new map
+func Table(env *Env, args ...Value) (Value, *Closure) {
+	defer Traceback("table", args)
+	return Return(NewTable())
 }
 
-//  VMap.Member(k) succeeds if k is an existing key
-func (m VMap) Member(args ...Value) (Value, *Closure) {
+//  VTable.Member(k) succeeds if k is an existing key
+func (m VTable) Member(args ...Value) (Value, *Closure) {
 	return GoMapMember(m, args...)
 }
 
-//  GoMapMember(M, k) succeeds if k is an existing key in m
+//  GoMapMember(m, k) succeeds if k is an existing key in m
 func GoMapMember(m Value, args ...Value) (Value, *Closure) {
-	defer Traceback("M.member", args)
+	defer Traceback("T.member", args)
 	key := ProcArg(args, 0, NilValue)
 	if TrapMap(m, key).Exists() {
 		return Return(key)
@@ -58,27 +58,27 @@ func GoMapMember(m Value, args ...Value) (Value, *Closure) {
 	}
 }
 
-//  VMap.Delete(k) deletes the entry, if any, with key k
-func (m VMap) Delete(args ...Value) (Value, *Closure) {
+//  VTable.Delete(k) deletes the entry, if any, with key k
+func (m VTable) Delete(args ...Value) (Value, *Closure) {
 	return GoMapDelete(m, args...)
 }
 
-//  GoMapDelete(M, k) deletes the entry in map m, if any, with key k
+//  GoMapDelete(m, k) deletes the entry in map m, if any, with key k
 func GoMapDelete(m Value, args ...Value) (Value, *Closure) {
-	defer Traceback("M.delete", args)
+	defer Traceback("T.delete", args)
 	key := ProcArg(args, 0, NilValue)
 	TrapMap(m, key).Delete()
 	return Return(m)
 }
 
-//  VMap.Sort(i) produces [:!M:].sort(i)
-func (m VMap) Sort(args ...Value) (Value, *Closure) {
+//  VTable.Sort(i) produces [:!T:].sort(i)
+func (m VTable) Sort(args ...Value) (Value, *Closure) {
 	return GoMapSort(m, args...)
 }
 
-//  GoMapSort(M, i) produces [:!M:].sort(i)
+//  GoMapSort(m, i) produces [:!T:].sort(i)
 func GoMapSort(m Value, args ...Value) (Value, *Closure) {
-	defer Traceback("M.sort", args)
+	defer Traceback("T.sort", args)
 	i := ProcArg(args, 0, ONE).(Numerable).ToNumber()
 	mv := reflect.ValueOf(m)
 	klist := mv.MapKeys()
@@ -93,10 +93,10 @@ func GoMapSort(m Value, args ...Value) (Value, *Closure) {
 
 //  -------------------------- key/value pairs ---------------------
 
-//  kvRecord defines the {key,value} struct returned by ?M and !M
-var kvRecord = NewDefn("mapElem", []string{"key", "value"})
+//  kvRecord defines the {key,value} struct returned by ?T and !T
+var kvRecord = NewDefn("tableElem", []string{"key", "value"})
 
-//  ChooseMap returns a key/value pair from any Go (or Goaldi) map
+//  ChooseMap returns a key/value pair from any Go table or Goaldi map
 func ChooseMap(m interface{} /*anymap*/) Value {
 	mv := reflect.ValueOf(m)
 	klist := mv.MapKeys()
@@ -110,7 +110,7 @@ func ChooseMap(m interface{} /*anymap*/) Value {
 	return kvRecord.New([]Value{k, v})
 }
 
-//  DispenseMap generates key/value pairs for any Go (or Goaldi) map
+//  DispenseMap generates key/value pairs for any Go table or Goaldi map
 func DispenseMap(m interface{} /*anymap*/) (Value, *Closure) {
 	mv := reflect.ValueOf(m)
 	klist := mv.MapKeys()

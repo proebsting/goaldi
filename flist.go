@@ -140,8 +140,8 @@ func LT(x Value, y Value, i int) bool {
 			// put missing one first; otherwise #%#% we don't care
 			return len(xl.data) < len(yl.data)
 		}
-	case rMap:
-		return len(x.(VMap)) < len(y.(VMap)) //#%#% got anything better?
+	case rTable:
+		return len(x.(VTable)) < len(y.(VTable)) //#%#% got anything better?
 	default:
 		return false //#%#% not comparable?
 	}
@@ -158,7 +158,7 @@ const (
 	rMethVal
 	rProc
 	rList
-	rMap
+	rTable
 	rRecord
 	rExternal
 )

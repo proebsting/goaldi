@@ -9,7 +9,7 @@ procedure main() {
    local x
    local y
 
-   x := map()
+   x := table()
    tdump("initial", x)
    writes("should fail ", image(?x))
    # portable with 0 or 1 entries:
@@ -33,7 +33,7 @@ procedure main() {
    /x[1] | write("/1")
    \x[2] | write("\\2")
 
-   x := map()
+   x := table()
    if x.member() then write("NIL IS MEMBER")
    x[nil] := nil			| write("failed 0")
    x[1] := nil				| write("failed 1")
@@ -48,7 +48,7 @@ procedure main() {
    x.delete(7).delete(1)	| write("failed d71")
    tdump("delete", x)
 
-   x := map(0)
+   x := table(0)
    write(x[47])
    tdump("t0", x)
    x[nil] := nil			| write("failed 0")
@@ -64,12 +64,12 @@ procedure main() {
    tdump("t0d", x)
 
    write()
-   x := map()
+   x := table()
    every x[3] <- 19		# should insert key but revert to default value
    every kv := !x do
       write("{",kv.key,",",kv.value,"}")
 
-   x := map()
+   x := table()
    every k := 0 to 4 do
       x[k] := k + 10
    y := copy(x)
@@ -81,7 +81,7 @@ procedure main() {
 }
 
 
-#  dump a map, assuming that keys are drawn from: nil, 0 - 9, "a" - "e"
+#  dump a table, assuming that keys are drawn from: nil, 0 - 9, "a" - "e"
 #
 #  also checks member()
 

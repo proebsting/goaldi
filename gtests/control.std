@@ -38,7 +38,7 @@ default    : rec{}      : rec{a:~}
 r          : rec{}      : rec{a:45}
 c          : CH:0       : channel(0)
 cx         : CH:0       : channel(0)
-t          : M:2        : map{a:aaa,x:xyz}
+t          : T:2        : table{a:aaa,x:xyz}
 default    : L:0        : []
 L.pop      : V:pop      : methodvalue (L:22).pop
-L          : L:22       : [~,0,1,2,2.718,3.142,,0,1,2,C:rec,F:%stdin,P:main,P:write,rec{},rec{},CH:0,CH:0,M:2,L:0,V:pop,L:22]
+L          : L:22       : [~,0,1,2,2.718,3.142,,0,1,2,C:rec,F:%stdin,P:main,P:write,rec{},rec{},CH:0,CH:0,T:2,L:0,V:pop,L:22]

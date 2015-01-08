@@ -14,7 +14,7 @@ procedure main() {
 	local w
 	local kv
 
-	words := map()
+	words := table()
 	rx := regex("[\\W]+")
 	while line := read() do {
 		line := rx.ReplaceAllString(line, " ")

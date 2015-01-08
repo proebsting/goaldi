@@ -18,7 +18,7 @@ procedure main() {
    x +:= |1		# tickled optimizer bug.
    write(x)
 
-   x := map()
+   x := table()
    write(x[])
 
    x := "o"
@@ -92,7 +92,7 @@ procedure evaluation(a,b) {
      write(y[1], y[1] := 3)
      x := 7
      write(x[2], y[2] := 3)
-     y := map()
+     y := table()
      write(y[3], y[3] := 7)
      x := y
      write(x[5], y[5] := 8)

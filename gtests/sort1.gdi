@@ -19,7 +19,7 @@ procedure main() {
 	write("b1: ", image(b))
 	write("b2: ", image(b.sort()))
 
-	m := map()
+	m := table()
 	every n := !8 do
 		m[n * 97 % 61] := n * 71 % 43
 	write("m0: ", image(m))
