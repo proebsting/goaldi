@@ -191,6 +191,11 @@ func (ss *vSubStr) String() string {
 	return fmt.Sprintf("(%v[%d:%d])", ss.target, ss.i, ss.j)
 }
 
+//  vSubStr.GoString() -- show string image representation: produces (v[i:j])
+func (ss *vSubStr) GoString() string {
+	return fmt.Sprintf("(%#v[%d:%d])", ss.target, ss.i, ss.j)
+}
+
 //  vSubStr.Assign -- store value in target variable
 func (ss *vSubStr) Assign(v Value) IVariable {
 	tgt := ss.target.(IVariable)
