@@ -1,4 +1,4 @@
-//  ostruct.go -- operations on user-defined structures
+//  orecord.go -- operations on user-defined Goaldi record structures
 
 package goaldi
 

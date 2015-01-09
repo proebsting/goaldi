@@ -1,7 +1,7 @@
-//	vmap.go -- VTable, the Goaldi type "table"
+//	vtable.go -- VTable, the Goaldi type "table"
 //
 //	Implementation:
-//	A Goaldi map is just a type name VTable attached to a Go map[Value]Value.
+//	A Goaldi table is just a type name VTable attached to a Go map[Value]Value.
 //	This distinguishes it from an external Go map and allows attaching
 //	(internal) methods.  Goaldi string and number indexes are converted
 //	to Go string and float64 values.
@@ -14,13 +14,13 @@ import (
 	"reflect"
 )
 
-//  VTable implements a native Goaldi map.
-//  It behaves similarly to an external map except that
+//  VTable implements a native Goaldi table.
+//  It behaves similarly to an external Go map except that
 //  only strings and numbers are converted before use as keys.
 //  (Unconverted "identical" values would be seen as distinct.)
 type VTable map[Value]Value
 
-//  NewTable -- construct a new Goaldi map
+//  NewTable -- construct a new Goaldi table
 func NewTable() VTable {
 	return make(map[Value]Value)
 }
@@ -33,7 +33,7 @@ func (m VTable) String() string {
 //  VTable.GoString -- convert to Go string for image() and printf("%#v")
 //
 //  For utility and reproducibility, we assume it's worth the cost
-//  to sort the map in key order.
+//  to sort the table in key order.
 func (m VTable) GoString() string {
 	if len(m) == 0 {
 		return "table{}"
@@ -57,10 +57,10 @@ func (v VTable) Rank() int {
 
 //  VTable.Type -- return "table"
 func (m VTable) Type() Value {
-	return type_map
+	return type_table
 }
 
-var type_map = NewString("table")
+var type_table = NewString("table")
 
 //  VTable.Copy returns a duplicate of itself
 func (m VTable) Copy() Value {
@@ -85,7 +85,7 @@ func (v VTable) Export() interface{} {
 
 //  -------------------------- trapped references ---------------------
 
-//  vMapTrap is a trapped map reference m[k] to a Goaldi table or Go map
+//  vMapTrap is a trapped reference m[k] into a Goaldi table or Go map
 type vMapTrap struct {
 	mapv reflect.Value // underlying Go map
 	keyv reflect.Value // key converted to appropriate Go type
@@ -95,7 +95,7 @@ type vMapTrap struct {
 func TrapMap(m Value, key Value) *vMapTrap {
 	mv := reflect.ValueOf(m)
 	if _, ok := mv.Interface().(VTable); ok {
-		// this is a native map; must convert string or number key
+		// this is a Goaldi table; must convert string or number key
 		switch t := key.(type) {
 		case *VString:
 			key = t.ToUTF8()

@@ -1,4 +1,4 @@
-//  vstruct.go -- a user-defined (usually) structure
+//  vrecord.go -- a user-defined (usually) Goaldi record structure
 
 package goaldi
 
@@ -37,7 +37,7 @@ func (v *VRecord) Rank() int {
 	return rRecord
 }
 
-//  VRecord.Type returns the defined struct name
+//  VRecord.Type returns the defined record name
 func (v *VRecord) Type() Value {
 	return NewString(v.Defn.Name)
 }

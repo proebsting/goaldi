@@ -1,4 +1,4 @@
-//  fmap.go -- map functions and methods
+//  ftable.go -- table functions and methods
 
 package goaldi
 
@@ -36,7 +36,7 @@ var GoMapMethods = map[string]interface{}{
 	"sort":   GoMapSort,
 }
 
-//  Table() returns a new map
+//  Table() returns a new table
 func Table(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("table", args)
 	return Return(NewTable())
@@ -63,7 +63,7 @@ func (m VTable) Delete(args ...Value) (Value, *Closure) {
 	return GoMapDelete(m, args...)
 }
 
-//  GoMapDelete(m, k) deletes the entry in map m, if any, with key k
+//  GoMapDelete(m, k) deletes the entry in Go map m, if any, with key k
 func GoMapDelete(m Value, args ...Value) (Value, *Closure) {
 	defer Traceback("T.delete", args)
 	key := ProcArg(args, 0, NilValue)
@@ -96,7 +96,7 @@ func GoMapSort(m Value, args ...Value) (Value, *Closure) {
 //  kvRecord defines the {key,value} struct returned by ?T and !T
 var kvRecord = NewDefn("tableElem", []string{"key", "value"})
 
-//  ChooseMap returns a key/value pair from any Go table or Goaldi map
+//  ChooseMap returns a key/value pair from any Goaldi table or Go map
 func ChooseMap(m interface{} /*anymap*/) Value {
 	mv := reflect.ValueOf(m)
 	klist := mv.MapKeys()
@@ -110,7 +110,7 @@ func ChooseMap(m interface{} /*anymap*/) Value {
 	return kvRecord.New([]Value{k, v})
 }
 
-//  DispenseMap generates key/value pairs for any Go table or Goaldi map
+//  DispenseMap generates key/value pairs for any Goaldi table or Go map
 func DispenseMap(m interface{} /*anymap*/) (Value, *Closure) {
 	mv := reflect.ValueOf(m)
 	klist := mv.MapKeys()
