@@ -17,7 +17,7 @@ var StdLib = make(map[string]*VProcedure)
 //  LibProcedure registers a standard library procedure taking Goaldi arguments.
 //  This must be done before linking (e.g. via init func) to be effective.
 func LibProcedure(name string, p Procedure) {
-	StdLib[name] = NewProcedure(name, nil, p, p)
+	StdLib[name] = NewProcedure(name, nil /*#%#% TIGHTEN */, true, p, p, "")
 }
 
 //  LibGoFunc registers a Go function as a standard library procedure.

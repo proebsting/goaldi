@@ -83,8 +83,8 @@ func irProcedure(pr *pr_Info, outer map[string]interface{}) *g.VProcedure {
 		}
 	}
 
-	return g.NewProcedure(pr.name, &pnames,
+	return g.NewProcedure(pr.name, &pnames, pr.variadic,
 		func(env *g.Env, args ...g.Value) (g.Value, *g.Closure) {
 			return interp(env, pr, vars, args...)
-		}, nil)
+		}, nil, "")
 }

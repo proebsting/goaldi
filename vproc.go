@@ -1,4 +1,9 @@
 //  vproc.go -- VProcedure, the Goaldi type "procedure"
+//
+//  A VProcedure is created by the linker for each Go or Goaldi
+//  procedure or method, and as a constructor for each VRecord.
+//  Additional procedure can be created at runtime by Goaldi
+//  "procedure" and "lambda" expressions.
 
 package goaldi
 
@@ -9,16 +14,20 @@ import (
 
 //  Procedure value
 type VProcedure struct {
-	Name   string      // registered name
-	Pnames *[]string   // parameter names (nil if unknown)
-	Entry  Procedure   // function to call
-	Ufunc  interface{} // underlying function
+	Name     string      // registered name
+	Pnames   *[]string   // parameter names (nil if unknown)
+	Variadic bool        // true if variadic
+	Entry    Procedure   // actual function to call (possibly a shim)
+	Ufunc    interface{} // underlying function
+	Descr    string      // optional one-line description (used for stdlib)
 }
 
-//  NewProcedure(name, pnames, entry, ufunc) -- construct a procedure value
-func NewProcedure(name string, pnames *[]string,
-	entry Procedure, ufunc interface{}) *VProcedure {
-	return &VProcedure{name, pnames, entry, ufunc}
+//  NewProcedure -- construct a procedure value
+//  Variadic is set true only if allowvar is true *and* entry is variadic.
+func NewProcedure(name string, pnames *[]string, allowvar bool,
+	entry Procedure, ufunc interface{}, descr string) *VProcedure {
+	isvar := allowvar && reflect.TypeOf(entry).IsVariadic()
+	return &VProcedure{name, pnames, isvar, entry, ufunc, descr}
 }
 
 //  VProcedure.String -- default conversion to Go string returns "P:procname"
@@ -113,7 +122,7 @@ func GoMethod(val Value, name string, meth reflect.Method) Value {
 
 //  GoProcedure(name, func) -- construct a procedure from a Go function
 func GoProcedure(name string, f interface{}) *VProcedure {
-	return NewProcedure(name, nil, GoShim(name, f), f)
+	return NewProcedure(name, nil, true, GoShim(name, f), f, "")
 }
 
 //  GoShim(name, func) -- make a shim for converting args to a Go function
