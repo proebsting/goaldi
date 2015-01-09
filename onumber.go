@@ -16,12 +16,6 @@ func fval(v Value) float64 {
 	}
 }
 
-//------------------------------------  Size:  *e  (i.e. truncate to int)
-
-func (v1 *VNumber) Size() Value {
-	return NewNumber(math.Trunc(v1.Val()))
-}
-
 //------------------------------------  Choose:  ?e
 
 func (v1 *VNumber) Choose(unused Value) Value {

@@ -17,6 +17,10 @@ func sval(v Value) *VString {
 
 //------------------------------------  Size:  *e
 
+func (s *VNumber) Size() Value {
+	return s.ToString().Size()
+}
+
 func (s *VString) Size() Value {
 	return NewNumber(float64(s.length()))
 }
