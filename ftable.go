@@ -128,19 +128,3 @@ func DispenseMap(m interface{} /*anymap*/) (Value, *Closure) {
 	}}
 	return c.Resume()
 }
-
-//  TakeMap returns a key/value pair after removing the entry from the map
-func TakeMap(m interface{} /*anymap*/) Value {
-	mv := reflect.ValueOf(m)
-	klist := mv.MapKeys()
-	n := len(klist)
-	if n == 0 { // if map empty
-		return nil // fail
-	}
-	i := rand.Intn(n)
-	kv := klist[i]
-	k := Import(kv.Interface())
-	v := Import(mv.MapIndex(klist[i]).Interface())
-	mv.SetMapIndex(kv, reflect.Value{}) // delete
-	return kvRecord.New([]Value{k, v})
-}

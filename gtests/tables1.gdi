@@ -42,7 +42,7 @@ procedure main() {
 	println("\t\t\t\t", type(t), t, *t, image(t))
 	ck(u)
 	l := []
-	while l.put(@u)
+	every l.put(!u)
 	ck(u)
 	every kv := !l.sort() do
 		writes(" ", kv.key, ":", kv.value)

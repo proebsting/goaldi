@@ -78,8 +78,6 @@ func Take(x Value) Value {
 	k := reflect.ValueOf(x).Kind()
 	if k == reflect.Chan {
 		return TakeChan(x)
-	} else if k == reflect.Map {
-		return TakeMap(x)
 	} else {
 		return x.(ITake).Take() // provoke panic
 	}
