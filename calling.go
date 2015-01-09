@@ -21,6 +21,11 @@ type Procedure func(env *Env, args ...Value) (Value, *Closure)
 //  Procedure resumption prototype
 type Resumer func() (Value, *Closure)
 
+//  ICall interface
+type ICall interface {
+	Call(*Env, ...Value) (Value, *Closure)
+}
+
 //  ProcArg(a,i,d) -- return procedure argument a[i], defaulting to d
 func ProcArg(a []Value, i int, d Value) Value {
 	if i < len(a) && a[i] != NilValue {

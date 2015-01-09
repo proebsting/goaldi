@@ -77,11 +77,6 @@ func (v *VProcedure) Export() interface{} {
 	return v.Entry
 }
 
-//  ICall interface
-type ICall interface {
-	Call(*Env, ...Value) (Value, *Closure)
-}
-
 //  VProcedure.Call(args) -- invoke a procedure
 func (v *VProcedure) Call(env *Env, args ...Value) (Value, *Closure) {
 	return v.Entry(env, args...)
