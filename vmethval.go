@@ -73,25 +73,43 @@ func (v *VMethVal) Export() interface{} {
 }
 
 //  Declare required methods
-var MethValMethods = map[string]interface{}{
-	"type":   (*VMethVal).Type,
-	"copy":   (*VMethVal).Copy,
-	"string": (*VMethVal).String,
-	"image":  (*VMethVal).GoString,
-}
+var MethValMethods = MethodTable([]*GoProc{
+	&GoProc{"type", (*VMethVal).Type, []string{}, "return methodvalue type"},
+	&GoProc{"copy", (*VMethVal).Copy, []string{}, "return methodvalue"},
+	&GoProc{"string", (*VMethVal).String, []string{}, "return short string"},
+	&GoProc{"image", (*VMethVal).GoString, []string{}, "return string image"},
+})
 
-//  VMethVal.Field implements methods
+//  VMethVal.Field implements methods on methodvalues
 func (v *VMethVal) Field(f string) Value {
 	return GetMethod(MethValMethods, v, f)
 }
 
+//  GoProc describes a Go function to be used as a Goaldi procedure or method
+type GoProc struct {
+	Name   string      // name as seen from Goaldi
+	Entry  interface{} // go func implmenting the procedure
+	Pnames []string    // parameter names
+	Descr  string      // one-line description
+}
+
+//  MethodTable makes a method table from a list of RecordMethods
+func MethodTable(plist []*GoProc) map[string]*GoProc {
+	t := make(map[string]*GoProc)
+	for _, g := range plist {
+		t[g.Name] = g
+		//fmt.Printf("%s: %#v\n", g.Name, g.Entry)
+	}
+	return t
+}
+
 //  GetMethod(m,v,s) looks up method v.s in table m, panicking on failure.
-func GetMethod(m map[string]interface{}, v Value, s string) *VMethVal {
+func GetMethod(m map[string]*GoProc, v Value, s string) *VMethVal {
 	method := m[s]
 	if method == nil {
 		panic(NewExn("unrecognized method: "+s, v))
 	}
-	return &VMethVal{s, v, method, false}
+	return &VMethVal{s, v, method.Entry, false}
 }
 
 //  VMethVal.Call(args) invokes the underlying method function.

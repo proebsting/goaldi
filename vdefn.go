@@ -109,12 +109,12 @@ func (v *VDefn) Call(env *Env, args ...Value) (Value, *Closure) {
 }
 
 //  Declare required methods of the constructor (not the underlying type)
-var DefnMethods = map[string]interface{}{
-	"type":   (*VDefn).Type,
-	"copy":   (*VDefn).Copy,
-	"string": (*VDefn).String,
-	"image":  (*VDefn).GoString,
-}
+var DefnMethods = MethodTable([]*GoProc{
+	&GoProc{"type", (*VDefn).Type, []string{}, "return record type"},
+	&GoProc{"copy", (*VDefn).Copy, []string{}, "duplicate record"},
+	&GoProc{"string", (*VDefn).String, []string{}, "return short string"},
+	&GoProc{"image", (*VDefn).GoString, []string{}, "return string image"},
+})
 
 //  VDefn.Field implements methods called *on the constructor*
 func (v *VDefn) Field(f string) Value {

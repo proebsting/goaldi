@@ -23,7 +23,7 @@ type VProcedure struct {
 }
 
 //  NewProcedure -- construct a procedure value
-//  Variadic is set true only if allowvar is true *and* entry is variadic.
+//  The result is variadic only if allowvar is true *and* entry is variadic.
 func NewProcedure(name string, pnames *[]string, allowvar bool,
 	entry Procedure, ufunc interface{}, descr string) *VProcedure {
 	isvar := allowvar && reflect.TypeOf(entry).IsVariadic()
@@ -92,12 +92,12 @@ func (v *VProcedure) Call(env *Env, args ...Value) (Value, *Closure) {
 }
 
 //  Declare methods
-var ProcedureMethods = map[string]interface{}{
-	"type":   (*VProcedure).Type,
-	"copy":   (*VProcedure).Copy,
-	"string": (*VProcedure).String,
-	"image":  (*VProcedure).GoString,
-}
+var ProcedureMethods = MethodTable([]*GoProc{
+	&GoProc{"type", (*VProcedure).Type, []string{}, "return procedure type"},
+	&GoProc{"copy", (*VProcedure).Copy, []string{}, "return procedure value"},
+	&GoProc{"string", (*VProcedure).String, []string{}, "return short string"},
+	&GoProc{"image", (*VProcedure).GoString, []string{}, "return image string"},
+})
 
 //  VProcedure.Field implements methods
 func (v *VProcedure) Field(f string) Value {

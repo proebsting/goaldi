@@ -3,16 +3,19 @@
 package goaldi
 
 import (
+	"fmt"
 	"math/rand"
 )
 
+var _ = fmt.Printf
+
 //  Declare standard methods
-var RecordMethods = map[string]interface{}{
-	"type":   (*VRecord).Type,
-	"copy":   (*VRecord).Copy,
-	"string": (*VRecord).String,
-	"image":  (*VRecord).GoString,
-}
+var RecordMethods = MethodTable([]*GoProc{
+	&GoProc{"type", (*VRecord).Type, []string{}, "return type of record"},
+	&GoProc{"copy", (*VRecord).Copy, []string{}, "duplicate record"},
+	&GoProc{"string", (*VRecord).String, []string{}, "return short string"},
+	&GoProc{"image", (*VRecord).GoString, []string{}, "return string image"},
+})
 
 //  VRecord.Field() implements a field reference R.k
 func (v *VRecord) Field(f string) Value {
@@ -29,7 +32,7 @@ func (v *VRecord) Field(f string) Value {
 	}
 	//  check for standard method
 	if m := RecordMethods[f]; m != nil {
-		return &VMethVal{f, v, m, false}
+		return &VMethVal{f, v, m.Entry, false}
 	}
 	//  neither one found
 	panic(NewExn("Field not found: "+f, v))

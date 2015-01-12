@@ -26,21 +26,21 @@ import (
 //  Declare methods
 //  Method names begin with an extra F to distinguish from those in vfile.go
 //  (whose names are fixed by the need to implement io.ReadWriteCloser).
-var FileMethods = map[string]interface{}{
-	"type":    (*VFile).Type,
-	"copy":    (*VFile).Copy,
-	"string":  (*VFile).String,
-	"image":   (*VFile).GoString,
-	"flush":   (*VFile).FFlush,
-	"close":   (*VFile).FClose,
-	"read":    (*VFile).FRead,
-	"readb":   (*VFile).FReadb,
-	"writeb":  (*VFile).FWriteb,
-	"write":   (*VFile).FWrite,
-	"writes":  (*VFile).FWrites,
-	"print":   (*VFile).FPrint,
-	"println": (*VFile).FPrintln,
-}
+var FileMethods = MethodTable([]*GoProc{
+	&GoProc{"type", (*VFile).Type, []string{}, "return file type"},
+	&GoProc{"copy", (*VFile).Copy, []string{}, "return file value"},
+	&GoProc{"string", (*VFile).String, []string{}, "return short string"},
+	&GoProc{"image", (*VFile).GoString, []string{}, "return string image"},
+	&GoProc{"flush", (*VFile).FFlush, []string{}, "flush file"},
+	&GoProc{"close", (*VFile).FClose, []string{}, "close file"},
+	&GoProc{"read", (*VFile).FRead, []string{}, "read one line"},
+	&GoProc{"readb", (*VFile).FReadb, []string{"n"}, "read n binary bytes"},
+	&GoProc{"writeb", (*VFile).FWriteb, []string{"s"}, "write binary bytes"},
+	&GoProc{"write", (*VFile).FWrite, []string{}, "write values and newline"},
+	&GoProc{"writes", (*VFile).FWrites, []string{}, "write values"},
+	&GoProc{"print", (*VFile).FPrint, []string{}, "write values with spacing"},
+	&GoProc{"println", (*VFile).FPrintln, []string{}, "write line of values"},
+})
 
 //  VFile.Field implements methods
 func (v *VFile) Field(f string) Value {
@@ -158,7 +158,7 @@ func (f *VFile) FFlush(args ...Value) (Value, *Closure) {
 	return Return(f)
 }
 
-//  VFile.FClose(f) -- close a Goaldi file
+//  VFile.FClose() -- close a Goaldi file
 func (f *VFile) FClose(args ...Value) (Value, *Closure) {
 	defer Traceback("f.close", args)
 	f.Flush()

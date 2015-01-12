@@ -8,15 +8,15 @@ import (
 )
 
 //  Declare methods
-var TableMethods = map[string]interface{}{
-	"type":   VTable.Type,
-	"copy":   VTable.Copy,
-	"string": VTable.String,
-	"image":  VTable.GoString,
-	"member": VTable.Member,
-	"delete": VTable.Delete,
-	"sort":   VTable.Sort,
-}
+var TableMethods = MethodTable([]*GoProc{
+	&GoProc{"type", VTable.Type, []string{}, "return table type"},
+	&GoProc{"copy", VTable.Copy, []string{}, "duplicate table"},
+	&GoProc{"string", VTable.String, []string{}, "return short string"},
+	&GoProc{"image", VTable.GoString, []string{}, "return string image"},
+	&GoProc{"member", VTable.Member, []string{"x"}, "test membership"},
+	&GoProc{"delete", VTable.Delete, []string{"x"}, "remove entry"},
+	&GoProc{"sort", VTable.Sort, []string{}, "produce sorted list"},
+})
 
 //  VTable.Field implements method calls
 func (m VTable) Field(f string) Value {
@@ -30,11 +30,11 @@ func init() {
 }
 
 //  Declare methods on Go Tables
-var GoMapMethods = map[string]interface{}{
-	"member": GoMapMember,
-	"delete": GoMapDelete,
-	"sort":   GoMapSort,
-}
+var GoMapMethods = MethodTable([]*GoProc{
+	&GoProc{"member", GoMapMember, []string{"x"}, "test membership"},
+	&GoProc{"delete", GoMapDelete, []string{"x"}, "remove entry"},
+	&GoProc{"sort", GoMapSort, []string{}, "produce sorted list"},
+})
 
 //  Table() returns a new table
 func Table(env *Env, args ...Value) (Value, *Closure) {

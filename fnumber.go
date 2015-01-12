@@ -10,12 +10,12 @@ import (
 )
 
 //  Declare methods
-var NumberMethods = map[string]interface{}{
-	"type":   (*VNumber).Type,
-	"copy":   (*VNumber).Copy,
-	"string": (*VNumber).String,
-	"image":  (*VNumber).GoString,
-}
+var NumberMethods = MethodTable([]*GoProc{
+	&GoProc{"type", (*VNumber).Type, []string{}, "return number type"},
+	&GoProc{"copy", (*VNumber).Copy, []string{}, "return number value"},
+	&GoProc{"string", (*VNumber).String, []string{}, "return short string"},
+	&GoProc{"image", (*VNumber).GoString, []string{}, "return full string"},
+})
 
 //  VNumber.Field implements methods
 func (v *VNumber) Field(f string) Value {

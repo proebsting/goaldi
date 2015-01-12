@@ -7,18 +7,18 @@ import (
 )
 
 //  Declare methods
-var ListMethods = map[string]interface{}{
-	"type":   (*VList).Type,
-	"copy":   (*VList).Copy,
-	"string": (*VList).String,
-	"image":  (*VList).GoString,
-	"push":   (*VList).Push,
-	"pop":    (*VList).Pop,
-	"get":    (*VList).Get,
-	"put":    (*VList).Put,
-	"pull":   (*VList).Pull,
-	"sort":   (*VList).Sort,
-}
+var ListMethods = MethodTable([]*GoProc{
+	&GoProc{"type", (*VList).Type, []string{}, "return list type"},
+	&GoProc{"copy", (*VList).Copy, []string{}, "duplicate list"},
+	&GoProc{"string", (*VList).String, []string{}, "return short string"},
+	&GoProc{"image", (*VList).GoString, []string{}, "return string image"},
+	&GoProc{"push", (*VList).Push, []string{"x"}, "add to front"},
+	&GoProc{"pop", (*VList).Pop, []string{}, "remove from front"},
+	&GoProc{"get", (*VList).Get, []string{}, "remove from front"},
+	&GoProc{"put", (*VList).Put, []string{"x"}, "add to end"},
+	&GoProc{"pull", (*VList).Pull, []string{}, "remove from end"},
+	&GoProc{"sort", (*VList).Sort, []string{"i"}, "return sorted copy"},
+})
 
 //  VList.Field implements methods
 func (v *VList) Field(f string) Value {

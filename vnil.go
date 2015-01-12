@@ -50,12 +50,12 @@ func (v *vnil) Export() interface{} {
 }
 
 //  Declare methods
-var NilMethods = map[string]interface{}{
-	"type":   (*vnil).Type,
-	"copy":   (*vnil).Copy,
-	"string": (*vnil).String,
-	"image":  (*vnil).GoString,
-}
+var NilMethods = MethodTable([]*GoProc{
+	&GoProc{"type", (*vnil).Type, []string{}, "return nil type"},
+	&GoProc{"copy", (*vnil).Copy, []string{}, "return nil value"},
+	&GoProc{"string", (*vnil).String, []string{}, "return \"~\""},
+	&GoProc{"image", (*vnil).GoString, []string{}, "return \"nil\""},
+})
 
 //  vnil.Field implements methods
 func (v *vnil) Field(f string) Value {

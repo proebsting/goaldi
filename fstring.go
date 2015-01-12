@@ -10,12 +10,12 @@ import (
 )
 
 //  Declare methods
-var StringMethods = map[string]interface{}{
-	"type":   (*VString).Type,
-	"copy":   (*VString).Copy,
-	"string": (*VString).String,
-	"image":  (*VString).GoString,
-}
+var StringMethods = MethodTable([]*GoProc{
+	&GoProc{"type", (*VString).Type, []string{}, "return string type"},
+	&GoProc{"copy", (*VString).Copy, []string{}, "return string value"},
+	&GoProc{"string", (*VString).String, []string{}, "return string value"},
+	&GoProc{"image", (*VString).GoString, []string{}, "return string image"},
+})
 
 //  VString.Field implements methods
 func (v *VString) Field(f string) Value {
