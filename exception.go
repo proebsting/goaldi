@@ -84,7 +84,7 @@ func Cause(x interface{}) interface{} {
 func Run(p Value, arglist []Value) {
 	env := NewEnv(nil)
 	defer Catcher(env)
-	p.(ICall).Call(env, arglist...)
+	p.(ICall).Call(env, arglist, []string{})
 }
 
 //  Catcher(env) tries to recover from a panic and print a traceback.

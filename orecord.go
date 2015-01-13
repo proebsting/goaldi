@@ -7,7 +7,7 @@ import (
 	"math/rand"
 )
 
-var _ = fmt.Printf
+var _ = fmt.Printf // enable debugging
 
 //  Declare standard methods
 var RecordMethods = MethodTable([]*GoProc{
@@ -28,11 +28,12 @@ func (v *VRecord) Field(f string) Value {
 	}
 	//  check for explicit method
 	if m := d.Methods[f]; m != nil {
-		return &VMethVal{f, v, m.Entry, true}
+		pnames := (*m.Pnames)[1:] // trim "self" parameter
+		return &VMethVal{f, v, m.Entry, &pnames, true}
 	}
 	//  check for standard method
 	if m := RecordMethods[f]; m != nil {
-		return &VMethVal{f, v, m.Entry, false}
+		return &VMethVal{f, v, m.Entry, &m.Pnames, false}
 	}
 	//  neither one found
 	panic(NewExn("Field not found: "+f, v))

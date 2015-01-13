@@ -86,8 +86,9 @@ func (v *VProcedure) Export() interface{} {
 	return v.Entry
 }
 
-//  VProcedure.Call(args) -- invoke a procedure
-func (v *VProcedure) Call(env *Env, args ...Value) (Value, *Closure) {
+//  VProcedure.Call invokes a procedure
+func (v *VProcedure) Call(env *Env, args []Value, names []string) (Value, *Closure) {
+	args = ArgNames(args, names, v, v.Pnames)
 	return v.Entry(env, args...)
 }
 
@@ -117,7 +118,7 @@ func GoMethod(val Value, name string, meth reflect.Method) Value {
 		proc = GoShim(name, meth.Func.Interface())
 		KnownMethods[addr] = proc
 	}
-	return &VMethVal{name, Deref(val), proc, true}
+	return &VMethVal{name, Deref(val), proc, nil, true}
 }
 
 //  GoProcedure(name, func) -- construct a procedure from a Go function

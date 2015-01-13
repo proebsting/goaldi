@@ -42,6 +42,13 @@ procedure provoke(i) {
 		63: r().huh
 		64: [].huh
 
+		70: echo(1, a:2)
+		71: echo(b:3, b:4)
+		72: echo(d:5)
+		73: r().echo(e:5)
+		74: r().echo(self:6)
+		75: printf(s:"hello")
+
 		80: open("x", "q")
 		81: open("/no/such/file")
 		82: open("/bin", "w")
@@ -59,4 +66,12 @@ procedure provoke(i) {
 		default: return fail
 	}
 	write(i, ". unexpected survival")
+}
+
+procedure echo(a,b,c) {
+	write("echo: a=", a, " b=", b, " c=", c)
+}
+
+procedure r.echo(a,b,c) {
+	write("echo: a=", a, " b=", b, " c=", c)
 }

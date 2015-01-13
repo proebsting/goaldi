@@ -22,9 +22,9 @@ func execute(f *pr_frame, label string) (rv g.Value, rc *g.Closure) {
 		if p := recover(); p != nil {
 			if f.onerr != nil {
 				// find true panic value hiding under traceback info
-				p = g.Cause(p)
+				arglist := []g.Value{g.Cause(p)}
 				// call recovery procedure and return its result
-				rv, _ = f.onerr.Call(f.env, p)
+				rv, _ = f.onerr.Call(f.env, arglist, []string{})
 				rc = nil
 			} else {
 				// add traceback information and re-throw exception
@@ -189,9 +189,9 @@ func execute(f *pr_frame, label string) (rv g.Value, rc *g.Closure) {
 				case ir_Call:
 					f.coord = i.Coord
 					proc := g.Deref(f.temps[i.Fn].(g.Value))
-					argl := getArgs(f, 0, i.ArgList)
+					arglist := getArgs(f, 0, i.ArgList)
 					f.offv = proc
-					v, c := proc.(g.ICall).Call(f.env, argl...)
+					v, c := proc.(g.ICall).Call(f.env, arglist, i.NameList)
 					if v != nil {
 						if i.Lhs != "" {
 							f.temps[i.Lhs] = v

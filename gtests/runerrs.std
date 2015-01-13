@@ -17,6 +17,12 @@
 62. Exception(Nonpositive field index,-1)
 63. Exception(Field not found: huh,r{})
 64. Exception(unrecognized method: huh,L:0)
+70. Exception(Duplicate argument,a)
+71. Exception(Duplicate argument,b)
+72. Exception(No parameter matches name,d)
+73. Exception(No parameter matches name,e)
+74. Exception(No parameter matches name,self)
+75. Exception(Named arguments not allowed,P:printf)
 80. Exception(Unrecognized flag,q)
 81. open /no/such/file: no such file or directory
 82. open /bin: is a directory

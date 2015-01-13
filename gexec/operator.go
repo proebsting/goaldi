@@ -77,7 +77,8 @@ func operator(env *g.Env, f *pr_frame, i *ir_OpFunction) (g.Value, *g.Closure) {
 	case "2@:":
 		return g.Send(a[0], a[1]), nil
 	case "2!":
-		return a[0].(g.ICall).Call(env, a[1].(*g.VList).Export().([]g.Value)...)
+		arglist := a[1].(*g.VList).Export().([]g.Value)
+		return a[0].(g.ICall).Call(env, arglist, []string{})
 	case "2put":
 		return a[0].(g.IListPut).ListPut(a[1]), nil
 	case "2|||":

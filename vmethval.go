@@ -16,6 +16,7 @@ type VMethVal struct {
 	Name    string
 	Val     Value
 	Func    interface{} // func(Value, ...Value)(Value, *Closure)
+	Pnames  *[]string   // list of parameter names, if known
 	PassEnv bool        // pass environment when calling?
 }
 
@@ -109,11 +110,12 @@ func GetMethod(m map[string]*GoProc, v Value, s string) *VMethVal {
 	if method == nil {
 		panic(NewExn("unrecognized method: "+s, v))
 	}
-	return &VMethVal{s, v, method.Entry, false}
+	return &VMethVal{s, v, method.Entry, &method.Pnames, false}
 }
 
-//  VMethVal.Call(args) invokes the underlying method function.
-func (mvf *VMethVal) Call(env *Env, args ...Value) (Value, *Closure) {
+//  VMethVal.Call invokes the underlying method function.
+func (mvf *VMethVal) Call(env *Env, args []Value, names []string) (Value, *Closure) {
+	args = ArgNames(args, names, mvf, mvf.Pnames)
 	arglist := make([]reflect.Value, 2+len(args))
 	arglist[0] = reflect.ValueOf(env)
 	arglist[1] = reflect.ValueOf(mvf.Val)

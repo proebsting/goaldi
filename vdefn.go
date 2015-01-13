@@ -104,7 +104,8 @@ func (v *VDefn) Dispense(unused Value) (Value, *Closure) {
 }
 
 //  VDefn.Call() implements a record constructor
-func (v *VDefn) Call(env *Env, args ...Value) (Value, *Closure) {
+func (v *VDefn) Call(env *Env, args []Value, names []string) (Value, *Closure) {
+	args = ArgNames(args, names, v, &v.Flist)
 	return Return(v.New(args))
 }
 
