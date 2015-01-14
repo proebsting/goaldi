@@ -1,0 +1,8 @@
+L:26 [a,-,-,-,e,-,-,-,i,-,-,-,-,-,o,-,-,-,-,-,u,-,-,-,-,-]
+L:26 [a,-,-,-,e,-,-,-,i,-,-,-,-,-,o,-,-,-,-,-,u,-,-,-,y,-]
+T:2 table{Arizona:Tucson,California:Berkeley}
+T:3 table{Arizona:Tucson,California:Berkeley,Massachusetts:Cambridge}
+rectangle{} rectangle{x:5,y:3,w:2,h:1}
+rectangle{} rectangle{x:8,y:9,w:2,h:1}
+"word"
+"bird"
