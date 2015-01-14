@@ -51,10 +51,10 @@ func (v *vnil) Export() interface{} {
 
 //  Declare methods
 var NilMethods = MethodTable([]*VProcedure{
-	DefMeth("type", (*vnil).Type, []string{}, "return nil type"),
-	DefMeth("copy", (*vnil).Copy, []string{}, "return nil value"),
-	DefMeth("string", (*vnil).String, []string{}, "return \"~\""),
-	DefMeth("image", (*vnil).GoString, []string{}, "return \"nil\""),
+	DefMeth((*vnil).Type, "type", "", "return nil type"),
+	DefMeth((*vnil).Copy, "copy", "", "return nil value"),
+	DefMeth((*vnil).String, "string", "", "return \"~\""),
+	DefMeth((*vnil).GoString, "image", "", "return \"nil\""),
 })
 
 //  vnil.Field implements methods

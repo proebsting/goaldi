@@ -44,7 +44,7 @@ procedure main() {
    if not x.member() then write("NIL IS NOT MEMBER")
    tdump("insert", x)
    x.delete()				| write("failed dn")
-   x.delete(3, 6)			| write("failed d36")	# del only 3
+   x.delete(3)				| write("failed d3")
    x.delete(7).delete(1)	| write("failed d71")
    tdump("delete", x)
 
@@ -59,7 +59,7 @@ procedure main() {
    x[nil] := "nil"			| write("failed n")
    tdump("t0i", x)
    x.delete()				| write("failed dn")
-   x.delete(3, 6)			| write("failed d36")	# del only 3
+   x.delete(3)				| write("failed d3")
    x.delete(7).delete(1)	| write("failed d71")
    tdump("t0d", x)
 

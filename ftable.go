@@ -9,13 +9,13 @@ import (
 
 //  Declare methods
 var TableMethods = MethodTable([]*VProcedure{
-	DefMeth("type", VTable.Type, []string{}, "return table type"),
-	DefMeth("copy", VTable.Copy, []string{}, "duplicate table"),
-	DefMeth("string", VTable.String, []string{}, "return short string"),
-	DefMeth("image", VTable.GoString, []string{}, "return string image"),
-	DefMeth("member", VTable.Member, []string{"x"}, "test membership"),
-	DefMeth("delete", VTable.Delete, []string{"x"}, "remove entry"),
-	DefMeth("sort", VTable.Sort, []string{}, "produce sorted list"),
+	DefMeth(VTable.Type, "type", "", "return table type"),
+	DefMeth(VTable.Copy, "copy", "", "duplicate table"),
+	DefMeth(VTable.String, "string", "", "return short string"),
+	DefMeth(VTable.GoString, "image", "", "return string image"),
+	DefMeth(VTable.Member, "member", "x", "test membership"),
+	DefMeth(VTable.Delete, "delete", "x", "remove entry"),
+	DefMeth(VTable.Sort, "sort", "", "produce sorted list"),
 })
 
 //  VTable.Field implements method calls
@@ -31,9 +31,9 @@ func init() {
 
 //  Declare methods on Go Tables
 var GoMapMethods = MethodTable([]*VProcedure{
-	DefMeth("member", GoMapMember, []string{"x"}, "test membership"),
-	DefMeth("delete", GoMapDelete, []string{"x"}, "remove entry"),
-	DefMeth("sort", GoMapSort, []string{}, "produce sorted list"),
+	DefMeth(GoMapMember, "member", "x", "test membership"),
+	DefMeth(GoMapDelete, "delete", "x", "remove entry"),
+	DefMeth(GoMapSort, "sort", "", "produce sorted list"),
 })
 
 //  Table() returns a new table

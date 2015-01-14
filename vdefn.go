@@ -117,10 +117,10 @@ func (v *VDefn) Call(env *Env, args []Value, names []string) (Value, *Closure) {
 
 //  Declare required methods of the constructor (not the underlying type)
 var DefnMethods = MethodTable([]*VProcedure{
-	DefMeth("type", (*VDefn).Type, []string{}, "return record type"),
-	DefMeth("copy", (*VDefn).Copy, []string{}, "duplicate record"),
-	DefMeth("string", (*VDefn).String, []string{}, "return short string"),
-	DefMeth("image", (*VDefn).GoString, []string{}, "return string image"),
+	DefMeth((*VDefn).Type, "type", "", "return record type"),
+	DefMeth((*VDefn).Copy, "copy", "", "duplicate record"),
+	DefMeth((*VDefn).String, "string", "", "return short string"),
+	DefMeth((*VDefn).GoString, "image", "", "return string image"),
 })
 
 //  VDefn.Field implements methods called *on the constructor*

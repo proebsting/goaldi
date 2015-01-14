@@ -8,14 +8,14 @@ import (
 
 //  Declare methods
 var ChannelMethods = MethodTable([]*VProcedure{
-	DefMeth("type", VChannel.Type, []string{}, "return channel type"),
-	DefMeth("copy", VChannel.Copy, []string{}, "return channel value"),
-	DefMeth("string", VChannel.String, []string{}, "return short string"),
-	DefMeth("image", VChannel.GoString, []string{}, "return string image"),
-	DefMeth("get", VChannel.Get, []string{}, "read from channel"),
-	DefMeth("put", VChannel.Put, []string{"x"}, "send to channel"),
-	DefMeth("close", VChannel.Close, []string{}, "close channel"),
-	DefMeth("buffer", VChannel.Buffer, []string{"n"}, "create buffer"),
+	DefMeth(VChannel.Type, "type", "", "return channel type"),
+	DefMeth(VChannel.Copy, "copy", "", "return channel value"),
+	DefMeth(VChannel.String, "string", "", "return short string"),
+	DefMeth(VChannel.GoString, "image", "", "return string image"),
+	DefMeth(VChannel.Get, "get", "", "read from channel"),
+	DefMeth(VChannel.Put, "put", "x", "send to channel"),
+	DefMeth(VChannel.Close, "close", "", "close channel"),
+	DefMeth(VChannel.Buffer, "buffer", "n", "create buffer"),
 })
 
 //  VChannel.Field implements method calls
@@ -36,9 +36,9 @@ func init() {
 
 //  Declare methods on Go channels
 var GoChanMethods = MethodTable([]*VProcedure{
-	DefMeth("get", GoChanGet, []string{}, "read from channel"),
-	DefMeth("put", GoChanGet, []string{"x"}, "send to channel"),
-	DefMeth("close", GoChanGet, []string{}, "close channel"),
+	DefMeth(GoChanGet, "get", "", "read from channel"),
+	DefMeth(GoChanPut, "put", "x", "send to channel"),
+	DefMeth(GoChanClose, "close", "", "close channel"),
 })
 
 //  Channel(i) returns a new channel with buffer size i

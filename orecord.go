@@ -11,10 +11,10 @@ var _ = fmt.Printf // enable debugging
 
 //  Declare standard methods
 var RecordMethods = MethodTable([]*VProcedure{
-	DefMeth("type", (*VRecord).Type, []string{}, "return type of record"),
-	DefMeth("copy", (*VRecord).Copy, []string{}, "duplicate record"),
-	DefMeth("string", (*VRecord).String, []string{}, "return short string"),
-	DefMeth("image", (*VRecord).GoString, []string{}, "return string image"),
+	DefMeth((*VRecord).Type, "type", "", "return type of record"),
+	DefMeth((*VRecord).Copy, "copy", "", "duplicate record"),
+	DefMeth((*VRecord).String, "string", "", "return short string"),
+	DefMeth((*VRecord).GoString, "image", "", "return string image"),
 })
 
 //  VRecord.Field() implements a field reference R.k

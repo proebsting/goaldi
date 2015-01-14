@@ -94,10 +94,10 @@ func (v *VProcedure) Call(env *Env, args []Value, names []string) (Value, *Closu
 
 //  Declare methods
 var ProcedureMethods = MethodTable([]*VProcedure{
-	DefMeth("type", (*VProcedure).Type, []string{}, "return procedure type"),
-	DefMeth("copy", (*VProcedure).Copy, []string{}, "return procedure value"),
-	DefMeth("string", (*VProcedure).String, []string{}, "return short string"),
-	DefMeth("image", (*VProcedure).GoString, []string{}, "return image string"),
+	DefMeth((*VProcedure).Type, "type", "", "return procedure type"),
+	DefMeth((*VProcedure).Copy, "copy", "", "return procedure value"),
+	DefMeth((*VProcedure).String, "string", "", "return short string"),
+	DefMeth((*VProcedure).GoString, "image", "", "return image string"),
 })
 
 //  VProcedure.Field implements methods

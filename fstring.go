@@ -11,10 +11,10 @@ import (
 
 //  Declare methods
 var StringMethods = MethodTable([]*VProcedure{
-	DefMeth("type", (*VString).Type, []string{}, "return string type"),
-	DefMeth("copy", (*VString).Copy, []string{}, "return string value"),
-	DefMeth("string", (*VString).String, []string{}, "return string value"),
-	DefMeth("image", (*VString).GoString, []string{}, "return string image"),
+	DefMeth((*VString).Type, "type", "", "return string type"),
+	DefMeth((*VString).Copy, "copy", "", "return string value"),
+	DefMeth((*VString).String, "string", "", "return string value"),
+	DefMeth((*VString).GoString, "image", "", "return string image"),
 })
 
 //  VString.Field implements methods

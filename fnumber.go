@@ -11,10 +11,10 @@ import (
 
 //  Declare methods
 var NumberMethods = MethodTable([]*VProcedure{
-	DefMeth("type", (*VNumber).Type, []string{}, "return number type"),
-	DefMeth("copy", (*VNumber).Copy, []string{}, "return number value"),
-	DefMeth("string", (*VNumber).String, []string{}, "return short string"),
-	DefMeth("image", (*VNumber).GoString, []string{}, "return full string"),
+	DefMeth((*VNumber).Type, "type", "", "return number type"),
+	DefMeth((*VNumber).Copy, "copy", "", "return number value"),
+	DefMeth((*VNumber).String, "string", "", "return short string"),
+	DefMeth((*VNumber).GoString, "image", "", "return full string"),
 })
 
 //  VNumber.Field implements methods

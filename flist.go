@@ -8,16 +8,16 @@ import (
 
 //  Declare methods
 var ListMethods = MethodTable([]*VProcedure{
-	DefMeth("type", (*VList).Type, []string{}, "return list type"),
-	DefMeth("copy", (*VList).Copy, []string{}, "duplicate list"),
-	DefMeth("string", (*VList).String, []string{}, "return short string"),
-	DefMeth("image", (*VList).GoString, []string{}, "return string image"),
-	DefMeth("push", (*VList).Push, []string{"x"}, "add to front"),
-	DefMeth("pop", (*VList).Pop, []string{}, "remove from front"),
-	DefMeth("get", (*VList).Get, []string{}, "remove from front"),
-	DefMeth("put", (*VList).Put, []string{"x"}, "add to end"),
-	DefMeth("pull", (*VList).Pull, []string{}, "remove from end"),
-	DefMeth("sort", (*VList).Sort, []string{"i"}, "return sorted copy"),
+	DefMeth((*VList).Type, "type", "", "return list type"),
+	DefMeth((*VList).Copy, "copy", "", "duplicate list"),
+	DefMeth((*VList).String, "string", "", "return short string"),
+	DefMeth((*VList).GoString, "image", "", "return string image"),
+	DefMeth((*VList).Push, "push", "x[]", "add to front"),
+	DefMeth((*VList).Pop, "pop", "", "remove from front"),
+	DefMeth((*VList).Get, "get", "", "remove from front"),
+	DefMeth((*VList).Put, "put", "x[]", "add to end"),
+	DefMeth((*VList).Pull, "pull", "", "remove from end"),
+	DefMeth((*VList).Sort, "sort", "i", "return sorted copy"),
 })
 
 //  VList.Field implements methods

@@ -8,6 +8,7 @@ package goaldi
 import (
 	"fmt"
 	"reflect"
+	"strings"
 )
 
 //  An VMethVal is like a Go "method value", a function bound to an object,
@@ -77,10 +78,10 @@ func (v *VMethVal) Export() interface{} {
 
 //  Declare required methods
 var MethValMethods = MethodTable([]*VProcedure{
-	DefMeth("type", (*VMethVal).Type, []string{}, "return methodvalue type"),
-	DefMeth("copy", (*VMethVal).Copy, []string{}, "return methodvalue"),
-	DefMeth("string", (*VMethVal).String, []string{}, "return short string"),
-	DefMeth("image", (*VMethVal).GoString, []string{}, "return string image"),
+	DefMeth((*VMethVal).Type, "type", "", "return methodvalue type"),
+	DefMeth((*VMethVal).Copy, "copy", "", "return methodvalue"),
+	DefMeth((*VMethVal).String, "string", "", "return short string"),
+	DefMeth((*VMethVal).GoString, "image", "", "return string image"),
 })
 
 //  VMethVal.Field implements methods on methodvalues
@@ -89,8 +90,19 @@ func (v *VMethVal) Field(f string) Value {
 }
 
 //  DefMeth defines a method implemented in Go as a VProcedure
-func DefMeth(name string, entry interface{}, pnames []string, descr string) *VProcedure {
-	return NewProcedure(name, &pnames, true, nil, entry, descr)
+func DefMeth(entry interface{}, name string, pspec string, descr string) *VProcedure {
+	pnames, isvar := ParmsFromSpec(pspec)
+	return NewProcedure(name, pnames, isvar, nil, entry, descr)
+}
+
+//  ParmsFromSpec turns a parameter spec into a pnames list and variadic flag
+func ParmsFromSpec(pspec string) (*[]string, bool) {
+	isvariadic := strings.HasSuffix(pspec, "[]")
+	if isvariadic {
+		pspec = strings.TrimSuffix(pspec, "[]")
+	}
+	pnames := strings.Split(pspec, ",")
+	return &pnames, isvariadic
 }
 
 //  MethodTable makes a method table from a list of VProcedures

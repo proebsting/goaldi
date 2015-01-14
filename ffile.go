@@ -27,19 +27,19 @@ import (
 //  Method names begin with an extra F to distinguish from those in vfile.go
 //  (whose names are fixed by the need to implement io.ReadWriteCloser).
 var FileMethods = MethodTable([]*VProcedure{
-	DefMeth("type", (*VFile).Type, []string{}, "return file type"),
-	DefMeth("copy", (*VFile).Copy, []string{}, "return file value"),
-	DefMeth("string", (*VFile).String, []string{}, "return short string"),
-	DefMeth("image", (*VFile).GoString, []string{}, "return string image"),
-	DefMeth("flush", (*VFile).FFlush, []string{}, "flush file"),
-	DefMeth("close", (*VFile).FClose, []string{}, "close file"),
-	DefMeth("read", (*VFile).FRead, []string{}, "read one line"),
-	DefMeth("readb", (*VFile).FReadb, []string{"n"}, "read n binary bytes"),
-	DefMeth("writeb", (*VFile).FWriteb, []string{"s"}, "write binary bytes"),
-	DefMeth("write", (*VFile).FWrite, []string{}, "write values and newline"),
-	DefMeth("writes", (*VFile).FWrites, []string{}, "write values"),
-	DefMeth("print", (*VFile).FPrint, []string{}, "write values with spacing"),
-	DefMeth("println", (*VFile).FPrintln, []string{}, "write line of values"),
+	DefMeth((*VFile).Type, "type", "", "return file type"),
+	DefMeth((*VFile).Copy, "copy", "", "return file value"),
+	DefMeth((*VFile).String, "string", "", "return short string"),
+	DefMeth((*VFile).GoString, "image", "", "return string image"),
+	DefMeth((*VFile).FFlush, "flush", "", "flush file"),
+	DefMeth((*VFile).FClose, "close", "", "close file"),
+	DefMeth((*VFile).FRead, "read", "", "read one line"),
+	DefMeth((*VFile).FReadb, "readb", "n", "read n binary bytes"),
+	DefMeth((*VFile).FWriteb, "writeb", "s", "write binary bytes"),
+	DefMeth((*VFile).FWrite, "write", "x[]", "write values and newline"),
+	DefMeth((*VFile).FWrites, "writes", "x[]", "write values"),
+	DefMeth((*VFile).FPrint, "print", "x[]", "write values with spacing"),
+	DefMeth((*VFile).FPrintln, "println", "x[]", "write line of values"),
 })
 
 //  VFile.Field implements methods
