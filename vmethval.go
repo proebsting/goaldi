@@ -114,7 +114,7 @@ func GetMethod(m map[string]*VProcedure, v Value, s string) *VMethVal {
 //  VMethVal.Call invokes the underlying method function.
 func (mvf *VMethVal) Call(env *Env, args []Value, names []string) (Value, *Closure) {
 	p := mvf.Proc // procedure description
-	args = ArgNames(args, names, mvf, p.Pnames)
+	args = ArgNames(p, args, names)
 	arglist := make([]reflect.Value, 2+len(args))
 	arglist[0] = reflect.ValueOf(env)
 	arglist[1] = reflect.ValueOf(mvf.Val)

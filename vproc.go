@@ -88,7 +88,7 @@ func (v *VProcedure) Export() interface{} {
 
 //  VProcedure.Call invokes a procedure
 func (v *VProcedure) Call(env *Env, args []Value, names []string) (Value, *Closure) {
-	args = ArgNames(args, names, v, v.Pnames)
+	args = ArgNames(v, args, names)
 	return v.GdProc(env, args...)
 }
 

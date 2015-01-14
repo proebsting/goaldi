@@ -8,13 +8,15 @@ package goaldi
 type VDefn struct {
 	Name    string                 // type name
 	Flist   []string               // ordered list of field names
+	Ctor    *VProcedure            // pseudo-constructor for argname handling
 	Methods map[string]*VProcedure // method list
 	//#%#% could add a hash map for the fields ... but is it worth it?
 }
 
 //  NewDefn(name, fields) -- construct new definition
 func NewDefn(name string, fields []string) *VDefn {
-	return &VDefn{name, fields, make(map[string]*VProcedure)}
+	ctor := NewProcedure(name, &fields, false, nil, (*VDefn).New, "")
+	return &VDefn{name, fields, ctor, make(map[string]*VProcedure)}
 }
 
 //  AddMethod(name, procedure) -- add a method for this record type
@@ -109,7 +111,7 @@ func (v *VDefn) Dispense(unused Value) (Value, *Closure) {
 
 //  VDefn.Call() implements a record constructor
 func (v *VDefn) Call(env *Env, args []Value, names []string) (Value, *Closure) {
-	args = ArgNames(args, names, v, &v.Flist)
+	args = ArgNames(v.Ctor, args, names)
 	return Return(v.New(args))
 }
 

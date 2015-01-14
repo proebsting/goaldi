@@ -61,23 +61,22 @@ func Return(v Value) (Value, *Closure) {
 }
 
 //  ArgNames handles named arguments by building a new arglist.
-//  offv is given as the "offending value" in case of errors.
 //  The pnames value may be nil to indicate no param names are known.
 //#%#% DOES NOT HANDLE VARARGS
-func ArgNames(args []Value, names []string, offv Value, pnames *[]string) []Value {
+func ArgNames(p *VProcedure, args []Value, names []string) []Value {
 	if len(names) == 0 {
 		return args
 	}
-	if pnames == nil {
-		panic(NewExn("Named arguments not allowed", offv))
+	if p.Pnames == nil {
+		panic(NewExn("Named arguments not allowed", p))
 	}
 
 	// make a list of target indexes for storing the named arguments seen
 	locs := make([]int, len(names)) // list of indexes
 	nslots := 0                     // totall number of parameters to pass
 	for i, s := range names {
-		j := argIndex(s, pnames) // get index of name i
-		locs[i] = j              // save it
+		j := argIndex(s, p.Pnames) // get index of name i
+		locs[i] = j                // save it
 		if nslots <= j {
 			nslots = j + 1
 		}

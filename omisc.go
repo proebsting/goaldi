@@ -85,7 +85,9 @@ func Take(x Value) Value {
 
 //  VNumber.Call -- implement i(e1, e2, e3...)
 func (v *VNumber) Call(env *Env, args []Value, names []string) (Value, *Closure) {
-	args = ArgNames(args, names, v, nil)
+	if len(names) > 0 {
+		panic(NewExn("Named arguments not allowed", v))
+	}
 	i := GoIndex(int(v.Val()), len(args))
 	if i < len(args) {
 		return Return(args[i])
