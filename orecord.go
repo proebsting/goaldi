@@ -28,12 +28,11 @@ func (v *VRecord) Field(f string) Value {
 	}
 	//  check for explicit method
 	if m := d.Methods[f]; m != nil {
-		pnames := (*m.Pnames)[1:] // trim "self" parameter
-		return &VMethVal{f, v, m.GdProc, &pnames}
+		return MethodVal(m, v)
 	}
 	//  check for standard method
 	if m := RecordMethods[f]; m != nil {
-		return &VMethVal{f, v, m.GoFunc, m.Pnames}
+		return MethodVal(m, v)
 	}
 	//  neither one found
 	panic(NewExn("Field not found: "+f, v))

@@ -19,17 +19,20 @@ func NewDefn(name string, fields []string) *VDefn {
 
 //  AddMethod(name, procedure) -- add a method for this record type
 //  Returns false if rejected as a duplicate.
-func (v *VDefn) AddMethod(name string, p *VProcedure) bool {
+func (v *VDefn) AddMethod(name string, vproc *VProcedure) bool {
+	if v.Methods[name] != nil {
+		return false // this is a duplicate
+	}
+	p := *vproc               // copy original VProcedure struct
+	p.Name = name             // set unqualified name
+	pnames := (*p.Pnames)[1:] // trim explicit "self" parameter
+	p.Pnames = &pnames        // and store updated list
 	for _, s := range v.Flist {
 		if s == name {
 			return false
 		}
 	}
-	if v.Methods[name] != nil {
-		return false
-	}
-	v.Methods[name] = p
-	p.IsMethod = true
+	v.Methods[name] = &p
 	return true
 }
 

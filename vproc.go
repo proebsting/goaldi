@@ -17,7 +17,6 @@ type VProcedure struct {
 	Name     string      // registered name
 	Pnames   *[]string   // parameter names (nil if unknown)
 	Variadic bool        // true if variadic
-	IsMethod bool        // true if this is a method
 	GdProc   Procedure   // Goaldi-compatible function (possibly a shim)
 	GoFunc   interface{} // underlying function
 	Descr    string      // optional one-line description (used for stdlib)
@@ -28,7 +27,7 @@ type VProcedure struct {
 func NewProcedure(name string, pnames *[]string, allowvar bool,
 	entry Procedure, ufunc interface{}, descr string) *VProcedure {
 	isvar := allowvar && reflect.TypeOf(entry).IsVariadic()
-	return &VProcedure{name, pnames, isvar, false, entry, ufunc, descr}
+	return &VProcedure{name, pnames, isvar, entry, ufunc, descr}
 }
 
 //  VProcedure.String -- default conversion to Go string returns "P:procname"
@@ -107,19 +106,21 @@ func (v *VProcedure) Field(f string) Value {
 }
 
 //  Go methods already converted to Goaldi procedures
-var KnownMethods = make(map[uintptr]interface{})
+var KnownMethods = make(map[uintptr]*VProcedure)
 
 //  ImportMethod(val, name, meth) -- construct a Goaldi method from a Go method.
 //  meth is a method struct such as returned by reflect.Type.MethodByName(),
 //  not a bound method value such as returned by reflect.Value.MethodByName().
 func ImportMethod(val Value, name string, meth reflect.Method) Value {
 	addr := meth.Func.Pointer()
-	proc := KnownMethods[addr]
-	if proc == nil {
-		proc = GoShim(name, meth.Func.Interface())
-		KnownMethods[addr] = proc
+	p := KnownMethods[addr]
+	if p == nil {
+		gofunc := meth.Func.Interface()
+		proc := GoShim(name, gofunc)
+		p = NewProcedure(name, nil, true, proc, gofunc, "")
+		KnownMethods[addr] = p
 	}
-	return &VMethVal{name, Deref(val), proc, nil}
+	return MethodVal(p, Deref(val))
 }
 
 //  GoProcedure(name, func) -- construct a procedure from a Go function

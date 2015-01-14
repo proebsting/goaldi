@@ -19,6 +19,15 @@ type VMethVal struct {
 	Pnames *[]string   // list of parameter names, if known
 }
 
+//  MethodVal(p,v) builds a VMethVal struct representing the expression p.v
+func MethodVal(p *VProcedure, v Value) *VMethVal {
+	f := p.GoFunc // there's always a Go function
+	if p.GdProc != nil {
+		f = p.GdProc // use the Goaldi version if provided
+	}
+	return &VMethVal{p.Name, v, f, p.Pnames}
+}
+
 //  VMethVal.String -- conversion to Go string returns "V:Name"
 func (v *VMethVal) String() string {
 	return "V:" + v.Name
@@ -87,9 +96,7 @@ func (v *VMethVal) Field(f string) Value {
 
 //  DefMeth defines a method implemented in Go as a VProcedure
 func DefMeth(name string, entry interface{}, pnames []string, descr string) *VProcedure {
-	p := NewProcedure(name, &pnames, true, nil, entry, descr)
-	p.IsMethod = true
-	return p
+	return NewProcedure(name, &pnames, true, nil, entry, descr)
 }
 
 //  MethodTable makes a method table from a list of VProcedures
@@ -107,7 +114,7 @@ func GetMethod(m map[string]*VProcedure, v Value, s string) *VMethVal {
 	if method == nil {
 		panic(NewExn("unrecognized method: "+s, v))
 	}
-	return &VMethVal{s, v, method.GoFunc, method.Pnames}
+	return MethodVal(method, v)
 }
 
 //  VMethVal.Call invokes the underlying method function.
