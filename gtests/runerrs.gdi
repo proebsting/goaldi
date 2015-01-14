@@ -18,7 +18,7 @@ procedure try(i) {
 procedure provoke(i) {
 	case i of {
 
-		10: &huh
+		10: %huh
 
 		20: "x" || main
 		21: 1 + "x"
@@ -64,8 +64,8 @@ procedure provoke(i) {
 		95: throw("my double error", 12, 34)
 		96: throw("my own error")
 		97: throw("my nil error", nil)
-		98: throw("my pi error", &pi)
-		99: throw(99, &phi)
+		98: throw("my pi error", %pi)
+		99: throw(99, %phi)
 
 		default: return fail
 	}

@@ -7,19 +7,19 @@ procedure main()  {
 	every teststring("aBc" | "d33" | 47 | 3)
 	write("\nconversion:")
 	every testcnv(nil | "" | "abc" | "12" | "23.4" | 0 | 1 |
-		&phi | &e | &pi | &stdin | &stdout | &stderr)
+		%phi | %e | %pi | %stdin | %stdout | %stderr)
 	exit()
 }
 
 procedure testprint() {
-	writes("ab", 34, "ef", &phi)
-	write("gh", 90, "kl", &pi)
-	print("mn", 37, "qr", &phi)
+	writes("ab", 34, "ef", %phi)
+	write("gh", 90, "kl", %pi)
+	print("mn", 37, "qr", %phi)
 	println("st", 25, "uv", 0)
 	write("543210")
-	printf("%10.3f %g %.0f %s\n", &phi, &pi, 12345, "abcde")
-	fprintf(&stdout, "%10.3f %g %.0f %s\n", &phi, &pi, 12345, "abcde")
-	write(image(sprintf("%.4f", &e)))
+	printf("%10.3f %g %.0f %s\n", %phi, %pi, 12345, "abcde")
+	fprintf(%stdout, "%10.3f %g %.0f %s\n", %phi, %pi, 12345, "abcde")
+	write(image(sprintf("%.4f", %e)))
 }
 
 procedure teststring(v) {

@@ -41,8 +41,8 @@ procedure main() {
 	local t := table()
 	t["a"] := "aaa"
 	t["x"] := "xyz"
-	local L := [nil, 0, 1.0, 2, &e, &pi, "", "0", "1", "2",
-		rec, &stdin, main, write, rec(), r, c, cx, t, []]
+	local L := [nil, 0, 1.0, 2, %e, %pi, "", "0", "1", "2",
+		rec, %stdin, main, write, rec(), r, c, cx, t, []]
 	L.put(L.pop)	# append the "pop" method
 	L.put(L)		# and L itself
 
@@ -53,12 +53,12 @@ procedure main() {
 			0.0:	"0.0"
 			1.0:	"1.0"
 			2:		"2"
-			&pi:	"&pi"
+			%pi:	"%pi"
 			"1":	"\"1\""
 			nil:	"nil"
 			main:	"main"
 			write:	"write"
-			&stdin:	"%stdin"
+			%stdin:	"%stdin"
 			rec:	"rec"
 			rec():	"rec()"	# shouldn't ever match
 			r:		"r"

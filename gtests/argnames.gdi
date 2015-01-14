@@ -16,7 +16,7 @@ procedure main() {
 	write()
 	write(image(channel(3).buffer(n:5)))
 	write(image([].sort(i:1)))
-	&stdout.writeb(s:"stdout writeb\n")
+	%stdout.writeb(s:"stdout writeb\n")
 }
 
 procedure try(p) {

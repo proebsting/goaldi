@@ -51,7 +51,7 @@ procedure parse_cclause()
     local e, body, coord
     static cclause_set
     initial {
-    cclause_set := set([lex_AND, lex_AT, lex_BACKSLASH, lex_BANG,
+    cclause_set := set([lex_AT, lex_BACKSLASH, lex_BANG,
                               lex_BAR, lex_BREAK, lex_CARET, lex_CASE,
                               lex_CONCAT, lex_CREATE, lex_CSETLIT, lex_DIFF,
                               lex_DOT, lex_EQUIV, lex_EVERY, lex_FAIL,
@@ -63,6 +63,7 @@ procedure parse_cclause()
                               lex_SLASH, lex_SNE, lex_STAR, lex_STRINGLIT,
                               lex_SUSPEND, lex_TILDE, lex_UNION, 
 			      lex_SLASHSLASH,
+			      lex_MOD,
 			      lex_NIL,
 			      lex_YIELD,
 			      lex_LAMBDA,
@@ -272,12 +273,13 @@ procedure parse_expr10()
     static expr10_set1, expr10_set2, expr10_set3
 
     initial {
-    expr10_set1 := set([lex_AND, lex_BREAK, lex_CASE, lex_CREATE,
+    expr10_set1 := set([lex_BREAK, lex_CASE, lex_CREATE,
                               lex_CSETLIT, lex_EVERY, lex_FAIL, lex_IDENT,
                               lex_IF, lex_INTLIT, lex_LBRACE, lex_LBRACK,
                               lex_LPAREN, lex_CONTINUE, lex_REALLIT, lex_REPEAT,
                               lex_RETURN, lex_STRINGLIT, lex_SUSPEND, 
 			      lex_YIELD,
+			      lex_MOD,
 			      lex_NIL,
 			      lex_LAMBDA,
                               lex_WHILE,
@@ -391,7 +393,7 @@ procedure parse_expr11()
         {
         coord := parse_tok_rec.coord
         parse_eat_token()
-	parse_match_token(lex_AND)
+	parse_match_token(lex_MOD)
         id := parse_match_token(lex_IDENT)
         return a_Dynamic(id, coord)
         }
@@ -469,7 +471,7 @@ procedure parse_expr11()
         parse_match_token(lex_RCOMP)
         return a_ListComprehension(e, coord)
         }
-    lex_AND :   # AND IDENT 
+    lex_MOD :   # MOD IDENT
         {
         coord := parse_tok_rec.coord
         parse_eat_token()
@@ -508,7 +510,7 @@ procedure parse_expr11suffix(lhs)
     static expr11suffix_set1, expr11suffix_set2
 
     initial {
-        expr11suffix_set1 := set([lex_AND, lex_AT, lex_BACKSLASH, lex_BANG,
+        expr11suffix_set1 := set([lex_AT, lex_BACKSLASH, lex_BANG,
                                   lex_BAR, lex_BREAK, lex_CARET, lex_CASE,
                                   lex_COMMA, lex_CONCAT, lex_CREATE,
                                   lex_CSETLIT, lex_DIFF, lex_DOT, lex_EQUIV,
@@ -521,6 +523,7 @@ procedure parse_expr11suffix(lhs)
                                   lex_SNE, lex_STAR, lex_STRINGLIT,
                                   lex_SUSPEND, lex_TILDE, lex_UNION, 
 				  lex_SLASHSLASH,
+				  lex_MOD,
 				  lex_NIL,
 				  lex_ANDAND,
 				  lex_YIELD,
@@ -786,7 +789,7 @@ procedure new_parse_exprlist()
     static expr_set
 
     initial {
-    expr_set := set([lex_AND, lex_AT, lex_BACKSLASH, lex_BANG, lex_BAR,
+    expr_set := set([lex_AT, lex_BACKSLASH, lex_BANG, lex_BAR,
                       lex_BREAK, lex_CARET, lex_CASE, lex_CONCAT, lex_CREATE,
                       lex_CSETLIT, lex_DIFF, lex_DOT, lex_EQUIV, lex_EVERY,
                       lex_FAIL, lex_IDENT, lex_IF, lex_INTER, lex_INTLIT,
@@ -796,6 +799,7 @@ procedure new_parse_exprlist()
                       lex_RETURN, lex_SEQ, lex_SLASH, lex_SNE, lex_STAR,
                       lex_STRINGLIT, lex_SUSPEND, lex_TILDE, lex_UNION,
                       lex_WHILE,
+		      lex_MOD,
 		      lex_NIL,
 		      lex_SLASHSLASH,
 		      lex_ANDAND,
@@ -1093,7 +1097,7 @@ procedure parse_nexpr()
     static nexpr_set
 
     initial {
-    nexpr_set := set([lex_AND, lex_AT, lex_BACKSLASH, lex_BANG, lex_BAR,
+    nexpr_set := set([lex_AT, lex_BACKSLASH, lex_BANG, lex_BAR,
                       lex_BREAK, lex_CARET, lex_CASE, lex_CONCAT, lex_CREATE,
                       lex_CSETLIT, lex_DIFF, lex_DOT, lex_EQUIV, lex_EVERY,
                       lex_FAIL, lex_IDENT, lex_IF, lex_INTER, lex_INTLIT,
@@ -1103,6 +1107,7 @@ procedure parse_nexpr()
                       lex_RETURN, lex_SEQ, lex_SLASH, lex_SNE, lex_STAR,
                       lex_STRINGLIT, lex_SUSPEND, lex_TILDE, lex_UNION,
                       lex_WHILE,
+		      lex_MOD,
 		      lex_NIL,
 		      lex_SLASHSLASH,
 		      lex_ANDAND,
@@ -1128,7 +1133,7 @@ procedure parse_do_lambda()
     static do_proc_set
 
     initial {
-    do_proc_set := set([lex_AND, lex_AT, lex_BACKSLASH, lex_BANG, lex_BAR,
+    do_proc_set := set([lex_AT, lex_BACKSLASH, lex_BANG, lex_BAR,
                         lex_BREAK, lex_CARET, lex_CASE, lex_CONCAT, lex_CREATE,
                         lex_CSETLIT, lex_DIFF, lex_DOT, lex_EQUIV, lex_EVERY,
                         lex_FAIL, lex_IDENT, lex_IF, lex_INTER, lex_INTLIT,
@@ -1139,6 +1144,7 @@ procedure parse_do_lambda()
                         lex_SNE, lex_STAR, lex_STRINGLIT, lex_SUSPEND,
                         lex_TILDE, lex_UNION, lex_WHILE,
 			lex_SLASHSLASH,
+			lex_MOD,
 			lex_NIL,
 			lex_ANDAND,
 			lex_YIELD,
@@ -1187,7 +1193,7 @@ procedure parse_do_proc(noident)
     static do_proc_set
 
     initial {
-    do_proc_set := set([lex_AND, lex_AT, lex_BACKSLASH, lex_BANG, lex_BAR,
+    do_proc_set := set([lex_AT, lex_BACKSLASH, lex_BANG, lex_BAR,
                         lex_BREAK, lex_CARET, lex_CASE, lex_CONCAT, lex_CREATE,
                         lex_CSETLIT, lex_DIFF, lex_DOT, lex_EQUIV, lex_EVERY,
                         lex_FAIL, lex_IDENT, lex_IF, lex_INTER, lex_INTLIT,
@@ -1198,6 +1204,7 @@ procedure parse_do_proc(noident)
                         lex_SNE, lex_STAR, lex_STRINGLIT, lex_SUSPEND,
                         lex_TILDE, lex_UNION, lex_WHILE,
 			lex_SLASHSLASH,
+			lex_MOD,
 			lex_NIL,
 			lex_ANDAND,
 			lex_YIELD,

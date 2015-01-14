@@ -3,15 +3,15 @@
 
 procedure main() {
 	write("\narithmetic:")
-	every testarith(-&phi | "0" | 1.0 | 2 | &e | &pi)
+	every testarith(-%phi | "0" | 1.0 | 2 | %e | %pi)
 	write("\ntrigonometry:")
-	every testtrig(-&phi | "0" | 1.0 | 2 | &e | &pi)
+	every testtrig(-%phi | "0" | 1.0 | 2 | %e | %pi)
 	testpot()
 	testrad()
 	write("\nbased logarithms:")
-	every testlogb(0 | 1 | &phi | 2 | 8 | 32 | 100 | 1012)
+	every testlogb(0 | 1 | %phi | 2 | 8 | 32 | 100 | 1012)
 	write("\natan2:")
-	every testa2(0 | &phi | &pi, 0 | &e | &pi)
+	every testa2(0 | %phi | %pi, 0 | %e | %pi)
 	write()
 	write("\ngcd:")
 	testgcd()
@@ -57,7 +57,7 @@ procedure testrad() {
     local d
     local r
 	writes("dtortod:")
-	every d := -45 | 0 | 30 | 60 | 90 | 360/&pi | 180 do {
+	every d := -45 | 0 | 30 | 60 | 90 | 360/%pi | 180 do {
 		r := dtor(d)
 		writes(" ", d, "/", r, "/", rtod(r))
 	}
@@ -68,7 +68,7 @@ procedure testrad() {
 procedure testlogb(v) {
 	local b
 	writes(v, ":")
-	every b := nil | &e | 2 | 4 | 10 do {
+	every b := nil | %e | 2 | 4 | 10 do {
 		writes(" log(,", b, ")", log(v, b))
 	}
 	write()

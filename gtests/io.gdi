@@ -8,9 +8,9 @@ procedure main() {
 
 	# simple reading
 	write("a. ", read())
-	write("b. ", @&stdin)
-	write("c. ", !&stdin)
-	every write("d. ", !&stdin \ 3)
+	write("b. ", @%stdin)
+	write("c. ", !%stdin)
+	every write("d. ", !%stdin \ 3)
 
 	# open and read, including binary
 	f := open("io.dat")
