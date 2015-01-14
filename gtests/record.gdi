@@ -21,7 +21,7 @@ procedure main() {
    a.f1 := 7
    a.f2 := 8
    write("a4 ", a.f1, " ", a.f2)
-   a := rec(9,10,11)
+   a := rec(9,10)
    write("a5 ", a.f1, " ", a.f2)
    a := rec(11, 12)
    every write("!a ", !a)

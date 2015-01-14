@@ -62,8 +62,10 @@ func Return(v Value) (Value, *Closure) {
 
 //  ArgNames handles named arguments by building a new arglist.
 //  The pnames value may be nil to indicate no param names are known.
-//#%#% DOES NOT HANDLE VARARGS
 func ArgNames(p *VProcedure, args []Value, names []string) []Value {
+	if p.Pnames != nil && len(args) > len(*p.Pnames) && !p.Variadic {
+		panic(NewExn("Too many arguments", p))
+	}
 	if len(names) == 0 {
 		return args
 	}

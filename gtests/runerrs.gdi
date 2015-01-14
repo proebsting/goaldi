@@ -47,7 +47,10 @@ procedure provoke(i) {
 		72: echo(d:5)
 		73: r().echo(e:5)
 		74: r().echo(self:6)
-		75: printf(s:"hello")
+		75: r(x:7)
+		76: r(1,2,3,4)
+		78: printf(s:"hello")
+		79: 3(1,2,e:5)
 
 		80: open("x", "q")
 		81: open("/no/such/file")
