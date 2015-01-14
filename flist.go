@@ -112,7 +112,7 @@ func LT(x Value, y Value, i int) bool {
 	case rDefn:
 		return x.(*VDefn).Name < y.(*VDefn).Name
 	case rMethVal:
-		return x.(*VMethVal).Name < y.(*VMethVal).Name
+		return x.(*VMethVal).Proc.Name < y.(*VMethVal).Proc.Name
 	case rProc:
 		return x.(*VProcedure).Name < y.(*VProcedure).Name
 	case rRecord:

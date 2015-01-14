@@ -13,29 +13,23 @@ import (
 //  An VMethVal is like a Go "method value", a function bound to an object,
 //  for example the "m.delete" part of the expression "m.delete(x)"
 type VMethVal struct {
-	Name   string
-	Val    Value
-	Func   interface{} // func(Value, ...Value)(Value, *Closure)
-	Pnames *[]string   // list of parameter names, if known
+	Proc *VProcedure
+	Val  Value
 }
 
 //  MethodVal(p,v) builds a VMethVal struct representing the expression p.v
 func MethodVal(p *VProcedure, v Value) *VMethVal {
-	f := p.GoFunc // there's always a Go function
-	if p.GdProc != nil {
-		f = p.GdProc // use the Goaldi version if provided
-	}
-	return &VMethVal{p.Name, v, f, p.Pnames}
+	return &VMethVal{p, v}
 }
 
 //  VMethVal.String -- conversion to Go string returns "V:Name"
 func (v *VMethVal) String() string {
-	return "V:" + v.Name
+	return "V:" + v.Proc.Name
 }
 
 //  VMethVal.GoString -- convert to Go string for image() and printf("%#v")
 func (v *VMethVal) GoString() string {
-	return fmt.Sprintf("methodvalue (%v).%s", v.Val, v.Name)
+	return fmt.Sprintf("methodvalue (%v).%s", v.Val, v.Proc.Name)
 }
 
 //  VMethVal.Rank returns rMethVal
@@ -64,7 +58,7 @@ func (s *VMethVal) Identical(x Value) Value {
 	if Identical(s.Val, t.Val) == nil {
 		return nil // different values
 	}
-	if s.Name == t.Name {
+	if s.Proc == t.Proc {
 		return s // same method of same value
 	} else {
 		return nil // different methods
@@ -119,15 +113,20 @@ func GetMethod(m map[string]*VProcedure, v Value, s string) *VMethVal {
 
 //  VMethVal.Call invokes the underlying method function.
 func (mvf *VMethVal) Call(env *Env, args []Value, names []string) (Value, *Closure) {
-	args = ArgNames(args, names, mvf, mvf.Pnames)
+	p := mvf.Proc // procedure description
+	args = ArgNames(args, names, mvf, p.Pnames)
 	arglist := make([]reflect.Value, 2+len(args))
 	arglist[0] = reflect.ValueOf(env)
 	arglist[1] = reflect.ValueOf(mvf.Val)
 	for i, v := range args {
 		arglist[i+2] = reflect.ValueOf(v)
 	}
-	method := reflect.ValueOf(mvf.Func)
-	mtype := reflect.TypeOf(mvf.Func)
+	f := p.GoFunc // there's always a Go function
+	if p.GdProc != nil {
+		f = p.GdProc // use the Goaldi version if provided
+	}
+	method := reflect.ValueOf(f)
+	mtype := reflect.TypeOf(f)
 	if mtype.NumIn() == 0 || !reflect.TypeOf(env).AssignableTo(mtype.In(0)) {
 		arglist = arglist[1:] // remove env argument if not wanted
 	}
