@@ -13,11 +13,10 @@ import (
 //  An VMethVal is like a Go "method value", a function bound to an object,
 //  for example the "m.delete" part of the expression "m.delete(x)"
 type VMethVal struct {
-	Name    string
-	Val     Value
-	Func    interface{} // func(Value, ...Value)(Value, *Closure)
-	Pnames  *[]string   // list of parameter names, if known
-	PassEnv bool        // pass environment when calling?
+	Name   string
+	Val    Value
+	Func   interface{} // func(Value, ...Value)(Value, *Closure)
+	Pnames *[]string   // list of parameter names, if known
 }
 
 //  VMethVal.String -- conversion to Go string returns "V:Name"
@@ -108,7 +107,7 @@ func GetMethod(m map[string]*VProcedure, v Value, s string) *VMethVal {
 	if method == nil {
 		panic(NewExn("unrecognized method: "+s, v))
 	}
-	return &VMethVal{s, v, method.GoFunc, method.Pnames, false}
+	return &VMethVal{s, v, method.GoFunc, method.Pnames}
 }
 
 //  VMethVal.Call invokes the underlying method function.
@@ -121,8 +120,9 @@ func (mvf *VMethVal) Call(env *Env, args []Value, names []string) (Value, *Closu
 		arglist[i+2] = reflect.ValueOf(v)
 	}
 	method := reflect.ValueOf(mvf.Func)
-	if !mvf.PassEnv {
-		arglist = arglist[1:]
+	mtype := reflect.TypeOf(mvf.Func)
+	if mtype.NumIn() == 0 || !reflect.TypeOf(env).AssignableTo(mtype.In(0)) {
+		arglist = arglist[1:] // remove env argument if not wanted
 	}
 	result := method.Call(arglist)
 	switch len(result) {

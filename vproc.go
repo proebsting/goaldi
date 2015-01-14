@@ -119,7 +119,7 @@ func ImportMethod(val Value, name string, meth reflect.Method) Value {
 		proc = GoShim(name, meth.Func.Interface())
 		KnownMethods[addr] = proc
 	}
-	return &VMethVal{name, Deref(val), proc, nil, true}
+	return &VMethVal{name, Deref(val), proc, nil}
 }
 
 //  GoProcedure(name, func) -- construct a procedure from a Go function
