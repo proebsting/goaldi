@@ -10,11 +10,11 @@ import (
 var _ = fmt.Printf // enable debugging
 
 //  Declare standard methods
-var RecordMethods = MethodTable([]*GoProc{
-	&GoProc{"type", (*VRecord).Type, []string{}, "return type of record"},
-	&GoProc{"copy", (*VRecord).Copy, []string{}, "duplicate record"},
-	&GoProc{"string", (*VRecord).String, []string{}, "return short string"},
-	&GoProc{"image", (*VRecord).GoString, []string{}, "return string image"},
+var RecordMethods = MethodTable([]*VProcedure{
+	DefMeth("type", (*VRecord).Type, []string{}, "return type of record"),
+	DefMeth("copy", (*VRecord).Copy, []string{}, "duplicate record"),
+	DefMeth("string", (*VRecord).String, []string{}, "return short string"),
+	DefMeth("image", (*VRecord).GoString, []string{}, "return string image"),
 })
 
 //  VRecord.Field() implements a field reference R.k
@@ -29,11 +29,11 @@ func (v *VRecord) Field(f string) Value {
 	//  check for explicit method
 	if m := d.Methods[f]; m != nil {
 		pnames := (*m.Pnames)[1:] // trim "self" parameter
-		return &VMethVal{f, v, m.Entry, &pnames, true}
+		return &VMethVal{f, v, m.GdProc, &pnames, true}
 	}
 	//  check for standard method
 	if m := RecordMethods[f]; m != nil {
-		return &VMethVal{f, v, m.Entry, &m.Pnames, false}
+		return &VMethVal{f, v, m.GoFunc, m.Pnames, false}
 	}
 	//  neither one found
 	panic(NewExn("Field not found: "+f, v))

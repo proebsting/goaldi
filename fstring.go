@@ -10,11 +10,11 @@ import (
 )
 
 //  Declare methods
-var StringMethods = MethodTable([]*GoProc{
-	&GoProc{"type", (*VString).Type, []string{}, "return string type"},
-	&GoProc{"copy", (*VString).Copy, []string{}, "return string value"},
-	&GoProc{"string", (*VString).String, []string{}, "return string value"},
-	&GoProc{"image", (*VString).GoString, []string{}, "return string image"},
+var StringMethods = MethodTable([]*VProcedure{
+	DefMeth("type", (*VString).Type, []string{}, "return string type"),
+	DefMeth("copy", (*VString).Copy, []string{}, "return string value"),
+	DefMeth("string", (*VString).String, []string{}, "return string value"),
+	DefMeth("image", (*VString).GoString, []string{}, "return string image"),
 })
 
 //  VString.Field implements methods

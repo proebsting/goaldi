@@ -10,11 +10,11 @@ import (
 )
 
 //  Declare methods
-var NumberMethods = MethodTable([]*GoProc{
-	&GoProc{"type", (*VNumber).Type, []string{}, "return number type"},
-	&GoProc{"copy", (*VNumber).Copy, []string{}, "return number value"},
-	&GoProc{"string", (*VNumber).String, []string{}, "return short string"},
-	&GoProc{"image", (*VNumber).GoString, []string{}, "return full string"},
+var NumberMethods = MethodTable([]*VProcedure{
+	DefMeth("type", (*VNumber).Type, []string{}, "return number type"),
+	DefMeth("copy", (*VNumber).Copy, []string{}, "return number value"),
+	DefMeth("string", (*VNumber).String, []string{}, "return short string"),
+	DefMeth("image", (*VNumber).GoString, []string{}, "return full string"),
 })
 
 //  VNumber.Field implements methods

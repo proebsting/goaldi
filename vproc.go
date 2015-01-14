@@ -17,8 +17,9 @@ type VProcedure struct {
 	Name     string      // registered name
 	Pnames   *[]string   // parameter names (nil if unknown)
 	Variadic bool        // true if variadic
-	Entry    Procedure   // actual function to call (possibly a shim)
-	Ufunc    interface{} // underlying function
+	IsMethod bool        // true if this is a method
+	GdProc   Procedure   // Goaldi-compatible function (possibly a shim)
+	GoFunc   interface{} // underlying function
 	Descr    string      // optional one-line description (used for stdlib)
 }
 
@@ -27,7 +28,7 @@ type VProcedure struct {
 func NewProcedure(name string, pnames *[]string, allowvar bool,
 	entry Procedure, ufunc interface{}, descr string) *VProcedure {
 	isvar := allowvar && reflect.TypeOf(entry).IsVariadic()
-	return &VProcedure{name, pnames, isvar, entry, ufunc, descr}
+	return &VProcedure{name, pnames, isvar, false, entry, ufunc, descr}
 }
 
 //  VProcedure.String -- default conversion to Go string returns "P:procname"
@@ -51,10 +52,10 @@ func (v *VProcedure) GoString() string {
 
 //  VProcedure.ImplBy -- return name of implementing underlying function
 func (v *VProcedure) ImplBy() string {
-	if v.Ufunc == nil {
+	if v.GoFunc == nil {
 		return v.Name // no further information available
 	} else {
-		return runtime.FuncForPC(reflect.ValueOf(v.Ufunc).Pointer()).Name()
+		return runtime.FuncForPC(reflect.ValueOf(v.GoFunc).Pointer()).Name()
 	}
 }
 
@@ -83,21 +84,21 @@ func (v *VProcedure) Import() Value {
 //  VProcedure.Export returns the underlying function
 //  (#%#% at least for now. should we wrap it somehow?)
 func (v *VProcedure) Export() interface{} {
-	return v.Entry
+	return v.GdProc
 }
 
 //  VProcedure.Call invokes a procedure
 func (v *VProcedure) Call(env *Env, args []Value, names []string) (Value, *Closure) {
 	args = ArgNames(args, names, v, v.Pnames)
-	return v.Entry(env, args...)
+	return v.GdProc(env, args...)
 }
 
 //  Declare methods
-var ProcedureMethods = MethodTable([]*GoProc{
-	&GoProc{"type", (*VProcedure).Type, []string{}, "return procedure type"},
-	&GoProc{"copy", (*VProcedure).Copy, []string{}, "return procedure value"},
-	&GoProc{"string", (*VProcedure).String, []string{}, "return short string"},
-	&GoProc{"image", (*VProcedure).GoString, []string{}, "return image string"},
+var ProcedureMethods = MethodTable([]*VProcedure{
+	DefMeth("type", (*VProcedure).Type, []string{}, "return procedure type"),
+	DefMeth("copy", (*VProcedure).Copy, []string{}, "return procedure value"),
+	DefMeth("string", (*VProcedure).String, []string{}, "return short string"),
+	DefMeth("image", (*VProcedure).GoString, []string{}, "return image string"),
 })
 
 //  VProcedure.Field implements methods
@@ -108,10 +109,10 @@ func (v *VProcedure) Field(f string) Value {
 //  Go methods already converted to Goaldi procedures
 var KnownMethods = make(map[uintptr]interface{})
 
-//  GoMethod(val, name, meth) -- construct a Goaldi method from a Go method.
+//  ImportMethod(val, name, meth) -- construct a Goaldi method from a Go method.
 //  meth is a method struct such as returned by reflect.Type.MethodByName(),
 //  not a bound method value such as returned by reflect.Value.MethodByName().
-func GoMethod(val Value, name string, meth reflect.Method) Value {
+func ImportMethod(val Value, name string, meth reflect.Method) Value {
 	addr := meth.Func.Pointer()
 	proc := KnownMethods[addr]
 	if proc == nil {

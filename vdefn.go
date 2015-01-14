@@ -29,6 +29,7 @@ func (v *VDefn) AddMethod(name string, p *VProcedure) bool {
 		return false
 	}
 	v.Methods[name] = p
+	p.IsMethod = true
 	return true
 }
 
@@ -110,11 +111,11 @@ func (v *VDefn) Call(env *Env, args []Value, names []string) (Value, *Closure) {
 }
 
 //  Declare required methods of the constructor (not the underlying type)
-var DefnMethods = MethodTable([]*GoProc{
-	&GoProc{"type", (*VDefn).Type, []string{}, "return record type"},
-	&GoProc{"copy", (*VDefn).Copy, []string{}, "duplicate record"},
-	&GoProc{"string", (*VDefn).String, []string{}, "return short string"},
-	&GoProc{"image", (*VDefn).GoString, []string{}, "return string image"},
+var DefnMethods = MethodTable([]*VProcedure{
+	DefMeth("type", (*VDefn).Type, []string{}, "return record type"),
+	DefMeth("copy", (*VDefn).Copy, []string{}, "duplicate record"),
+	DefMeth("string", (*VDefn).String, []string{}, "return short string"),
+	DefMeth("image", (*VDefn).GoString, []string{}, "return string image"),
 })
 
 //  VDefn.Field implements methods called *on the constructor*

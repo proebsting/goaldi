@@ -74,11 +74,11 @@ func (v *VMethVal) Export() interface{} {
 }
 
 //  Declare required methods
-var MethValMethods = MethodTable([]*GoProc{
-	&GoProc{"type", (*VMethVal).Type, []string{}, "return methodvalue type"},
-	&GoProc{"copy", (*VMethVal).Copy, []string{}, "return methodvalue"},
-	&GoProc{"string", (*VMethVal).String, []string{}, "return short string"},
-	&GoProc{"image", (*VMethVal).GoString, []string{}, "return string image"},
+var MethValMethods = MethodTable([]*VProcedure{
+	DefMeth("type", (*VMethVal).Type, []string{}, "return methodvalue type"),
+	DefMeth("copy", (*VMethVal).Copy, []string{}, "return methodvalue"),
+	DefMeth("string", (*VMethVal).String, []string{}, "return short string"),
+	DefMeth("image", (*VMethVal).GoString, []string{}, "return string image"),
 })
 
 //  VMethVal.Field implements methods on methodvalues
@@ -86,31 +86,29 @@ func (v *VMethVal) Field(f string) Value {
 	return GetMethod(MethValMethods, v, f)
 }
 
-//  GoProc describes a Go function to be used as a Goaldi procedure or method
-type GoProc struct {
-	Name   string      // name as seen from Goaldi
-	Entry  interface{} // go func implmenting the procedure
-	Pnames []string    // parameter names
-	Descr  string      // one-line description
+//  DefMeth defines a method implemented in Go as a VProcedure
+func DefMeth(name string, entry interface{}, pnames []string, descr string) *VProcedure {
+	p := NewProcedure(name, &pnames, true, nil, entry, descr)
+	p.IsMethod = true
+	return p
 }
 
-//  MethodTable makes a method table from a list of RecordMethods
-func MethodTable(plist []*GoProc) map[string]*GoProc {
-	t := make(map[string]*GoProc)
+//  MethodTable makes a method table from a list of VProcedures
+func MethodTable(plist []*VProcedure) map[string]*VProcedure {
+	t := make(map[string]*VProcedure)
 	for _, g := range plist {
 		t[g.Name] = g
-		//fmt.Printf("%s: %#v\n", g.Name, g.Entry)
 	}
 	return t
 }
 
 //  GetMethod(m,v,s) looks up method v.s in table m, panicking on failure.
-func GetMethod(m map[string]*GoProc, v Value, s string) *VMethVal {
+func GetMethod(m map[string]*VProcedure, v Value, s string) *VMethVal {
 	method := m[s]
 	if method == nil {
 		panic(NewExn("unrecognized method: "+s, v))
 	}
-	return &VMethVal{s, v, method.Entry, &method.Pnames, false}
+	return &VMethVal{s, v, method.GoFunc, method.Pnames, false}
 }
 
 //  VMethVal.Call invokes the underlying method function.

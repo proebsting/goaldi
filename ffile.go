@@ -26,20 +26,20 @@ import (
 //  Declare methods
 //  Method names begin with an extra F to distinguish from those in vfile.go
 //  (whose names are fixed by the need to implement io.ReadWriteCloser).
-var FileMethods = MethodTable([]*GoProc{
-	&GoProc{"type", (*VFile).Type, []string{}, "return file type"},
-	&GoProc{"copy", (*VFile).Copy, []string{}, "return file value"},
-	&GoProc{"string", (*VFile).String, []string{}, "return short string"},
-	&GoProc{"image", (*VFile).GoString, []string{}, "return string image"},
-	&GoProc{"flush", (*VFile).FFlush, []string{}, "flush file"},
-	&GoProc{"close", (*VFile).FClose, []string{}, "close file"},
-	&GoProc{"read", (*VFile).FRead, []string{}, "read one line"},
-	&GoProc{"readb", (*VFile).FReadb, []string{"n"}, "read n binary bytes"},
-	&GoProc{"writeb", (*VFile).FWriteb, []string{"s"}, "write binary bytes"},
-	&GoProc{"write", (*VFile).FWrite, []string{}, "write values and newline"},
-	&GoProc{"writes", (*VFile).FWrites, []string{}, "write values"},
-	&GoProc{"print", (*VFile).FPrint, []string{}, "write values with spacing"},
-	&GoProc{"println", (*VFile).FPrintln, []string{}, "write line of values"},
+var FileMethods = MethodTable([]*VProcedure{
+	DefMeth("type", (*VFile).Type, []string{}, "return file type"),
+	DefMeth("copy", (*VFile).Copy, []string{}, "return file value"),
+	DefMeth("string", (*VFile).String, []string{}, "return short string"),
+	DefMeth("image", (*VFile).GoString, []string{}, "return string image"),
+	DefMeth("flush", (*VFile).FFlush, []string{}, "flush file"),
+	DefMeth("close", (*VFile).FClose, []string{}, "close file"),
+	DefMeth("read", (*VFile).FRead, []string{}, "read one line"),
+	DefMeth("readb", (*VFile).FReadb, []string{"n"}, "read n binary bytes"),
+	DefMeth("writeb", (*VFile).FWriteb, []string{"s"}, "write binary bytes"),
+	DefMeth("write", (*VFile).FWrite, []string{}, "write values and newline"),
+	DefMeth("writes", (*VFile).FWrites, []string{}, "write values"),
+	DefMeth("print", (*VFile).FPrint, []string{}, "write values with spacing"),
+	DefMeth("println", (*VFile).FPrintln, []string{}, "write line of values"),
 })
 
 //  VFile.Field implements methods

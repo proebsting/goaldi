@@ -7,15 +7,15 @@ import (
 )
 
 //  Declare methods
-var ChannelMethods = MethodTable([]*GoProc{
-	&GoProc{"type", VChannel.Type, []string{}, "return channel type"},
-	&GoProc{"copy", VChannel.Copy, []string{}, "return channel value"},
-	&GoProc{"string", VChannel.String, []string{}, "return short string"},
-	&GoProc{"image", VChannel.GoString, []string{}, "return string image"},
-	&GoProc{"get", VChannel.Get, []string{}, "read from channel"},
-	&GoProc{"put", VChannel.Put, []string{"x"}, "send to channel"},
-	&GoProc{"close", VChannel.Close, []string{}, "close channel"},
-	&GoProc{"buffer", VChannel.Buffer, []string{"n"}, "create buffer"},
+var ChannelMethods = MethodTable([]*VProcedure{
+	DefMeth("type", VChannel.Type, []string{}, "return channel type"),
+	DefMeth("copy", VChannel.Copy, []string{}, "return channel value"),
+	DefMeth("string", VChannel.String, []string{}, "return short string"),
+	DefMeth("image", VChannel.GoString, []string{}, "return string image"),
+	DefMeth("get", VChannel.Get, []string{}, "read from channel"),
+	DefMeth("put", VChannel.Put, []string{"x"}, "send to channel"),
+	DefMeth("close", VChannel.Close, []string{}, "close channel"),
+	DefMeth("buffer", VChannel.Buffer, []string{"n"}, "create buffer"),
 })
 
 //  VChannel.Field implements method calls
@@ -35,10 +35,10 @@ func init() {
 }
 
 //  Declare methods on Go channels
-var GoChanMethods = MethodTable([]*GoProc{
-	&GoProc{"get", GoChanGet, []string{}, "read from channel"},
-	&GoProc{"put", GoChanGet, []string{"x"}, "send to channel"},
-	&GoProc{"close", GoChanGet, []string{}, "close channel"},
+var GoChanMethods = MethodTable([]*VProcedure{
+	DefMeth("get", GoChanGet, []string{}, "read from channel"),
+	DefMeth("put", GoChanGet, []string{"x"}, "send to channel"),
+	DefMeth("close", GoChanGet, []string{}, "close channel"),
 })
 
 //  Channel(i) returns a new channel with buffer size i

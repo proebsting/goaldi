@@ -7,17 +7,17 @@ import (
 )
 
 //  Declare methods
-var ListMethods = MethodTable([]*GoProc{
-	&GoProc{"type", (*VList).Type, []string{}, "return list type"},
-	&GoProc{"copy", (*VList).Copy, []string{}, "duplicate list"},
-	&GoProc{"string", (*VList).String, []string{}, "return short string"},
-	&GoProc{"image", (*VList).GoString, []string{}, "return string image"},
-	&GoProc{"push", (*VList).Push, []string{"x"}, "add to front"},
-	&GoProc{"pop", (*VList).Pop, []string{}, "remove from front"},
-	&GoProc{"get", (*VList).Get, []string{}, "remove from front"},
-	&GoProc{"put", (*VList).Put, []string{"x"}, "add to end"},
-	&GoProc{"pull", (*VList).Pull, []string{}, "remove from end"},
-	&GoProc{"sort", (*VList).Sort, []string{"i"}, "return sorted copy"},
+var ListMethods = MethodTable([]*VProcedure{
+	DefMeth("type", (*VList).Type, []string{}, "return list type"),
+	DefMeth("copy", (*VList).Copy, []string{}, "duplicate list"),
+	DefMeth("string", (*VList).String, []string{}, "return short string"),
+	DefMeth("image", (*VList).GoString, []string{}, "return string image"),
+	DefMeth("push", (*VList).Push, []string{"x"}, "add to front"),
+	DefMeth("pop", (*VList).Pop, []string{}, "remove from front"),
+	DefMeth("get", (*VList).Get, []string{}, "remove from front"),
+	DefMeth("put", (*VList).Put, []string{"x"}, "add to end"),
+	DefMeth("pull", (*VList).Pull, []string{}, "remove from end"),
+	DefMeth("sort", (*VList).Sort, []string{"i"}, "return sorted copy"),
 })
 
 //  VList.Field implements methods

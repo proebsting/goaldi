@@ -25,7 +25,7 @@ func Field(x Value, s string) Value {
 	}
 	// look for an explicitly implemented method
 	if m, ok := xv.Type().MethodByName(s); ok {
-		return GoMethod(x, s, m)
+		return ImportMethod(x, s, m)
 	}
 	if xv.Kind() == reflect.Ptr {
 		xv = xv.Elem()
