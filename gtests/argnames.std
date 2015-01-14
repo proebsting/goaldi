@@ -25,6 +25,9 @@ a=~  b=25  c=~  d=~
 a=16  b=~  c=~  d=46
 a=17  b=27  c=~  d=47
 
+args: 4 5 6
+args: 1 2 3
+
 channel(5)
 []
 stdout writeb
