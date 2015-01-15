@@ -45,6 +45,7 @@ procedure provoke(i) {
 		64: [].huh
 
 		66: tuple(1,2,3)
+		67: tuple(a:1,b:2,a:3)
 
 		69: echolist(a:12)
 		70: echo(1, a:2)

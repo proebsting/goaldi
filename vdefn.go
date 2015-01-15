@@ -9,32 +9,37 @@ type VDefn struct {
 	Name    string                 // type name
 	Flist   []string               // ordered list of field names
 	Ctor    *VProcedure            // pseudo-constructor for argname handling
-	Methods map[string]*VProcedure // method list
-	//#%#% could add a hash map for the fields ... but is it worth it?
+	Members map[string]interface{} // field and method table
 }
 
 //  NewDefn(name, fields) -- construct new definition
+//  Panics if a field name is duplicated.
 func NewDefn(name string, fields []string) *VDefn {
 	ctor := NewProcedure(name, &fields, false, nil, (*VDefn).New, "")
-	return &VDefn{name, fields, ctor, make(map[string]*VProcedure)}
+	defn := &VDefn{name, fields, ctor, make(map[string]interface{})}
+	for i, s := range fields {
+		if defn.Members[s] != nil {
+			panic(NewExn("duplicate field name", s))
+		}
+		defn.Members[s] = i // enter field-to-index mapping
+	}
+	return defn
 }
 
 //  AddMethod(name, procedure) -- add a method for this record type
 //  Returns false if rejected as a duplicate.
 func (v *VDefn) AddMethod(name string, vproc *VProcedure) bool {
-	if v.Methods[name] != nil {
+	if v.Members[name] != nil {
 		return false // this is a duplicate
 	}
 	p := *vproc               // copy original VProcedure struct
 	p.Name = name             // set unqualified name
 	pnames := (*p.Pnames)[1:] // trim explicit "self" parameter
 	p.Pnames = &pnames        // and store updated list
-	for _, s := range v.Flist {
-		if s == name {
-			return false
-		}
+	if v.Members[name] != nil {
+		return false
 	}
-	v.Methods[name] = &p
+	v.Members[name] = &p
 	return true
 }
 

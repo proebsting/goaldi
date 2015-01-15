@@ -11,22 +11,23 @@ var _ = fmt.Printf // enable debugging
 
 //  VRecord.Field() implements a field reference R.k
 func (v *VRecord) Field(f string) Value {
-	//  check first for record field
 	d := v.Defn
-	for i, s := range d.Flist {
-		if s == f {
-			return Trapped(&v.Data[i])
-		}
-	}
-	//  check for explicit method
-	if m := d.Methods[f]; m != nil {
+	x := d.Members[f]
+	switch m := x.(type) {
+	case int:
+		return Trapped(&v.Data[m])
+	case *VProcedure:
 		return MethodVal(m, v)
+	case nil:
+		break
+	default:
+		panic(Malfunction("unknown type in record defn"))
 	}
 	//  check for standard method
 	if m := RecordMethods[f]; m != nil {
 		return MethodVal(m, v)
 	}
-	//  neither one found
+	//  nothing found
 	panic(NewExn("Field not found: "+f, v))
 }
 
