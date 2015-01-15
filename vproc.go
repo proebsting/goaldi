@@ -8,15 +8,19 @@
 package goaldi
 
 import (
+	"fmt"
 	"reflect"
 	"runtime"
 )
+
+var _ = fmt.Printf // enable debugging
 
 //  Procedure value
 type VProcedure struct {
 	Name     string      // registered name
 	Pnames   *[]string   // parameter names (nil if unknown)
 	Variadic bool        // true if variadic
+	RawCall  bool        // true if to use nonstandard raw argument lists
 	GdProc   Procedure   // Goaldi-compatible function (possibly a shim)
 	GoFunc   interface{} // underlying function
 	Descr    string      // optional one-line description (used for stdlib)
@@ -27,7 +31,7 @@ type VProcedure struct {
 func NewProcedure(name string, pnames *[]string, allowvar bool,
 	entry Procedure, ufunc interface{}, descr string) *VProcedure {
 	isvar := allowvar && reflect.TypeOf(entry).IsVariadic()
-	return &VProcedure{name, pnames, isvar, entry, ufunc, descr}
+	return &VProcedure{name, pnames, isvar, false, entry, ufunc, descr}
 }
 
 //  VProcedure.String -- default conversion to Go string returns "P:procname"
@@ -88,8 +92,13 @@ func (v *VProcedure) Export() interface{} {
 
 //  VProcedure.Call invokes a procedure
 func (v *VProcedure) Call(env *Env, args []Value, names []string) (Value, *Closure) {
-	args = ArgNames(v, args, names)
-	return v.GdProc(env, args...)
+	if v.RawCall {
+		f := v.GoFunc.(func(*Env, []Value, []string) (Value, *Closure))
+		return f(env, args, names)
+	} else {
+		args = ArgNames(v, args, names)
+		return v.GdProc(env, args...)
+	}
 }
 
 //  Declare methods

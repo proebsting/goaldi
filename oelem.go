@@ -1,4 +1,4 @@
-//  oelem.go -- operations for accessing elements of structures
+//  oelem.go -- static functions implementing structure access operators
 
 package goaldi
 

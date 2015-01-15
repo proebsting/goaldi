@@ -9,14 +9,6 @@ import (
 
 var _ = fmt.Printf // enable debugging
 
-//  Declare standard methods
-var RecordMethods = MethodTable([]*VProcedure{
-	DefMeth((*VRecord).Type, "type", "", "return type of record"),
-	DefMeth((*VRecord).Copy, "copy", "", "duplicate record"),
-	DefMeth((*VRecord).String, "string", "", "return short string"),
-	DefMeth((*VRecord).GoString, "image", "", "return string image"),
-})
-
 //  VRecord.Field() implements a field reference R.k
 func (v *VRecord) Field(f string) Value {
 	//  check first for record field

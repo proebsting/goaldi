@@ -1,6 +1,8 @@
 #SRC: goaldi original
 #
 #  provoke and print, as examples, several run-time errors
+#
+#  the numbering of cases is just help to correlate output with program code
 
 record r(a,b,c)
 
@@ -41,6 +43,8 @@ procedure provoke(i) {
 		62: [].sort(-1)
 		63: r().huh
 		64: [].huh
+
+		66: tuple(1,2,3)
 
 		69: echolist(a:12)
 		70: echo(1, a:2)
