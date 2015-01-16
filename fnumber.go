@@ -24,7 +24,6 @@ func (v *VNumber) Field(f string) Value {
 
 func init() {
 	// Goaldi procedures
-	LibProcedure("number", Number)
 	LibProcedure("min", Min)
 	LibProcedure("max", Max)
 	LibProcedure("seq", Seq)

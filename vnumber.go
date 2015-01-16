@@ -16,6 +16,15 @@ func NewNumber(n float64) *VNumber {
 	return &vn
 }
 
+//  NumberType is the number instance of type type.
+var NumberType = NewType("number",
+	DefProc(Number, "number", "x", "convert to number"))
+
+//  Install NumberType in standard library
+func init() {
+	StdLib["number"] = NumberType
+}
+
 //  ParseNumber -- standard string-to-number conversion for Goaldi
 //  Currently allows only Go standard format, plus leading and trailing spaces.
 func ParseNumber(s string) (float64, error) {
@@ -91,12 +100,10 @@ func (v *VNumber) Rank() int {
 	return rNumber
 }
 
-//  VNumber.Type -- return "number"
+//  VNumber.Type -- return the number type
 func (v *VNumber) Type() Value {
-	return type_number
+	return NumberType
 }
-
-var type_number = NewString("number")
 
 //  VNumber.Copy returns itself
 func (v *VNumber) Copy() Value {

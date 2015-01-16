@@ -1,5 +1,5 @@
 hello 47 3.142
-1.414 number 1.4142135623730951
+1.414 t:number 1.4142135623730951
 abc string "abc"
 ~ t:nil nil
 P:main procedure procedure main()
