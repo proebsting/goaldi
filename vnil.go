@@ -4,6 +4,10 @@ package goaldi
 
 import ()
 
+//  The constructor named "nil" is not a global because "nil" is reserved.
+var NilType = NewType("nil",
+	DefProc(Nil, "nil", "", "return nil value"))
+
 //  The vnil struct contains no data and is not exported.
 type vnil struct {
 }
@@ -12,14 +16,20 @@ type vnil struct {
 //  For convenience, its type is Value, not vnil.
 var NilValue Value = &vnil{}
 
+//  The constructor just returns the only nil value.
+func Nil(env *Env, args ...Value) (Value, *Closure) {
+	defer Traceback("nil", args)
+	return Return(NilValue)
+}
+
 //  vnil.String -- default conversion to Go string returns "~"
 func (v *vnil) String() string {
-	return "~" //#%#% ??
+	return "~"
 }
 
 //  vnil.GoString -- convert to string "nil" for image() and printf("%#v")
 func (v *vnil) GoString() string {
-	return "nil" //#%#% ??
+	return "nil"
 }
 
 //  vnil.Rank returns rNil
@@ -27,12 +37,10 @@ func (v *vnil) Rank() int {
 	return rNil
 }
 
-//  vnil.Type returns "nil"
+//  vnil.Type returns the nil type
 func (v *vnil) Type() Value {
-	return type_nil
+	return NilType
 }
-
-var type_nil = NewString("nil")
 
 //  vnil.Copy returns itself
 func (v *vnil) Copy() Value {
