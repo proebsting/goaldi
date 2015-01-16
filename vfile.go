@@ -38,6 +38,7 @@ type VFile struct {
 var FileType = NewType("file",
 	DefProc(Open, "file", "filename,flags", "open a file"))
 
+//  Install FileType in standard library
 func init() {
 	StdLib["file"] = FileType
 }
@@ -87,8 +88,6 @@ func (v *VFile) Rank() int {
 func (v *VFile) Type() Value {
 	return FileType
 }
-
-var type_file = NewString("file")
 
 //  VFile.Copy returns itself
 func (v *VFile) Copy() Value {
