@@ -8,7 +8,6 @@ package goaldi
 import (
 	"fmt"
 	"reflect"
-	"strings"
 )
 
 //  An VMethVal is like a Go "method value", a function bound to an object,
@@ -93,16 +92,6 @@ func (v *VMethVal) Field(f string) Value {
 func DefMeth(entry interface{}, name string, pspec string, descr string) *VProcedure {
 	pnames, isvar := ParmsFromSpec(pspec)
 	return NewProcedure(name, pnames, isvar, nil, entry, descr)
-}
-
-//  ParmsFromSpec turns a parameter spec into a pnames list and variadic flag
-func ParmsFromSpec(pspec string) (*[]string, bool) {
-	isvariadic := strings.HasSuffix(pspec, "[]")
-	if isvariadic {
-		pspec = strings.TrimSuffix(pspec, "[]")
-	}
-	pnames := strings.Split(pspec, ",")
-	return &pnames, isvariadic
 }
 
 //  MethodTable makes a method table from a list of VProcedures

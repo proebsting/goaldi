@@ -1,4 +1,4 @@
-//  vfile.go -- implementation of a file type
+//  vfile.go -- VFile, the Goaldi type "file"
 //
 //  A Goaldi file is produced by open().
 //  It implements io.ReadWriteCloser so that it can be passed to Go funcs.

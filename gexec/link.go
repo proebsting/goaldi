@@ -130,13 +130,13 @@ func registerRecord(sc *ir_Record) {
 
 //  stdProcs() -- add referenced stdlib procedures to globals
 func stdProcs() {
-	for _, p := range g.StdLib {
-		if Undeclared[p.Name] {
-			if GlobalDict[p.Name] != nil {
-				panic(g.Malfunction("undeclared but present: " + p.Name))
+	for name, p := range g.StdLib {
+		if Undeclared[name] {
+			if GlobalDict[name] != nil {
+				panic(g.Malfunction("undeclared but present: " + name))
 			}
-			GlobalDict[p.Name] = p
-			delete(Undeclared, p.Name)
+			GlobalDict[name] = p
+			delete(Undeclared, name)
 		}
 	}
 }

@@ -23,14 +23,9 @@ func (m VChannel) Field(f string) Value {
 	return GetMethod(ChannelMethods, m, f)
 }
 
-//  Declare static function
+//  Declare static functions
 func init() {
 	LibProcedure("buffer", Buffer)
-}
-
-//  init() declares the constructor function
-func init() {
-	// Goaldi procedures
 	LibProcedure("channel", Channel)
 }
 

@@ -11,6 +11,7 @@ import (
 	"fmt"
 	"reflect"
 	"runtime"
+	"strings"
 )
 
 var _ = fmt.Printf // enable debugging
@@ -24,6 +25,22 @@ type VProcedure struct {
 	GdProc   Procedure   // Goaldi-compatible function (possibly a shim)
 	GoFunc   interface{} // underlying function
 	Descr    string      // optional one-line description (used for stdlib)
+}
+
+//  DefProc constructs a procedure from a Goaldi function and a description.
+func DefProc(entry Procedure, name string, pspec string, descr string) *VProcedure {
+	pnames, isvar := ParmsFromSpec(pspec)
+	return NewProcedure(name, pnames, isvar, entry, entry, descr)
+}
+
+//  ParmsFromSpec turns a parameter spec into a pnames list and variadic flag
+func ParmsFromSpec(pspec string) (*[]string, bool) {
+	isvariadic := strings.HasSuffix(pspec, "[]")
+	if isvariadic {
+		pspec = strings.TrimSuffix(pspec, "[]")
+	}
+	pnames := strings.Split(pspec, ",")
+	return &pnames, isvariadic
 }
 
 //  NewProcedure -- construct a procedure value

@@ -21,7 +21,8 @@ procedure main(args) {
 
 	# make a collection, and sort it
 	a := [, 1, %pi, 6.02214129e23, "abc", %stdin, [].push, main, write,
-		channel(3), Circle, Circle(3,4,5), [1,2,3], m, !m.sort()]
+		channel(3), Circle, Circle(3,4,5), [1,2,3], m, !m.sort(),
+		type, string, type(nil)]
 	a := a.sort()
 
 	# print header

@@ -147,22 +147,6 @@ func LT(x Value, y Value, i int) bool {
 	}
 }
 
-//  ranking of types for sorting
-const (
-	rNil = iota
-	rNumber
-	rString
-	rFile
-	rChannel
-	rDefn
-	rMethVal
-	rProc
-	rList
-	rTable
-	rRecord
-	rExternal
-)
-
 //  rank(x) -- return sort ranking for the type of x
 func rank(x Value) int {
 	if t, ok := x.(IRank); ok {

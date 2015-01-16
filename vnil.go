@@ -4,7 +4,7 @@ package goaldi
 
 import ()
 
-//  The vnil strict contains no data and is not exported.
+//  The vnil struct contains no data and is not exported.
 type vnil struct {
 }
 

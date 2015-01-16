@@ -20,7 +20,7 @@ var RecordMethods = MethodTable([]*VProcedure{
 //  Declare library procedures
 func init() {
 	LibGoFunc("tuple", Tuple)
-	StdLib["tuple"].RawCall = true
+	StdLib["tuple"].(*VProcedure).RawCall = true
 }
 
 //  Tuple(id:v, ...) creates an anonymous record dynamically

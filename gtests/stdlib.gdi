@@ -37,6 +37,7 @@ procedure testcnv(v) {
 }
 
 procedure apply(p, x, y) {
-	writes(" ", string(p)[3:0], "()", p(x, y) | "--")
+	local v := (if \y then p(x,y) else p(x)) | "--"
+	writes(" ", string(p)[3:0], "()", v)
 	return
 }

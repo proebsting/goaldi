@@ -5,31 +5,14 @@ package goaldi
 import (
 	"archive/zip"
 	"fmt"
-	"io"
 	"os"
 	"syscall"
 	"time"
 )
 
-//  StdLib is the set of procedures available at link time
-var StdLib = make(map[string]*VProcedure)
-
-//  LibProcedure registers a standard library procedure taking Goaldi arguments.
-//  This must be done before linking (e.g. via init func) to be effective.
-func LibProcedure(name string, p Procedure) {
-	StdLib[name] = NewProcedure(name, nil /*#%#% TIGHTEN */, true, p, p, "")
-}
-
-//  LibGoFunc registers a Go function as a standard library procedure.
-//  This must be done before linking (e.g. via init func) to be effective.
-func LibGoFunc(name string, f interface{}) {
-	StdLib[name] = GoProcedure(name, f)
-}
-
 //  Miscellaneous library procedures
 func init() {
 	// Goaldi procedures
-	LibProcedure("type", Type)
 	LibProcedure("copy", Copy)
 	LibProcedure("image", Image)
 	LibProcedure("noresult", NoResult)
@@ -55,30 +38,6 @@ func init() {
 	// Heavy-duty package interfaces
 	LibGoFunc("zipreader", zip.OpenReader)
 }
-
-//  ShowLibrary(f) -- list all library functions on file f
-func ShowLibrary(f io.Writer) {
-	fmt.Fprintln(f)
-	fmt.Fprintln(f, "Standard Library")
-	fmt.Fprintln(f, "------------------------------")
-	for k := range SortedKeys(StdLib) {
-		v := StdLib[k]
-		fmt.Fprintf(f, "%-12s %s\n", k, v.ImplBy())
-	}
-}
-
-//  Type(v) -- return the name of v's type, as a string
-func Type(env *Env, args ...Value) (Value, *Closure) {
-	defer Traceback("type", args)
-	v := ProcArg(args, 0, NilValue)
-	if t, ok := v.(IType); ok {
-		return Return(t.Type())
-	} else {
-		return Return(type_external)
-	}
-}
-
-var type_external = NewString("external")
 
 //  Copy(v) -- return a copy of v (or just v if a simple value).
 //  The type of v *must* implement ICopy.
