@@ -2,17 +2,17 @@ type(v)         string(v)       image(v)
 -------         ---------       --------
 t:nil           ~               nil
 t:type          t:type          type type
+t:type          t:string        type string
 t:type          t:nil           type nil
 t:number        1               1
 t:number        3.142           3.141592653589793
 t:number        6.022e+23       6.02214129e+23
-string          abc             "abc"
+t:string        abc             "abc"
 t:file          F:%stdin        file(%stdin,r)
 t:channel       CH:3            channel(3)
 constructor     C:Circle        constructor Circle(x,y,r)
 methodvalue     V:push          methodvalue (L:0).push
 procedure       P:main          procedure main(args)
-procedure       P:string        procedure string(?)
 procedure       P:write         procedure write(?)
 list            L:3             [1,2,3]
 table           T:2             table{1:a,2:b}

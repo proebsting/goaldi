@@ -13,10 +13,10 @@ d33: equalfold()0 repl()d33d33d33 toupper()D33 tolower()d33 trim()d
 
 conversion:
 ~: type()t:nil image()nil number()-- string()~
-: type()string image()"" number()-- string()
-abc: type()string image()"abc" number()-- string()abc
-12: type()string image()"12" number()12 string()12
-23.4: type()string image()"23.4" number()23.4 string()23.4
+: type()t:string image()"" number()-- string()
+abc: type()t:string image()"abc" number()-- string()abc
+12: type()t:string image()"12" number()12 string()12
+23.4: type()t:string image()"23.4" number()23.4 string()23.4
 0: type()t:number image()0 number()0 string()0
 1: type()t:number image()1 number()1 string()1
 1.618: type()t:number image()1.618033988749895 number()1.618 string()1.618

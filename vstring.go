@@ -35,6 +35,15 @@ func NewString(s string) *VString {
 	return RuneString([]rune(s))
 }
 
+//  StringType is the string instance of type type.
+var StringType = NewType("string",
+	DefProc(String, "string", "x", "render as string"))
+
+//  Install StringType in standard library
+func init() {
+	StdLib["string"] = StringType
+}
+
 //  RuneString -- construct a Goaldi string from a slice of Go runes
 func RuneString(r []rune) *VString {
 	n := len(r)
@@ -140,12 +149,10 @@ func (v *VString) Rank() int {
 	return rString
 }
 
-//  VString.Type -- return "string"
+//  VString.Type -- return the string type
 func (v *VString) Type() Value {
-	return type_string
+	return StringType
 }
-
-var type_string = NewString("string")
 
 //  VString.Copy returns itself
 func (v *VString) Copy() Value {

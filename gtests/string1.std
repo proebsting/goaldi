@@ -1,4 +1,4 @@
-type string
+type t:string
 *s  5
 s:  abcde
 s:  "abcde"

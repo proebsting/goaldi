@@ -25,7 +25,6 @@ func (v *VString) Field(f string) Value {
 //  This init function adds a set of Go functions to the standard library
 func init() {
 	// Goaldi procedures
-	LibProcedure("string", String)
 	LibProcedure("char", Char)
 	LibProcedure("ord", Ord)
 	LibProcedure("reverse", Reverse)
