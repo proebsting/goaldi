@@ -23,12 +23,6 @@ func (m VTable) Field(f string) Value {
 	return GetMethod(TableMethods, m, f)
 }
 
-//  init() declares the constructor function
-func init() {
-	// Goaldi procedures
-	LibProcedure("table", Table)
-}
-
 //  Declare methods on Go Tables
 var GoMapMethods = MethodTable([]*VProcedure{
 	DefMeth(GoMapMember, "member", "x", "test membership"),

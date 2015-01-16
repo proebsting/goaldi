@@ -25,6 +25,15 @@ func NewTable() VTable {
 	return make(map[Value]Value)
 }
 
+//  TableType is the table instance of type type.
+var TableType = NewType("table",
+	DefProc(Table, "table", "", "create an empty table"))
+
+//  Install TableType in standard library
+func init() {
+	StdLib["table"] = TableType
+}
+
 //  VTable.String -- default conversion to Go string returns "T:size"
 func (m VTable) String() string {
 	return fmt.Sprintf("T:%d", len(m))
@@ -55,12 +64,10 @@ func (v VTable) Rank() int {
 	return rTable
 }
 
-//  VTable.Type -- return "table"
+//  VTable.Type -- return the table type
 func (m VTable) Type() Value {
-	return type_table
+	return TableType
 }
-
-var type_table = NewString("table")
 
 //  VTable.Copy returns a duplicate of itself
 func (m VTable) Copy() Value {
