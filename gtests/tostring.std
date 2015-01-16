@@ -14,7 +14,7 @@ constructor     C:Circle        constructor Circle(x,y,r)
 methodvalue     V:push          methodvalue (L:0).push
 procedure       P:main          procedure main(args)
 procedure       P:write         procedure write(?)
-list            L:3             [1,2,3]
+t:list          L:3             [1,2,3]
 t:table         T:2             table{1:a,2:b}
 Circle          Circle{}        Circle{x:3,y:4,r:5}
 tableElem       tableElem{}     tableElem{key:1,value:a}

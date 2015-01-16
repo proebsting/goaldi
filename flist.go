@@ -25,12 +25,7 @@ func (v *VList) Field(f string) Value {
 	return GetMethod(ListMethods, v, f)
 }
 
-//  Declare constructor function
-func init() {
-	LibProcedure("list", List)
-}
-
-//  List(n, x) -- return a new list of n elements initialize to x
+//  List(n, x) -- return a new list of n elements initialized to copy(x)
 func List(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("list", args)
 	n := int(ProcArg(args, 0, ZERO).(Numerable).ToNumber().Val())

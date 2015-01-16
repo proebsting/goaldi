@@ -4,7 +4,7 @@ A:
 	5:  - - - - 9 9 9 9 9 - 9 9 9 9 9 - - - -  :  9 9 9 9 9 
 	0:  - - - - - - - - - - - - - - - - - - -  :  
 B:
-	type:list  size:3  print:L:3  image:[a,b,3]
+	type:t:list  size:3  print:L:3  image:[a,b,3]
 	3:  - - - - - - a b 3 - a b 3 - - - - - -  :  a b 3 
 C:
 	0:  - - - - - - - - - - - - - - - - - - -  :  

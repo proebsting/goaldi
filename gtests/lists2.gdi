@@ -13,7 +13,7 @@ procedure main() {
    limage("b", list(2))
    limage("c", list(,3))
    limage("d", list(4,5))
-   limage("d", list(6,7,8))
+   limage("d", list(6,7))
    limage("e", [])
    limage("f", [nil])
    limage("g", [1])
