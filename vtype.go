@@ -40,9 +40,10 @@ func NewType(name string, ctor *VProcedure) *VType {
 	return &VType{name, ctor}
 }
 
-//  Define stdlib entry
+//  Define stdlib entries
 func init() {
 	StdLib["type"] = TypeType
+	StdLib["external"] = ExternalType
 }
 
 //  Declare methods on a type value
