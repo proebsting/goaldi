@@ -1,5 +1,10 @@
 #SRC: goaldi original
+#
 #  Image and string conversion examples for every Goaldi type
+#  Results are printed in sort() order
+#
+#  The result of string(v) is the same as used by write(v).
+#  The result of image(v) is the same as used in error traceback.
 
 record Circle(x, y, r)
 
@@ -20,16 +25,15 @@ procedure main(args) {
 	a := a.sort()
 
 	# print header
-	fmt := "%-12s %-12s %-24s %s"
-	printf(fmt, "type", "string", "image", "write\n")
-	printf(fmt, "----", "------", "-----", "-----\n")
+	fmt := "%-15s %-15s %s\n"
+	printf(fmt, "type(v)", "string(v)", "image(v)")
+	printf(fmt, "-------", "---------", "--------")
 
 	# print conversion examples, ending with implicit conversion by write()
 	every v := !a do {
 		printf(fmt,
 			v.type()   | "[failed]",
 			v.string() | "[failed]",
-			v.image()  | "[failed]", "") 
-		write(v)
+			v.image()  | "[failed]") 
 	}
 }

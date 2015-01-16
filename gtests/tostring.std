@@ -1,17 +1,17 @@
-type         string       image                    write
-----         ------       -----                    -----
-nil          ~            nil                      ~
-number       1            1                        1
-number       3.142        3.141592653589793        3.142
-number       6.022e+23    6.02214129e+23           6.022e+23
-string       abc          "abc"                    abc
-file         F:%stdin     file(%stdin,r)           F:%stdin
-channel      CH:3         channel(3)               CH:3
-constructor  C:Circle     constructor Circle(x,y,r) C:Circle
-methodvalue  V:push       methodvalue (L:0).push   V:push
-procedure    P:main       procedure main(args)     P:main
-procedure    P:write      procedure write(?)       P:write
-list         L:3          [1,2,3]                  L:3
-table        T:2          table{1:a,2:b}           T:2
-Circle       Circle{}     Circle{x:3,y:4,r:5}      Circle{}
-tableElem    tableElem{}  tableElem{key:1,value:a} tableElem{}
+type(v)         string(v)       image(v)
+-------         ---------       --------
+nil             ~               nil
+number          1               1
+number          3.142           3.141592653589793
+number          6.022e+23       6.02214129e+23
+string          abc             "abc"
+file            F:%stdin        file(%stdin,r)
+channel         CH:3            channel(3)
+constructor     C:Circle        constructor Circle(x,y,r)
+methodvalue     V:push          methodvalue (L:0).push
+procedure       P:main          procedure main(args)
+procedure       P:write         procedure write(?)
+list            L:3             [1,2,3]
+table           T:2             table{1:a,2:b}
+Circle          Circle{}        Circle{x:3,y:4,r:5}
+tableElem       tableElem{}     tableElem{key:1,value:a}
