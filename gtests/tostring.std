@@ -8,7 +8,7 @@ number          3.142           3.141592653589793
 number          6.022e+23       6.02214129e+23
 string          abc             "abc"
 t:file          F:%stdin        file(%stdin,r)
-channel         CH:3            channel(3)
+t:channel       CH:3            channel(3)
 constructor     C:Circle        constructor Circle(x,y,r)
 methodvalue     V:push          methodvalue (L:0).push
 procedure       P:main          procedure main(args)

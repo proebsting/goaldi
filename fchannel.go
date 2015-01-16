@@ -26,7 +26,6 @@ func (m VChannel) Field(f string) Value {
 //  Declare static functions
 func init() {
 	LibProcedure("buffer", Buffer)
-	LibProcedure("channel", Channel)
 }
 
 //  Declare methods on Go channels

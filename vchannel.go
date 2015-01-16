@@ -15,6 +15,15 @@ func NewChannel(i int) VChannel {
 	return VChannel(make(chan Value, i))
 }
 
+//  ChannelType is the channel instance of type type.
+var ChannelType = NewType("channel",
+	DefProc(Channel, "channel", "size", "create channel"))
+
+//  Install ChannelType in standard library
+func init() {
+	StdLib["channel"] = ChannelType
+}
+
 //  VChannel.String -- default conversion to Go string returns "CH:size"
 func (c VChannel) String() string {
 	return fmt.Sprintf("CH:%d", cap(c))
@@ -30,12 +39,10 @@ func (v VChannel) Rank() int {
 	return rChannel
 }
 
-//  VChannel.Type -- return "channel"
+//  VChannel.Type -- return the channel type
 func (c VChannel) Type() Value {
-	return type_channel
+	return ChannelType
 }
-
-var type_channel = NewString("channel")
 
 //  VChannel.Copy returns itself
 func (c VChannel) Copy() Value {
