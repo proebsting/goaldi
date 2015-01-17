@@ -109,13 +109,3 @@ func Type(env *Env, args ...Value) (Value, *Closure) {
 		return Return(ExternalType)
 	}
 }
-
-//  ExternalType defines the type "external", which is mostly just a stub
-var ExternalType = NewType("external",
-	DefProc(External, "external", "", "throw error (no constructor)"))
-
-//  The external constructor is defined but it just panics if called
-func External(env *Env, args ...Value) (Value, *Closure) {
-	defer Traceback("external", args)
-	panic(NewExn("attempt to construct external"))
-}

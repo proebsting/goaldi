@@ -1,5 +1,7 @@
-//  import.go -- translation of Go values into Goaldi values
-//  (#%#% experimental and incomplete #%#%)
+//  vexternal.go -- interfacing with Go external values
+//
+//  External values are not a Goaldi type as such;
+//  rather they are anything *not* a Goaldi type used as a Goladi value.
 
 package goaldi
 
@@ -8,6 +10,17 @@ import (
 	"io"
 	"reflect"
 )
+
+//  ExternalType defines the type "external", which is mostly just a stub
+var ExternalType = NewType("external",
+	DefProc(External, "external", "x", "export and re-import"))
+
+//  The external constructor exports and re-imports its argument
+func External(env *Env, args ...Value) (Value, *Closure) {
+	defer Traceback("external", args)
+	x := ProcArg(args, 0, NilValue)
+	return Return(Import(Export(x)))
+}
 
 //  Import(x) builds a value of appropriate Goaldi type
 func Import(x interface{}) Value {
