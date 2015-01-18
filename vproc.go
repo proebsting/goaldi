@@ -52,7 +52,8 @@ func NewProcedure(name string, pnames *[]string, allowvar bool,
 }
 
 //  ProcedureType is the procedure instance of type type.
-var ProcedureType = NewType(ProcCtor, "procedure", "p", "succeed if procedure")
+var ProcedureType = NewType(rProc, ProcCtor,
+	"procedure", "p", "succeed if procedure")
 
 //  VProcedure.String -- default conversion to Go string returns "P:procname"
 func (v *VProcedure) String() string {
@@ -82,13 +83,8 @@ func (v *VProcedure) ImplBy() string {
 	}
 }
 
-//  VProcedure.Rank returns rProc
-func (v *VProcedure) Rank() int {
-	return rProc
-}
-
 //  VProcedure.Type -- return the procedure type
-func (v *VProcedure) Type() Value {
+func (v *VProcedure) Type() IRanking {
 	return ProcedureType
 }
 

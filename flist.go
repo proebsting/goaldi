@@ -3,8 +3,11 @@
 package goaldi
 
 import (
+	"fmt"
 	"sort"
 )
+
+var _ = fmt.Printf // enable debugging
 
 //  Declare methods
 var ListMethods = MethodTable([]*VProcedure{
@@ -98,6 +101,8 @@ func LT(x Value, y Value, i int) bool {
 	}
 	// both values have the same type
 	switch ry {
+	case rType:
+		return x.(IRanking).Ranking() < y.(IRanking).Ranking()
 	case rNumber:
 		return x.(*VNumber).Val() < y.(*VNumber).Val()
 	case rString:
@@ -144,8 +149,8 @@ func LT(x Value, y Value, i int) bool {
 
 //  rank(x) -- return sort ranking for the type of x
 func rank(x Value) int {
-	if t, ok := x.(IRank); ok {
-		return t.Rank()
+	if t, ok := x.(IType); ok {
+		return t.Type().Ranking()
 	} else {
 		return rExternal
 	}

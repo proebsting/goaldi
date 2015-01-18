@@ -36,7 +36,7 @@ func NewString(s string) *VString {
 }
 
 //  StringType is the string instance of type type.
-var StringType = NewType(String, "string", "x", "render as string")
+var StringType = NewType(rString, String, "string", "x", "render as string")
 
 //  RuneString -- construct a Goaldi string from a slice of Go runes
 func RuneString(r []rune) *VString {
@@ -138,13 +138,8 @@ func (v *VString) ToNumber() *VNumber {
 	}
 }
 
-//  VString.Rank returns rString
-func (v *VString) Rank() int {
-	return rString
-}
-
 //  VString.Type -- return the string type
-func (v *VString) Type() Value {
+func (v *VString) Type() IRanking {
 	return StringType
 }
 

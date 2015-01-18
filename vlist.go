@@ -21,7 +21,8 @@ type VList struct {
 }
 
 //  ListType is the list instance of type type.
-var ListType = NewType(List, "list", "n,x", "create list of n copies of x")
+var ListType = NewType(rList, List,
+	"list", "n,x", "create list of n copies of x")
 
 //  NewList(n, x) -- make a new list of n elements each initialized to copy(x)
 //  (Unless x is a Go external that does not implement Copy().)
@@ -64,13 +65,8 @@ func (v *VList) GoString() string {
 	return string(s)
 }
 
-//  VList.Rank returns rList
-func (v *VList) Rank() int {
-	return rList
-}
-
 //  VList.Type -- return the list type
-func (v *VList) Type() Value {
+func (v *VList) Type() IRanking {
 	return ListType
 }
 

@@ -14,6 +14,36 @@ t:methodvalue t:methodvalue V:xy      methodvalue (P{}).xy   V:xy
               t:procedure   P:show    procedure show(g,v)    0x12bc0
 t:list        t:list        L:5       [2,3,5,7,11]           [2 3 5 7 11]
 t:table       t:table       T:2       table{Au:Gold,Fe:Iron} T:2
-              P             P{}       P{x:7,y:5}             P{}
+C:P           C:P           P{}       P{x:7,y:5}             P{}
 t:external    t:external    1h2m3s    3723000000000          1h2m3s
+
+Sorting values of mixed types:
+           t:nil  ~
+          t:type  t:nil
+        t:number  6.022e+23
+        t:string  abcd
+          t:file  F:%stdin
+       t:channel  CH:3
+   t:constructor  C:P
+   t:methodvalue  V:xy
+         t:table  T:2
+             C:P  P{}
+     t:procedure  0x12bc0
+          t:list  [2 3 5 7 11]
+      t:external  1h2m3s
+
+Sorting the types themselves:
+           t:nil  ~
+          t:type  t:nil
+        t:number  6.022e+23
+        t:string  abcd
+          t:file  F:%stdin
+       t:channel  CH:3
+   t:constructor  C:P
+   t:methodvalue  V:xy
+     t:procedure  0x12bc0
+          t:list  [2 3 5 7 11]
+         t:table  T:2
+      t:external  1h2m3s
+             C:P  P{}
 

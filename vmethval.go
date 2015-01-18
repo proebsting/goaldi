@@ -23,7 +23,8 @@ func MethodVal(p *VProcedure, v Value) *VMethVal {
 }
 
 //  MethValType is the methodvalue instance of type type.
-var MethValType = NewType(MethodValue, "methodvalue", "v", "succeed if methodvalue")
+var MethValType = NewType(rMethVal, MethodValue,
+	"methodvalue", "v", "succeed if methodvalue")
 
 //  VMethVal.String -- conversion to Go string returns "V:Name"
 func (v *VMethVal) String() string {
@@ -35,13 +36,8 @@ func (v *VMethVal) GoString() string {
 	return fmt.Sprintf("methodvalue (%v).%s", v.Val, v.Proc.Name)
 }
 
-//  VMethVal.Rank returns rMethVal
-func (v *VMethVal) Rank() int {
-	return rMethVal
-}
-
 //  VMethVal.Type returns the meethodvalue type
-func (v *VMethVal) Type() Value {
+func (v *VMethVal) Type() IRanking {
 	return MethValType
 }
 

@@ -5,7 +5,7 @@ package goaldi
 import ()
 
 //  The constructor named "nil" is not a global because "nil" is reserved.
-var NilType = NewType(Nil, "nil", "", "return nil value")
+var NilType = NewType(rNil, Nil, "nil", "", "return nil value")
 
 //  The vnil struct contains no data and is not exported.
 type vnil struct {
@@ -31,13 +31,8 @@ func (v *vnil) GoString() string {
 	return "nil"
 }
 
-//  vnil.Rank returns rNil
-func (v *vnil) Rank() int {
-	return rNil
-}
-
 //  vnil.Type returns the nil type
-func (v *vnil) Type() Value {
+func (v *vnil) Type() IRanking {
 	return NilType
 }
 

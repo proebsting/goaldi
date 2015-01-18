@@ -35,7 +35,8 @@ type VFile struct {
 }
 
 //  The global named "file" uses "open" as its constructor	#%#%#%
-var FileType = NewType(Open, "file", "filename,flags", "open a file")
+var FileType = NewType(rFile, Open,
+	"file", "filename,flags", "open a file")
 
 //  NewFile(name, reader, writer, closer) -- construct new Goaldi file
 func NewFile(name string,
@@ -73,13 +74,8 @@ func (v *VFile) GoString() string {
 	return s + ")"
 }
 
-//  VFile.Rank returns rFile
-func (v *VFile) Rank() int {
-	return rFile
-}
-
 //  VFile.Type returns the file type
-func (v *VFile) Type() Value {
+func (v *VFile) Type() IRanking {
 	return FileType
 }
 

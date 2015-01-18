@@ -11,6 +11,7 @@ var _ = fmt.Printf // enable debugging
 //  ranking of types for sorting
 const (
 	rNil = iota
+	rTrapped
 	rType
 	rNumber
 	rString
@@ -26,11 +27,12 @@ const (
 )
 
 //  The global named "type"
-var TypeType = NewType(Type, "type", "x", "return type of value")
+var TypeType = NewType(rType, Type, "type", "x", "return type of value")
 
 //  A type value structure
 type VType struct {
 	Name string      // type name
+	Rank int         // rank for sorting
 	Ctor *VProcedure // standard constructor procedure
 }
 
@@ -39,10 +41,10 @@ type VType struct {
 //  (but remains inaccessible for reserved names "nil" and "procedure").
 //  A nil constructor indicates an internal type (i.e. Trapped),
 //  and such a type is not installed in the library.
-func NewType(ctor Procedure,
+func NewType(rank int, ctor Procedure,
 	name string, pspec string, descr string) *VType {
 	proc := DefProc(ctor, name, pspec, descr)
-	t := &VType{name, proc}
+	t := &VType{name, rank, proc}
 	if ctor != nil {
 		StdLib[name] = t
 	}
@@ -72,13 +74,8 @@ func (t VType) GoString() string {
 	return "type " + t.Name
 }
 
-//  VType.Rank -- return rType
-func (t VType) Rank() int {
-	return rType
-}
-
 //  VType.Type -- return the type "type"
-func (t VType) Type() Value {
+func (t VType) Type() IRanking {
 	return TypeType
 }
 
@@ -95,6 +92,11 @@ func (t VType) Import() Value {
 //  VType.Export returns itself.
 func (t VType) Export() interface{} {
 	return t
+}
+
+//  VType.Ranking returns the rank.
+func (t VType) Ranking() int {
+	return t.Rank
 }
 
 //  VType.Call invokes the constructor procedure for a type.

@@ -32,14 +32,9 @@ func (v *VRecord) GoString() string {
 	return string(s)
 }
 
-//  VRecord.Rank returns rRecord
-func (v *VRecord) Rank() int {
-	return rRecord
-}
-
-//  VRecord.Type returns the defined record name
-func (v *VRecord) Type() Value {
-	return NewString(v.Defn.Name)
+//  VRecord.Type returns the underlying constructor
+func (v *VRecord) Type() IRanking {
+	return v.Defn
 }
 
 //  VRecord.Copy returns a distinct copy of itself

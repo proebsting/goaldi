@@ -3,12 +3,14 @@
 #  Show examples of all types
 
 global format
+global examples
 
 record P(x,y)
 
 procedure P.xy() { return self.x * self.y }
 
 procedure main() {
+	examples := table()
 	format := "%-13s %-13s %-9v %-22s %v\n"
 	write()
 	printf(format, "global", "type", "string", "image", "external")
@@ -29,9 +31,18 @@ procedure main() {
 	show(P, P(7,5))
 	show(external, duration(3600+120+3))
 	write()
+	write("Sorting values of mixed types:")
+	every ^kv := !examples.sort(2) do
+		printf("%16s  %s\n", kv.key, string(kv.value))
+	write()
+	write("Sorting the types themselves:")
+	every kv := !examples.sort(1) do
+		printf("%16s  %s\n", kv.key, string(kv.value))
+	write()
 }
 
 procedure show(g, v) {
 	local t := type(v)
+	examples[t] := v
 	printf(format, (t === g) | "", t, string(v), image(v), external(v))
 }

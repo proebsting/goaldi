@@ -26,7 +26,7 @@ func NewTable() VTable {
 }
 
 //  TableType is the table instance of type type.
-var TableType = NewType(Table, "table", "", "create an empty table")
+var TableType = NewType(rTable, Table, "table", "", "create an empty table")
 
 //  VTable.String -- default conversion to Go string returns "T:size"
 func (m VTable) String() string {
@@ -53,13 +53,8 @@ func (m VTable) GoString() string {
 	return string(s)
 }
 
-//  VTable.Rank returns rTable
-func (v VTable) Rank() int {
-	return rTable
-}
-
 //  VTable.Type -- return the table type
-func (m VTable) Type() Value {
+func (m VTable) Type() IRanking {
 	return TableType
 }
 

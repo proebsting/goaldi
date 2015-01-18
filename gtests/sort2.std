@@ -33,8 +33,8 @@ nil
 nil
 nil
 type number
-type table
 type number
+type table
 type table
 -3.647299637717079e+19
 -3.647299637717079e+19
@@ -178,8 +178,8 @@ nil
 nil
 nil
 type number
-type table
 type number
+type table
 type table
 -3.647299637717079e+19
 -3.647299637717079e+19
