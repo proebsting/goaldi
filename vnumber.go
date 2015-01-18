@@ -20,11 +20,6 @@ func NewNumber(n float64) *VNumber {
 var NumberType = NewType("number",
 	DefProc(Number, "number", "x", "convert to number"))
 
-//  Install NumberType in standard library
-func init() {
-	StdLib["number"] = NumberType
-}
-
 //  ParseNumber -- standard string-to-number conversion for Goaldi
 //  Currently allows only Go standard format, plus leading and trailing spaces.
 func ParseNumber(s string) (float64, error) {

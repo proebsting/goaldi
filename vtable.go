@@ -29,11 +29,6 @@ func NewTable() VTable {
 var TableType = NewType("table",
 	DefProc(Table, "table", "", "create an empty table"))
 
-//  Install TableType in standard library
-func init() {
-	StdLib["table"] = TableType
-}
-
 //  VTable.String -- default conversion to Go string returns "T:size"
 func (m VTable) String() string {
 	return fmt.Sprintf("T:%d", len(m))

@@ -39,11 +39,6 @@ func NewString(s string) *VString {
 var StringType = NewType("string",
 	DefProc(String, "string", "x", "render as string"))
 
-//  Install StringType in standard library
-func init() {
-	StdLib["string"] = StringType
-}
-
 //  RuneString -- construct a Goaldi string from a slice of Go runes
 func RuneString(r []rune) *VString {
 	n := len(r)

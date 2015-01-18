@@ -19,11 +19,6 @@ func NewChannel(i int) VChannel {
 var ChannelType = NewType("channel",
 	DefProc(Channel, "channel", "size", "create channel"))
 
-//  Install ChannelType in standard library
-func init() {
-	StdLib["channel"] = ChannelType
-}
-
 //  VChannel.String -- default conversion to Go string returns "CH:size"
 func (c VChannel) String() string {
 	return fmt.Sprintf("CH:%d", cap(c))

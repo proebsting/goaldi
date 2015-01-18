@@ -35,15 +35,13 @@ type VType struct {
 	Ctor *VProcedure // standard constructor procedure
 }
 
-//  NewType defines a Goaldi standard type (i.e. not a record type)
+//  NewType defines and registers a Goaldi standard (not a record) type
+//  The constructor procedure is installed in the standard library
+//  (but remains inaccessible for reserved names "nil" and "procedure")
 func NewType(name string, ctor *VProcedure) *VType {
-	return &VType{name, ctor}
-}
-
-//  Define stdlib entries
-func init() {
-	StdLib["type"] = TypeType
-	StdLib["external"] = ExternalType
+	t := &VType{name, ctor}
+	StdLib[name] = t
+	return t
 }
 
 //  Declare methods on a type value

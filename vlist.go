@@ -24,11 +24,6 @@ type VList struct {
 var ListType = NewType("list",
 	DefProc(List, "list", "n,x", "create list of n copies of x"))
 
-//  Install ListType in standard library.
-func init() {
-	StdLib["list"] = ListType
-}
-
 //  NewList(n, x) -- make a new list of n elements each initialized to copy(x)
 //  (Unless x is a Go external that does not implement Copy().)
 func NewList(n int, x Value) *VList {

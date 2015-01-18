@@ -38,11 +38,6 @@ type VFile struct {
 var FileType = NewType("file",
 	DefProc(Open, "file", "filename,flags", "open a file"))
 
-//  Install FileType in standard library
-func init() {
-	StdLib["file"] = FileType
-}
-
 //  NewFile(name, reader, writer, closer) -- construct new Goaldi file
 func NewFile(name string,
 	reader io.Reader, writer io.Writer, closer io.Closer) *VFile {

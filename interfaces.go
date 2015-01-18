@@ -32,7 +32,7 @@ type ICore interface {
 
 //  Confirm implementation of core interfaces by all types
 var _ ICore = NilValue.(*vnil)
-var _ ICore = NewType("bogus", nil)
+var _ ICore = TypeType
 var _ ICore = NewNumber(1)
 var _ ICore = NewString("a")
 var _ ICore = &VFile{}
