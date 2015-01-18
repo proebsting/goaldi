@@ -37,11 +37,15 @@ type VType struct {
 //  NewType defines and registers a Goaldi standard (not a record) type.
 //  The constructor procedure is installed in the standard library
 //  (but remains inaccessible for reserved names "nil" and "procedure").
+//  A nil constructor indicates an internal type (i.e. Trapped),
+//  and such a type is not installed in the library.
 func NewType(ctor Procedure,
 	name string, pspec string, descr string) *VType {
 	proc := DefProc(ctor, name, pspec, descr)
 	t := &VType{name, proc}
-	StdLib[name] = t
+	if ctor != nil {
+		StdLib[name] = t
+	}
 	return t
 }
 

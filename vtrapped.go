@@ -15,6 +15,9 @@ func Trapped(target *Value) *VTrapped {
 	return &VTrapped{target}
 }
 
+//  TrappedType is the instance of type type.
+var TrappedType = NewType(nil, "trapped", "", "")
+
 //  VTrapped.String() -- show string representation: produces (&value)
 //  #%#% should make this smarter
 func (t *VTrapped) String() string {
@@ -26,12 +29,10 @@ func (t *VTrapped) GoString() string {
 	return t.String()
 }
 
-//  VTrapped.Type() -- return "trapped" (shouldn't happen)
+//  VTrapped.Type() -- return the trapped type (shouldn't be used)
 func (t *VTrapped) Type() Value {
-	return type_trapped
+	return TrappedType
 }
-
-var type_trapped = NewString("trapped")
 
 //  VTrapped.Deref() -- extract value of for use as an rvalue
 func (t *VTrapped) Deref() Value {
