@@ -12,8 +12,7 @@ import (
 )
 
 //  ExternalType defines the type "external", which is mostly just a stub
-var ExternalType = NewType("external",
-	DefProc(External, "external", "x", "export and re-import"))
+var ExternalType = NewType(External, "external", "x", "export and re-import")
 
 //  The external constructor exports and re-imports its argument
 func External(env *Env, args ...Value) (Value, *Closure) {

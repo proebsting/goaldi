@@ -26,8 +26,7 @@ const (
 )
 
 //  The global named "type"
-var TypeType = NewType("type",
-	DefProc(Type, "type", "x", "return type of value"))
+var TypeType = NewType(Type, "type", "x", "return type of value")
 
 //  A type value structure
 type VType struct {
@@ -35,11 +34,13 @@ type VType struct {
 	Ctor *VProcedure // standard constructor procedure
 }
 
-//  NewType defines and registers a Goaldi standard (not a record) type
+//  NewType defines and registers a Goaldi standard (not a record) type.
 //  The constructor procedure is installed in the standard library
-//  (but remains inaccessible for reserved names "nil" and "procedure")
-func NewType(name string, ctor *VProcedure) *VType {
-	t := &VType{name, ctor}
+//  (but remains inaccessible for reserved names "nil" and "procedure").
+func NewType(ctor Procedure,
+	name string, pspec string, descr string) *VType {
+	proc := DefProc(ctor, name, pspec, descr)
+	t := &VType{name, proc}
 	StdLib[name] = t
 	return t
 }

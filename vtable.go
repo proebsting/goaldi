@@ -26,8 +26,7 @@ func NewTable() VTable {
 }
 
 //  TableType is the table instance of type type.
-var TableType = NewType("table",
-	DefProc(Table, "table", "", "create an empty table"))
+var TableType = NewType(Table, "table", "", "create an empty table")
 
 //  VTable.String -- default conversion to Go string returns "T:size"
 func (m VTable) String() string {

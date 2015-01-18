@@ -35,8 +35,7 @@ type VFile struct {
 }
 
 //  The global named "file" uses "open" as its constructor	#%#%#%
-var FileType = NewType("file",
-	DefProc(Open, "file", "filename,flags", "open a file"))
+var FileType = NewType(Open, "file", "filename,flags", "open a file")
 
 //  NewFile(name, reader, writer, closer) -- construct new Goaldi file
 func NewFile(name string,
