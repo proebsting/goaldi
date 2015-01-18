@@ -51,6 +51,9 @@ func NewProcedure(name string, pnames *[]string, allowvar bool,
 	return &VProcedure{name, pnames, isvar, false, entry, ufunc, descr}
 }
 
+//  ProcedureType is the procedure instance of type type.
+var ProcedureType = NewType(ProcCtor, "procedure", "p", "succeed if procedure")
+
 //  VProcedure.String -- default conversion to Go string returns "P:procname"
 func (v *VProcedure) String() string {
 	return "P:" + v.Name
@@ -84,12 +87,10 @@ func (v *VProcedure) Rank() int {
 	return rProc
 }
 
-//  VProcedure.Type -- return "procedure"
+//  VProcedure.Type -- return the procedure type
 func (v *VProcedure) Type() Value {
-	return type_procedure
+	return ProcedureType
 }
-
-var type_procedure = NewString("procedure")
 
 //  VProcedure.Copy returns itself
 func (v *VProcedure) Copy() Value {
@@ -129,6 +130,17 @@ var ProcedureMethods = MethodTable([]*VProcedure{
 //  VProcedure.Field implements methods
 func (v *VProcedure) Field(f string) Value {
 	return GetMethod(ProcedureMethods, v, f)
+}
+
+//  The "constructor" returns its argument if procedure and otherwise fails.
+//  Note that this is tricky to access, but you can say:  type(main)(p).
+func ProcCtor(env *Env, args ...Value) (Value, *Closure) {
+	x := ProcArg(args, 0, NilValue)
+	if p, ok := x.(*VProcedure); ok {
+		return Return(p)
+	} else {
+		return Fail()
+	}
 }
 
 //  Go methods already converted to Goaldi procedures

@@ -11,7 +11,7 @@ t:file     t:file       F:%stdin  file(%stdin,r)              F:%stdin
 t:channel  t:channel    CH:3      channel(3)                  CH:3
            constructor  C:Circle  constructor Circle(x,y,r)   C:Circle
            methodvalue  V:area    methodvalue (Circle{}).area V:area
-           procedure    P:show    procedure show(ctor,value)  0x12bc0
+           t:procedure  P:show    procedure show(ctor,value)  0x12bc0
 t:list     t:list       L:5       [2,3,5,7,11]                [2 3 5 7 11]
 t:table    t:table      T:2       table{Au:Gold,Fe:Iron}      T:2
            Circle       Circle{}  Circle{x:7,y:5,r:2}         Circle{}
