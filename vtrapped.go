@@ -30,7 +30,7 @@ func (t *VTrapped) GoString() string {
 }
 
 //  VTrapped.Type() -- return the trapped type (shouldn't be used)
-func (t *VTrapped) Type() IRanking {
+func (t *VTrapped) Type() IRank {
 	return TrappedType
 }
 

@@ -139,7 +139,7 @@ func (v *VString) ToNumber() *VNumber {
 }
 
 //  VString.Type -- return the string type
-func (v *VString) Type() IRanking {
+func (v *VString) Type() IRank {
 	return StringType
 }
 

@@ -54,7 +54,7 @@ func (m VTable) GoString() string {
 }
 
 //  VTable.Type -- return the table type
-func (m VTable) Type() IRanking {
+func (m VTable) Type() IRank {
 	return TableType
 }
 

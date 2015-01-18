@@ -66,7 +66,7 @@ func (v *VList) GoString() string {
 }
 
 //  VList.Type -- return the list type
-func (v *VList) Type() IRanking {
+func (v *VList) Type() IRank {
 	return ListType
 }
 

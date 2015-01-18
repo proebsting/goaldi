@@ -30,7 +30,7 @@ func (c VChannel) GoString() string {
 }
 
 //  VChannel.Type -- return the channel type
-func (c VChannel) Type() IRanking {
+func (c VChannel) Type() IRank {
 	return ChannelType
 }
 

@@ -33,7 +33,7 @@ func (v *VRecord) GoString() string {
 }
 
 //  VRecord.Type returns the underlying constructor
-func (v *VRecord) Type() IRanking {
+func (v *VRecord) Type() IRank {
 	return v.Defn
 }
 

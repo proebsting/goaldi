@@ -102,7 +102,7 @@ func LT(x Value, y Value, i int) bool {
 	// both values have the same type
 	switch ry {
 	case rType:
-		return x.(IRanking).Ranking() < y.(IRanking).Ranking()
+		return x.(IRank).Rank() < y.(IRank).Rank()
 	case rNumber:
 		return x.(*VNumber).Val() < y.(*VNumber).Val()
 	case rString:
@@ -150,7 +150,7 @@ func LT(x Value, y Value, i int) bool {
 //  rank(x) -- return sort ranking for the type of x
 func rank(x Value) int {
 	if t, ok := x.(IType); ok {
-		return t.Type().Ranking()
+		return t.Type().Rank()
 	} else {
 		return rExternal
 	}

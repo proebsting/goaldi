@@ -16,8 +16,8 @@ type VDefn struct {
 var ConstructorType = NewType(rDefn, Constructor,
 	"constructor", "name,fields[]", "build a record constructor")
 
-//  A Constructor is also a type, which means it must implement Ranking()
-func (v *VDefn) Ranking() int {
+//  A Constructor is also a type, which means it must implement Rank()
+func (v *VDefn) Rank() int {
 	return rRecord // if this is a type, its value is a record
 }
 
@@ -82,7 +82,7 @@ func (v *VDefn) GoString() string {
 }
 
 //  VDefn.Type returns the constructor type
-func (v *VDefn) Type() IRanking {
+func (v *VDefn) Type() IRank {
 	return ConstructorType
 }
 

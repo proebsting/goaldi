@@ -37,7 +37,7 @@ func (v *VMethVal) GoString() string {
 }
 
 //  VMethVal.Type returns the meethodvalue type
-func (v *VMethVal) Type() IRanking {
+func (v *VMethVal) Type() IRank {
 	return MethValType
 }
 

@@ -84,7 +84,7 @@ func (v *VProcedure) ImplBy() string {
 }
 
 //  VProcedure.Type -- return the procedure type
-func (v *VProcedure) Type() IRanking {
+func (v *VProcedure) Type() IRank {
 	return ProcedureType
 }
 

@@ -90,7 +90,7 @@ func (v *VNumber) ToNumber() *VNumber {
 }
 
 //  VNumber.Type -- return the number type
-func (v *VNumber) Type() IRanking {
+func (v *VNumber) Type() IRank {
 	return NumberType
 }
 

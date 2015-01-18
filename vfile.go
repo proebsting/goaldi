@@ -75,7 +75,7 @@ func (v *VFile) GoString() string {
 }
 
 //  VFile.Type returns the file type
-func (v *VFile) Type() IRanking {
+func (v *VFile) Type() IRank {
 	return FileType
 }
 

@@ -32,7 +32,7 @@ func (v *vnil) GoString() string {
 }
 
 //  vnil.Type returns the nil type
-func (v *vnil) Type() IRanking {
+func (v *vnil) Type() IRank {
 	return NilType
 }
 

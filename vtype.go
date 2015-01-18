@@ -31,9 +31,9 @@ var TypeType = NewType(rType, Type, "type", "x", "return type of value")
 
 //  A type value structure
 type VType struct {
-	Name string      // type name
-	Rank int         // rank for sorting
-	Ctor *VProcedure // standard constructor procedure
+	Name     string      // type name
+	SortRank int         // rank for sorting
+	Ctor     *VProcedure // standard constructor procedure
 }
 
 //  NewType defines and registers a Goaldi standard (not a record) type.
@@ -75,7 +75,7 @@ func (t *VType) GoString() string {
 }
 
 //  VType.Type -- return the type "type"
-func (t *VType) Type() IRanking {
+func (t *VType) Type() IRank {
 	return TypeType
 }
 
@@ -94,9 +94,9 @@ func (t *VType) Export() interface{} {
 	return t
 }
 
-//  VType.Ranking returns the rank.
-func (t *VType) Ranking() int {
-	return t.Rank
+//  VType.Rank returns the sorting rank.
+func (t *VType) Rank() int {
+	return t.SortRank
 }
 
 //  VType.Call invokes the constructor procedure for a type.

@@ -43,11 +43,11 @@ var _ ICore = &VList{}
 var _ ICore = &VTable{}
 
 type IType interface {
-	Type() IRanking // return type for type()
+	Type() IRank // return type for type()
 }
 
-type IRanking interface {
-	Ranking() int // return rank for sorting
+type IRank interface {
+	Rank() int // return rank for sorting
 }
 
 type ICopy interface {
