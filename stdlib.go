@@ -25,6 +25,8 @@ func ShowLibrary(f io.Writer) {
 			fmt.Fprintf(f, columns, k, v.ImplBy())
 		case *VType:
 			fmt.Fprintf(f, columns, k, "[standard type]")
+		default:
+			fmt.Fprintf(f, columns, k, "UNRECOGNIZED TYPE")
 		}
 	}
 }

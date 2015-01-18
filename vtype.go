@@ -65,37 +65,37 @@ func (v *VType) Field(f string) Value {
 }
 
 //  VType.String -- default conversion to Go string returns type name
-func (t VType) String() string {
+func (t *VType) String() string {
 	return "t:" + t.Name
 }
 
 //  VType.GoString -- convert to Go string for image() and printf("%#v")
-func (t VType) GoString() string {
+func (t *VType) GoString() string {
 	return "type " + t.Name
 }
 
 //  VType.Type -- return the type "type"
-func (t VType) Type() IRanking {
+func (t *VType) Type() IRanking {
 	return TypeType
 }
 
 //  VType.Copy returns itself
-func (t VType) Copy() Value {
+func (t *VType) Copy() Value {
 	return t
 }
 
 //  VType.Import returns itself
-func (t VType) Import() Value {
+func (t *VType) Import() Value {
 	return t
 }
 
 //  VType.Export returns itself.
-func (t VType) Export() interface{} {
+func (t *VType) Export() interface{} {
 	return t
 }
 
 //  VType.Ranking returns the rank.
-func (t VType) Ranking() int {
+func (t *VType) Ranking() int {
 	return t.Rank
 }
 
