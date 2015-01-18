@@ -9,7 +9,7 @@ record Circle(x,y,r)
 procedure Circle.area() { return %pi * self.r ^ 2 }
 
 procedure main() {
-	format := "%-10s %-12s %-9v %-27s %v\n"
+	format := "%-10s %-13s %-9v %-27s %v\n"
 	write()
 	printf(format, "global", "type", "string", "image", "external")
 	printf(format, "------", "----", "------", "-----", "--------")

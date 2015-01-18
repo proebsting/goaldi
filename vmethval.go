@@ -22,6 +22,9 @@ func MethodVal(p *VProcedure, v Value) *VMethVal {
 	return &VMethVal{p, v}
 }
 
+//  MethValType is the methodvalue instance of type type.
+var MethValType = NewType(MethodValue, "methodvalue", "v", "succeed if methodvalue")
+
 //  VMethVal.String -- conversion to Go string returns "V:Name"
 func (v *VMethVal) String() string {
 	return "V:" + v.Proc.Name
@@ -37,12 +40,10 @@ func (v *VMethVal) Rank() int {
 	return rMethVal
 }
 
-//  VMethVal.Type returns "methodvalue"
+//  VMethVal.Type returns the meethodvalue type
 func (v *VMethVal) Type() Value {
-	return type_methodvalue
+	return MethValType
 }
-
-var type_methodvalue = NewString("methodvalue")
 
 //  VMethVal.Copy returns itself
 func (v *VMethVal) Copy() Value {
@@ -86,6 +87,16 @@ var MethValMethods = MethodTable([]*VProcedure{
 //  VMethVal.Field implements methods on methodvalues
 func (v *VMethVal) Field(f string) Value {
 	return GetMethod(MethValMethods, v, f)
+}
+
+//  The "constructor" returns its argument if methodvalue and otherwise fails.
+func MethodValue(env *Env, args ...Value) (Value, *Closure) {
+	x := ProcArg(args, 0, NilValue)
+	if v, ok := x.(*VMethVal); ok {
+		return Return(v)
+	} else {
+		return Fail()
+	}
 }
 
 //  DefMeth defines a method implemented in Go as a VProcedure
