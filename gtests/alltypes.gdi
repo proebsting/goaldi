@@ -1,40 +1,38 @@
-#SRC: goaldi original
+#SRC: Goaldi original
 #
-#  Image and string conversion examples for every Goaldi type
-#  Results are printed in sort() order
-#
-#  The result of string(v) is the same as used by write(v).
-#  The result of image(v) is the same as used in error traceback.
+#  Show examples of all types
 
-record Circle(x, y, r)
+global format
 
-procedure main(args) {
-	# local a, m, v, fmt
-	local a
-	local m
-	local v
-	local fmt
+record Circle(x,y,r)
 
-	m := table()
-	m[1] := "a"
-	m[2] := "b"
+procedure Circle.area() { return %pi * self.r ^ 2 }
 
-	# make a collection, and sort it
-	a := [, 1, %pi, 6.02214129e23, "abc", %stdin, [].push, main, write,
-		channel(3), Circle, Circle(3,4,5), [1,2,3], m, !m.sort(),
-		type, string, type(nil)]
-	a := a.sort()
+procedure main() {
+	format := "%-10s %-12s %-9v %-27s %v\n"
+	write()
+	printf(format, "global", "type", "string", "image", "external")
+	printf(format, "------", "----", "------", "-----", "--------")
+	show(, nil)
+	show(type, type())
+	show(number, 17)
+	show(number, %pi)
+	show(number, 6.02214129e23)
+	show(string, "abcd")
+	show(file, %stdin)
+	show(channel, channel(3))
+	show(, Circle)
+	show(, Circle().area)
+	show(, show)
+	show(list, [2,3,5,7,11])
+	show(table, table(){"Fe":"Iron","Au":"Gold"})
+	show(Circle, Circle(7,5,2))
+	show(external, duration(3600+120+3))
+	write()
+}
 
-	# print header
-	fmt := "%-15s %-15s %s\n"
-	printf(fmt, "type(v)", "string(v)", "image(v)")
-	printf(fmt, "-------", "---------", "--------")
-
-	# print conversion examples, ending with implicit conversion by write()
-	every v := !a do {
-		printf(fmt,
-			v.type()   | "[failed]",
-			v.string() | "[failed]",
-			v.image()  | "[failed]") 
-	}
+procedure show(ctor, value) {
+	local t := type(value)
+	printf(format, (t === ctor) | "", t,
+		string(value), image(value), external(value))
 }
