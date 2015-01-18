@@ -12,6 +12,10 @@ type VDefn struct {
 	Members map[string]interface{} // field and method table
 }
 
+//  ConstructorType is the constructor instance of type type
+var ConstructorType = NewType(
+	Constructor, "constructor", "name,fields[]", "build a record constructor")
+
 //  NewDefn(name, fields) -- construct new definition
 //  Panics if a field name is duplicated.
 func NewDefn(name string, fields []string) *VDefn {
@@ -77,12 +81,10 @@ func (v *VDefn) Rank() int {
 	return rDefn
 }
 
-//  VDefn.Type returns "constructor"
+//  VDefn.Type returns the constructor type
 func (v *VDefn) Type() Value {
-	return type_constructor
+	return ConstructorType
 }
-
-var type_constructor = NewString("constructor")
 
 //  VDefn.Copy returns itself
 func (v *VDefn) Copy() Value {
@@ -131,4 +133,15 @@ var DefnMethods = MethodTable([]*VProcedure{
 //  VDefn.Field implements methods called *on the constructor*
 func (v *VDefn) Field(f string) Value {
 	return GetMethod(DefnMethods, v, f)
+}
+
+//  Constructor(name, fields[]) builds a record constructor dynamically
+func Constructor(env *Env, args ...Value) (Value, *Closure) {
+	defer Traceback("constructor", args)
+	name := ProcArg(args, 0, NilValue).(Stringable).ToString().ToUTF8()
+	fields := make([]string, len(args)-1)
+	for i := 1; i < len(args); i++ {
+		fields[i-1] = args[i].(Stringable).ToString().ToUTF8()
+	}
+	return Return(NewDefn(name, fields))
 }

@@ -4,12 +4,12 @@
 
 global format
 
-record Circle(x,y,r)
+record P(x,y)
 
-procedure Circle.area() { return %pi * self.r ^ 2 }
+procedure P.xy() { return self.x * self.y }
 
 procedure main() {
-	format := "%-10s %-13s %-9v %-27s %v\n"
+	format := "%-13s %-13s %-9v %-22s %v\n"
 	write()
 	printf(format, "global", "type", "string", "image", "external")
 	printf(format, "------", "----", "------", "-----", "--------")
@@ -21,18 +21,17 @@ procedure main() {
 	show(string, "abcd")
 	show(file, %stdin)
 	show(channel, channel(3))
-	show(, Circle)
-	show(, Circle().area)
+	show(constructor, P)
+	show(methodvalue, P().xy)
 	show(, show)
 	show(list, [2,3,5,7,11])
 	show(table, table(){"Fe":"Iron","Au":"Gold"})
-	show(Circle, Circle(7,5,2))
+	show(P, P(7,5))
 	show(external, duration(3600+120+3))
 	write()
 }
 
-procedure show(ctor, value) {
-	local t := type(value)
-	printf(format, (t === ctor) | "", t,
-		string(value), image(value), external(value))
+procedure show(g, v) {
+	local t := type(v)
+	printf(format, (t === g) | "", t, string(v), image(v), external(v))
 }

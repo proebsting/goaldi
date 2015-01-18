@@ -1,19 +1,19 @@
 
-global     type          string    image                       external
-------     ----          ------    -----                       --------
-           t:nil         ~         nil                         <nil>
-t:type     t:type        t:nil     type nil                    t:nil
-t:number   t:number      17        17                          17
-t:number   t:number      3.142     3.141592653589793           3.141592653589793
-t:number   t:number      6.022e+23 6.02214129e+23              6.02214129e+23
-t:string   t:string      abcd      "abcd"                      abcd
-t:file     t:file        F:%stdin  file(%stdin,r)              F:%stdin
-t:channel  t:channel     CH:3      channel(3)                  CH:3
-           constructor   C:Circle  constructor Circle(x,y,r)   C:Circle
-           t:methodvalue V:area    methodvalue (Circle{}).area V:area
-           t:procedure   P:show    procedure show(ctor,value)  0x12bc0
-t:list     t:list        L:5       [2,3,5,7,11]                [2 3 5 7 11]
-t:table    t:table       T:2       table{Au:Gold,Fe:Iron}      T:2
-           Circle        Circle{}  Circle{x:7,y:5,r:2}         Circle{}
-t:external t:external    1h2m3s    3723000000000               1h2m3s
+global        type          string    image                  external
+------        ----          ------    -----                  --------
+              t:nil         ~         nil                    <nil>
+t:type        t:type        t:nil     type nil               t:nil
+t:number      t:number      17        17                     17
+t:number      t:number      3.142     3.141592653589793      3.141592653589793
+t:number      t:number      6.022e+23 6.02214129e+23         6.02214129e+23
+t:string      t:string      abcd      "abcd"                 abcd
+t:file        t:file        F:%stdin  file(%stdin,r)         F:%stdin
+t:channel     t:channel     CH:3      channel(3)             CH:3
+t:constructor t:constructor C:P       constructor P(x,y)     C:P
+t:methodvalue t:methodvalue V:xy      methodvalue (P{}).xy   V:xy
+              t:procedure   P:show    procedure show(g,v)    0x12bc0
+t:list        t:list        L:5       [2,3,5,7,11]           [2 3 5 7 11]
+t:table       t:table       T:2       table{Au:Gold,Fe:Iron} T:2
+              P             P{}       P{x:7,y:5}             P{}
+t:external    t:external    1h2m3s    3723000000000          1h2m3s
 
