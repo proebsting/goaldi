@@ -33,11 +33,11 @@ procedure main() {
 	write()
 	write("Sorting values of mixed types:")
 	every ^kv := !examples.sort(2) do
-		printf("%16s  %s\n", kv.key, string(kv.value))
+		printf("%16s  %s\n", kv.key, image(kv.value))
 	write()
 	write("Sorting the types themselves:")
 	every kv := !examples.sort(1) do
-		printf("%16s  %s\n", kv.key, string(kv.value))
+		printf("%16s  %s\n", kv.key, image(kv.value))
 	write()
 }
 

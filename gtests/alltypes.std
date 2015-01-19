@@ -18,32 +18,32 @@ C:P           C:P           P{}       P{x:7,y:5}             P{}
 t:external    t:external    1h2m3s    3723000000000          1h2m3s
 
 Sorting values of mixed types:
-           t:nil  ~
-          t:type  t:nil
-        t:number  6.022e+23
-        t:string  abcd
-          t:file  F:%stdin
-       t:channel  CH:3
-   t:constructor  C:P
-   t:methodvalue  V:xy
-     t:procedure  P:show
-          t:list  L:5
-         t:table  T:2
-             C:P  P{}
-      t:external  1h2m3s
+           t:nil  nil
+          t:type  type nil
+        t:number  6.02214129e+23
+        t:string  "abcd"
+          t:file  file(%stdin,r)
+       t:channel  channel(3)
+   t:constructor  constructor P(x,y)
+   t:methodvalue  methodvalue (P{}).xy
+     t:procedure  procedure show(g,v)
+          t:list  [2,3,5,7,11]
+         t:table  table{Au:Gold,Fe:Iron}
+             C:P  P{x:7,y:5}
+      t:external  3723000000000
 
 Sorting the types themselves:
-           t:nil  ~
-          t:type  t:nil
-        t:number  6.022e+23
-        t:string  abcd
-          t:file  F:%stdin
-       t:channel  CH:3
-   t:constructor  C:P
-   t:methodvalue  V:xy
-     t:procedure  P:show
-          t:list  L:5
-         t:table  T:2
-      t:external  1h2m3s
-             C:P  P{}
+           t:nil  nil
+          t:type  type nil
+        t:number  6.02214129e+23
+        t:string  "abcd"
+          t:file  file(%stdin,r)
+       t:channel  channel(3)
+   t:constructor  constructor P(x,y)
+   t:methodvalue  methodvalue (P{}).xy
+     t:procedure  procedure show(g,v)
+          t:list  [2,3,5,7,11]
+         t:table  table{Au:Gold,Fe:Iron}
+      t:external  3723000000000
+             C:P  P{x:7,y:5}
 
