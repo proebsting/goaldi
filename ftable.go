@@ -3,9 +3,12 @@
 package goaldi
 
 import (
+	"fmt"
 	"math/rand"
 	"reflect"
 )
+
+var _ = fmt.Printf // enable debugging
 
 //  Declare methods
 var TableMethods = MethodTable([]*VProcedure{

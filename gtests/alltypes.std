@@ -26,10 +26,10 @@ Sorting values of mixed types:
        t:channel  CH:3
    t:constructor  C:P
    t:methodvalue  V:xy
+     t:procedure  P:show
+          t:list  L:5
          t:table  T:2
              C:P  P{}
-     t:procedure  0x12bc0
-          t:list  [2 3 5 7 11]
       t:external  1h2m3s
 
 Sorting the types themselves:
@@ -41,8 +41,8 @@ Sorting the types themselves:
        t:channel  CH:3
    t:constructor  C:P
    t:methodvalue  V:xy
-     t:procedure  0x12bc0
-          t:list  [2 3 5 7 11]
+     t:procedure  P:show
+          t:list  L:5
          t:table  T:2
       t:external  1h2m3s
              C:P  P{}

@@ -83,6 +83,7 @@ func (v VTable) Export() interface{} {
 
 //  vMapTrap is a trapped reference m[k] into a Goaldi table or Go map
 type vMapTrap struct {
+	gmap bool          // true if a Goaldi (not Go) map
 	mapv reflect.Value // underlying Go map
 	keyv reflect.Value // key converted to appropriate Go type
 }
@@ -100,8 +101,10 @@ func TrapMap(m Value, key Value) *vMapTrap {
 		default:
 			// nothing: use key as is
 		}
-	} // else key will be converted by passfunc
-	return &vMapTrap{mv, passfunc(mv.Type().Key())(key)}
+		return &vMapTrap{true, mv, reflect.ValueOf(key)}
+	} else { // else key will be converted by passfunc
+		return &vMapTrap{false, mv, passfunc(mv.Type().Key())(key)}
+	}
 }
 
 //  vMapTrap.Exists() returns true if the reference matches an existing key
@@ -121,7 +124,11 @@ func (t *vMapTrap) Deref() Value {
 
 //  vMapTrap.Assign(x) stores x as a map entry using the trapped key
 func (t *vMapTrap) Assign(x Value) IVariable {
-	t.mapv.SetMapIndex(t.keyv, passfunc(t.mapv.Type().Elem())(x))
+	if t.gmap { // if Goaldi table
+		t.mapv.SetMapIndex(t.keyv, reflect.ValueOf(x))
+	} else {
+		t.mapv.SetMapIndex(t.keyv, passfunc(t.mapv.Type().Elem())(x))
+	}
 	return t
 }
 
