@@ -15,6 +15,7 @@ t:methodvalue t:methodvalue V:xy      methodvalue (P{}).xy   V:xy
 t:list        t:list        L:5       [2,3,5,7,11]           [2 3 5 7 11]
 t:table       t:table       T:2       table{Au:Gold,Fe:Iron} T:2
 C:P           C:P           P{}       P{x:7,y:5}             P{}
+              C:tuple       tuple{}   tuple{w:6,h:4}         tuple{}
 t:external    t:external    1h2m3s    3723000000000          1h2m3s
 
 Sorting values of mixed types:
@@ -30,6 +31,7 @@ Sorting values of mixed types:
           t:list  [2,3,5,7,11]
          t:table  table{Au:Gold,Fe:Iron}
              C:P  P{x:7,y:5}
+         C:tuple  tuple{w:6,h:4}
       t:external  3723000000000
 
 Sorting the types themselves:
@@ -46,4 +48,5 @@ Sorting the types themselves:
          t:table  table{Au:Gold,Fe:Iron}
       t:external  3723000000000
              C:P  P{x:7,y:5}
+         C:tuple  tuple{w:6,h:4}
 

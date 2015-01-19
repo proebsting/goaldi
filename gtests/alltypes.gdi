@@ -29,6 +29,7 @@ procedure main() {
 	show(list, [2,3,5,7,11])
 	show(table, table(){"Fe":"Iron","Au":"Gold"})
 	show(P, P(7,5))
+	show(, tuple(w:6,h:4))
 	show(external, duration(3600+120+3))
 	write()
 	write("Sorting values of mixed types:")
