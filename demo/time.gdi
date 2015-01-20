@@ -26,7 +26,7 @@ procedure main() {
 	local tmid := 0.03
 	local tmax := 2
 	while tmid < tmax do {
-		tmid *:= &phi
+		tmid *:= %phi
 		while cputime() < tmid & cputime() < tmax do
 			{}
 		write("CPU:   ", cputime())

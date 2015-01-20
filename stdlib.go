@@ -22,10 +22,12 @@ func DefLib(entry Procedure, name string, pspec string, descr string) *VProcedur
 	return p
 }
 
-//  LibGoFunc registers a Go function as a standard library procedure.
-//  This must be done before linking (e.g. via init func) to be effective.
-func LibGoFunc(name string, f interface{}) {
-	StdLib[name] = GoProcedure(name, f)
+//  GoLib registers a Go function as a standard library procedure
+func GoLib(entry interface{}, name string, pspec string, descr string) *VProcedure {
+	pnames, isvar := ParmsFromSpec(pspec)
+	p := NewProcedure(name, pnames, isvar, GoShim(name, entry), entry, descr)
+	StdLib[name] = p
+	return p
 }
 
 //  ShowLibrary(f) lists all library functions on file f

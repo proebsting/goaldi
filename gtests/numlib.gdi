@@ -80,7 +80,11 @@ procedure testa2(x,y) {
 }
 
 procedure apply(p, x, y) {
-	writes(" ", string(p)[3:0], "()", p(x, y) | "--")
+	if \y then {
+		writes(" ", string(p)[3:0], "()", p(x, y) | "--")
+	} else {
+		writes(" ", string(p)[3:0], "()", p(x) | "--")
+	}
 	return
 }
 

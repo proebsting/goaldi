@@ -30,7 +30,7 @@
 74. Exception(No parameter matches name,self)
 75. Exception(No parameter matches name,x)
 76. Exception(Too many arguments,P:r)
-78. Exception(Named arguments not allowed,P:printf)
+78. Exception(No parameter matches name,s)
 79. Exception(Named arguments not allowed,3)
 80. Exception(Unrecognized flag,q)
 81. open /no/such/file: no such file or directory

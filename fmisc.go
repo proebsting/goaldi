@@ -27,16 +27,15 @@ func init() {
 	DefLib(Duration, "duration", "x", "convert value to a Go Duration struct")
 	DefLib(CPUtime, "cputime", "", "return total processor time used")
 	// Go library functions
-	LibGoFunc("getenv", os.Getenv)
-	LibGoFunc("setenv", os.Setenv)
-	LibGoFunc("environ", os.Environ)
-	LibGoFunc("expandenv", os.ExpandEnv)
-	LibGoFunc("clearenv", os.Clearenv)
-	LibGoFunc("hostname", os.Hostname)
-	LibGoFunc("getpid", os.Getpid)
-	LibGoFunc("getppid", os.Getppid)
+	GoLib(os.Getenv, "getenv", "key", "read environment variable")
+	GoLib(os.Setenv, "setenv", "key,value", "set environment variable")
+	GoLib(os.Environ, "environ", "", "get list of environment variables")
+	GoLib(os.Clearenv, "clearenv", "", "delete all environment variables")
+	GoLib(os.Hostname, "hostname", "", "get host machine name")
+	GoLib(os.Getpid, "getpid", "", "get process ID")
+	GoLib(os.Getppid, "getppid", "", "get parent process ID")
 	// Heavy-duty package interfaces
-	LibGoFunc("zipreader", zip.OpenReader)
+	GoLib(zip.OpenReader, "zipreader", "name", "open a Zip file")
 }
 
 //  Copy(v) -- return a copy of v (or just v if a simple value).

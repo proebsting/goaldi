@@ -10,9 +10,9 @@ import (
 
 //  declare new procedures for use from Goaldi
 func init() {
-	LibGoFunc("htopen", htopen)
-	LibGoFunc("htget", htget)
-	LibGoFunc("htpost", htpost)
+	GoLib(htopen, "htopen", "url", "open URL and return file")
+	GoLib(htget, "htget", "url", "get URL and return response")
+	GoLib(htpost, "htpost", "url,name,kv[]", "post form and return response")
 }
 
 //  htopen(url) returns a file for reading the body of a web file

@@ -150,11 +150,6 @@ func ImportMethod(val Value, name string, meth reflect.Method) Value {
 	return MethodVal(p, Deref(val))
 }
 
-//  GoProcedure(name, func) -- construct a procedure from a Go function
-func GoProcedure(name string, f interface{}) *VProcedure {
-	return NewProcedure(name, nil, true, GoShim(name, f), f, "")
-}
-
 //  GoShim(name, func) -- make a shim for converting args to a Go function
 func GoShim(name string, f interface{} /*func*/) Procedure {
 

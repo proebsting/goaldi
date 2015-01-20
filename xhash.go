@@ -18,11 +18,11 @@ import (
 
 //  declare new procedures for use from Goaldi
 func init() {
-	LibGoFunc("adler32", adler32.New)
-	LibGoFunc("crc32", crc32.NewIEEE)
-	LibGoFunc("fnv32", fnv.New32)
-	LibGoFunc("fnv32a", fnv.New32a)
-	LibGoFunc("hashvalue", hashvalue)
+	GoLib(adler32.New, "adler32", "", "create Adler-32 checksum engine")
+	GoLib(crc32.NewIEEE, "crc32", "", "create IEEE CRC-32 checksum engine")
+	GoLib(fnv.New32, "fnv32", "", "create 32-bit FNV-1 checksum engine")
+	GoLib(fnv.New32a, "fnv32a", "", "create 32-bit FNV-1a checksum engine")
+	GoLib(hashvalue, "hashvalue", "", "return current value of checksum engine")
 }
 
 //  hashvalue(f) returns the current value of the hash engine f.

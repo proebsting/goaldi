@@ -19,8 +19,8 @@ var RecordMethods = MethodTable([]*VProcedure{
 
 //  Declare library procedures
 func init() {
-	LibGoFunc("tuple", Tuple)
-	StdLib["tuple"].(*VProcedure).RawCall = true
+	GoLib(Tuple, "tuple", "id:e...", "create anonymous record")
+	StdLib["tuple"].(*VProcedure).RawCall = true // add magic bit
 }
 
 //  Tuple(id:v, ...) creates an anonymous record dynamically

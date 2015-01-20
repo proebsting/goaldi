@@ -24,7 +24,11 @@ procedure testprint() {
 
 procedure teststring(v) {
 	writes(v, ":")
-	every apply(equalfold | repl | toupper | tolower | trim, v, "3")
+	apply(equalfold, v, "3")
+	apply(repl, v, "3")
+	apply(toupper, v)
+	apply(tolower, v)
+	apply(trim, v, "3")
 	write()
 	return
 }

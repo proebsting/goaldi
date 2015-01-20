@@ -58,17 +58,17 @@ func init() {
 	DefLib(Println, "println", "x[]", "write line of values")
 	DefLib(Stop, "stop", "x[]", "write values and abort program")
 	// Go library functions
-	LibGoFunc("chdir", os.Chdir)
-	LibGoFunc("getwd", os.Getwd)
-	LibGoFunc("chmod", os.Chmod)
-	LibGoFunc("remove", os.Remove)
-	LibGoFunc("mkdir", os.Mkdir)
-	LibGoFunc("mkdirall", os.MkdirAll)
-	LibGoFunc("rename", os.Rename)
-	LibGoFunc("truncate", os.Truncate)
-	LibGoFunc("printf", fmt.Printf)   // use %.0f to format as integer
-	LibGoFunc("fprintf", fmt.Fprintf) // use %.0f to format as integer
-	LibGoFunc("sprintf", fmt.Sprintf) // use %.0f to format as integer
+	GoLib(os.Chdir, "chdir", "dir", "change working directory")
+	GoLib(os.Getwd, "getwd", "", "get working directory")
+	GoLib(os.Chmod, "chmod", "name,mode", "change file mode")
+	GoLib(os.Remove, "remove", "name", "delete file")
+	GoLib(os.Mkdir, "mkdir", "name,perm", "create directory")
+	GoLib(os.MkdirAll, "mkdirall", "path,perm", "create directory tree")
+	GoLib(os.Rename, "rename", "oldpath,newpath", "change file name")
+	GoLib(os.Truncate, "truncate", "name,size", "change file size")
+	GoLib(fmt.Printf, "printf", "fmt,x[]", "print with formatting")
+	GoLib(fmt.Fprintf, "fprintf", "f,fmt,x[]", "print to file with formatting")
+	GoLib(fmt.Sprintf, "sprintf", "fmt,x[]", "format as if for printing")
 }
 
 var noBytes = []byte("")
