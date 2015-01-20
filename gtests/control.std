@@ -33,7 +33,7 @@ default    : 2          : "2"
 rec        : C:rec      : constructor rec(a)
 %stdin     : F:%stdin   : file(%stdin,r)
 main       : P:main     : procedure main()
-write      : P:write    : procedure write(x)
+write      : P:write    : procedure write(x[])
 default    : rec{}      : rec{a:~}
 r          : rec{}      : rec{a:45}
 c          : CH:0       : channel(0)

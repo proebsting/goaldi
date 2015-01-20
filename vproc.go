@@ -70,6 +70,9 @@ func (v *VProcedure) GoString() string {
 		s = s + d + t
 		d = ","
 	}
+	if v.Variadic {
+		s = s + "[]"
+	}
 	return s + ")"
 }
 

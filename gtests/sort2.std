@@ -134,8 +134,8 @@ procedure toupper(?)
 procedure toupper(?)
 procedure wlist(L)
 procedure wlist(L)
-procedure write(x)
-procedure write(x)
+procedure write(x[])
+procedure write(x[])
 []
 []
 []
@@ -279,8 +279,8 @@ procedure toupper(?)
 procedure toupper(?)
 procedure wlist(L)
 procedure wlist(L)
-procedure write(x)
-procedure write(x)
+procedure write(x[])
+procedure write(x[])
 []
 []
 []
