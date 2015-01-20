@@ -25,9 +25,9 @@ func (v *VString) Field(f string) Value {
 //  This init function adds a set of Go functions to the standard library
 func init() {
 	// Goaldi procedures
-	LibProcedure("char", Char)
-	LibProcedure("ord", Ord)
-	LibProcedure("reverse", Reverse)
+	DefLib(Char, "char", "n", "interpret rune as one-character string")
+	DefLib(Ord, "ord", "s", "return Unicode ordinal of one-character string")
+	DefLib(Reverse, "reverse", "s", "return mirror image of string")
 	// Go library functions
 	LibGoFunc("contains", strings.Contains)
 	LibGoFunc("containsany", strings.ContainsAny)

@@ -25,7 +25,7 @@ func (m VChannel) Field(f string) Value {
 
 //  Declare static functions
 func init() {
-	LibProcedure("buffer", Buffer)
+	DefLib(Buffer, "buffer", "n,c", "interpose buffer before channel")
 }
 
 //  Declare methods on Go channels

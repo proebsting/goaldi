@@ -38,13 +38,6 @@ func DefLib(entry Procedure, name string, pspec string, descr string) *VProcedur
 	return p
 }
 
-//#%#% to be replaced by DefLib(above)
-//  LibProcedure registers a standard library procedure taking Goaldi arguments.
-//  This must be done before linking (e.g. via init func) to be effective.
-func LibProcedure(name string, p Procedure) {
-	StdLib[name] = NewProcedure(name, nil /*#%#% TIGHTEN */, true, p, p, "")
-}
-
 //  LibGoFunc registers a Go function as a standard library procedure.
 //  This must be done before linking (e.g. via init func) to be effective.
 func LibGoFunc(name string, f interface{}) {

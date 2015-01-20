@@ -50,13 +50,13 @@ func (v *VFile) Field(f string) Value {
 //  Declare procedures
 func init() {
 	// Goaldi procedures
-	LibProcedure("open", Open)
-	LibProcedure("read", Read)
-	LibProcedure("write", Write)
-	LibProcedure("writes", Writes)
-	LibProcedure("print", Print)
-	LibProcedure("println", Println)
-	LibProcedure("stop", Stop)
+	DefLib(Open, "open", "name,flags", "open a file")
+	DefLib(Read, "read", "f", "read one line from a file")
+	DefLib(Write, "write", "x[]", "write values and newline")
+	DefLib(Writes, "writes", "x[]", "write values")
+	DefLib(Print, "print", "x[]", "write values with spacing")
+	DefLib(Println, "println", "x[]", "write line of values")
+	DefLib(Stop, "stop", "x[]", "write values and abort program")
 	// Go library functions
 	LibGoFunc("chdir", os.Chdir)
 	LibGoFunc("getwd", os.Getwd)
