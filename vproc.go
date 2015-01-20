@@ -10,7 +10,6 @@ package goaldi
 import (
 	"fmt"
 	"reflect"
-	"runtime"
 	"strings"
 )
 
@@ -72,15 +71,6 @@ func (v *VProcedure) GoString() string {
 		d = ","
 	}
 	return s + ")"
-}
-
-//  VProcedure.ImplBy -- return name of implementing underlying function
-func (v *VProcedure) ImplBy() string {
-	if v.GoFunc == nil {
-		return v.Name // no further information available
-	} else {
-		return runtime.FuncForPC(reflect.ValueOf(v.GoFunc).Pointer()).Name()
-	}
 }
 
 //  VProcedure.Type -- return the procedure type
