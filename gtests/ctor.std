@@ -1,0 +1,18 @@
+constructor empty() : empty{}
+constructor point(x,y) : point{x:3,y:5}
+constructor point(x,y) : point{x:2,y:3}
+constructor point(x,y) : point{x:4,y:8}
+constructor rect(x,y,w,h) : rect{x:4,y:3,w:2,h:1}
+constructor rect(x,y,w,h) : rect{x:1,y:3,w:6,h:4}
+L: constructor empty()
+L: constructor point(x,y)
+L: constructor point(x,y)
+L: constructor point(x,y)
+L: constructor rect(x,y,w,h)
+L: constructor rect(x,y,w,h)
+V: empty{}
+V: point{x:2,y:3}
+V: point{x:3,y:5}
+V: point{x:4,y:8}
+V: rect{x:1,y:3,w:6,h:4}
+V: rect{x:4,y:3,w:2,h:1}
