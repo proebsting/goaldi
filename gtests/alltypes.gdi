@@ -43,7 +43,12 @@ procedure main() {
 }
 
 procedure show(g, v) {
-	local t := type(v)
+	^t := type(v)
 	examples[t] := v
-	printf(format, (t === g) | "", t, string(v), image(v), external(v))
+	^s := string(v)
+	^i := image(v)
+	^x := external(v)
+	if string(x)[1+:2] == "0x" then 	# if hex address
+		x := "0xXXXXXX"					# hide actual value for reproducibility
+	printf(format, (t === g) | "", t, s, i, x)
 }

@@ -11,7 +11,7 @@ t:file        t:file        F:%stdin  file(%stdin,r)         F:%stdin
 t:channel     t:channel     CH:3      channel(3)             CH:3
 t:constructor t:constructor C:P       constructor P(x,y)     C:P
 t:methodvalue t:methodvalue V:xy      methodvalue (P{}).xy   V:xy
-              t:procedure   P:show    procedure show(g,v)    0x12bc0
+              t:procedure   P:show    procedure show(g,v)    0xXXXXXX
 t:list        t:list        L:5       [2,3,5,7,11]           [2 3 5 7 11]
 t:table       t:table       T:2       table{Au:Gold,Fe:Iron} T:2
 C:P           C:P           P{}       P{x:7,y:5}             P{}
