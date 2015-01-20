@@ -31,6 +31,12 @@ procedure provoke(i) {
 		30: char(-1)
 		31: ord("ab")
 		32: ?"abcd" := 5
+
+		40: constructor()
+		41: constructor(%pi)
+		42: constructor("r", "a", "2", "c")
+		43: tuple(1,2,3)
+		44: tuple(a:1,b:2,a:3)
 		
 		50: nil to 10
 		51: "x" to 10
@@ -44,8 +50,6 @@ procedure provoke(i) {
 		63: r().huh
 		64: [].huh
 
-		66: tuple(1,2,3)
-		67: tuple(a:1,b:2,a:3)
 
 		69: echolist(a:12)
 		70: echo(1, a:2)

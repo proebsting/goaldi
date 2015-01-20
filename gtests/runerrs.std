@@ -7,6 +7,11 @@
 30. Exception(character code out of range,-1)
 31. Exception(string length not 1,ab)
 32. interface conversion: *goaldi.VString is not goaldi.IVariable: missing method Assign
+40. interface conversion: *goaldi.vnil is not goaldi.Stringable: missing method ToString
+41. Exception(Not an identifier,3.142)
+42. Exception(Not an identifier,2)
+43. Exception(unnamed tuple arguments not allowed)
+44. Exception(duplicate field name,a)
 50. interface conversion: *goaldi.vnil is not goaldi.Numerable: missing method ToNumber
 51. Exception(Cannot convert to number,x)
 52. interface conversion: *goaldi.vnil is not goaldi.Numerable: missing method ToNumber
@@ -17,8 +22,6 @@
 62. Exception(Nonpositive field index,-1)
 63. Exception(Field not found: huh,r{})
 64. Exception(unrecognized method: huh,L:0)
-66. Exception(unnamed tuple arguments not allowed)
-67. Exception(duplicate field name,a)
 69. interface conversion: interface is *goaldi.VNumber, not *goaldi.VList
 70. Exception(Duplicate argument,a)
 71. Exception(Duplicate argument,b)

@@ -5,6 +5,14 @@
 
 package goaldi
 
+import (
+	"fmt"
+	"regexp"
+)
+
+var _ = fmt.Printf // enable debugging
+
+//  VDefn is the constructor structure
 type VDefn struct {
 	Name    string                 // type name
 	Flist   []string               // ordered list of field names
@@ -138,10 +146,21 @@ func (v *VDefn) Field(f string) Value {
 //  Constructor(name, fields[]) builds a record constructor dynamically
 func Constructor(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("constructor", args)
-	name := ProcArg(args, 0, NilValue).(Stringable).ToString().ToUTF8()
+	name := Identifier(ProcArg(args, 0, NilValue))
 	fields := make([]string, len(args)-1)
 	for i := 1; i < len(args); i++ {
-		fields[i-1] = args[i].(Stringable).ToString().ToUTF8()
+		fields[i-1] = Identifier(args[i])
 	}
 	return Return(NewDefn(name, fields))
 }
+
+//  Identifier converts its argument to a Go string and validates its form
+func Identifier(x Value) string {
+	s := x.(Stringable).ToString().ToUTF8()
+	if !idPattern.MatchString(s) {
+		panic(NewExn("Not an identifier", s))
+	}
+	return s
+}
+
+var idPattern = regexp.MustCompile("^[A-Za-z_][[0-9A-Za-z_]*$")
