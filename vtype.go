@@ -8,24 +8,6 @@ import (
 
 var _ = fmt.Printf // enable debugging
 
-//  ranking of types for sorting
-const (
-	rNil = iota
-	rTrapped
-	rType
-	rNumber
-	rString
-	rFile
-	rChannel
-	rDefn
-	rMethVal
-	rProc
-	rList
-	rTable
-	rRecord
-	rExternal
-)
-
 //  The global named "type"
 var TypeType = NewType(rType, Type, "type", "x", "return type of value")
 
