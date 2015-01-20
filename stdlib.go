@@ -43,7 +43,8 @@ func ShowLibrary(f io.Writer) {
 			s2 := strings.Repeat(" ", linelen-len(s1)-len(s3)-2)
 			fmt.Fprintln(f, s1, s2, s3)
 		case *VType:
-			fmt.Fprintf(f, "t:%s -- standard type\n", k)
+			ctor := v.Ctor
+			fmt.Fprintln(f, "t "+ctor.GoString()[10:]+" -- "+ctor.Descr)
 		default:
 			fmt.Fprintf(f, "%x : UNRECOGNIZED : %T\n", k, x)
 		}
