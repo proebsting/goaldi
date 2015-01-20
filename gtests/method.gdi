@@ -7,21 +7,23 @@ record square(w)
 record circle(r, color)
 
 procedure main() {
-	# local c1, c2, s1, s2, m
-	local c1
-	local c2
-	local s1
-	local s2
-	local m
 
-	c1 := circle(2)
-	c2 := circle(7, "red")
-	s1 := square(4)
-	s2 := square(6)
+	# define values
+	local c1 := circle(2)
+	local c2 := circle(7, "red")
+	local s1 := square(4)
+	local s2 := square(6)
+
+	#  try methods
 	every (point() | c1 | s1 | c2 | s2) . draw (1 | 5, 5 | 1)
-	m := c1.draw
+
+	#  try methodvalue
+	local m := c1.draw
+	write("value: ", m, " : ", image(m), " : ", methodvalue(m) | "[failed]")
+	write("type:  ", type(m), " ", m.type(), " ", type(m) === methodvalue)
 	c1.color := "purple"
 	m(3,4)
+	write(methodvalue("FAIL") | "done")
 }
 
 procedure point.draw(x, y) {
