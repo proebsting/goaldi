@@ -1,5 +1,9 @@
+ main: procedure main() : type procedure : procedure main()
  a = 7
+ by3 = procedure main$nested$1(i,j) : t:procedure
  1 4 7 10 13 16 19 
  a = 19
+ by7 = procedure main$nested$2(i,j) : t:procedure
  21 28 35 42 49 
  a = 19
+done
