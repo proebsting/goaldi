@@ -27,10 +27,10 @@ func Tuple(env *Env, args []Value, names []string) (Value, *Closure) {
 }
 
 //  Table of known tuples, indexed by stringified list of fields
-var KnownTuples = make(map[string]*VDefn)
+var KnownTuples = make(map[string]*VCtor)
 
 //  TupleType(names) finds or makes a type for constructing a tuple
-func TupleType(names []string) *VDefn {
+func TupleType(names []string) *VCtor {
 	// make a string of the field names e.g. "a,b,c,"
 	var b bytes.Buffer
 	for _, s := range names {
@@ -41,7 +41,7 @@ func TupleType(names []string) *VDefn {
 	// check for already known type
 	t := KnownTuples[s]
 	if t == nil {
-		t = NewDefn("tuple", names)
+		t = NewCtor("tuple", names)
 		KnownTuples[s] = t
 	}
 	return t

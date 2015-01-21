@@ -82,7 +82,7 @@ func GoMapSort(m Value, args ...Value) (Value, *Closure) {
 //  -------------------------- key/value pairs ---------------------
 
 //  kvRecord defines the {key,value} struct returned by ?T and !T
-var kvRecord = NewDefn("tableElem", []string{"key", "value"})
+var kvRecord = NewCtor("tableElem", []string{"key", "value"})
 
 //  ChooseMap returns a key/value pair from any Goaldi table or Go map
 func ChooseMap(m interface{} /*anymap*/) Value {

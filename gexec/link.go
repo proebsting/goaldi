@@ -75,13 +75,13 @@ func irDecl(decl interface{}) {
 	}
 }
 
-//  registerMethod(pr, recname, methname) -- register method in record defn
+//  registerMethod(pr, recname, methname) -- register method in record ctor
 func registerMethod(pr *pr_Info, recname string, methname string) {
 	gv := GlobalDict[recname]
 	if gv != nil {
 		gv = g.Deref(gv)
 	}
-	if d, ok := gv.(*g.VDefn); ok && d != nil {
+	if d, ok := gv.(*g.VCtor); ok && d != nil {
 		if !d.AddMethod(methname, irProcedure(pr, nil)) {
 			fatal(fmt.Sprintf("Method %s.%s() duplicates field name %s",
 				recname, methname, methname))
@@ -116,11 +116,11 @@ func registerRecord(sc *ir_Record) {
 	if gv == nil {
 		// not declared as global, and not seen before:
 		// create global with unmodifiable procedure value
-		GlobalDict[sc.Name] = g.NewDefn(sc.Name, sc.FieldList)
+		GlobalDict[sc.Name] = g.NewCtor(sc.Name, sc.FieldList)
 	} else if t, ok := gv.(*g.VTrapped); ok && *t.Target == g.NilValue {
 		// uninitialized declared global:
 		// initialize global trapped variable with procedure value
-		*t.Target = g.NewDefn(sc.Name, sc.FieldList)
+		*t.Target = g.NewCtor(sc.Name, sc.FieldList)
 	} else {
 		// duplicate global: fatal error
 		fatal("duplicate global declaration: " + sc.Name)

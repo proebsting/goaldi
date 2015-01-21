@@ -18,7 +18,7 @@ const (
 	rString
 	rFile
 	rChannel
-	rDefn
+	rCtor
 	rMethVal
 	rProc
 	rList
@@ -68,8 +68,8 @@ func LT(x Value, y Value, i int) bool {
 		return x.(*VString).compare(y.(*VString)) < 0
 	case rFile:
 		return x.(*VFile).Name < y.(*VFile).Name
-	case rDefn:
-		return x.(*VDefn).Name < y.(*VDefn).Name
+	case rCtor:
+		return x.(*VCtor).Name < y.(*VCtor).Name
 	case rMethVal:
 		return x.(*VMethVal).Proc.Name < y.(*VMethVal).Proc.Name
 	case rProc:
@@ -77,9 +77,9 @@ func LT(x Value, y Value, i int) bool {
 	case rRecord:
 		xs := x.(*VRecord)
 		ys := y.(*VRecord)
-		if xs.Defn != ys.Defn {
+		if xs.Ctor != ys.Ctor {
 			// different record types; order by type name
-			return xs.Defn.Name < ys.Defn.Name
+			return xs.Ctor.Name < ys.Ctor.Name
 		}
 		if i >= 0 && len(xs.Data) > i && len(ys.Data) > i {
 			// both sides have an item i

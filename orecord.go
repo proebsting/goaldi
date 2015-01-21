@@ -11,7 +11,7 @@ var _ = fmt.Printf // enable debugging
 
 //  VRecord.Field() implements a field reference R.k
 func (v *VRecord) Field(f string) Value {
-	d := v.Defn
+	d := v.Ctor
 	x := d.Members[f]
 	switch m := x.(type) {
 	case int:
@@ -37,7 +37,7 @@ func (v *VRecord) Index(lval Value, x Value) Value {
 	// if this is a string, check first for matching field name
 	if s, ok := x.(*VString); ok {
 		key := s.ToUTF8()
-		for i, f := range v.Defn.Flist {
+		for i, f := range v.Ctor.Flist {
 			if f == key {
 				if lval == nil {
 					return v.Data[i]
