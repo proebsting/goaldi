@@ -53,15 +53,19 @@ func ShowLibrary(f io.Writer) {
 	}
 
 	fmt.Fprintln(f)
-	fmt.Fprintln(f, "Standard Types")
+	fmt.Fprintln(f, "Standard Methods and Types")
 	fmt.Fprintln(f, "-------------------------------------------")
+	fmt.Fprintln(f, "[any]")
+	for _, m := range UniMethods {
+		fmt.Fprintf(f, "    x.%s -- %s\n", m.GoString()[10:], m.Descr)
+	}
 	for _, t := range typelist {
 		ctor := t.Ctor
 		fmt.Fprintln(f, ctor.GoString()[10:]+" -- "+ctor.Descr)
 		if t.Methods != nil {
-			for _, meth := range t.Methods {
+			for _, m := range t.Methods {
 				fmt.Fprintf(f, "    %s.%s -- %s\n",
-					t.Abbr, meth.GoString()[10:], meth.Descr)
+					t.Abbr, m.GoString()[10:], m.Descr)
 			}
 		}
 	}
