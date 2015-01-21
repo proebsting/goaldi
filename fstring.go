@@ -24,7 +24,7 @@ func init() {
 	GoLib(regexp.CompilePOSIX, "regexp", "expr", "compile POSIX regular expression")
 	GoLib(strings.Replace, "replace", "s,old,new", "return s with new replacing old")
 	GoLib(strings.Repeat, "repl", "s,count", "return s repeated n times")
-	GoLib(strings.Split, "split", "s,sep", "return fields separted by sep")
+	GoLib(strings.Split, "split", "s,sep", "return fields separated by sep")
 	GoLib(strings.ToUpper, "toupper", "s", "convert to upper case")
 	GoLib(strings.ToLower, "tolower", "s", "convert to lower case")
 	GoLib(strings.Trim, "trim", "s,cutset", "remove leading and trailing characters")

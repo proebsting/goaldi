@@ -125,7 +125,7 @@ func UniMethod(v Value, s string) *VMethVal {
 var UniMethods = map[string]*VProcedure{
 	"type":   DefProc(Type, "type", "", "return type of value"),
 	"string": DefProc(String, "string", "", "render value as string"),
-	"image":  DefProc(Image, "image", "", "return string image of value"),
+	"image":  DefProc(Image, "image", "", "return detailed string image"),
 	"copy":   DefProc(Copy, "copy", "", "copy value"),
 }
 

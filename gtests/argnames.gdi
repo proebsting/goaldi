@@ -14,7 +14,7 @@ procedure main() {
 
 	# library methods
 	write()
-	write(image(channel(3).buffer(n:5)))
+	write(image(channel(3).buffer(size:5)))
 	write(image([].sort(i:1)))
 	%stdout.writeb(s:"stdout writeb\n")
 }

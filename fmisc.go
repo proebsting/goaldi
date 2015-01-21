@@ -14,7 +14,7 @@ import (
 func init() {
 	// Goaldi procedures
 	DefLib(Copy, "copy", "x", "copy value")
-	DefLib(Image, "image", "x", "return string image of value")
+	DefLib(Image, "image", "x", "return detailed string image")
 	DefLib(NoResult, "noresult", "e", "fail immediately")
 	DefLib(NilResult, "nilresult", "e", "return nil")
 	DefLib(ErrResult, "errresult", "e", "return e")

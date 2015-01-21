@@ -30,7 +30,7 @@ var FileMethods = MethodTable([]*VProcedure{
 	DefMeth((*VFile).FFlush, "flush", "", "flush file"),
 	DefMeth((*VFile).FClose, "close", "", "close file"),
 	DefMeth((*VFile).FRead, "read", "", "read one line"),
-	DefMeth((*VFile).FReadb, "readb", "n", "read n binary bytes"),
+	DefMeth((*VFile).FReadb, "readb", "size", "read binary bytes"),
 	DefMeth((*VFile).FWriteb, "writeb", "s", "write binary bytes"),
 	DefMeth((*VFile).FWrite, "write", "x[]", "write values and newline"),
 	DefMeth((*VFile).FWrites, "writes", "x[]", "write values"),

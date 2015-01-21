@@ -22,7 +22,7 @@ type VList struct {
 
 //  ListType is the list instance of type type.
 var ListType = NewType("L", rList, List, ListMethods,
-	"list", "n,x", "create list of n copies of x")
+	"list", "size,x", "create list of copies of x")
 
 //  NewList(n, x) -- make a new list of n elements each initialized to copy(x)
 //  (Unless x is a Go external that does not implement Copy().)

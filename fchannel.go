@@ -11,12 +11,12 @@ var ChannelMethods = MethodTable([]*VProcedure{
 	DefMeth(VChannel.Get, "get", "", "read from channel"),
 	DefMeth(VChannel.Put, "put", "x", "send to channel"),
 	DefMeth(VChannel.Close, "close", "", "close channel"),
-	DefMeth(VChannel.Buffer, "buffer", "n", "create buffer"),
+	DefMeth(VChannel.Buffer, "buffer", "size", "interpose buffer"),
 })
 
 //  Declare static functions
 func init() {
-	DefLib(Buffer, "buffer", "n,c", "interpose buffer before channel")
+	DefLib(Buffer, "buffer", "size,c", "interpose buffer before channel")
 }
 
 //  Declare methods on Go channels
