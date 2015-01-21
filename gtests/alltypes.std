@@ -50,3 +50,17 @@ Sorting the types themselves:
              C:P  P{x:7,y:5}
          C:tuple  tuple{w:6,h:4}
 
+Testing calls to universal methods x.type(), x.string() x.image(), x.copy()
+              t:nil         ~         nil                    ~
+              t:type        t:nil     type nil               t:nil
+              t:number      6.022e+23 6.02214129e+23         6.022e+23
+              t:string      abcd      "abcd"                 abcd
+              t:file        F:%stdin  file(%stdin,r)         F:%stdin
+              t:channel     CH:3      channel(3)             CH:3
+              t:constructor C:P       constructor P(x,y)     C:P
+              t:methodvalue V:xy      methodvalue (P{}).xy   V:xy
+              t:procedure   P:show    procedure show(g,v)    P:show
+              t:list        L:5       [2,3,5,7,11]           L:5
+              t:table       T:2       table{Au:Gold,Fe:Iron} T:2
+              C:P           P{}       P{x:7,y:5}             P{}
+              C:tuple       tuple{}   tuple{w:6,h:4}         tuple{}

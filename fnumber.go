@@ -9,19 +9,6 @@ import (
 	"math/rand"
 )
 
-//  Declare methods
-var NumberMethods = MethodTable([]*VProcedure{
-	DefMeth((*VNumber).Type, "type", "", "return number type"),
-	DefMeth((*VNumber).Copy, "copy", "", "return number value"),
-	DefMeth((*VNumber).String, "string", "", "return short string"),
-	DefMeth((*VNumber).GoString, "image", "", "return full string"),
-})
-
-//  VNumber.Field implements methods
-func (v *VNumber) Field(f string) Value {
-	return GetMethod(NumberMethods, v, f)
-}
-
 func init() {
 	// Goaldi procedures
 	DefLib(Min, "min", "n[]", "find minimum value")

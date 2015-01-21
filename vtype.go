@@ -9,13 +9,16 @@ import (
 var _ = fmt.Printf // enable debugging
 
 //  The global named "type"
-var TypeType = NewType(rType, Type, "type", "x", "return type of value")
+var TypeType = NewType("t", rType, Type, nil,
+	"type", "x", "return type of value")
 
 //  A type value structure
 type VType struct {
-	Name     string      // type name
-	SortRank int         // rank for sorting
-	Ctor     *VProcedure // standard constructor procedure
+	Name     string                 // type name
+	Abbr     string                 // one-character abbreviation
+	SortRank int                    // rank for sorting
+	Ctor     *VProcedure            // standard constructor procedure
+	Methods  map[string]*VProcedure // method table
 }
 
 //  NewType defines and registers a Goaldi standard (not a record) type.
@@ -23,27 +26,15 @@ type VType struct {
 //  (but remains inaccessible for reserved names "nil" and "procedure").
 //  A nil constructor indicates an internal type (i.e. Trapped),
 //  and such a type is not installed in the library.
-func NewType(rank int, ctor Procedure,
+func NewType(abbr string, rank int, ctor Procedure,
+	mtable map[string]*VProcedure,
 	name string, pspec string, descr string) *VType {
 	proc := DefProc(ctor, name, pspec, descr)
-	t := &VType{name, rank, proc}
+	t := &VType{name, abbr, rank, proc, mtable}
 	if ctor != nil {
 		StdLib[name] = t
 	}
 	return t
-}
-
-//  Declare methods on a type value
-var TypeMethods = MethodTable([]*VProcedure{
-	DefMeth((*VType).Type, "type", "", "return type type"),
-	DefMeth((*VType).Copy, "copy", "", "return type value"),
-	DefMeth((*VType).String, "string", "", "return type name"),
-	DefMeth((*VType).GoString, "image", "", "return type image"),
-})
-
-//  VType.Field implements methods
-func (v *VType) Field(f string) Value {
-	return GetMethod(TypeMethods, v, f)
 }
 
 //  VType.String -- default conversion to Go string returns type name

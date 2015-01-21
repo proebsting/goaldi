@@ -21,7 +21,7 @@ type VDefn struct {
 }
 
 //  ConstructorType is the constructor instance of type type
-var ConstructorType = NewType(rDefn, Constructor,
+var ConstructorType = NewType("r", rDefn, Constructor, nil,
 	"constructor", "name,fields[]", "build a record constructor")
 
 //  A Constructor is also a type, which means it must implement Rank()
@@ -128,19 +128,6 @@ func (v *VDefn) Dispense(unused Value) (Value, *Closure) {
 func (v *VDefn) Call(env *Env, args []Value, names []string) (Value, *Closure) {
 	args = ArgNames(v.Ctor, args, names)
 	return Return(v.New(args))
-}
-
-//  Declare required methods of the constructor (not the underlying type)
-var DefnMethods = MethodTable([]*VProcedure{
-	DefMeth((*VDefn).Type, "type", "", "return record type"),
-	DefMeth((*VDefn).Copy, "copy", "", "duplicate record"),
-	DefMeth((*VDefn).String, "string", "", "return short string"),
-	DefMeth((*VDefn).GoString, "image", "", "return string image"),
-})
-
-//  VDefn.Field implements methods called *on the constructor*
-func (v *VDefn) Field(f string) Value {
-	return GetMethod(DefnMethods, v, f)
 }
 
 //  Constructor(name, fields[]) builds a record constructor dynamically

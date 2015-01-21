@@ -23,7 +23,7 @@ func MethodVal(p *VProcedure, v Value) *VMethVal {
 }
 
 //  MethValType is the methodvalue instance of type type.
-var MethValType = NewType(rMethVal, MethodValue,
+var MethValType = NewType("m", rMethVal, MethodValue, nil,
 	"methodvalue", "v", "succeed if methodvalue")
 
 //  VMethVal.String -- conversion to Go string returns "V:Name"
@@ -72,19 +72,6 @@ func (v *VMethVal) Export() interface{} {
 	return v
 }
 
-//  Declare required methods
-var MethValMethods = MethodTable([]*VProcedure{
-	DefMeth((*VMethVal).Type, "type", "", "return methodvalue type"),
-	DefMeth((*VMethVal).Copy, "copy", "", "return methodvalue"),
-	DefMeth((*VMethVal).String, "string", "", "return short string"),
-	DefMeth((*VMethVal).GoString, "image", "", "return string image"),
-})
-
-//  VMethVal.Field implements methods on methodvalues
-func (v *VMethVal) Field(f string) Value {
-	return GetMethod(MethValMethods, v, f)
-}
-
 //  The "constructor" returns its argument if methodvalue and otherwise fails.
 func MethodValue(env *Env, args ...Value) (Value, *Closure) {
 	x := ProcArg(args, 0, NilValue)
@@ -111,13 +98,40 @@ func MethodTable(plist []*VProcedure) map[string]*VProcedure {
 }
 
 //  GetMethod(m,v,s) looks up method v.s in table m, panicking on failure.
+//  Defaults methods are provided for v.type, v.string, v.image.
 func GetMethod(m map[string]*VProcedure, v Value, s string) *VMethVal {
-	method := m[s]
-	if method == nil {
-		panic(NewExn("unrecognized method: "+s, v))
+	if m != nil {
+		method := m[s]
+		if method != nil {
+			return MethodVal(method, v)
+		}
 	}
-	return MethodVal(method, v)
+	if mv := UniMethod(v, s); mv != nil {
+		return mv
+	}
+	panic(NewExn("unrecognized method: "+s, v))
 }
+
+//  UniMethod(v,s) finds one of the universal methods defined on all types
+func UniMethod(v Value, s string) *VMethVal {
+	switch s {
+	case "type":
+		return MethodVal(UniType, v)
+	case "string":
+		return MethodVal(UniString, v)
+	case "image":
+		return MethodVal(UniImage, v)
+	case "copy":
+		return MethodVal(UniCopy, v)
+	default:
+		return nil
+	}
+}
+
+var UniType = DefProc(Type, "type", "", "return type of value")
+var UniString = DefProc(String, "string", "", "render value as string")
+var UniImage = DefProc(Image, "image", "", "return string image of value")
+var UniCopy = DefProc(Copy, "copy", "", "copy value")
 
 //  VMethVal.Call invokes the underlying method function.
 func (mvf *VMethVal) Call(env *Env, args []Value, names []string) (Value, *Closure) {

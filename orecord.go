@@ -24,8 +24,8 @@ func (v *VRecord) Field(f string) Value {
 		panic(Malfunction("unknown type in record defn"))
 	}
 	//  check for standard method
-	if m := RecordMethods[f]; m != nil {
-		return MethodVal(m, v)
+	if mv := UniMethod(v, f); mv != nil {
+		return mv
 	}
 	//  nothing found
 	panic(NewExn("Field not found: "+f, v))

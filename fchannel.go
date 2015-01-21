@@ -8,10 +8,6 @@ import (
 
 //  Declare methods
 var ChannelMethods = MethodTable([]*VProcedure{
-	DefMeth(VChannel.Type, "type", "", "return channel type"),
-	DefMeth(VChannel.Copy, "copy", "", "return channel value"),
-	DefMeth(VChannel.String, "string", "", "return short string"),
-	DefMeth(VChannel.GoString, "image", "", "return string image"),
 	DefMeth(VChannel.Get, "get", "", "read from channel"),
 	DefMeth(VChannel.Put, "put", "x", "send to channel"),
 	DefMeth(VChannel.Close, "close", "", "close channel"),

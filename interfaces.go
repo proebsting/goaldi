@@ -24,8 +24,8 @@ type ICore interface {
 	ICopy          // for "copy()"
 	IImport        // for returning self to Import()
 	IExport        // for passing to a Go function as interface{} value
-	IField         // for implementing methods
 	// optional:  Numerable and Stringable, if implicitly convertible
+	// optional:  IField, for implementing methods
 	// optional:  IIdentical, if === requires more than pointer comparison
 }
 

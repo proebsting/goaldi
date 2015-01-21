@@ -51,7 +51,7 @@ func NewProcedure(name string, pnames *[]string, allowvar bool,
 }
 
 //  ProcedureType is the procedure instance of type type.
-var ProcedureType = NewType(rProc, ProcCtor,
+var ProcedureType = NewType("p", rProc, ProcCtor, nil,
 	"procedure", "p", "succeed if procedure")
 
 //  VProcedure.String -- default conversion to Go string returns "P:procname"
@@ -106,19 +106,6 @@ func (v *VProcedure) Call(env *Env, args []Value, names []string) (Value, *Closu
 		args = ArgNames(v, args, names)
 		return v.GdProc(env, args...)
 	}
-}
-
-//  Declare methods
-var ProcedureMethods = MethodTable([]*VProcedure{
-	DefMeth((*VProcedure).Type, "type", "", "return procedure type"),
-	DefMeth((*VProcedure).Copy, "copy", "", "return procedure value"),
-	DefMeth((*VProcedure).String, "string", "", "return short string"),
-	DefMeth((*VProcedure).GoString, "image", "", "return image string"),
-})
-
-//  VProcedure.Field implements methods
-func (v *VProcedure) Field(f string) Value {
-	return GetMethod(ProcedureMethods, v, f)
 }
 
 //  The "constructor" returns its argument if procedure and otherwise fails.

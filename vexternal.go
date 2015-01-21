@@ -12,7 +12,7 @@ import (
 )
 
 //  ExternalType defines the type "external", which is mostly just a stub
-var ExternalType = NewType(rExternal, External,
+var ExternalType = NewType("X", rExternal, External, nil,
 	"external", "x", "export and re-import")
 
 //  The external constructor exports and re-imports its argument

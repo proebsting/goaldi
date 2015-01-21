@@ -21,7 +21,7 @@ type VList struct {
 }
 
 //  ListType is the list instance of type type.
-var ListType = NewType(rList, List,
+var ListType = NewType("L", rList, List, ListMethods,
 	"list", "n,x", "create list of n copies of x")
 
 //  NewList(n, x) -- make a new list of n elements each initialized to copy(x)

@@ -35,7 +35,7 @@ type VFile struct {
 }
 
 //  The global named "file" uses "open" as its constructor	#%#%#%
-var FileType = NewType(rFile, Open,
+var FileType = NewType("f", rFile, Open, FileMethods,
 	"file", "filename,flags", "open a file")
 
 //  NewFile(name, reader, writer, closer) -- construct new Goaldi file

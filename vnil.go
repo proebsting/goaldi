@@ -5,7 +5,8 @@ package goaldi
 import ()
 
 //  The constructor named "nil" is not a global because "nil" is reserved.
-var NilType = NewType(rNil, Nil, "nil", "", "return nil value")
+var NilType = NewType("z", rNil, Nil, nil,
+	"nil", "", "return nil value")
 
 //  The vnil struct contains no data and is not exported.
 type vnil struct {
@@ -49,17 +50,4 @@ func (v *vnil) Import() Value {
 //  vnil.Export returns a Go nil
 func (v *vnil) Export() interface{} {
 	return nil
-}
-
-//  Declare methods
-var NilMethods = MethodTable([]*VProcedure{
-	DefMeth((*vnil).Type, "type", "", "return nil type"),
-	DefMeth((*vnil).Copy, "copy", "", "return nil value"),
-	DefMeth((*vnil).String, "string", "", "return \"~\""),
-	DefMeth((*vnil).GoString, "image", "", "return \"nil\""),
-})
-
-//  vnil.Field implements methods
-func (v *vnil) Field(f string) Value {
-	return GetMethod(NilMethods, v, f)
 }

@@ -44,6 +44,10 @@ func Field(x Value, s string) Value {
 		// we have implicit methods for any kind of map
 		return GetMethod(GoMapMethods, x, s)
 	}
+	// check for methods defined on all types
+	if mv := UniMethod(x, s); mv != nil {
+		return mv
+	}
 	// nothing found
 	panic(NewExn("Field not found: "+s, x))
 }

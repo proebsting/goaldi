@@ -9,19 +9,6 @@ import (
 	"unicode"
 )
 
-//  Declare methods
-var StringMethods = MethodTable([]*VProcedure{
-	DefMeth((*VString).Type, "type", "", "return string type"),
-	DefMeth((*VString).Copy, "copy", "", "return string value"),
-	DefMeth((*VString).String, "string", "", "return string value"),
-	DefMeth((*VString).GoString, "image", "", "return string image"),
-})
-
-//  VString.Field implements methods
-func (v *VString) Field(f string) Value {
-	return GetMethod(StringMethods, v, f)
-}
-
 //  This init function adds a set of Go functions to the standard library
 func init() {
 	// Goaldi procedures

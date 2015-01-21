@@ -27,10 +27,6 @@ import (
 //  Method names begin with an extra F to distinguish from those in vfile.go
 //  (whose names are fixed by the need to implement io.ReadWriteCloser).
 var FileMethods = MethodTable([]*VProcedure{
-	DefMeth((*VFile).Type, "type", "", "return file type"),
-	DefMeth((*VFile).Copy, "copy", "", "return file value"),
-	DefMeth((*VFile).String, "string", "", "return short string"),
-	DefMeth((*VFile).GoString, "image", "", "return string image"),
 	DefMeth((*VFile).FFlush, "flush", "", "flush file"),
 	DefMeth((*VFile).FClose, "close", "", "close file"),
 	DefMeth((*VFile).FRead, "read", "", "read one line"),

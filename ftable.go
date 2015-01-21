@@ -12,10 +12,6 @@ var _ = fmt.Printf // enable debugging
 
 //  Declare methods
 var TableMethods = MethodTable([]*VProcedure{
-	DefMeth(VTable.Type, "type", "", "return table type"),
-	DefMeth(VTable.Copy, "copy", "", "duplicate table"),
-	DefMeth(VTable.String, "string", "", "return short string"),
-	DefMeth(VTable.GoString, "image", "", "return string image"),
 	DefMeth(VTable.Member, "member", "x", "test membership"),
 	DefMeth(VTable.Delete, "delete", "x", "remove entry"),
 	DefMeth(VTable.Sort, "sort", "", "produce sorted list"),

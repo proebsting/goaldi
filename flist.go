@@ -10,10 +10,6 @@ var _ = fmt.Printf // enable debugging
 
 //  Declare methods
 var ListMethods = MethodTable([]*VProcedure{
-	DefMeth((*VList).Type, "type", "", "return list type"),
-	DefMeth((*VList).Copy, "copy", "", "duplicate list"),
-	DefMeth((*VList).String, "string", "", "return short string"),
-	DefMeth((*VList).GoString, "image", "", "return string image"),
 	DefMeth((*VList).Push, "push", "x[]", "add to front"),
 	DefMeth((*VList).Pop, "pop", "", "remove from front"),
 	DefMeth((*VList).Get, "get", "", "remove from front"),
