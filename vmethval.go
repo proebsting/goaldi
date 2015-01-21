@@ -114,24 +114,20 @@ func GetMethod(m map[string]*VProcedure, v Value, s string) *VMethVal {
 
 //  UniMethod(v,s) finds one of the universal methods defined on all types
 func UniMethod(v Value, s string) *VMethVal {
-	switch s {
-	case "type":
-		return MethodVal(UniType, v)
-	case "string":
-		return MethodVal(UniString, v)
-	case "image":
-		return MethodVal(UniImage, v)
-	case "copy":
-		return MethodVal(UniCopy, v)
-	default:
+	if m := UniMethods[s]; m != nil {
+		return MethodVal(m, v)
+	} else {
 		return nil
 	}
 }
 
-var UniType = DefProc(Type, "type", "", "return type of value")
-var UniString = DefProc(String, "string", "", "render value as string")
-var UniImage = DefProc(Image, "image", "", "return string image of value")
-var UniCopy = DefProc(Copy, "copy", "", "copy value")
+//  Declare universal methods
+var UniMethods = map[string]*VProcedure{
+	"type":   DefProc(Type, "type", "", "return type of value"),
+	"string": DefProc(String, "string", "", "render value as string"),
+	"image":  DefProc(Image, "image", "", "return string image of value"),
+	"copy":   DefProc(Copy, "copy", "", "copy value"),
+}
 
 //  VMethVal.Call invokes the underlying method function.
 func (mvf *VMethVal) Call(env *Env, args []Value, names []string) (Value, *Closure) {
