@@ -17,11 +17,6 @@ var TableMethods = MethodTable([]*VProcedure{
 	DefMeth(VTable.Sort, "sort", "", "produce sorted list"),
 })
 
-//  VTable.Field implements method calls
-func (m VTable) Field(f string) Value {
-	return GetMethod(TableMethods, m, f)
-}
-
 //  Declare methods on Go Tables
 var GoMapMethods = MethodTable([]*VProcedure{
 	DefMeth(GoMapMember, "member", "x", "test membership"),

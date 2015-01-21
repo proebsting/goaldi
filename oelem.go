@@ -18,6 +18,20 @@ func Field(x Value, s string) Value {
 	if t, ok := x.(IField); ok {
 		return t.Field(s)
 	}
+	// check for a method of a standard type
+	if r, ok := x.(ICore); ok { // has Type()
+		if t, ok := r.Type().(*VType); ok { // is a VType
+			if t.Methods != nil { // has methods
+				m := t.Methods[s] // check the one we need
+				if m != nil {
+					return MethodVal(m, x) // got it!
+				}
+			}
+		}
+		if mv := UniMethod(x, s); mv != nil {
+			return mv
+		}
+	}
 	// using reflection, peek inside interface and/or pointer to actual value
 	xv := reflect.ValueOf(x)
 	if xv.Kind() == reflect.Interface {

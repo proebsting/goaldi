@@ -14,11 +14,6 @@ var ChannelMethods = MethodTable([]*VProcedure{
 	DefMeth(VChannel.Buffer, "buffer", "n", "create buffer"),
 })
 
-//  VChannel.Field implements method calls
-func (m VChannel) Field(f string) Value {
-	return GetMethod(ChannelMethods, m, f)
-}
-
 //  Declare static functions
 func init() {
 	DefLib(Buffer, "buffer", "n,c", "interpose buffer before channel")

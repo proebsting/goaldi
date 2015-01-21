@@ -38,11 +38,6 @@ var FileMethods = MethodTable([]*VProcedure{
 	DefMeth((*VFile).FPrintln, "println", "x[]", "write line of values"),
 })
 
-//  VFile.Field implements methods
-func (v *VFile) Field(f string) Value {
-	return GetMethod(FileMethods, v, f)
-}
-
 //  Declare procedures
 func init() {
 	// Goaldi procedures

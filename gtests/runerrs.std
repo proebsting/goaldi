@@ -21,7 +21,7 @@
 61. Exception(Not a channel,3)
 62. Exception(Nonpositive field index,-1)
 63. Exception(Field not found: huh,r{})
-64. Exception(unrecognized method: huh,L:0)
+64. Exception(Field not found: huh,L:0)
 69. interface conversion: interface is *goaldi.VNumber, not *goaldi.VList
 70. Exception(Duplicate argument,a)
 71. Exception(Duplicate argument,b)
