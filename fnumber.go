@@ -5,8 +5,10 @@
 package goaldi
 
 import (
+	"encoding/binary"
 	"math"
 	"math/rand"
+	"os"
 )
 
 func init() {
@@ -17,6 +19,7 @@ func init() {
 	DefLib(Log, "log", "n,b", "compute logarithm to base b")
 	DefLib(Atan, "atan", "x,y", "compute arctangent of x / y")
 	DefLib(GCD, "gcd", "i[]", "find greatest common divisor")
+	DefLib(Randomize, "randomize", "", "irreproducibly seed random generation")
 	DefLib(RandGen, "randgen", "seed", "create independent random sequence")
 	DefLib(RtoD, "rtod", "r", "convert radians to degrees")
 	DefLib(DtoR, "dtor", "d", "convert degrees to radians")
@@ -134,7 +137,25 @@ func GCD(env *Env, args ...Value) (Value, *Closure) {
 	return Return(NewNumber(float64(a)))
 }
 
-//  RandGen(i) -- new random generator seeded by i
+//  Randomize() -- seed random number generator irreproducibly
+func Randomize(env *Env, args ...Value) (Value, *Closure) {
+	defer Traceback("randomize", args)
+	var seed int64
+	f, err := os.Open("/dev/urandom")
+	if err != nil {
+		panic(err)
+	}
+	err = binary.Read(f, binary.LittleEndian, &seed)
+	if err != nil {
+		panic(err)
+	}
+	f.Close()
+	seed = seed & 0x0000FFFFFFFFFFFF // 48 bits
+	rand.Seed(seed)
+	return Return(NewNumber(float64(seed)))
+}
+
+//  RandGen(i) -- return new random generator seeded by i
 //  Returns a new Go math.rand/Rand object whose methods may be called.
 func RandGen(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("randgen", args)

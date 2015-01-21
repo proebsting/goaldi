@@ -4,6 +4,7 @@ package goaldi
 
 import (
 	"fmt"
+	"math/rand"
 )
 
 var _ = fmt.Printf // enable debugging
@@ -16,6 +17,7 @@ var ListMethods = MethodTable([]*VProcedure{
 	DefMeth((*VList).Put, "put", "x[]", "add to end"),
 	DefMeth((*VList).Pull, "pull", "", "remove from end"),
 	DefMeth((*VList).Sort, "sort", "i", "return sorted copy"),
+	DefMeth((*VList).Shuffle, "shuffle", "", "return randomized copy"),
 })
 
 //  List(n, x) -- return a new list of n elements initialized to copy(x)
@@ -54,4 +56,18 @@ func (v *VList) Put(args ...Value) (Value, *Closure) {
 
 func (v *VList) Pull(args ...Value) (Value, *Closure) {
 	return v.Snip(false, "L.pull", args...)
+}
+
+//------------------------------------  Shuffle:  L.shffle()
+
+func (v *VList) Shuffle(args ...Value) (Value, *Closure) {
+	defer Traceback("shuffle", args)
+	n := len(v.data)
+	d := make([]Value, n, n)
+	copy(d, v.data)
+	for i := n - 1; i > 0; i-- {
+		j := rand.Intn(i + 1)
+		d[i], d[j] = d[j], d[i]
+	}
+	return Return(InitList(d))
 }

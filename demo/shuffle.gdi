@@ -1,0 +1,23 @@
+#  randomness demo
+#  
+#  repeatedly shuffles lists of size 2, 3, 4 and counts
+#  the of occurrences of all the resulting permutations
+
+procedure main(arg) {
+	write("seed = ", randomize())
+	^ntimes := number(arg) | 24000
+	every ^size := 2 to 4 do {
+		write()
+		^t := table()
+		every 1 to ntimes do {
+			^a := [: char(96+!size) :]
+			^s := ""
+			every s ||:= !a.shuffle()
+			/t[s] := 0
+			t[s] +:= 1
+		}
+		every ^kv := !t.sort() do {
+			printf("%6.0f  %s\n", kv.value, kv.key)
+		}
+	}
+}
