@@ -135,7 +135,7 @@ func (mvf *VMethVal) Call(env *Env, args []Value, names []string) (Value, *Closu
 	}
 	method := reflect.ValueOf(f)
 	mtype := reflect.TypeOf(f)
-	if mtype.NumIn() == 0 || !reflect.TypeOf(env).AssignableTo(mtype.In(0)) {
+	if mtype.NumIn() == 0 || !mtype.In(0).ConvertibleTo(reflect.TypeOf(env)) {
 		arglist = arglist[1:] // remove env argument if not wanted
 	}
 	result := method.Call(arglist)
