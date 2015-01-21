@@ -57,9 +57,9 @@ func NewFile(name string,
 	return &VFile{name, reader.(*bufio.Reader), writer, closer}
 }
 
-//  VFile.String -- conversion to Go string returns "F:name"
+//  VFile.String -- conversion to Go string returns "f:name"
 func (v *VFile) String() string {
-	return "F:" + v.Name
+	return "f:" + v.Name
 }
 
 //  VFile.GoString -- image returns "file(name,[r][w])"

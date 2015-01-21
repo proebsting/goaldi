@@ -54,9 +54,9 @@ func NewProcedure(name string, pnames *[]string, allowvar bool,
 var ProcedureType = NewType("p", rProc, ProcCtor, nil,
 	"procedure", "p", "succeed if procedure")
 
-//  VProcedure.String -- default conversion to Go string returns "P:procname"
+//  VProcedure.String -- default conversion to Go string returns "p:procname"
 func (v *VProcedure) String() string {
-	return "P:" + v.Name
+	return "p:" + v.Name
 }
 
 //  VProcedure.GoString -- convert to string for image() and printf("%#v")

@@ -1,7 +1,7 @@
 10. Exception(Unrecognized dynamic variable,%huh)
-20. Exception(Not a string,P:main)
+20. Exception(Not a string,p:main)
 21. Exception(Cannot convert to number,x)
-22. Exception(Not a number,P:main)
+22. Exception(Not a number,p:main)
 23. Exception(?n < 0,-3)
 24. Exception(Not a channel,666)
 30. Exception(character code out of range,-1)
@@ -17,7 +17,7 @@
 52. interface conversion: *goaldi.vnil is not goaldi.Numerable: missing method ToNumber
 53. interface conversion: *goaldi.VList is not goaldi.Numerable: missing method ToNumber
 54. Exception(ToBy: bad increment,0)
-60. Exception(Wrong type for indexing,CH:0)
+60. Exception(Wrong type for indexing,c:0)
 61. Exception(Not a channel,3)
 62. Exception(Nonpositive field index,-1)
 63. Exception(Field not found: huh,r{})
@@ -29,16 +29,16 @@
 73. Exception(No parameter matches name,e)
 74. Exception(No parameter matches name,self)
 75. Exception(No parameter matches name,x)
-76. Exception(Too many arguments,P:r)
+76. Exception(Too many arguments,p:r)
 78. Exception(No parameter matches name,s)
 79. Exception(Named arguments not allowed,3)
 80. Exception(Unrecognized flag,q)
 81. open /no/such/file: no such file or directory
 82. open /bin: is a directory
 83. open /bin/ls: permission denied
-84. Exception(Not open for writing,F:/dev/null)
-85. Exception(Not open for reading,F:/dev/null)
-86. Exception(Not open for reading,F:/dev/null)
+84. Exception(Not open for writing,f:/dev/null)
+85. Exception(Not open for reading,f:/dev/null)
+86. Exception(Not open for reading,f:/dev/null)
 95. Exception(my double error,12,34)
 96. Exception(my own error)
 97. Exception(my nil error,~)

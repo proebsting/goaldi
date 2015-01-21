@@ -30,15 +30,15 @@ default    : 2.718      : 2.718281828459045
 default    : 0          : "0"
 "1"        : 1          : "1"
 default    : 2          : "2"
-rec        : C:rec      : constructor rec(a)
-%stdin     : F:%stdin   : file(%stdin,r)
-main       : P:main     : procedure main()
-write      : P:write    : procedure write(x[])
+rec        : R:rec      : constructor rec(a)
+%stdin     : f:%stdin   : file(%stdin,r)
+main       : p:main     : procedure main()
+write      : p:write    : procedure write(x[])
 default    : rec{}      : rec{a:~}
 r          : rec{}      : rec{a:45}
-c          : CH:0       : channel(0)
-cx         : CH:0       : channel(0)
+c          : c:0        : channel(0)
+cx         : c:0        : channel(0)
 t          : T:2        : table{a:aaa,x:xyz}
 default    : L:0        : []
-L.pop      : V:pop      : methodvalue (L:22).pop
-L          : L:22       : [~,0,1,2,2.718,3.142,,0,1,2,C:rec,F:%stdin,P:main,P:write,rec{},rec{},CH:0,CH:0,T:2,L:0,V:pop,L:22]
+L.pop      : m:pop      : methodvalue (L:22).pop
+L          : L:22       : [~,0,1,2,2.718,3.142,,0,1,2,R:rec,f:%stdin,p:main,p:write,rec{},rec{},c:0,c:0,T:2,L:0,m:pop,L:22]

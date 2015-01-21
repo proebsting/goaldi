@@ -19,9 +19,9 @@ func NewChannel(i int) VChannel {
 var ChannelType = NewType("c", rChannel, Channel, ChannelMethods,
 	"channel", "size", "create channel")
 
-//  VChannel.String -- default conversion to Go string returns "CH:size"
+//  VChannel.String -- default conversion to Go string returns "c:size"
 func (c VChannel) String() string {
-	return fmt.Sprintf("CH:%d", cap(c))
+	return fmt.Sprintf("c:%d", cap(c))
 }
 
 //  VChannel.GoString -- convert to Go string for image() and printf("%#v")

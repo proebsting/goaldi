@@ -21,7 +21,7 @@ type VCtor struct {
 }
 
 //  ConstructorType is the constructor instance of type type
-var ConstructorType = NewType("r", rCtor, Constructor, nil,
+var ConstructorType = NewType("R", rCtor, Constructor, nil,
 	"constructor", "name,fields[]", "build a record constructor")
 
 //  A Constructor is also a type, which means it must implement Rank()
@@ -73,9 +73,9 @@ func (v *VCtor) New(a []Value) *VRecord {
 	return r
 }
 
-//  VCtor.String -- conversion to Go string returns "C:name"
+//  VCtor.String -- conversion to Go string returns "R:name"
 func (v *VCtor) String() string {
-	return "C:" + v.Name
+	return "R:" + v.Name
 }
 
 //  VCtor.GoString -- convert to Go string for image() and printf("%#v")

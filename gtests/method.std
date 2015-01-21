@@ -18,7 +18,7 @@ at 1,5: Q: square{w:6}
 at 1,1: Q: square{w:6}
 at 5,5: Q: square{w:6}
 at 5,1: Q: square{w:6}
-value: V:draw : methodvalue (circle{}).draw : V:draw
+value: m:draw : methodvalue (circle{}).draw : m:draw
 type:  t:methodvalue t:methodvalue t:methodvalue
 at 3,4: C: circle{r:6,color:purple}
 done

@@ -7,15 +7,15 @@ t:number      t:number      17        17                     17
 t:number      t:number      3.142     3.141592653589793      3.141592653589793
 t:number      t:number      6.022e+23 6.02214129e+23         6.02214129e+23
 t:string      t:string      abcd      "abcd"                 abcd
-t:file        t:file        F:%stdin  file(%stdin,r)         F:%stdin
-t:channel     t:channel     CH:3      channel(3)             CH:3
-t:constructor t:constructor C:P       constructor P(x,y)     C:P
-t:methodvalue t:methodvalue V:xy      methodvalue (P{}).xy   V:xy
-              t:procedure   P:show    procedure show(g,v)    0xXXXXXX
+t:file        t:file        f:%stdin  file(%stdin,r)         f:%stdin
+t:channel     t:channel     c:3       channel(3)             c:3
+t:constructor t:constructor R:P       constructor P(x,y)     R:P
+t:methodvalue t:methodvalue m:xy      methodvalue (P{}).xy   m:xy
+              t:procedure   p:show    procedure show(g,v)    0xXXXXXX
 t:list        t:list        L:5       [2,3,5,7,11]           [2 3 5 7 11]
 t:table       t:table       T:2       table{Au:Gold,Fe:Iron} T:2
-C:P           C:P           P{}       P{x:7,y:5}             P{}
-              C:tuple       tuple{}   tuple{w:6,h:4}         tuple{}
+R:P           R:P           P{}       P{x:7,y:5}             P{}
+              R:tuple       tuple{}   tuple{w:6,h:4}         tuple{}
 t:external    t:external    1h2m3s    3723000000000          1h2m3s
 
 Sorting values of mixed types:
@@ -30,8 +30,8 @@ Sorting values of mixed types:
      t:procedure  procedure show(g,v)
           t:list  [2,3,5,7,11]
          t:table  table{Au:Gold,Fe:Iron}
-             C:P  P{x:7,y:5}
-         C:tuple  tuple{w:6,h:4}
+             R:P  P{x:7,y:5}
+         R:tuple  tuple{w:6,h:4}
       t:external  3723000000000
 
 Sorting the types themselves:
@@ -47,20 +47,20 @@ Sorting the types themselves:
           t:list  [2,3,5,7,11]
          t:table  table{Au:Gold,Fe:Iron}
       t:external  3723000000000
-             C:P  P{x:7,y:5}
-         C:tuple  tuple{w:6,h:4}
+             R:P  P{x:7,y:5}
+         R:tuple  tuple{w:6,h:4}
 
 Testing calls to universal methods x.type(), x.string() x.image(), x.copy()
               t:nil         ~         nil                    ~
               t:type        t:nil     type nil               t:nil
               t:number      6.022e+23 6.02214129e+23         6.022e+23
               t:string      abcd      "abcd"                 abcd
-              t:file        F:%stdin  file(%stdin,r)         F:%stdin
-              t:channel     CH:3      channel(3)             CH:3
-              t:constructor C:P       constructor P(x,y)     C:P
-              t:methodvalue V:xy      methodvalue (P{}).xy   V:xy
-              t:procedure   P:show    procedure show(g,v)    P:show
+              t:file        f:%stdin  file(%stdin,r)         f:%stdin
+              t:channel     c:3       channel(3)             c:3
+              t:constructor R:P       constructor P(x,y)     R:P
+              t:methodvalue m:xy      methodvalue (P{}).xy   m:xy
+              t:procedure   p:show    procedure show(g,v)    p:show
               t:list        L:5       [2,3,5,7,11]           L:5
               t:table       T:2       table{Au:Gold,Fe:Iron} T:2
-              C:P           P{}       P{x:7,y:5}             P{}
-              C:tuple       tuple{}   tuple{w:6,h:4}         tuple{}
+              R:P           P{}       P{x:7,y:5}             P{}
+              R:tuple       tuple{}   tuple{w:6,h:4}         tuple{}

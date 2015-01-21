@@ -22,6 +22,6 @@ abc: type()t:string image()"abc" number()-- string()abc
 1.618: type()t:number image()1.618033988749895 number()1.618 string()1.618
 2.718: type()t:number image()2.718281828459045 number()2.718 string()2.718
 3.142: type()t:number image()3.141592653589793 number()3.142 string()3.142
-F:%stdin: type()t:file image()file(%stdin,r) number()-- string()F:%stdin
-F:%stdout: type()t:file image()file(%stdout,w) number()-- string()F:%stdout
-F:%stderr: type()t:file image()file(%stderr,w) number()-- string()F:%stderr
+f:%stdin: type()t:file image()file(%stdin,r) number()-- string()f:%stdin
+f:%stdout: type()t:file image()file(%stdout,w) number()-- string()f:%stdout
+f:%stderr: type()t:file image()file(%stderr,w) number()-- string()f:%stderr
