@@ -12,19 +12,19 @@ import (
 //  This init function adds a set of Go functions to the standard library
 func init() {
 	// Goaldi procedures
-	DefLib(Char, "char", "n", "interpret rune as one-character string")
-	DefLib(Ord, "ord", "s", "return Unicode ordinal of one-character string")
+	DefLib(Char, "char", "n", "return single character for Unicode value")
+	DefLib(Ord, "ord", "s", "return Unicode ordinal of single character")
 	DefLib(Reverse, "reverse", "s", "return mirror image of string")
 	// Go library functions
 	GoLib(strings.Contains, "contains", "s,substr", "return 1 if substr is in s")
 	GoLib(strings.ContainsAny, "containsany", "s,chars", "return 1 if any char is in s")
 	GoLib(strings.EqualFold, "equalfold", "s,t", "return 1 if s==t with case folding")
-	GoLib(strings.Fields, "fields", "s", "return fields of s broken by whitespace")
+	GoLib(strings.Fields, "fields", "s", "return fields of s delimited by whitespace")
 	GoLib(regexp.Compile, "regex", "expr", "compile Go regular expression")
 	GoLib(regexp.CompilePOSIX, "regexp", "expr", "compile POSIX regular expression")
 	GoLib(strings.Replace, "replace", "s,old,new", "return s with new replacing old")
-	GoLib(strings.Repeat, "repl", "s,count", "return s repeated n times")
-	GoLib(strings.Split, "split", "s,sep", "return fields separated by sep")
+	GoLib(strings.Repeat, "repl", "s,count", "concatenate copies of s")
+	GoLib(strings.Split, "split", "s,sep", "return fields delimited by sep")
 	GoLib(strings.ToUpper, "toupper", "s", "convert to upper case")
 	GoLib(strings.ToLower, "tolower", "s", "convert to lower case")
 	GoLib(strings.Trim, "trim", "s,cutset", "remove leading and trailing characters")

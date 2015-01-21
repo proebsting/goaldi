@@ -24,7 +24,7 @@ func init() {
 	DefLib(Date, "date", "", "return the current date")
 	DefLib(Time, "time", "", "return the current time")
 	DefLib(Now, "now", "", "return the current instant as a Go Time struct")
-	DefLib(Duration, "duration", "x", "convert value to a Go Duration struct")
+	DefLib(Duration, "duration", "n", "convert value to a Go Duration struct")
 	DefLib(CPUtime, "cputime", "", "return total processor time used")
 	// Go library functions
 	GoLib(os.Getenv, "getenv", "key", "read environment variable")

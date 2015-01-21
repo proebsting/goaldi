@@ -55,11 +55,11 @@ func init() {
 	GoLib(os.Remove, "remove", "name", "delete file")
 	GoLib(os.Mkdir, "mkdir", "name,perm", "create directory")
 	GoLib(os.MkdirAll, "mkdirall", "path,perm", "create directory tree")
-	GoLib(os.Rename, "rename", "oldpath,newpath", "change file name")
+	GoLib(os.Rename, "rename", "old,new", "change file name")
 	GoLib(os.Truncate, "truncate", "name,size", "change file size")
-	GoLib(fmt.Printf, "printf", "fmt,x[]", "print with formatting")
-	GoLib(fmt.Fprintf, "fprintf", "f,fmt,x[]", "print to file with formatting")
-	GoLib(fmt.Sprintf, "sprintf", "fmt,x[]", "format as if for printing")
+	GoLib(fmt.Printf, "printf", "fmt,x[]", "write with formatting")
+	GoLib(fmt.Fprintf, "fprintf", "f,fmt,x[]", "write to file with formatting")
+	GoLib(fmt.Sprintf, "sprintf", "fmt,x[]", "make string by formatting values")
 }
 
 var noBytes = []byte("")
