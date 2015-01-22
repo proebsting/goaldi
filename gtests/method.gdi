@@ -23,6 +23,12 @@ procedure main() {
 	write("type:  ", type(m), " ", m.type(), " ", type(m) === methodvalue)
 	c1.color := "purple"
 	m(3,4)
+
+	#  check methodvalue comparisons
+	compare(c1.draw,s1.draw)
+	compare(c1.draw,c2.draw)
+	compare(c1.draw,c1.draw)
+
 	write(methodvalue("FAIL") | "done")
 }
 
@@ -41,4 +47,9 @@ procedure square.draw(x, y) {
 
 procedure show(o, x, y, c) {
     printf("at %.0f,%.0f: %s: %#v\n", x, y, c, o)
+}
+
+procedure compare(m1, m2) {
+	writes(if m1 === m2 then "SAME:" else "DIFF:")
+	write("  ", image(m1), " : ", image(m2))
 }

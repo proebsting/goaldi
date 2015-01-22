@@ -21,4 +21,7 @@ at 5,1: Q: square{w:6}
 value: m:draw : methodvalue (circle{}).draw : m:draw
 type:  t:methodvalue t:methodvalue t:methodvalue
 at 3,4: C: circle{r:6,color:purple}
+DIFF:  methodvalue (circle{}).draw : methodvalue (square{}).draw
+DIFF:  methodvalue (circle{}).draw : methodvalue (circle{}).draw
+SAME:  methodvalue (circle{}).draw : methodvalue (circle{}).draw
 done
