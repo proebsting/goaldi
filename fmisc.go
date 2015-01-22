@@ -6,6 +6,7 @@ import (
 	"archive/zip"
 	"fmt"
 	"os"
+	"reflect"
 	"syscall"
 	"time"
 )
@@ -39,11 +40,16 @@ func init() {
 }
 
 //  Copy(v) -- return a copy of v (or just v if a simple value).
-//  The type of v *must* implement ICopy.
 func Copy(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("copy", args)
-	v := ProcArg(args, 0, NilValue)
-	return Return(v.(ICopy).Copy())
+	x := ProcArg(args, 0, NilValue)
+	if v, ok := x.(ICopy); ok {
+		return Return(v.Copy())
+	}
+	// doesn't implement Copy(); must be an external
+	y := reflect.Indirect(reflect.New(reflect.TypeOf(x)))
+	y.Set(reflect.ValueOf(x))
+	return Return(y.Interface())
 }
 
 //  Image(v) -- return string image of value v

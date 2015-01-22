@@ -43,8 +43,7 @@ procedure main() {
 	write("Testing calls to universal methods ",
 		"x.type(), x.string() x.image(), x.copy()")
 	every ^v := (!examples.sort(2)).value do
-		if type(v) ~=== external then
-			printf(format, "", v.type(), v.string(), v.image(), string(v.copy()))
+		printf(format, "", v.type(), v.string(), v.image(), string(v.copy()))
 }
 
 procedure show(g, v) {

@@ -64,3 +64,4 @@ Testing calls to universal methods x.type(), x.string() x.image(), x.copy()
               t:table       T:2       table{Au:Gold,Fe:Iron} T:2
               R:P           P{}       P{x:7,y:5}             P{}
               R:tuple       tuple{}   tuple{w:6,h:4}         tuple{}
+              t:external    1h2m3s    3723000000000          1h2m3s
