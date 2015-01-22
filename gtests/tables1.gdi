@@ -53,7 +53,7 @@ procedure main() {
 	#  ck(t)
 	#  writes("\t\t\t")
 	#  every !12 do
-	#  	kv := ?t & writes(" ", kv.key, ":", kv.value)
+	#     kv := ?t & writes(" ", kv.key, ":", kv.value)
 	#  write()
 }
 

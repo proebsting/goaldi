@@ -32,7 +32,7 @@ procedure main() {
 
 	every writes(!"abcde") do writes(" ")
 	every writes(!"fghij\n")
-	
+
 	local cx := create !"pqrst\n"
 	while writes(@cx)			# while without do
 
@@ -68,7 +68,7 @@ procedure main() {
 			L:		"L"
 			L.pop:	"L.pop"	# won't match, distinct methodvalue
 			default:  "default"
-        }
+		}
 		printf("%-10s : %-10s : %s\n", s, string(x), image(x))
 	}
 }

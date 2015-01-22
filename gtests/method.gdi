@@ -46,7 +46,7 @@ procedure square.draw(x, y) {
 }
 
 procedure show(o, x, y, c) {
-    printf("at %.0f,%.0f: %s: %#v\n", x, y, c, o)
+	printf("at %.0f,%.0f: %s: %#v\n", x, y, c, o)
 }
 
 procedure compare(m1, m2) {

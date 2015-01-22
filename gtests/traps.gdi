@@ -5,41 +5,41 @@
 procedure tvtbl_test () {
 local T
 
-    #
-    # Test to make sure that the table trapped variable returns
-    # the correct value.
-    #
-    # Developer's note: The parameters to write are not de-referenced
-    # until all of them are evaluated.  Any line produced by this section
-    # that has includes two different values for T [] is therefore incorrect.
-    #
-    write ( "TVTBL test 1" )
-    T := table()
+	#
+	# Test to make sure that the table trapped variable returns
+	# the correct value.
+	#
+	# Developer's note: The parameters to write are not de-referenced
+	# until all of them are evaluated.  Any line produced by this section
+	# that has includes two different values for T [] is therefore incorrect.
+	#
+	write ( "TVTBL test 1" )
+	T := table()
 
-    write ( "Assignment test:  \t", T [], "\t", T [] := "Assigned" )
-    write ( "Reassignment test:\t", T [], "\t", T [] := "Reassigned" )
-    write ( "Deletion test:    \t", T [], "\t", T.delete () & T [] )
-    write ( "Insertion test:   \t", T [], "\t",
-	 T [] := ( ( T[] := "Assigned" ) & "Reassigned" ) )
+	write ( "Assignment test:  \t", T [], "\t", T [] := "Assigned" )
+	write ( "Reassignment test:\t", T [], "\t", T [] := "Reassigned" )
+	write ( "Deletion test:    \t", T [], "\t", T.delete () & T [] )
+	write ( "Insertion test:   \t", T [], "\t",
+		T [] := ( ( T[] := "Assigned" ) & "Reassigned" ) )
 
-    #
-    # Test to make sure that the table is getting updated properly by
-    # trapped variable assignment.
-    #
-    # Note: there have been past errors where "T [] :=..." returns the
-    # correct value without properly updating the table.
-    #
-    write ( "\nTVTBL test 2" )
-    T.delete()
-    T [] := "Assigned";   write ( "Assignment test:  \t",   T [] )
-    T [] := "Reassigned"; write ( "Reassignment test:\t", T [] )
-    T [] := "Assigned"
-    T [] := ( T.delete() & "Reassigned" )
-    write ( "Deletion test:    \t" , T [] )
-    T.delete()
-    T [] := ( ( T[] := "Assigned" ) & "Reassigned" )
-    write ( "Insertion test:   \t", T [] )
-    write ( )
+	#
+	# Test to make sure that the table is getting updated properly by
+	# trapped variable assignment.
+	#
+	# Note: there have been past errors where "T [] :=..." returns the
+	# correct value without properly updating the table.
+	#
+	write ( "\nTVTBL test 2" )
+	T.delete()
+	T [] := "Assigned";   write ( "Assignment test:  \t",   T [] )
+	T [] := "Reassigned"; write ( "Reassignment test:\t", T [] )
+	T [] := "Assigned"
+	T [] := ( T.delete() & "Reassigned" )
+	write ( "Deletion test:    \t" , T [] )
+	T.delete()
+	T [] := ( ( T[] := "Assigned" ) & "Reassigned" )
+	write ( "Insertion test:   \t", T [] )
+	write ( )
 
 }
 
@@ -49,23 +49,23 @@ procedure subs_test (  ) {
 local T
 local s
 
-    write ( "TVSUBS test" )     
-    T := table()
-    T [ 7 ] := "....."
-    T [ 7 ] [ 4 ] := "X"
-    write ( "Subs of new table elem:      ", T [ 7 ] )
-    T [ 7 ] := "....."
-    T [ 7 ] [ 4 ] := "X"
-    write ( "Subs of existing table elem: ", T [ 7 ] )
+	write ( "TVSUBS test" )
+	T := table()
+	T [ 7 ] := "....."
+	T [ 7 ] [ 4 ] := "X"
+	write ( "Subs of new table elem:      ", T [ 7 ] )
+	T [ 7 ] := "....."
+	T [ 7 ] [ 4 ] := "X"
+	write ( "Subs of existing table elem: ", T [ 7 ] )
 
-    # Lots more cases should be added here.
+	# Lots more cases should be added here.
 
-    return    
+	return
 }
 
 
 procedure main (  ) {
-    tvtbl_test ( )
-    subs_test ( )
-    return
+	tvtbl_test ( )
+	subs_test ( )
+	return
 }

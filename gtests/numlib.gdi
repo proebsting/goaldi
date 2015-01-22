@@ -53,9 +53,8 @@ procedure testpot() {
 }
 
 procedure testrad() {
-    # local d, r
-    local d
-    local r
+	local d
+	local r
 	writes("dtortod:")
 	every d := -45 | 0 | 30 | 60 | 90 | 360/%pi | 180 do {
 		r := dtor(d)
@@ -76,7 +75,7 @@ procedure testlogb(v) {
 }
 
 procedure testa2(x,y) {
-   return writes(" (",x,",",y,")",atan(x,y))
+	return writes(" (",x,",",y,")",atan(x,y))
 }
 
 procedure apply(p, x, y) {

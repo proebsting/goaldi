@@ -4,7 +4,7 @@
 
 procedure main() {
 	local n := 74
-	every writes(" ", 
+	every writes(" ",
 		"GO:" |
 		(every local i := 10 to 50 by 10 do {
 			yield i

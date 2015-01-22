@@ -21,6 +21,6 @@ procedure main() {
 		every w := !fields(line) do
 			(\words[w] +:= 1) | (words[w] := 1)
 	}
-	every kv := !words.sort() do 
+	every kv := !words.sort() do
 	printf("%6.0f  %s\n", kv.value, kv.key)
 }

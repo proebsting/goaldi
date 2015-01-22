@@ -1,5 +1,5 @@
 #  randomness demo
-#  
+#
 #  repeatedly shuffles lists of size 2, 3, 4 and counts
 #  the of occurrences of all the resulting permutations
 

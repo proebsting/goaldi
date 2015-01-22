@@ -8,7 +8,7 @@ procedure main() {
 	write(" main: ", image(main), " : ", image(type(main)),
 		" : ", image(type(main)(main) | "[procedure constructor failed]"))
 
-    local a := 7
+	local a := 7
 	write(" a = ", a)
 
 	local by3 := lambda(i, j) { a := i to j by 3 }
@@ -16,7 +16,7 @@ procedure main() {
 	every writes(" ", by3(1, 20) | "\n")
 	write(" a = ", a)
 
-	local by7 := lambda(i, j)  local a := i to j by 7 
+	local by7 := lambda(i, j)  local a := i to j by 7
 	write(" by7 = ", image(by7), " : ", type(main) === type(by7) | "[FAILED]")
 	every writes(" ", by7(21, 50) | "\n")
 	write(" a = ", a)

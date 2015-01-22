@@ -37,7 +37,7 @@ procedure provoke(i) {
 		42: constructor("r", "a", "2", "c")
 		43: tuple(1,2,3)
 		44: tuple(a:1,b:2,a:3)
-		
+
 		50: nil to 10
 		51: "x" to 10
 		52: 1 to nil
