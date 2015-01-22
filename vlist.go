@@ -25,16 +25,10 @@ var ListType = NewType("L", rList, List, ListMethods,
 	"list", "size,x", "create list of copies of x")
 
 //  NewList(n, x) -- make a new list of n elements each initialized to copy(x)
-//  (Unless x is a Go external that does not implement Copy().)
 func NewList(n int, x Value) *VList {
 	v := &VList{make([]Value, n), false}
-	c, ok := x.(ICopy)
 	for i := range v.data {
-		if ok {
-			v.data[i] = c.Copy()
-		} else {
-			v.data[i] = x
-		}
+		v.data[i], _ = Copy(nil, x)
 	}
 	return v
 }
