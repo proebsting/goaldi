@@ -22,8 +22,8 @@
 
  L1: [3,2,1,L:4] 1 2 3 
  L2: [3,2,1,L:4] 1 2 4 
- T1: tableElem{key:2,value:j} tableElem{key:5,value:c} tableElem{key:8,value:n} tableElem{key:15,value:T:4} 
- T2: tableElem{key:2,value:j} tableElem{key:8,value:n} tableElem{key:11,value:t} tableElem{key:15,value:T:4} 
+ T1: key:value{key:2,value:j} key:value{key:5,value:c} key:value{key:8,value:n} key:value{key:15,value:T:4} 
+ T2: key:value{key:2,value:j} key:value{key:8,value:n} key:value{key:11,value:t} key:value{key:15,value:T:4} 
 
 
 nil
