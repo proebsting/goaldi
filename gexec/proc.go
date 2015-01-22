@@ -41,7 +41,7 @@ func setupProc(pr *pr_Info) {
 	// report undeclared identifiers
 	for _, id := range pr.ir.UnboundList {
 		if GlobalDict[id] == nil {
-			warning("in " + pr.name + ": undeclared identifier " + id)
+			fatal("in " + pr.name + ": undeclared identifier " + id)
 		}
 	}
 
