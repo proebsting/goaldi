@@ -8,6 +8,24 @@ import (
 
 var _ = fmt.Printf // enable debugging
 
+//  ranking of types for sorting
+const (
+	rNil = iota
+	rTrapped
+	rType
+	rNumber
+	rString
+	rFile
+	rChannel
+	rCtor
+	rMethVal
+	rProc
+	rList
+	rTable
+	rRecord
+	rExternal
+)
+
 //  The global named "type"
 var TypeType = NewType("t", rType, Type, nil,
 	"type", "x", "return type of value")
@@ -55,6 +73,11 @@ func (t *VType) Type() IRank {
 //  VType.Copy returns itself
 func (t *VType) Copy() Value {
 	return t
+}
+
+//  VType.Before compares two types for sorting
+func (a *VType) Before(b Value, i int) bool {
+	return a.SortRank < b.(*VType).SortRank
 }
 
 //  VType.Import returns itself

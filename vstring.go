@@ -149,6 +149,11 @@ func (v *VString) Copy() Value {
 	return v
 }
 
+//  VString.Before compares two strings for sorting
+func (a *VString) Before(b Value, i int) bool {
+	return a.compare(b.(*VString)) < 0
+}
+
 //  VString.Identical -- check equality for === operator
 func (s *VString) Identical(x Value) Value {
 	t, ok := x.(*VString)

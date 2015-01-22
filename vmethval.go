@@ -46,6 +46,16 @@ func (v *VMethVal) Copy() Value {
 	return v
 }
 
+//  VMethVal.Before compares two methodvalues for sorting
+func (a *VMethVal) Before(x Value, i int) bool {
+	b := x.(*VMethVal)
+	if a.Proc != b.Proc {
+		return a.Proc.Before(b.Proc, i)
+	} else {
+		return LT(a.Val, b.Val, -1)
+	}
+}
+
 //  VMethVal.Identical -- check equality for === operator
 func (s *VMethVal) Identical(x Value) Value {
 	t, ok := x.(*VMethVal)

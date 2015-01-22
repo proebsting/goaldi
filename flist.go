@@ -5,6 +5,7 @@ package goaldi
 import (
 	"fmt"
 	"math/rand"
+	"sort"
 )
 
 var _ = fmt.Printf // enable debugging
@@ -70,4 +71,52 @@ func (v *VList) Shuffle(args ...Value) (Value, *Closure) {
 		d[i], d[j] = d[j], d[i]
 	}
 	return Return(InitList(d))
+}
+
+//------------------------------------  Sort: L.Sort(i)
+
+//  L.Sort(i) -- sort list L on field i (default i=1)
+func (v *VList) Sort(args ...Value) (Value, *Closure) {
+	defer Traceback("sort", args)
+	i := int(ProcArg(args, 0, ONE).(Numerable).ToNumber().Val()) - 1
+	if i < 0 {
+		panic(NewExn("Nonpositive field index", args[0]))
+	}
+	d := &lsort{make([]Value, len(v.data)), i}
+	copy(d.v, v.data)
+	sort.Stable(d)
+	return Return(InitList(d.v))
+}
+
+//  a list to be sorted, with field index
+type lsort struct {
+	v []Value // Goaldi values
+	f int     // zero-based field index, or -1
+}
+
+//  sort interface functions
+func (a *lsort) Len() int           { return len(a.v) }
+func (a *lsort) Swap(i, j int)      { a.v[i], a.v[j] = a.v[j], a.v[i] }
+func (a *lsort) Less(i, j int) bool { return LT(a.v[i], a.v[j], a.f) }
+
+//  LT(x, y, i) -- return x < y on field i
+func LT(x Value, y Value, i int) bool {
+	rx := rank(x)
+	ry := rank(y)
+	if rx != ry { // if different types
+		return rx < ry // order by type rank
+	}
+	if v, ok := x.(ICore); ok { // if standard types (not external)
+		return v.Before(y, i) // use the type's comparison function
+	}
+	return false // otherwise no ordering defined
+}
+
+//  rank(x) -- return sort ranking for the type of x
+func rank(x Value) int {
+	if t, ok := x.(IType); ok {
+		return t.Type().Rank()
+	} else {
+		return rExternal
+	}
 }

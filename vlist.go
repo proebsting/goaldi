@@ -75,6 +75,19 @@ func (v *VList) Copy() Value {
 	return InitList(v.Export().([]Value))
 }
 
+//  VList.Before compares two lists for sorting on field i
+func (a *VList) Before(x Value, i int) bool {
+	b := x.(*VList)
+	if i >= 0 && len(a.data) > i && len(b.data) > i {
+		aref := &vListRef{a, i}
+		bref := &vListRef{b, i}
+		return LT(aref.Deref(), bref.Deref(), -1)
+	} else {
+		// put missing one first; otherwise #%#% we don't care
+		return len(a.data) < len(b.data)
+	}
+}
+
 //  VList.Import returns itself
 func (v *VList) Import() Value {
 	return v

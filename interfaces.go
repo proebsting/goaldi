@@ -27,20 +27,22 @@ type ICore interface {
 	// optional:  Numerable and Stringable, if implicitly convertible
 	// optional:  IField, for implementing methods
 	// optional:  IIdentical, if === requires more than pointer comparison
+	Before(Value, int) bool // compare value of same type on field i
 }
 
 //  Confirm implementation of core interfaces by all types
 var _ ICore = NilValue.(*vnil)
-var _ ICore = TypeType
+var _ ICore = &VType{}
 var _ ICore = NewNumber(1)
 var _ ICore = NewString("a")
 var _ ICore = &VFile{}
-var _ ICore = &VProcedure{}
-var _ ICore = &VMethVal{}
+var _ ICore = NewChannel(0)
 var _ ICore = &VCtor{}
-var _ ICore = &VRecord{}
+var _ ICore = &VMethVal{}
+var _ ICore = &VProcedure{}
 var _ ICore = &VList{}
 var _ ICore = &VTable{}
+var _ ICore = &VRecord{}
 
 type IType interface {
 	Type() IRank // return type for type()

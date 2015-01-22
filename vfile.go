@@ -84,6 +84,11 @@ func (v *VFile) Copy() Value {
 	return v
 }
 
+//  VFile.Before compares two files for sorting
+func (a *VFile) Before(b Value, i int) bool {
+	return a.Name < b.(*VFile).Name
+}
+
 //  VFile.Import returns itself
 func (v *VFile) Import() Value {
 	return v

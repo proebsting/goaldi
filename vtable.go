@@ -68,6 +68,11 @@ func (m VTable) Copy() Value {
 	return r
 }
 
+//  VTable.Before compares two tables for sorting
+func (a *VTable) Before(b Value, i int) bool {
+	return false // no ordering defined
+}
+
 //  VTable.Import returns itself
 func (v VTable) Import() Value {
 	return v

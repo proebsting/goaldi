@@ -86,6 +86,11 @@ func (v *VProcedure) Copy() Value {
 	return v
 }
 
+//  VProcedure.Before compares two procs for sorting
+func (a *VProcedure) Before(b Value, i int) bool {
+	return a.Name < b.(*VProcedure).Name
+}
+
 //  VProcedure.Import returns itself
 func (v *VProcedure) Import() Value {
 	return v

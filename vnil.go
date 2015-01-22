@@ -42,6 +42,11 @@ func (v *vnil) Copy() Value {
 	return v
 }
 
+//  vnil.Before compares two nils for sorting
+func (a *vnil) Before(b Value, i int) bool {
+	return false
+}
+
 //  vnil.Import returns itself
 func (v *vnil) Import() Value {
 	return v

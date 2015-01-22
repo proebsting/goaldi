@@ -39,6 +39,11 @@ func (c VChannel) Copy() Value {
 	return c
 }
 
+//  VChannel.Before compares two channels for sorting
+func (a VChannel) Before(b Value, i int) bool {
+	return false // no ordering defined
+}
+
 //  VChannel.Import returns itself
 func (v VChannel) Import() Value {
 	return v

@@ -99,6 +99,11 @@ func (v *VCtor) Copy() Value {
 	return v
 }
 
+//  VCtor.Before compares two constructors for sorting
+func (a *VCtor) Before(b Value, i int) bool {
+	return a.Name < b.(*VCtor).Name
+}
+
 //  VCtor.Import returns itself
 func (v *VCtor) Import() Value {
 	return v

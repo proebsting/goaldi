@@ -100,6 +100,11 @@ func (v *VNumber) Copy() Value {
 	return v
 }
 
+//  VNumber.Before compares two numbers for sorting
+func (a *VNumber) Before(b Value, i int) bool {
+	return *a < *(b.(*VNumber))
+}
+
 //  VNumber.Identical -- check equality for === operator
 func (a *VNumber) Identical(x Value) Value {
 	b, ok := x.(*VNumber)

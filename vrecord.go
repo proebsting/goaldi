@@ -44,6 +44,22 @@ func (v *VRecord) Copy() Value {
 	return r
 }
 
+//  VRecord.Before compares two records for sorting on field i
+func (a *VRecord) Before(x Value, i int) bool {
+	b := x.(*VRecord)
+	if a.Ctor != b.Ctor {
+		// different record types; order by type name
+		return a.Ctor.Name < b.Ctor.Name
+	}
+	if i >= 0 && len(a.Data) > i && len(b.Data) > i {
+		// both sides have an item i
+		return LT(a.Data[i], b.Data[i], -1)
+	} else {
+		// put missing one first; otherwise #%#% we don't care
+		return len(a.Data) < len(b.Data)
+	}
+}
+
 //  VRecord.Import returns itself
 func (v *VRecord) Import() Value {
 	return v
