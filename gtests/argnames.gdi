@@ -16,6 +16,7 @@ procedure main() {
 	write()
 	write(image(channel(3).buffer(size:5)))
 	write(image([].sort(i:1)))
+	printf(x:[%phi, %e, %pi], fmt:"%.4f  %.4f  %.4f\n")
 	%stdout.writeb(s:"stdout writeb\n")
 }
 
