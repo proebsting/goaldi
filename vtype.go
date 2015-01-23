@@ -86,7 +86,7 @@ func (a *VType) Before(b Value, i int) bool {
 	case *VType:
 		return a.SortRank < t.SortRank
 	case *VCtor:
-		return true // standard types precede constructors
+		return a.SortRank < rRecord
 	default:
 		panic(Malfunction("unexpected type in VType.Before"))
 	}

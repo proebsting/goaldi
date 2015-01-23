@@ -38,8 +38,8 @@ m    m:dist          t:methodvalue   methodvalue     t:methodvalue
 p    p:main          t:procedure     procedure       
 L    L:5             t:list          list            t:list
 T    T:2             t:table         table           t:table
-X    1h2m3s          t:external      external        t:external
 R    Point{}         t:Point         Point           t:Point
 R    key:value{}     t:key:value     key:value       
 R    tuple{}         t:tuple         tuple           
+X    1h2m3s          t:external      external        t:external
 
