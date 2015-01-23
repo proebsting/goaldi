@@ -1,73 +1,92 @@
 #SRC: Goaldi original
 #
-#  Show examples of all types
+#  Show examples of all types, presented multiple ways,
+#  and test sorting and various type and value methods
 
-global format
-global examples
+record Example(	# one example for display
+	value,		# example value
+	type,		# value.type() (for sorting by type)
+	gtype,		# corresponding global type if any
+)
 
-record P(x,y)
+record Point(x,y)								# a simple illustrative record
+procedure Point.dist() { return hypot(self.x, self.y) }	# and a method for it
 
-procedure P.xy() { return self.x * self.y }
 
 procedure main() {
 
-	examples := table()
-	format := "%-13s %-13s %-10v %-22s %v\n"
-	write()
-	printf(format, "global", "type(x)", "string(x)", "image(x)", "external(x)")
-	printf(format, "------", "-------", "---------", "--------", "-----------")
+	# make a list of examples with associated global type values
+	^E := []
+	add(E, nil)
+	add(E, type(), type)
+	add(E, 17, number)
+	add(E, %pi, number)
+	add(E, 6.02214129e23, number)
+	add(E, "abcd", string)
+	add(E, %stdin, file)
+	add(E, channel(3), channel)
+	add(E, Point, constructor)
+	add(E, ^P := Point(7,5), Point)
+	add(E, P.dist, methodvalue)
+	add(E, main)
+	add(E, ^L := [2,3,5,7,11], list)
+	add(E, ^T := table(){"Fe":"Iron","Au":"Gold"}, table)
+	add(E, !T.sort())	# table element
+	add(E, tuple(w:6,h:4))
+	add(E, duration(3600+120+3), external)
 
-	# show various representations and add one example of each type to table
-	show(, nil)
-	show(type, type())
-	show(number, 17)
-	show(number, %pi)
-	show(number, 6.02214129e23)
-	show(string, "abcd")
-	show(file, %stdin)
-	show(channel, channel(3))
-	show(constructor, P)
-	show(methodvalue, P().xy)
-	show(, show)
-	show(list, [2,3,5,7,11])
-	show(table, table(){"Fe":"Iron","Au":"Gold"})
-	show(P, P(7,5))
-	show(, tuple(w:6,h:4))
-	show(external, duration(3600+120+3))
-
-	# show type info (abbr and name) and test method calls on values
+	# show values various ways, checking universal methods in the process
 	write()
-	printf(format,
-		"* t.name()", "x.type()", "x.string()", "x.image()", "x.external()")
-	printf(format,
-		"----------", "--------", "----------", "---------", "------------")
-	every ^kv := !examples.sort(1) do {
-		^t := kv.key
-		^s := ""
-		if type(t) === type then
-			s := t.char() || " " || t.name()
-		^v := kv.value
-		printf(format, s, v.type(), v.string(), v.image(), string(v.copy()))
+	write("Examples sorted by value, showing presentation options:")
+	E := E.sort(1)
+	write()
+	^format := "%-4s %-15s %-30s %s\n"
+	printf(format, "ch", "x.string()", "x.image()", "printf(\"%v\")")
+	printf(format, "--", "----------", "---------", "------------")
+	every ^x := !E do {
+		^v := x.value
+		^s := check(string, v, v.string())
+		^i := check(image, v, v.image())
+		^t := check(type, v, v.type())
+		^f := sprintf("%v", v)
+		if f[1+:2] == "0x" then		# if hex address
+			f := "0xXXXXXX"			# hide actual value for reproducibility
+		printf(format, tchar(v), s, i, f)
 	}
 
-	# show sort orders for values and types
 	write()
-	write("Sorting values of mixed types:")
-	every kv := !examples.sort(2) do
-		printf("%16s  %s\n", kv.key, image(kv.value))
+	write("Examples sorted by type, showing type information:")
+	# n.b. stable sort keeps ordering reproducible within type
+	E := E.sort(2)
 	write()
-	write("Sorting the types themselves:")
-	every kv := !examples.sort(1) do
-		printf("%16s  %s\n", kv.key, image(kv.value))
+	format := "%-4s %-15s %-15s %-15s %s\n"
+	printf(format, "ch", "x.string()", "x.type()", "t.name()", "global")
+	printf(format, "--", "----------", "--------", "--------", "------")
+	every x := !E do {
+		^v := x.value
+		^t := x.type
+		printf(format, tchar(v), v.string(), t, tname(v), t===x.gtype | "")
+	}
+	write()
 }
 
-procedure show(g, v) {
-	^t := type(v)
-	examples[t] := v
-	^s := string(v)
-	^i := image(v)
-	^x := external(v)
-	if string(x)[1+:2] == "0x" then		# if hex address
-		x := "0xXXXXXX"					# hide actual value for reproducibility
-	printf(format, (t === g) | "", t, s, i, x)
+procedure add(E, v, g) {			#: add global type and sample value
+	return E.put(Example(v, type(v), g))
+}
+
+procedure check(p, x, s) {			#: validate p(x) === s
+	^t := p(x)
+	if t ~=== s then
+		write("MISMATCH: ", p, "(", x, ")===", t, " ~=== ", s)
+	return s
+}
+
+procedure tchar(v) {				#: show type character of a value
+	local t := type(v)
+	return if t.type()=== type then t.char() else " "
+}
+
+procedure tname(v) {				#: show type name of a value
+	local t := type(v)
+	return if t.type()=== type then t.name() else ""
 }
