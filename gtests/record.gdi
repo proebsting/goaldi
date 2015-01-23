@@ -4,12 +4,8 @@ record simple(f)
 record rec(f1, f2)
 
 procedure main() {
-	# local a, b, c
-	local a
-	local b
-	local c
 
-	a := rec()
+	local a := rec()
 	a.f1 := 1
 	a.f2 := 2
 	write("a1 ", a.f1, " ", a.f2)
@@ -28,7 +24,7 @@ procedure main() {
 	every !a := 13
 	write("a6 ", a.f2)
 
-	b := simple(14)
+	local b := simple(14)
 	write("*b ", *b)
 	write("?b ", ?b)
 	?b := 15
@@ -45,9 +41,13 @@ procedure main() {
 	every !b +:= 70
 	every writes(" ", !a | !b | "\n")
 
-	c := b.copy()
+	local c := b.copy()
 	b.f2 +:= 3
 	write(image(a))
 	write(image(b))
 	write(image(c))
+
+	write("simple.f: ", simple.f)
+	write("rec.f1: ", rec.f1)
+	write("rec.f2: ", rec.f2)
 }

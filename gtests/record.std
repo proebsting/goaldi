@@ -17,3 +17,6 @@ b[s] 7
 rec{f1:11,f2:22}
 rec{f1:73,f2:77}
 rec{f1:73,f2:74}
+simple.f: 1
+rec.f1: 1
+rec.f2: 2

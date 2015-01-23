@@ -59,6 +59,7 @@ procedure provoke(i) {
 		74: r().echo(self:6)
 		75: r(x:7)
 		76: r(1,2,3,4)
+		77: r.d
 		78: printf(s:"hello")
 		79: 3(1,2,e:5)
 

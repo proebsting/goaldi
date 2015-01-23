@@ -30,6 +30,7 @@
 74. Exception(No parameter matches name,self)
 75. Exception(No parameter matches name,x)
 76. Exception(Too many arguments,p:r)
+77. Exception(unrecognized field or method: d,t:r)
 78. Exception(No parameter matches name,s)
 79. Exception(Named arguments not allowed,3)
 80. Exception(Unrecognized flag,q)

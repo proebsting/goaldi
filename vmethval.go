@@ -119,7 +119,7 @@ func GetMethod(m map[string]*VProcedure, v Value, s string) *VMethVal {
 	if mv := UniMethod(v, s); mv != nil {
 		return mv
 	}
-	panic(NewExn("unrecognized method: "+s, v))
+	panic(NewExn("unrecognized field or method: "+s, v))
 }
 
 //  UniMethod(v,s) finds one of the universal methods defined on all types

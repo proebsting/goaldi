@@ -78,6 +78,10 @@ var ConstructorMethods = MethodTable([]*VProcedure{
 
 //  VCtor.Field -- implement C.id to override methods in VType
 func (c *VCtor) Field(f string) Value {
+	v := c.Members[f]
+	if i, ok := v.(int); ok {
+		return NewNumber(float64(i + 1)) // return Goaldi index of field f
+	}
 	return GetMethod(ConstructorMethods, c, f)
 }
 
