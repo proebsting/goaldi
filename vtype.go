@@ -17,7 +17,6 @@ const (
 	rString
 	rFile
 	rChannel
-	rCtor
 	rMethVal
 	rProc
 	rList
@@ -81,9 +80,16 @@ func (t *VType) Copy() Value {
 	return t
 }
 
-//  VType.Before compares two types for sorting
+//  VType.Before compares itself with a constructor or type value
 func (a *VType) Before(b Value, i int) bool {
-	return a.SortRank < b.(*VType).SortRank
+	switch t := b.(type) {
+	case *VType:
+		return a.SortRank < t.SortRank
+	case *VCtor:
+		return true // standard types precede constructors
+	default:
+		panic(Malfunction("unexpected type in VType.Before"))
+	}
 }
 
 //  VType.Import returns itself

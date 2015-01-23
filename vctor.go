@@ -20,15 +20,6 @@ type VCtor struct {
 	Members map[string]interface{} // field and method table
 }
 
-//  ConstructorType is the constructor instance of type type
-var ConstructorType = NewType("C", rCtor, Constructor, ConstructorMethods,
-	"constructor", "name,fields[]", "build a record constructor")
-
-//  A Constructor is also a type, which means it must implement Rank()
-func (v *VCtor) Rank() int {
-	return rRecord // if this is a type, its value is a record
-}
-
 //  NewCtor(name, fields) -- construct new definition
 //  Panics if a field name is duplicated.
 func NewCtor(name string, fields []string) *VCtor {
@@ -60,12 +51,6 @@ func (v *VCtor) AddMethod(name string, vproc *VProcedure) bool {
 	return true
 }
 
-//  Declare Goaldi methods
-var ConstructorMethods = MethodTable([]*VProcedure{
-	DefMeth((*VCtor).Name, "name", "", "get constructor name"),
-	DefMeth((*VCtor).Char, "char", "", "get abbreviation character"),
-})
-
 //  VCtor.New(values) -- create a new underlying record object
 func (v *VCtor) New(a []Value) *VRecord {
 	r := &VRecord{v, make([]Value, len(v.Flist))}
@@ -79,9 +64,26 @@ func (v *VCtor) New(a []Value) *VRecord {
 	return r
 }
 
-//  VCtor.String -- conversion to Go string returns "C:name"
+//  Declare static constructor
+func init() {
+	DefLib(Constructor,
+		"constructor", "name,fields[]", "build a record constructor")
+}
+
+//  Declare Goaldi methods
+var ConstructorMethods = MethodTable([]*VProcedure{
+	DefMeth((*VCtor).Name, "name", "", "get constructor name"),
+	DefMeth((*VCtor).Char, "char", "", "get abbreviation character"),
+})
+
+//  VCtor.Field -- implement C.id to override methods in VType
+func (c *VCtor) Field(f string) Value {
+	return GetMethod(ConstructorMethods, c, f)
+}
+
+//  VCtor.String -- conversion to Go string returns "t:name"
 func (v *VCtor) String() string {
-	return "C:" + v.RecName
+	return "t:" + v.RecName
 }
 
 //  VCtor.GoString -- convert to Go string for image() and printf("%#v")
@@ -95,9 +97,9 @@ func (v *VCtor) GoString() string {
 	return s + ")"
 }
 
-//  VCtor.Type returns the constructor type
+//  VCtor.Type returns the type type
 func (v *VCtor) Type() IRank {
-	return ConstructorType
+	return TypeType
 }
 
 //  VCtor.Copy returns itself
@@ -105,9 +107,16 @@ func (v *VCtor) Copy() Value {
 	return v
 }
 
-//  VCtor.Before compares two constructors for sorting
+//  VCtor.Before compares itself with a constructor or type value
 func (a *VCtor) Before(b Value, i int) bool {
-	return a.RecName < b.(*VCtor).RecName
+	switch t := b.(type) {
+	case *VCtor:
+		return a.RecName < t.RecName
+	case *VType:
+		return false // standard types precede constructors
+	default:
+		panic(Malfunction("unexpected type in VCtor.Before"))
+	}
 }
 
 //  VCtor.Import returns itself
@@ -118,6 +127,11 @@ func (v *VCtor) Import() Value {
 //  VCtor.Export returns itself
 func (v *VCtor) Export() interface{} {
 	return v
+}
+
+//  VCtor.Rank returns the rank of a record for sorting
+func (v *VCtor) Rank() int {
+	return rRecord // if this is a type, its instance is a record
 }
 
 //  VCtor.Name returns the type name

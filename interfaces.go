@@ -44,12 +44,15 @@ var _ ICore = &VList{}
 var _ ICore = &VTable{}
 var _ ICore = &VRecord{}
 
-type IType interface {
-	Type() IRank // return type for type()
+//  IRank designates anything usable as a type: VType or VCtor
+type IRank interface {
+	Rank() int                            // return rank for sorting
+	Name(args ...Value) (Value, *Closure) // return type name to Goaldi
+	Char(args ...Value) (Value, *Closure) // return type char to Goaldi
 }
 
-type IRank interface {
-	Rank() int // return rank for sorting
+type IType interface {
+	Type() IRank // return type for type()
 }
 
 type ICopy interface {

@@ -5,13 +5,13 @@ ch   x.string()      x.image()                      printf("%v")
 --   ----------      ---------                      ------------
 z    ~               nil                            <nil>
 t    t:nil           type nil                       t:nil
+t    t:Point         constructor Point(x,y)         t:Point
 n    3.142           3.141592653589793              3.141592653589793
 n    17              17                             17
 n    6.022e+23       6.02214129e+23                 6.02214129e+23
 s    abcd            "abcd"                         abcd
 f    f:%stdin        file(%stdin,r)                 f:%stdin
 c    c:3             channel(3)                     c:3
-C    C:Point         constructor Point(x,y)         C:Point
 m    m:dist          methodvalue (Point{}).dist     m:dist
 p    p:main          procedure main()               0xXXXXXX
 L    L:5             [2,3,5,7,11]                   [2 3 5 7 11]
@@ -27,19 +27,19 @@ ch   x.string()      x.type()        t.name()        global
 --   ----------      --------        --------        ------
 z    ~               t:nil           nil             
 t    t:nil           t:type          type            t:type
+t    t:Point         t:type          type            
 n    3.142           t:number        number          t:number
 n    17              t:number        number          t:number
 n    6.022e+23       t:number        number          t:number
 s    abcd            t:string        string          t:string
 f    f:%stdin        t:file          file            t:file
 c    c:3             t:channel       channel         t:channel
-C    C:Point         t:constructor   constructor     t:constructor
 m    m:dist          t:methodvalue   methodvalue     t:methodvalue
 p    p:main          t:procedure     procedure       
 L    L:5             t:list          list            t:list
 T    T:2             t:table         table           t:table
 X    1h2m3s          t:external      external        t:external
-R    Point{}         C:Point         Point           C:Point
-R    key:value{}     C:key:value     key:value       
-R    tuple{}         C:tuple         tuple           
+R    Point{}         t:Point         Point           t:Point
+R    key:value{}     t:key:value     key:value       
+R    tuple{}         t:tuple         tuple           
 
