@@ -11,7 +11,7 @@ n    6.022e+23       6.02214129e+23                 6.02214129e+23
 s    abcd            "abcd"                         abcd
 f    f:%stdin        file(%stdin,r)                 f:%stdin
 c    c:3             channel(3)                     c:3
-R    R:Point         constructor Point(x,y)         R:Point
+C    C:Point         constructor Point(x,y)         C:Point
 m    m:dist          methodvalue (Point{}).dist     m:dist
 p    p:main          procedure main()               0xXXXXXX
 L    L:5             [2,3,5,7,11]                   [2 3 5 7 11]
@@ -33,13 +33,13 @@ n    6.022e+23       t:number        number          t:number
 s    abcd            t:string        string          t:string
 f    f:%stdin        t:file          file            t:file
 c    c:3             t:channel       channel         t:channel
-R    R:Point         t:constructor   constructor     t:constructor
+C    C:Point         t:constructor   constructor     t:constructor
 m    m:dist          t:methodvalue   methodvalue     t:methodvalue
 p    p:main          t:procedure     procedure       
 L    L:5             t:list          list            t:list
 T    T:2             t:table         table           t:table
 X    1h2m3s          t:external      external        t:external
-R    Point{}         R:Point         Point           R:Point
-R    key:value{}     R:key:value     key:value       
-R    tuple{}         R:tuple         tuple           
+R    Point{}         C:Point         Point           C:Point
+R    key:value{}     C:key:value     key:value       
+R    tuple{}         C:tuple         tuple           
 
