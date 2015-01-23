@@ -108,7 +108,7 @@ func MethodTable(plist []*VProcedure) map[string]*VProcedure {
 }
 
 //  GetMethod(m,v,s) looks up method v.s in table m, panicking on failure.
-//  Defaults methods are provided for v.type, v.string, v.image.
+//  Defaults methods are additionally provided for all types.
 func GetMethod(m map[string]*VProcedure, v Value, s string) *VMethVal {
 	if m != nil {
 		method := m[s]
@@ -133,10 +133,11 @@ func UniMethod(v Value, s string) *VMethVal {
 
 //  Declare universal methods
 var UniMethods = map[string]*VProcedure{
-	"type":   DefProc(Type, "type", "", "return type of value"),
-	"string": DefProc(String, "string", "", "render value as string"),
-	"image":  DefProc(Image, "image", "", "return detailed string image"),
-	"copy":   DefProc(Copy, "copy", "", "copy value"),
+	"type":     DefProc(Type, "type", "", "return type of value"),
+	"string":   DefProc(String, "string", "", "render value as string"),
+	"image":    DefProc(Image, "image", "", "return detailed string image"),
+	"copy":     DefProc(Copy, "copy", "", "copy value"),
+	"external": DefProc(External, "external", "", "export and re-import"),
 }
 
 //  VMethVal.Call invokes the underlying method function.
