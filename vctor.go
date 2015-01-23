@@ -14,14 +14,14 @@ var _ = fmt.Printf // enable debugging
 
 //  VCtor is the constructor structure
 type VCtor struct {
-	Name    string                 // type name
+	RecName string                 // type name
 	Flist   []string               // ordered list of field names
 	Ctor    *VProcedure            // pseudo-constructor for argname handling
 	Members map[string]interface{} // field and method table
 }
 
 //  ConstructorType is the constructor instance of type type
-var ConstructorType = NewType("R", rCtor, Constructor, nil,
+var ConstructorType = NewType("R", rCtor, Constructor, ConstructorMethods,
 	"constructor", "name,fields[]", "build a record constructor")
 
 //  A Constructor is also a type, which means it must implement Rank()
@@ -60,6 +60,12 @@ func (v *VCtor) AddMethod(name string, vproc *VProcedure) bool {
 	return true
 }
 
+//  Declare Goaldi methods
+var ConstructorMethods = MethodTable([]*VProcedure{
+	DefMeth((*VCtor).Name, "name", "", "get constructor name"),
+	DefMeth((*VCtor).Char, "char", "", "get abbreviation character"),
+})
+
 //  VCtor.New(values) -- create a new underlying record object
 func (v *VCtor) New(a []Value) *VRecord {
 	r := &VRecord{v, make([]Value, len(v.Flist))}
@@ -75,12 +81,12 @@ func (v *VCtor) New(a []Value) *VRecord {
 
 //  VCtor.String -- conversion to Go string returns "R:name"
 func (v *VCtor) String() string {
-	return "R:" + v.Name
+	return "R:" + v.RecName
 }
 
 //  VCtor.GoString -- convert to Go string for image() and printf("%#v")
 func (v *VCtor) GoString() string {
-	s := "constructor " + v.Name + "("
+	s := "constructor " + v.RecName + "("
 	d := ""
 	for _, t := range v.Flist {
 		s = s + d + t
@@ -101,7 +107,7 @@ func (v *VCtor) Copy() Value {
 
 //  VCtor.Before compares two constructors for sorting
 func (a *VCtor) Before(b Value, i int) bool {
-	return a.Name < b.(*VCtor).Name
+	return a.RecName < b.(*VCtor).RecName
 }
 
 //  VCtor.Import returns itself
@@ -112,6 +118,16 @@ func (v *VCtor) Import() Value {
 //  VCtor.Export returns itself
 func (v *VCtor) Export() interface{} {
 	return v
+}
+
+//  VCtor.Name returns the type name
+func (t *VCtor) Name(args ...Value) (Value, *Closure) {
+	return Return(NewString(t.RecName))
+}
+
+//  VCtor.Char returns the abbreviation character.
+func (t *VCtor) Char(args ...Value) (Value, *Closure) {
+	return Return(NewString("R"))
 }
 
 //  VCtor.Dispense() implements !D to generate the field names

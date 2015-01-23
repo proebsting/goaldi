@@ -14,16 +14,16 @@ type VRecord struct {
 
 //  VRecord.String -- conversion to Go string returns "name{}"
 func (v *VRecord) String() string {
-	return v.Ctor.Name + "{}"
+	return v.Ctor.RecName + "{}"
 }
 
 //  VRecord.GoString -- returns string for image() and printf("%#v")
 func (v *VRecord) GoString() string {
 	if len(v.Data) == 0 {
-		return v.Ctor.Name + "{}"
+		return v.Ctor.RecName + "{}"
 	}
 	var b bytes.Buffer
-	fmt.Fprintf(&b, "%s{", v.Ctor.Name)
+	fmt.Fprintf(&b, "%s{", v.Ctor.RecName)
 	for i, x := range v.Data {
 		fmt.Fprintf(&b, "%v:%v,", v.Ctor.Flist[i], x)
 	}
@@ -49,7 +49,7 @@ func (a *VRecord) Before(x Value, i int) bool {
 	b := x.(*VRecord)
 	if a.Ctor != b.Ctor {
 		// different record types; order by type name
-		return a.Ctor.Name < b.Ctor.Name
+		return a.Ctor.RecName < b.Ctor.RecName
 	}
 	if i >= 0 && len(a.Data) > i && len(b.Data) > i {
 		// both sides have an item i

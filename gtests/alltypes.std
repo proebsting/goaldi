@@ -16,9 +16,9 @@ m    m:dist          methodvalue (Point{}).dist     m:dist
 p    p:main          procedure main()               0xXXXXXX
 L    L:5             [2,3,5,7,11]                   [2 3 5 7 11]
 T    T:2             table{Au:Gold,Fe:Iron}         T:2
-     Point{}         Point{x:7,y:5}                 Point{}
-     key:value{}     key:value{key:Au,value:Gold}   key:value{}
-     tuple{}         tuple{w:6,h:4}                 tuple{}
+R    Point{}         Point{x:7,y:5}                 Point{}
+R    key:value{}     key:value{key:Au,value:Gold}   key:value{}
+R    tuple{}         tuple{w:6,h:4}                 tuple{}
 X    1h2m3s          3723000000000                  1h2m3s
 
 Examples sorted by type, showing type information:
@@ -39,7 +39,7 @@ p    p:main          t:procedure     procedure
 L    L:5             t:list          list            t:list
 T    T:2             t:table         table           t:table
 X    1h2m3s          t:external      external        t:external
-     Point{}         R:Point                         R:Point
-     key:value{}     R:key:value                     
-     tuple{}         R:tuple                         
+R    Point{}         R:Point         Point           R:Point
+R    key:value{}     R:key:value     key:value       
+R    tuple{}         R:tuple         tuple           
 

@@ -51,7 +51,7 @@ procedure main() {
 		^f := sprintf("%v", v)
 		if f[1+:2] == "0x" then		# if hex address
 			f := "0xXXXXXX"			# hide actual value for reproducibility
-		printf(format, tchar(v), s, i, f)
+		printf(format, t.char(), s, i, f)
 	}
 
 	write()
@@ -65,7 +65,7 @@ procedure main() {
 	every x := !E do {
 		^v := x.value
 		^t := x.type
-		printf(format, tchar(v), v.string(), t, tname(v), t===x.gtype | "")
+		printf(format, t.char(), v.string(), t, t.name(), t===x.gtype | "")
 	}
 	write()
 }
@@ -79,14 +79,4 @@ procedure check(p, x, s) {			#: validate p(x) === s
 	if t ~=== s then
 		write("MISMATCH: ", p, "(", x, ")===", t, " ~=== ", s)
 	return s
-}
-
-procedure tchar(v) {				#: show type character of a value
-	local t := type(v)
-	return if t.type()=== type then t.char() else " "
-}
-
-procedure tname(v) {				#: show type name of a value
-	local t := type(v)
-	return if t.type()=== type then t.name() else ""
 }
