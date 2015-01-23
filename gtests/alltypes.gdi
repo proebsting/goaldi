@@ -10,11 +10,14 @@ record P(x,y)
 procedure P.xy() { return self.x * self.y }
 
 procedure main() {
+
 	examples := table()
-	format := "%-13s %-13s %-9v %-22s %v\n"
+	format := "%-13s %-13s %-10v %-22s %v\n"
 	write()
-	printf(format, "global", "type", "string", "image", "external")
-	printf(format, "------", "----", "------", "-----", "--------")
+	printf(format, "global", "type(x)", "string(x)", "image(x)", "external(x)")
+	printf(format, "------", "-------", "---------", "--------", "-----------")
+
+	# show various representations and add one example of each type to table
 	show(, nil)
 	show(type, type())
 	show(number, 17)
@@ -31,19 +34,31 @@ procedure main() {
 	show(P, P(7,5))
 	show(, tuple(w:6,h:4))
 	show(external, duration(3600+120+3))
+
+	# show type info (abbr and name) and test method calls on values
+	write()
+	printf(format,
+		"* t.name()", "x.type()", "x.string()", "x.image()", "x.external()")
+	printf(format,
+		"----------", "--------", "----------", "---------", "------------")
+	every ^kv := !examples.sort(1) do {
+		^t := kv.key
+		^s := ""
+		if type(t) === type then
+			s := t.char() || " " || t.name()
+		^v := kv.value
+		printf(format, s, v.type(), v.string(), v.image(), string(v.copy()))
+	}
+
+	# show sort orders for values and types
 	write()
 	write("Sorting values of mixed types:")
-	every ^kv := !examples.sort(2) do
+	every kv := !examples.sort(2) do
 		printf("%16s  %s\n", kv.key, image(kv.value))
 	write()
 	write("Sorting the types themselves:")
 	every kv := !examples.sort(1) do
 		printf("%16s  %s\n", kv.key, image(kv.value))
-	write()
-	write("Testing calls to universal methods ",
-		"x.type(), x.string() x.image(), x.copy()")
-	every ^v := (!examples.sort(2)).value do
-		printf(format, "", v.type(), v.string(), v.image(), string(v.copy()))
 }
 
 procedure show(g, v) {

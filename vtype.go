@@ -27,12 +27,12 @@ const (
 )
 
 //  The global named "type"
-var TypeType = NewType("t", rType, Type, nil,
+var TypeType = NewType("t", rType, Type, TypeMethods,
 	"type", "x", "return type of value")
 
 //  A type value structure
 type VType struct {
-	Name     string                 // type name
+	TypeName string                 // type name
 	Abbr     string                 // one-character abbreviation
 	SortRank int                    // rank for sorting
 	Ctor     *VProcedure            // standard constructor procedure
@@ -55,14 +55,20 @@ func NewType(abbr string, rank int, ctor Procedure,
 	return t
 }
 
+//  Declare methods
+var TypeMethods = MethodTable([]*VProcedure{
+	DefMeth((*VType).Name, "name", "", "get type name"),
+	DefMeth((*VType).Char, "char", "", "get abbreviation character"),
+})
+
 //  VType.String -- default conversion to Go string returns type name
 func (t *VType) String() string {
-	return "t:" + t.Name
+	return "t:" + t.TypeName
 }
 
 //  VType.GoString -- convert to Go string for image() and printf("%#v")
 func (t *VType) GoString() string {
-	return "type " + t.Name
+	return "type " + t.TypeName
 }
 
 //  VType.Type -- return the type "type"
@@ -98,6 +104,16 @@ func (t *VType) Rank() int {
 //  VType.Call invokes the constructor procedure for a type.
 func (t *VType) Call(env *Env, args []Value, names []string) (Value, *Closure) {
 	return t.Ctor.Call(env, args, names)
+}
+
+//  VType.Name returns the type name
+func (t *VType) Name(args ...Value) (Value, *Closure) {
+	return Return(NewString(t.TypeName))
+}
+
+//  VType.Char returns the abbreviation character.
+func (t *VType) Char(args ...Value) (Value, *Closure) {
+	return Return(NewString(t.Abbr))
 }
 
 //  Type(v) -- construct (or sometimes just find) an instance of type v

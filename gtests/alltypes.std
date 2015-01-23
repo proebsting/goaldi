@@ -1,22 +1,39 @@
 
-global        type          string    image                  external
-------        ----          ------    -----                  --------
-              t:nil         ~         nil                    <nil>
-t:type        t:type        t:nil     type nil               t:nil
-t:number      t:number      17        17                     17
-t:number      t:number      3.142     3.141592653589793      3.141592653589793
-t:number      t:number      6.022e+23 6.02214129e+23         6.02214129e+23
-t:string      t:string      abcd      "abcd"                 abcd
-t:file        t:file        f:%stdin  file(%stdin,r)         f:%stdin
-t:channel     t:channel     c:3       channel(3)             c:3
-t:constructor t:constructor R:P       constructor P(x,y)     R:P
-t:methodvalue t:methodvalue m:xy      methodvalue (P{}).xy   m:xy
-              t:procedure   p:show    procedure show(g,v)    0xXXXXXX
-t:list        t:list        L:5       [2,3,5,7,11]           [2 3 5 7 11]
-t:table       t:table       T:2       table{Au:Gold,Fe:Iron} T:2
-R:P           R:P           P{}       P{x:7,y:5}             P{}
-              R:tuple       tuple{}   tuple{w:6,h:4}         tuple{}
-t:external    t:external    1h2m3s    3723000000000          1h2m3s
+global        type(x)       string(x)  image(x)               external(x)
+------        -------       ---------  --------               -----------
+              t:nil         ~          nil                    <nil>
+t:type        t:type        t:nil      type nil               t:nil
+t:number      t:number      17         17                     17
+t:number      t:number      3.142      3.141592653589793      3.141592653589793
+t:number      t:number      6.022e+23  6.02214129e+23         6.02214129e+23
+t:string      t:string      abcd       "abcd"                 abcd
+t:file        t:file        f:%stdin   file(%stdin,r)         f:%stdin
+t:channel     t:channel     c:3        channel(3)             c:3
+t:constructor t:constructor R:P        constructor P(x,y)     R:P
+t:methodvalue t:methodvalue m:xy       methodvalue (P{}).xy   m:xy
+              t:procedure   p:show     procedure show(g,v)    0xXXXXXX
+t:list        t:list        L:5        [2,3,5,7,11]           [2 3 5 7 11]
+t:table       t:table       T:2        table{Au:Gold,Fe:Iron} T:2
+R:P           R:P           P{}        P{x:7,y:5}             P{}
+              R:tuple       tuple{}    tuple{w:6,h:4}         tuple{}
+t:external    t:external    1h2m3s     3723000000000          1h2m3s
+
+* t.name()    x.type()      x.string() x.image()              x.external()
+----------    --------      ---------- ---------              ------------
+z nil         t:nil         ~          nil                    ~
+t type        t:type        t:nil      type nil               t:nil
+n number      t:number      6.022e+23  6.02214129e+23         6.022e+23
+s string      t:string      abcd       "abcd"                 abcd
+f file        t:file        f:%stdin   file(%stdin,r)         f:%stdin
+c channel     t:channel     c:3        channel(3)             c:3
+R constructor t:constructor R:P        constructor P(x,y)     R:P
+m methodvalue t:methodvalue m:xy       methodvalue (P{}).xy   m:xy
+p procedure   t:procedure   p:show     procedure show(g,v)    p:show
+L list        t:list        L:5        [2,3,5,7,11]           L:5
+T table       t:table       T:2        table{Au:Gold,Fe:Iron} T:2
+X external    t:external    1h2m3s     3723000000000          1h2m3s
+              R:P           P{}        P{x:7,y:5}             P{}
+              R:tuple       tuple{}    tuple{w:6,h:4}         tuple{}
 
 Sorting values of mixed types:
            t:nil  nil
@@ -49,19 +66,3 @@ Sorting the types themselves:
       t:external  3723000000000
              R:P  P{x:7,y:5}
          R:tuple  tuple{w:6,h:4}
-
-Testing calls to universal methods x.type(), x.string() x.image(), x.copy()
-              t:nil         ~         nil                    ~
-              t:type        t:nil     type nil               t:nil
-              t:number      6.022e+23 6.02214129e+23         6.022e+23
-              t:string      abcd      "abcd"                 abcd
-              t:file        f:%stdin  file(%stdin,r)         f:%stdin
-              t:channel     c:3       channel(3)             c:3
-              t:constructor R:P       constructor P(x,y)     R:P
-              t:methodvalue m:xy      methodvalue (P{}).xy   m:xy
-              t:procedure   p:show    procedure show(g,v)    p:show
-              t:list        L:5       [2,3,5,7,11]           L:5
-              t:table       T:2       table{Au:Gold,Fe:Iron} T:2
-              R:P           P{}       P{x:7,y:5}             P{}
-              R:tuple       tuple{}   tuple{w:6,h:4}         tuple{}
-              t:external    1h2m3s    3723000000000          1h2m3s
