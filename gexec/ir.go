@@ -67,6 +67,7 @@ type ir_Record struct {
 type ir_Global struct {
 	Coord    string
 	NameList []string
+	Fn       string
 }
 
 type ir_Function struct {
