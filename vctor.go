@@ -14,22 +14,24 @@ var _ = fmt.Printf // enable debugging
 
 //  VCtor is the constructor structure
 type VCtor struct {
-	RecName string                 // type name
-	Flist   []string               // ordered list of field names
-	Ctor    *VProcedure            // pseudo-constructor for argname handling
-	Members map[string]interface{} // field and method table
+	VType                // embedded type struct (VCtor extends VType, sort of)
+	Flist []string       // ordered list of field names
+	Fmap  map[string]int // map of names to indexes (1-based)
 }
 
 //  NewCtor(name, fields) -- construct new definition
 //  Panics if a field name is duplicated.
 func NewCtor(name string, fields []string) *VCtor {
 	cproc := NewProcedure(name, &fields, false, nil, (*VCtor).New, "")
-	ctor := &VCtor{name, fields, cproc, make(map[string]interface{})}
+	meth := make(map[string]*VProcedure)
+	fmap := make(map[string]int)
+	ctype := VType{name, "R", rRecord, cproc, meth}
+	ctor := &VCtor{ctype, fields, fmap}
 	for i, s := range fields {
-		if ctor.Members[s] != nil {
+		if ctor.Methods[s] != nil || ctor.Fmap[s] != 0 {
 			panic(NewExn("duplicate field name", s))
 		}
-		ctor.Members[s] = i // enter field-to-index mapping
+		ctor.Fmap[s] = i + 1 // enter field-to-index mapping
 	}
 	return ctor
 }
@@ -37,17 +39,17 @@ func NewCtor(name string, fields []string) *VCtor {
 //  AddMethod(name, procedure) -- add a method for this record type
 //  Returns false if rejected as a duplicate.
 func (v *VCtor) AddMethod(name string, vproc *VProcedure) bool {
-	if v.Members[name] != nil {
+	if v.Methods[name] != nil {
 		return false // this is a duplicate
 	}
 	p := *vproc               // copy original VProcedure struct
 	p.Name = name             // set unqualified name
 	pnames := (*p.Pnames)[1:] // trim explicit "self" parameter
 	p.Pnames = &pnames        // and store updated list
-	if v.Members[name] != nil {
+	if v.Methods[name] != nil {
 		return false
 	}
-	v.Members[name] = &p
+	v.Methods[name] = &p
 	return true
 }
 
@@ -70,40 +72,32 @@ func init() {
 		"constructor", "name,fields[]", "build a record constructor")
 }
 
-//  Declare Goaldi methods
-var ConstructorMethods = MethodTable([]*VProcedure{
-	DefMeth((*VCtor).Name, "name", "", "get constructor name"),
-	DefMeth((*VCtor).Char, "char", "", "get abbreviation character"),
-})
-
 //  VCtor.Field -- implement C.id to override methods in VType
 func (c *VCtor) Field(f string) Value {
-	v := c.Members[f]
-	if i, ok := v.(int); ok {
-		return NewNumber(float64(i + 1)) // return Goaldi index of field f
+	// check first for field index
+	i := c.Fmap[f]
+	if i > 0 {
+		return NewNumber(float64(i)) // return Goaldi index of field f
 	}
-	return GetMethod(ConstructorMethods, c, f)
-}
-
-//  VCtor.String -- conversion to Go string returns "t:name"
-func (v *VCtor) String() string {
-	return "t:" + v.RecName
+	// next check for universal method
+	// (must pass VCtor, not Vtype, for c.copy() or c.image())
+	m := UniMethod(c, f)
+	if m != nil {
+		return m
+	}
+	// finally fall back to methods defined by VType
+	return GetMethod(TypeMethods, &c.VType, f)
 }
 
 //  VCtor.GoString -- convert to Go string for image() and printf("%#v")
 func (v *VCtor) GoString() string {
-	s := "constructor " + v.RecName + "("
+	s := "constructor " + v.TypeName + "("
 	d := ""
 	for _, t := range v.Flist {
 		s = s + d + t
 		d = ","
 	}
 	return s + ")"
-}
-
-//  VCtor.Type returns the type type
-func (v *VCtor) Type() IRank {
-	return TypeType
 }
 
 //  VCtor.Copy returns itself
@@ -115,7 +109,7 @@ func (v *VCtor) Copy() Value {
 func (a *VCtor) Before(b Value, i int) bool {
 	switch t := b.(type) {
 	case *VCtor:
-		return a.RecName < t.RecName
+		return a.TypeName < t.TypeName
 	case *VType:
 		return rRecord < t.SortRank
 	default:
@@ -131,21 +125,6 @@ func (v *VCtor) Import() Value {
 //  VCtor.Export returns itself
 func (v *VCtor) Export() interface{} {
 	return v
-}
-
-//  VCtor.Rank returns the rank of a record for sorting
-func (v *VCtor) Rank() int {
-	return rRecord // if this is a type, its instance is a record
-}
-
-//  VCtor.Name returns the type name
-func (t *VCtor) Name(args ...Value) (Value, *Closure) {
-	return Return(NewString(t.RecName))
-}
-
-//  VCtor.Char returns the abbreviation character.
-func (t *VCtor) Char(args ...Value) (Value, *Closure) {
-	return Return(NewString("R"))
 }
 
 //  VCtor.Dispense() implements !D to generate the field names

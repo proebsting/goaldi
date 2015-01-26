@@ -12,16 +12,13 @@ var _ = fmt.Printf // enable debugging
 //  VRecord.Field() implements a field reference R.k
 func (v *VRecord) Field(f string) Value {
 	d := v.Ctor
-	x := d.Members[f]
-	switch m := x.(type) {
-	case int:
-		return Trapped(&v.Data[m])
-	case *VProcedure:
+	i := d.Fmap[f]
+	if i > 0 {
+		return Trapped(&v.Data[i-1])
+	}
+	m := d.Methods[f]
+	if m != nil {
 		return MethodVal(m, v)
-	case nil:
-		break
-	default:
-		panic(Malfunction("unknown type in record defn"))
 	}
 	//  check for standard method
 	if mv := UniMethod(v, f); mv != nil {
