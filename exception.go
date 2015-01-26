@@ -8,7 +8,6 @@ import (
 	"os"
 	"runtime"
 	"runtime/debug"
-	"runtime/pprof"
 	"strings"
 )
 
@@ -79,14 +78,6 @@ func Cause(x interface{}) interface{} {
 	}
 }
 
-//  Run wraps a Goaldi procedure in an environment and an exception catcher,
-//  and calls it from Go
-func Run(p Value, arglist []Value) {
-	env := NewEnv(nil)
-	defer Catcher(env)
-	p.(ICall).Call(env, arglist, []string{})
-}
-
 //  Catcher(env) tries to recover from a panic and print a traceback.
 func Catcher(env *Env) {
 	if x := recover(); x != nil {
@@ -98,18 +89,6 @@ func Catcher(env *Env) {
 		Shutdown(1)
 		panic(x)
 	}
-}
-
-//  Shutdown terminates execution with the given exit code.
-func Shutdown(e int) {
-	if f, ok := STDOUT.(*VFile); ok {
-		f.Flush()
-	}
-	if f, ok := STDERR.(*VFile); ok {
-		f.Flush()
-	}
-	pprof.StopCPUProfile()
-	os.Exit(e)
 }
 
 //  Traceback is called as a deferred function to catch and annotate a panic
