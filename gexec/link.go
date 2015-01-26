@@ -6,6 +6,7 @@ import (
 	"fmt"
 	g "goaldi"
 	"strings"
+	"unicode"
 )
 
 //  list of record declarations seen
@@ -17,9 +18,9 @@ func link(parts [][]interface{}) {
 	babble("linking")
 
 	//  process individual declarations (proc, global, etc) from IR
-	for _, file := range parts {
+	for i, file := range parts {
 		for _, decl := range file {
-			irDecl(decl)
+			irDecl(decl, i)
 		}
 	}
 
@@ -53,17 +54,28 @@ func link(parts [][]interface{}) {
 }
 
 //  irDecl -- process IR file declaration
-//	install declared global variables as trapped references in global dictionary
-//	install procedures in proc info table
-func irDecl(decl interface{}) {
+//
+//	Install declared global variables as trapped refs in global dictionary.
+//	Install procedures in proc info table.
+//  Register initial procedures and global initialization procedures,
+//  altering their names to make them unique across all files.
+func irDecl(decl interface{}, filenum int) {
 	switch x := decl.(type) {
 	case ir_Global:
+		x.Fn = prefixName(x.Fn, filenum)
 		for _, name := range x.NameList {
 			if GlobalDict[name] == nil {
 				GlobalDict[name] = g.Trapped(g.NewVariable(g.NilValue))
 			}
 		}
+		if x.Fn != "" {
+			GlobInit = append(GlobInit, &x)
+		}
+	case ir_Initial:
+		x.Fn = prefixName(x.Fn, filenum)
+		InitList = append(InitList, &x)
 	case ir_Function:
+		x.Name = prefixName(x.Name, filenum)
 		declareProc(&x)
 		for _, id := range x.UnboundList {
 			Undeclared[id] = true
@@ -72,6 +84,15 @@ func irDecl(decl interface{}) {
 		RecordList = append(RecordList, &x)
 	default: // including ir_Invocable, ir_Link
 		panic(g.Malfunction(fmt.Sprintf("unrecognized: %#v", x)))
+	}
+}
+
+//  prefixName(name, fnum) -- prefix function name, but only if an invented one
+func prefixName(name string, filenum int) string {
+	if len(name) > 0 && unicode.IsDigit(rune(name[0])) {
+		return fmt.Sprintf("%d%s", filenum, name[10:])
+	} else {
+		return name // unaltered
 	}
 }
 

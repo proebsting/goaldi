@@ -11,8 +11,11 @@ import (
 
 //  globals
 
-var GlobalDict = make(map[string]g.Value)
-var Undeclared = make(map[string]bool)
+var GlobalDict = make(map[string]g.Value) // global dictionary
+var Undeclared = make(map[string]bool)    // is var x undeclared?
+
+var GlobInit = make([]*ir_Global, 0)  // globals with initializaion
+var InitList = make([]*ir_Initial, 0) // sequential initialization blocks
 
 var nFatals = 0   // count of fatal errors
 var nWarnings = 0 // count of nonfatal errors
@@ -80,6 +83,16 @@ func main() {
 		g.EnvInit("gostack", g.ONE)
 	}
 
+	// run the interdependent global initializaion procedures
+	deplist := makeDeps(GlobInit)
+	_ = deplist
+	//g.RunDeps(deplist)
+
+	// run the sequence of initialization procedures
+	for _, ir := range InitList {
+		g.Run(GlobalDict[ir.Fn].(*g.VProcedure), []g.Value{})
+	}
+
 	// find and execute main()
 	arglist := make([]g.Value, 0)
 	for _, s := range args {
@@ -97,6 +110,12 @@ func main() {
 	// exit
 	showInterval("execution")
 	g.Shutdown(0)
+}
+
+//	makeDeps -- make a list of RunItems with dependencies for initialize globals
+func makeDeps(globs []*ir_Global) []*g.InitItem {
+	ilist := make([]*g.InitItem, 0)
+	return ilist
 }
 
 //  warning -- report nonfatal error and continue

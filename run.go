@@ -7,6 +7,13 @@ import (
 	"runtime/pprof"
 )
 
+//  An InitItem is a global initialization procedure with dependencies
+type InitItem struct {
+	Proc *VProcedure // procedure to execute
+	Uses []string    // variables used by this procedure
+	Sets string      // variable set by running this
+}
+
 //  Run wraps a Goaldi procedure in an environment and an exception catcher,
 //  and calls it from Go
 func Run(p Value, arglist []Value) {

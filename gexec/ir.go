@@ -10,6 +10,7 @@ import (
 var irlist = [...]interface{}{
 	&ir_Record{},
 	&ir_Global{},
+	&ir_Initial{},
 	&ir_Function{},
 	&ir_chunk{},
 	&ir_NoOp{}, // not normally seen, but allowed as a comment
@@ -62,6 +63,11 @@ type ir_Record struct {
 	Extends    string
 	Extendspkg string
 	FieldList  []string
+}
+
+type ir_Initial struct {
+	Coord string
+	Fn    string
 }
 
 type ir_Global struct {
