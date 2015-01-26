@@ -22,6 +22,17 @@ func Run(p Value, arglist []Value) {
 	p.(ICall).Call(env, arglist, []string{})
 }
 
+//  RunDep runs a set of procedures in dependency order.
+//  It returns an error if the dependencies are invalid and nothing was run.
+//  Any other errors are handled by the usual exception handling.
+func RunDep(ilist []*InitItem) error {
+	//#%#% WORK IN PROGRESS -- CURRENTLY IGNORING DEPENDENCIES
+	for _, i := range ilist {
+		Run(i.Proc, []Value{})
+	}
+	return nil
+}
+
 //  Shutdown terminates execution with the given exit code.
 func Shutdown(e int) {
 	if f, ok := STDOUT.(*VFile); ok {

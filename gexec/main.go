@@ -83,15 +83,27 @@ func main() {
 		g.EnvInit("gostack", g.ONE)
 	}
 
-	// run the interdependent global initializaion procedures
-	deplist := makeDeps(GlobInit)
-	_ = deplist
-	//g.RunDeps(deplist)
+	// run the interdependent global initialization procedures
+	ilist := make([]*g.InitItem, 0)
+	for _, ir := range GlobInit {
+		p := GlobalDict[ir.Fn].(*g.VProcedure)
+		uses := ProcTable[ir.Fn].ir.UnboundList
+		ilist = append(ilist, &g.InitItem{p, uses, ir.NameList[0]})
+	}
+	err := g.RunDep(ilist)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "fatal:   %v\n", err)
+		pprof.StopCPUProfile()
+		os.Exit(1)
+	}
 
 	// run the sequence of initialization procedures
 	for _, ir := range InitList {
 		g.Run(GlobalDict[ir.Fn].(*g.VProcedure), []g.Value{})
 	}
+
+	//#%#% each call to Run resets a clean environment.
+	//#%#% this probably isn't right.  fix.
 
 	// find and execute main()
 	arglist := make([]g.Value, 0)
@@ -110,12 +122,6 @@ func main() {
 	// exit
 	showInterval("execution")
 	g.Shutdown(0)
-}
-
-//	makeDeps -- make a list of RunItems with dependencies for initialize globals
-func makeDeps(globs []*ir_Global) []*g.InitItem {
-	ilist := make([]*g.InitItem, 0)
-	return ilist
 }
 
 //  warning -- report nonfatal error and continue
