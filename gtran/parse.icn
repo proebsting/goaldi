@@ -966,7 +966,7 @@ procedure parse_do_global()
         parse_match_token(lex_ASSIGN)
 	e := parse_expr()
     }
-    return a_Global(L, a_ProcCode(\e) | &null, coord)
+    return a_Global(L, e, coord)
 end
 
 procedure parse_idlist()

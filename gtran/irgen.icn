@@ -614,7 +614,7 @@ end
 
 # record a_Global( idList )
 procedure ir_a_Global(p, st, target, bounded, rval)
-    local globals, fn, i
+    local globals, fn, i, susp
     static counter
     initial counter := 0
 
@@ -627,11 +627,13 @@ procedure ir_a_Global(p, st, target, bounded, rval)
         st.localSet := set([])
         st.staticSet := set([])
         st.globalSet := set([])
+	st.loop_stack := []
 
         st.current_proc := &date || "$" || counter
         counter +:= 1
 
-        fn := ir_a_ProcDecl1(st, p.expr, [], &null, p.coord)
+	susp := a_Compound([a_Return(p.expr)])
+        fn := ir_a_ProcDecl1(st, susp, [], &null, p.coord)
         suspend fn
     }
     return ir_Global(ir_coord(p.coord), globals, \(\st).current_proc | &null)
