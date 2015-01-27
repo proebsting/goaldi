@@ -88,9 +88,9 @@ func main() {
 	for _, ir := range GlobInit {
 		p := GlobalDict[ir.Fn].(*g.VProcedure)
 		uses := ProcTable[ir.Fn].ir.UnboundList
-		ilist = append(ilist, &g.InitItem{p, uses, ir.NameList[0]})
+		ilist = append(ilist, g.NewInit(p, uses, ir.NameList[0]))
 	}
-	err := g.RunDep(ilist)
+	err := g.RunDep(ilist, opt_trace)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "fatal:   %v\n", err)
 		pprof.StopCPUProfile()
