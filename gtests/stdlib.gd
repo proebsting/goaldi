@@ -1,5 +1,5 @@
 #SRC: goaldi original
-#  stdlib.gdi -- miscellaneous library functions
+#  test miscellaneous library functions
 
 procedure main()  {
 	testprint()

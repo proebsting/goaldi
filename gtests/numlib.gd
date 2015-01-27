@@ -1,5 +1,5 @@
 #SRC: goaldi original
-#  numlib.gdi -- test numeric library functions
+#  test numeric library functions
 
 procedure main() {
 	write("\narithmetic:")

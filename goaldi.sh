@@ -6,7 +6,7 @@
 #  Assumes that gtran and gexec are in the search path.
 
 FLAGS=acdNltvADEFJPT
-TMP=/tmp/gdi.$$.gir
+TMP=/tmp/gd.$$.gir
 
 #  define usage abort
 usage() {

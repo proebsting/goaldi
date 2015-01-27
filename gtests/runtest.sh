@@ -21,7 +21,7 @@ fi
 FAILURES=
 for F in $*; do
 	F=`basename $F .std`
-	F=`basename $F .gdi`
+	F=`basename $F .gd`
 	rm -f $F.gir $F.out $F.err
 	printf "%-12s" $F:
 	if test -r $F.dat; then
@@ -29,7 +29,7 @@ for F in $*; do
 	else
 		exec </dev/null
 	fi
-	if $GOALDI $F.gdi >$F.out 2>$F.err; then
+	if $GOALDI $F.gd >$F.out 2>$F.err; then
 		if cmp -s $F.std $F.out; then
 			echo "ok"
 			rm $F.out

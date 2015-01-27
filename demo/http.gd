@@ -1,4 +1,4 @@
-#  http.gdi -- demonstrate HTTP extension
+#  http.gd -- demonstrate HTTP extension
 
 procedure main(url1, url2) {
 	/url1 := "http://www.cs.arizona.edu"

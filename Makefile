@@ -10,7 +10,7 @@ PROGS = $(PKG)/gexec
 # GOBIN expands in shell to {first component of $GOPATH}/bin
 GOBIN = $${GOPATH%%:*}/bin
 
-#  default action: set up, build all, run test suite, run expt.gdi if present
+#  default action: set up, build all, run test suite, run expt.gd if present
 default:  setup build test expt
 
 #  configure Git pre-commit hook
@@ -35,10 +35,10 @@ test:
 itest:
 	cd itests; $(MAKE)
 
-#  run expt.gdi (presumably the test of the moment) if present
+#  run expt.gd (presumably the test of the moment) if present
 #  passes $GXOPTS to interpreter if set in environment
 expt:
-	test -f expt.gdi && $(GOBIN)/goaldi $$GXOPTS expt.gdi || :
+	test -f expt.gd && $(GOBIN)/goaldi $$GXOPTS expt.gd || :
 
 #  prepare Go source for check-in by running standard Go reformatter
 format:

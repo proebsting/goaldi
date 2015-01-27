@@ -21,4 +21,4 @@ Add $GOPATH/bin to your $PATH
 Type **make**
 
 ## Running a Goaldi program
-goaldi [options] sourcefile.gdi [program arguments]
+goaldi [options] sourcefile.gd [program arguments]
