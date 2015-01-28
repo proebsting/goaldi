@@ -129,8 +129,8 @@ func execute(f *pr_frame, label string) (rv g.Value, rc *g.Closure) {
 						v = GlobalDict[i.Name]
 					}
 					if v == nil {
-						//#%#% eventually make a link-time error
-						panic(g.NewExn("Undeclared identifier", i.Name))
+						panic(g.Malfunction(
+							"Undeclared identifier: " + i.Name))
 					}
 					f.temps[i.Lhs] = v
 				case ir_EnterScope:
