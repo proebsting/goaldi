@@ -139,12 +139,12 @@ func execute(f *pr_frame, label string) (rv g.Value, rc *g.Closure) {
 					if len(i.DynamicList) > 0 { // if any dynamic vars declared
 						e = g.NewEnv(e)                      // make them a new scope
 						for _, name := range i.DynamicList { // and init them
-							e.VarMap[name] = g.Trapped(g.NewVariable(g.NilValue))
+							e.VarMap[name] = g.NewVariable(g.NilValue)
 						}
 					}
 					f.vars[i.Scope] = e // save the envmt of this scope
 					for _, name := range i.NameList {
-						f.vars[name] = g.Trapped(g.NewVariable(g.NilValue))
+						f.vars[name] = g.NewVariable(g.NilValue)
 					}
 				case ir_ExitScope:
 					for _, name := range i.NameList {

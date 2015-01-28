@@ -65,7 +65,7 @@ func irDecl(decl interface{}, filenum int) {
 		x.Fn = prefixName(x.Fn, filenum)
 		for _, name := range x.NameList {
 			if GlobalDict[name] == nil {
-				GlobalDict[name] = g.Trapped(g.NewVariable(g.NilValue))
+				GlobalDict[name] = g.NewVariable(g.NilValue)
 			}
 		}
 		if x.Fn != "" {

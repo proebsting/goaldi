@@ -15,6 +15,11 @@ func Trapped(target *Value) *VTrapped {
 	return &VTrapped{target}
 }
 
+//  NewVariable(x) returns a new trapped variable initialized to x.
+func NewVariable(x Value) *VTrapped {
+	return Trapped(&x)
+}
+
 //  TrappedType is the instance of type type.
 var TrappedType = NewType("v", rTrapped, nil, nil,
 	"trapped", "", "")
@@ -45,13 +50,6 @@ func (t *VTrapped) Deref() Value {
 func (t *VTrapped) Assign(v Value) IVariable {
 	*t.Target = v
 	return t
-}
-
-//  NewVariable(x) returns a pointer to a new variable initialized to x.
-func NewVariable(x Value) *Value {
-	v := new(Value)
-	*v = x
-	return v
 }
 
 //  Deref(v) -- dereference a value only if it implements IVariable

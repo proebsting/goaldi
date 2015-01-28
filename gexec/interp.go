@@ -31,11 +31,11 @@ func newframe(f *pr_frame) *pr_frame {
 	}
 	// make new copies of all parameter values
 	for _, name := range f.info.params {
-		fnew.vars[name] = g.Trapped(g.NewVariable(g.Deref(f.vars[name])))
+		fnew.vars[name] = g.NewVariable(g.Deref(f.vars[name]))
 	}
 	// make new copies of all locals (n.b. does not include statics)
 	for _, name := range f.info.locals {
-		fnew.vars[name] = g.Trapped(g.NewVariable(g.Deref(f.vars[name])))
+		fnew.vars[name] = g.NewVariable(g.Deref(f.vars[name]))
 	}
 	return fnew
 }
@@ -44,7 +44,7 @@ func newframe(f *pr_frame) *pr_frame {
 func duplvars(a []g.Value) []g.Value {
 	b := make([]g.Value, len(a))
 	for i, x := range a {
-		b[i] = g.Trapped(g.NewVariable(g.Deref(x)))
+		b[i] = g.NewVariable(g.Deref(x))
 	}
 	return b
 }
@@ -84,9 +84,9 @@ func interp(env *g.Env, pr *pr_Info, outer map[string]interface{},
 	// initialize parameters
 	for i, name := range pr.params {
 		if i < len(args) {
-			f.vars[name] = g.Trapped(g.NewVariable(args[i]))
+			f.vars[name] = g.NewVariable(args[i])
 		} else {
-			f.vars[name] = g.Trapped(g.NewVariable(g.NilValue))
+			f.vars[name] = g.NewVariable(g.NilValue)
 		}
 	}
 

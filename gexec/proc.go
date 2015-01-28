@@ -48,7 +48,7 @@ func setupProc(pr *pr_Info) {
 	// make a trapped variable for every static
 	pr.statics = make(map[string]interface{})
 	for _, name := range pr.ir.StaticList {
-		pr.statics[name] = g.Trapped(g.NewVariable(g.NilValue))
+		pr.statics[name] = g.NewVariable(g.NilValue)
 	}
 
 	// create an index of IR code chunks
