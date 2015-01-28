@@ -79,6 +79,7 @@ func execute(f *pr_frame, label string) (rv g.Value, rc *g.Closure) {
 					fnew := newframe(f)
 					fnew.cxout = g.NewChannel(0)
 					fnew.env = g.NewEnv(f.env)
+					fnew.env.ThreadID = <-g.TID
 					fnew.coord = i.Coord
 					if i.Lhs != "" {
 						f.temps[i.Lhs] = fnew.cxout
@@ -96,10 +97,9 @@ func execute(f *pr_frame, label string) (rv g.Value, rc *g.Closure) {
 				case ir_CoFail:
 					close(f.cxout)
 					return nil, nil // i.e. die
-				case ir_Key:
-					//#%#% keywords are dynamic vars fetched from env
+				case ir_Key: // dynamic variable reference
 					f.coord = i.Coord
-					v := f.env.VarMap[i.Name]
+					v := f.env.Lookup(i.Name)
 					if v == nil {
 						panic(g.NewExn("Unrecognized dynamic variable",
 							"%"+i.Name))

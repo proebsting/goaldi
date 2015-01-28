@@ -8,23 +8,34 @@ import (
 )
 
 //  execution environment
-//
-//  #%#% This needs more thought, especially if it is to be dynamic.
-//  #%#% Currently it only changes, by copying, on creation of a new thread.
 type Env struct {
+	Parent   *Env             // parent environment
 	ThreadID int              // thread ID
-	VarMap   map[string]Value // %variable map
-	//#%#% more to be determined
-	//#%#% dynamic variables?
+	VarMap   map[string]Value // dynamic variable table
 }
 
-//  NewEnv(e) returns a new environment with a distinct ThreadID.
+//  NewEnv(e) returns a new environment with parent e.
 func NewEnv(e *Env) *Env {
+	enew := &Env{}
+	enew.Parent = e
 	if e == nil {
-		return &Env{0, StdEnv}
+		enew.ThreadID = <-TID
+		enew.VarMap = StdEnv
 	} else {
-		return &Env{<-TID, e.VarMap}
+		enew.ThreadID = e.ThreadID
+		enew.VarMap = make(map[string]Value)
 	}
+	return enew
+}
+
+//  Env.Lookup(s) -- look up dynamic variable s in environment tree
+func (e *Env) Lookup(s string) Value {
+	for ; e != nil; e = e.Parent {
+		if v := e.VarMap[s]; v != nil {
+			return v
+		}
+	}
+	return nil
 }
 
 //  ThreadID production
@@ -50,7 +61,6 @@ func EnvInit(name string, v Value) {
 }
 
 //  Initial dynamic variables
-//  These are later to become package-qualified variables instead.
 func init() {
 
 	// math constants
