@@ -135,8 +135,14 @@ func execute(f *pr_frame, label string) (rv g.Value, rc *g.Closure) {
 					}
 					f.temps[i.Lhs] = v
 				case ir_EnterScope:
-					//#%#% first, make a new envmt if any dynamic vars declared
-					f.vars[i.Scope] = f.env // save the envmt of this scope
+					e := f.env
+					if len(i.DynamicList) > 0 { // if any dynamic vars declared
+						e = g.NewEnv(e)                      // make them a new scope
+						for _, name := range i.DynamicList { // and init them
+							e.VarMap[name] = g.Trapped(g.NewVariable(g.NilValue))
+						}
+					}
+					f.vars[i.Scope] = e // save the envmt of this scope
 					for _, name := range i.NameList {
 						f.vars[name] = g.Trapped(g.NewVariable(g.NilValue))
 					}

@@ -105,9 +105,10 @@ type ir_Catch struct {
 }
 
 type ir_EnterScope struct {
-	Coord    string
-	NameList []string
-	Scope    string
+	Coord       string
+	NameList    []string
+	DynamicList []string
+	Scope       string
 }
 
 type ir_ExitScope struct {
