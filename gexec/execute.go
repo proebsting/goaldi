@@ -99,7 +99,8 @@ func execute(f *pr_frame, label string) (rv g.Value, rc *g.Closure) {
 					return nil, nil // i.e. die
 				case ir_Key: // dynamic variable reference
 					f.coord = i.Coord
-					v := f.env.Lookup(i.Name)
+					e := f.vars[i.Scope].(*g.Env) // get correct environment
+					v := e.Lookup(i.Name)         // look up name
 					if v == nil {
 						panic(g.NewExn("Unrecognized dynamic variable",
 							"%"+i.Name))
@@ -134,6 +135,8 @@ func execute(f *pr_frame, label string) (rv g.Value, rc *g.Closure) {
 					}
 					f.temps[i.Lhs] = v
 				case ir_EnterScope:
+					//#%#% first, make a new envmt if any dynamic vars declared
+					f.vars[i.Scope] = f.env // save the envmt of this scope
 					for _, name := range i.NameList {
 						f.vars[name] = g.Trapped(g.NewVariable(g.NilValue))
 					}
@@ -191,7 +194,8 @@ func execute(f *pr_frame, label string) (rv g.Value, rc *g.Closure) {
 					proc := g.Deref(f.temps[i.Fn].(g.Value))
 					arglist := getArgs(f, 0, i.ArgList)
 					f.offv = proc
-					v, c := proc.(g.ICall).Call(f.env, arglist, i.NameList)
+					e := f.vars[i.Scope].(*g.Env) // get correct environment
+					v, c := proc.(g.ICall).Call(e, arglist, i.NameList)
 					if v != nil {
 						if i.Lhs != "" {
 							f.temps[i.Lhs] = v

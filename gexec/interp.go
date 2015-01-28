@@ -12,7 +12,7 @@ type pr_frame struct {
 	env   *g.Env                 // dynamic execution environment
 	info  *pr_Info               // static procedure information
 	args  []g.Value              // arglist as called
-	vars  map[string]interface{} // variables
+	vars  map[string]interface{} // variables and scopes
 	temps map[string]interface{} // temporaries
 	coord string                 // last known source location
 	offv  g.Value                // offending value for traceback
@@ -70,7 +70,10 @@ func interp(env *g.Env, pr *pr_Info, outer map[string]interface{},
 		f.vars[k] = v
 	}
 
-	// our own locals are not defined here;
+	// store the initial inherited (blank) scope in the variable map
+	f.vars[""] = env
+
+	// our own locals and scopes are not defined here;
 	// they are later added dynamically by ir_EnterScope instructions
 
 	// define static variables
