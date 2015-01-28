@@ -1,23 +1,51 @@
-#  randomness demo
+#  Randomness demo and test
 #
-#  repeatedly shuffles lists of size 2, 3, 4 and counts
-#  the of occurrences of all the resulting permutations
+#  Repeatedly shuffles lists and counts the resulting permutations.
+#  For each permutation, prints the actual count and the "variance"
+#  (from the expected count) as a percentage.
+#
+#  usage:   shuffle maxlen avgcount
+#  default: shuffle 4 2500
+#
+#  The variance decreases with more iterations (the avgcount parameter).
+#  (Try uncommenting the "badshuffle" call to see variance increase.)
 
-procedure main(arg) {
-	write("seed = ", randomize())
-	^ntimes := number(arg) | 24000
-	every ^size := 2 to 4 do {
-		write()
+procedure main(maxlen, avgcount) {
+
+	maxlen := number(maxlen) | 4			# maximum list size
+	avgcount := number(avgcount) | 2500		# expected counts per permutation
+	write("seed = ", randomize())			# use different sequence every run
+
+	every ^size := !maxlen do {				# repeat up to maximum length:
+
+		^nbins := factorial(size)			# compute the number of permutations
+		^ntimes := nbins * avgcount			# calculate necessary iterations
 		^t := table()
-		every 1 to ntimes do {
-			^a := [: char(96+!size) :]
+		every !ntimes do {					# for every iteration:
+			^a := [: char(96+!size) :]		# make a list of one-char strings
+			a := a.shuffle()				# shuffle it
+			# a := badshuffle(a)
 			^s := ""
-			every s ||:= !a.shuffle()
+			every s ||:= !a					# turn the list into a string
 			/t[s] := 0
-			t[s] +:= 1
+			t[s] +:= 1						# and count it in the table
 		}
-		every ^kv := !t.sort() do {
-			printf("%6.0f  %s\n", kv.value, kv.key)
+		write()
+		every ^kv := !t.sort() do {			# print results in sorted order
+			^var := 100 * abs(kv.value / avgcount - 1)
+			printf("%6.0f   %s   %2.0f%%\n", kv.value, kv.key, var)
 		}
 	}
+}
+
+procedure factorial(n) {	#: compute n factorial (n!)
+	^f := 1
+	every f *:= !n		# n.b. !n means "1 to n" not "n factorial" !
+	return f
+}
+
+procedure badshuffle(a) {	#: a simple, biased shuffle; don't use this!
+	a := copy(a)
+	every !a :=: ?a
+	return a
 }
