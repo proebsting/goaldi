@@ -1,7 +1,5 @@
-#  demo of external array:
-#  get environment from Go,
-#  stomp a few entries randomly,
-#  and print it out
+#  A demo of external array usage.
+#  Get the environment from Go, clobber a few random entries, and print it.
 
 procedure main() {
 	local e := environ()
@@ -10,8 +8,6 @@ procedure main() {
 		e[i] := "===============[REDACTED]==============="
 	every !5 do
 		?e := "===============[STOMPED]==============="
-	every !5 do
-	# every write(">> ", !e)
-	i := 0
-	while (i +:= 1) & write(i, ".  ", e[i])
+	every i := 1 to *e do
+		write(i, ".  ", e[i])
 }
