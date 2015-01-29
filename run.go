@@ -47,14 +47,19 @@ func Shutdown(e int) {
 //  RunDep runs a set of procedures in dependency order.
 //  This is used for initializing globals.
 //  Execution errors are handled by the usual exception handling.
-//  RunDep returns an error if circular dependencies remain at the end.
+//  RunDep returns an error if circular dependencies remain at the end,
+//  or if an attempt is made to set the same global twice.
 func RunDep(ilist []*InitItem, trace bool) error {
 
 	// make a table of all the globals of interest
 	// (we don't care about any global that is not *set* in this list)
 	itable := make(map[string]int)
 	for i, item := range ilist {
-		itable[item.Sets] = i + 1 // store index+1 so that 0 means not found
+		gname := item.Sets
+		if itable[gname] != 0 {
+			return errors.New("Multiple initializations of global: " + gname)
+		}
+		itable[gname] = i + 1 // store index+1 so that 0 means not found
 		item.pending = 0
 		item.releases = make([]int, 0)
 	}
