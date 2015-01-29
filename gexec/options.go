@@ -6,6 +6,7 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"strings"
 )
 
 //  command-line options
@@ -23,7 +24,7 @@ var opt_trace bool   // -T: trace IR instruction execution
 //  usage prints a usage message (with option descriptions) and aborts.
 func usage() {
 	fmt.Fprintf(os.Stderr,
-		"Usage: %s [options] [file [args]]\n", os.Args[0])
+		"Usage: %s [options] file.gir... [--] [arg...]]\n", os.Args[0])
 	flag.PrintDefaults()
 	os.Exit(1)
 }
@@ -43,9 +44,23 @@ func options() (files []string, args []string) {
 	flag.BoolVar(&opt_trace, "T", false, "trace IR instruction execution")
 	flag.Usage = usage
 	flag.Parse()
+
+	// get remaining (positional) command arguments
 	args = flag.Args()
-	if len(args) > 0 {
+	if len(args) == 0 { // must have at least one
+		usage()
+	}
+	files = append(files, args[0]) // first argument is always a file
+	args = args[1:]
+
+	// any immediately following args that end in ".gir" are also files to load
+	for len(args) > 0 && strings.HasSuffix(args[0], ".gir") {
 		files = append(files, args[0])
+		args = args[1:]
+	}
+
+	// a "--" argument is a separator to be removed
+	if len(args) > 0 && args[0] == "--" {
 		args = args[1:]
 	}
 	return files, args
