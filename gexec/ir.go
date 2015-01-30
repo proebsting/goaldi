@@ -109,6 +109,7 @@ type ir_EnterScope struct {
 	NameList    []string
 	DynamicList []string
 	Scope       string
+	ParentScope string
 }
 
 type ir_ExitScope struct {

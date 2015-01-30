@@ -1438,7 +1438,9 @@ end
 
 # record a_Compound( exprList )
 procedure ir_a_Compound(p, st, target, bounded, rval)
-    local L, i, locals, failure, dynamics
+    local L, i, locals, failure, dynamics, parent
+
+    parent := ir_stname(st.syms)
 
     st.syms := ir_scope(st.syms)
 
@@ -1479,7 +1481,7 @@ procedure ir_a_Compound(p, st, target, bounded, rval)
     # should the following have ExitScope if this is bounded?
     if /bounded then {
         suspend ir_chunk(L[-1].ir.success, [
-            ir_ExitScope(ir_coord(p.coord), locals, dynamics),
+            ir_ExitScope(ir_coord(p.coord), locals, dynamics, ir_stname(st.syms)),
 	    ir_Goto(ir_coord(p.coord), p.ir.success)
 	    ])
     } else {
@@ -1489,11 +1491,11 @@ procedure ir_a_Compound(p, st, target, bounded, rval)
     suspend ir_chunk(L[-1].ir.failure, [ ir_Goto(ir_coord(p.coord), failure) ])
 
     suspend ir_chunk(p.ir.start, [
-        ir_EnterScope(ir_coord(p.coord), locals, dynamics, ir_stname(st.syms)),
+        ir_EnterScope(ir_coord(p.coord), locals, dynamics, ir_stname(st.syms), parent),
         ir_Goto(ir_coord(p.coord), L[1].ir.start)
     ])
     suspend ir_chunk(failure, [
-        ir_ExitScope(ir_coord(p.coord), locals, dynamics, ir_stname(st.syms)),
+        ir_ExitScope(ir_coord(p.coord), locals, dynamics, ir_stname(st.syms), parent),
         ir_Goto(ir_coord(p.coord), p.ir.failure)
     ])
 

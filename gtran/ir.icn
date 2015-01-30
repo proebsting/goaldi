@@ -12,7 +12,7 @@ record ir_chunk(label, insnList)
 
 record ir_NoOp(coord, comment)
 record ir_Catch(coord, fn)
-record ir_EnterScope(coord, nameList, dynamicList, scope)
+record ir_EnterScope(coord, nameList, dynamicList, scope, parentScope)
 record ir_ExitScope(coord, nameList, dynamicList, scope)
  
 record ir_Tmp(name)
