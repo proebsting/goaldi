@@ -612,33 +612,6 @@ procedure ir_a_Package(p, st, target, bounded, rval)
     return ir_Package(ir_coord(p.name.coord), p.name.id)
 end
 
-# record a_Global( idList )
-procedure ir_a_Global(p, st, target, bounded, rval)
-    local globals, fn, i, susp
-    static counter
-    initial counter := 0
-
-    globals := []
-    every put(globals, (!p.idList).id)
-
-    /st | runerr(500, p)
-    if \p.expr then {
-        st := ir_stacks(0)
-        st.localSet := set([])
-        st.staticSet := set([])
-        st.globalSet := set([])
-	st.loop_stack := []
-
-        st.current_proc := &date || "$" || counter
-        counter +:= 1
-
-	susp := a_Compound([a_Return(p.expr)])
-        fn := ir_a_ProcDecl1(st, susp, [], &null, p.coord)
-        suspend fn
-    }
-    return ir_Global(ir_coord(p.coord), globals, \(\st).current_proc | &null)
-end
-
 # record a_If( expr thenexpr elseexpr )
 procedure ir_a_If(p, st, target, bounded, rval)
     local t
@@ -678,6 +651,32 @@ procedure ir_a_If(p, st, target, bounded, rval)
     suspend ir_chunk(p.elseexpr.ir.failure, [ ir_Goto(ir_coord(p.coord), p.ir.failure) ])
 end
 
+# record a_Global( idList )
+procedure ir_a_Global(p, st, target, bounded, rval)
+    local globals, fn, i, susp
+    static counter
+    initial counter := 0
+
+    globals := []
+    every put(globals, (!p.idList).id)
+
+    /st | runerr(500, p)
+    if \p.expr then {
+        st := ir_stacks(0)
+        st.localSet := set([])
+        st.staticSet := set([])
+        st.globalSet := set([])
+	st.loop_stack := []
+
+        st.current_proc := "$global$" || counter
+        counter +:= 1
+
+        fn := ir_a_ProcDecl1(st, p.expr, [], &null, p.coord)
+        suspend fn
+    }
+    return ir_Global(ir_coord(p.coord), globals, \(\st).current_proc | &null)
+end
+
 # record a_Initial( expr )
 procedure ir_a_Initial(p, st, target, bounded, rval)
     local fn, i
@@ -690,7 +689,7 @@ procedure ir_a_Initial(p, st, target, bounded, rval)
     st.staticSet := set([])
     st.globalSet := set([])
 
-    st.current_proc := &date || "$" || counter
+    st.current_proc := "$initial$" || counter
     counter +:= 1
 
     fn := ir_a_ProcDecl1(st, p.expr, [], &null, p.coord)
