@@ -25,7 +25,7 @@ Examples sorted by type, showing type information:
 
 ch   x.string()      x.type()        t.name()        global
 --   ----------      --------        --------        ------
-z    ~               t:nil           nil             
+z    ~               t:nil           nil             t:nil
 t    t:nil           t:type          type            t:type
 t    t:Point         t:type          type            
 n    3.142           t:number        number          t:number
@@ -35,7 +35,7 @@ s    abcd            t:string        string          t:string
 f    f:%stdin        t:file          file            t:file
 c    c:3             t:channel       channel         t:channel
 m    m:dist          t:methodvalue   methodvalue     t:methodvalue
-p    p:main          t:procedure     procedure       
+p    p:main          t:procedure     procedure       t:procedure
 L    L:5             t:list          list            t:list
 T    T:2             t:table         table           t:table
 R    Point{}         t:Point         Point           t:Point

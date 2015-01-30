@@ -17,7 +17,7 @@ procedure main() {
 
 	# make a list of examples with associated global type values
 	^E := []
-	add(E, nil)
+	add(E, nil, niltype)
 	add(E, type(), type)
 	add(E, 17, number)
 	add(E, %pi, number)
@@ -28,7 +28,7 @@ procedure main() {
 	add(E, Point, constructor)
 	add(E, ^P := Point(7,5), Point)
 	add(E, P.dist, methodvalue)
-	add(E, main)
+	add(E, main, proctype)
 	add(E, ^L := [2,3,5,7,11], list)
 	add(E, ^T := table(){"Fe":"Iron","Au":"Gold"}, table)
 	add(E, !T.sort())	# table element

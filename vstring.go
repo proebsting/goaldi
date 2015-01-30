@@ -36,7 +36,7 @@ func NewString(s string) *VString {
 }
 
 //  StringType is the string instance of type type.
-var StringType = NewType("s", rString, String, nil,
+var StringType = NewType("string", "s", rString, String, nil,
 	"string", "x", "render as string")
 
 //  RuneString -- construct a Goaldi string from a slice of Go runes

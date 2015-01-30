@@ -23,7 +23,7 @@ func MethodVal(p *VProcedure, v Value) *VMethVal {
 }
 
 //  MethValType is the methodvalue instance of type type.
-var MethValType = NewType("m", rMethVal, MethodValue, nil,
+var MethValType = NewType("methodvalue", "m", rMethVal, MethodValue, nil,
 	"methodvalue", "m", "succeed if methodvalue")
 
 //  VMethVal.String -- conversion to Go string returns "m:Name"

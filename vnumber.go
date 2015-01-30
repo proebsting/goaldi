@@ -17,7 +17,7 @@ func NewNumber(n float64) *VNumber {
 }
 
 //  NumberType is the number instance of type type.
-var NumberType = NewType("n", rNumber, Number, nil,
+var NumberType = NewType("number", "n", rNumber, Number, nil,
 	"number", "x", "convert to number")
 
 //  ParseNumber -- standard string-to-number conversion for Goaldi

@@ -16,7 +16,7 @@ func NewChannel(i int) VChannel {
 }
 
 //  ChannelType is the channel instance of type type.
-var ChannelType = NewType("c", rChannel, Channel, ChannelMethods,
+var ChannelType = NewType("channel", "c", rChannel, Channel, ChannelMethods,
 	"channel", "size", "create channel")
 
 //  VChannel.String -- default conversion to Go string returns "c:size"

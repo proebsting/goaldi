@@ -26,7 +26,7 @@ const (
 )
 
 //  The global named "type"
-var TypeType = NewType("t", rType, Type, TypeMethods,
+var TypeType = NewType("type", "t", rType, Type, TypeMethods,
 	"type", "x", "return type of value")
 
 //  A type value structure
@@ -39,17 +39,16 @@ type VType struct {
 }
 
 //  NewType defines and registers a Goaldi standard (not a record) type.
-//  The constructor procedure is installed in the standard library
-//  (but remains inaccessible for reserved names "nil" and "procedure").
+//  The constructor procedure is installed in stdlib as libname.
 //  A nil constructor indicates an internal type (i.e. Trapped),
 //  and such a type is not installed in the library.
-func NewType(abbr string, rank int, ctor Procedure,
+func NewType(name string, abbr string, rank int, ctor Procedure,
 	mtable map[string]*VProcedure,
-	name string, pspec string, descr string) *VType {
-	proc := DefProc(ctor, name, pspec, descr)
+	libname string, pspec string, descr string) *VType {
+	proc := DefProc(ctor, libname, pspec, descr)
 	t := &VType{name, abbr, rank, proc, mtable}
 	if ctor != nil {
-		StdLib[name] = t
+		StdLib[libname] = t
 	}
 	return t
 }

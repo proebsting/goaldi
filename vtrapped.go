@@ -21,7 +21,7 @@ func NewVariable(x Value) *VTrapped {
 }
 
 //  TrappedType is the instance of type type.
-var TrappedType = NewType("v", rTrapped, nil, nil,
+var TrappedType = NewType("trapped", "v", rTrapped, nil, nil,
 	"trapped", "", "")
 
 //  VTrapped.String() -- show string representation: produces (&value)
