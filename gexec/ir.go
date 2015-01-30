@@ -112,9 +112,10 @@ type ir_EnterScope struct {
 }
 
 type ir_ExitScope struct {
-	Coord    string
-	NameList []string
-	Scope    string
+	Coord       string
+	NameList    []string
+	DynamicList []string
+	Scope       string
 }
 
 type ir_Var struct {
