@@ -1,14 +1,13 @@
 #!/bin/sh
 #
-#  goaldi [options] file [arg...] -- compile and execute Goaldi program
+#	goaldi [options] file.gd... [--] [arg...] -- compile and run Goaldi program
 #
-#  To see options, run with no arguments.
-#  Assumes that gtran and gexec are in the search path.
+#	To see options, run with no arguments.
+#	This script assumes that gtran and gexec are in the search path.
 
 FLAGS=acdNltvADEFJPT
-TMP=/tmp/gd.$$.gir
 
-#  define usage abort
+#  define the usage abort function
 usage() {
 	exec >&2
 	cat <<==EOF==
@@ -18,54 +17,78 @@ Usage: $0 [-$FLAGS] file [arg...]
   -a  compile only, producing IR on file.gir and assembly listing on file.gia
   -d  compile only, producing Dot directives on file.dot
 ==EOF==
+	# add option descriptions from back end (gexec)
 	gexec -? 2>&1 | sed -n 's/=false: /  /p'
 	exit 1
 }
 
 #  process options
 XOPTS=
-AFLAG=
-CFLAG=
-DFLAG=
+WHAT=x
 OPT=": optim -O"
 while getopts $FLAGS C; do
-    case $C in
-	a)			AFLAG=$C;;
-	c)			CFLAG=$C;;
-	d)			DFLAG=$C;;
+	case $C in
+	a)			WHAT=$C;;
+	c)			WHAT=$C;;
+	d)			WHAT=$C;;
 	N)			OPT="";;
 	[ltvADEFJPT])	XOPTS="$XOPTS -$C";;
 	?)			usage;;
-    esac
+	esac
 done
-shift $(($OPTIND - 1))
-test $# -lt 1 && usage
 
-I=$1
-B=${I%.*}
-DOT="gtran cat $I : yylex : parse : ast2ir $OPT : dot_File : stdout"
-TRAN="gtran cat $I : yylex : parse : ast2ir $OPT : json_File : stdout"
-shift
+#  collect source file names:
+#  the first argument, always, plus any following that end in ".gd"
+shift $(($OPTIND - 1))		# remove flag arguments
+test $# -lt 1 && usage		# require at least one file argument
+SRCS=$1						# save that argument
+shift						# and remove from execution parameters
 
+while [ "$1" != "${1%.gd}" ]; do	# while name ends in .gd
+	SRCS="$SRCS $1"				# add to list
+	shift						# and remove from execution parameters
+done
+
+#  remove a "--" separator argument if present
+if [ "$1" == "--" ]; then
+	shift
+fi
+
+#  make scratch directory for temporary files, and arrange its deletion
+SCR=/tmp/goaldi.$$
+trap 'X=$?; rm -rf $SCR; exit $X' 0 1 2 15
+mkdir $SCR
+
+#  compile the source files
 export COEXPSIZE=300000
+OBJS=
+QUIT=:
+for F in $SRCS; do
+	B=${F%.*}
+	DOT="gtran cat $F : yylex : parse : ast2ir $OPT : dot_File : stdout"
+	TRAN="gtran cat $F : yylex : parse : ast2ir $OPT : json_File : stdout"
+	case $WHAT in
+		a)	# -a: produce file.gir and file.gia
+			$TRAN >$B.gir && gexec $XOPTS -l -A $B.gir >$B.gia
+			QUIT=exit
+			;;
+		c)	# -c or nothing: produce file.gir
+			$TRAN >$B.gir
+			QUIT=exit
+			;;
+		d)	# -d: produce file.dot
+			$DOT >$B.dot
+			QUIT=exit
+			;;
+		x)	# no flag: produce temporary file.gir for later execution
+			O=$SCR/${B%%*/}.gir
+			OBJS="$OBJS $O"
+			$TRAN >$O || QUIT=exit
+			;;
+	esac
+done
 
-if [ -n "$AFLAG" ]; then	# -a: produce file.gir and file.gia, then quit
-    $TRAN >$B.gir && gexec $XOPTS -l -A $B.gir >$B.gia
-	exit
-fi
+$QUIT	# exit if nothing more to do, or if errors in compilation
 
-if [ -n "$CFLAG" ]; then	# -c: produce file.gir, and quit
-    exec $TRAN >$B.gir
-fi
-
-if [ -n "$DFLAG" ]; then	# -d: produce file.dot, and quit
-    exec $DOT >$B.dot
-fi
-
-#  translate and execute
-trap 'X=$?; rm -f $TMP; exit $X' 0 1 2 15
-if $TRAN >$TMP; then
-	exec gexec $XOPTS $TMP "$@"
-else
-	exit 125		# exit 125 designates compilation error
-fi
+# execute compiled files
+gexec $XOPTS $SCR/*.gir -- "$@"
