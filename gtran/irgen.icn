@@ -803,7 +803,7 @@ procedure ir_a_ProcDeclNested(p, st, target, bounded, rval)
 
     if type(target) == "ir_ProcDecl" then target := &null
 
-    p.ident.id := st.current_proc || "$nested$" || counter
+    p.ident.id := "$" || st.current_proc || "$nested$" || counter
 
     suspend ir_chunk(p.ir.start, [
         ir_MakeClosure(ir_coord(p.coord), target, p.ident.id),
