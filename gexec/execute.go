@@ -137,7 +137,7 @@ func execute(f *pr_frame, label string) (rv g.Value, rc *g.Closure) {
 				case ir_EnterScope:
 					e := f.env
 					if len(i.DynamicList) > 0 { // if any dynamic vars declared
-						e = g.NewEnv(e)                      // make them a new scope
+						e = g.NewEnv(e)                      // make a new env
 						for _, name := range i.DynamicList { // and init them
 							e.VarMap[name] = g.NewVariable(g.NilValue)
 						}
@@ -149,6 +149,9 @@ func execute(f *pr_frame, label string) (rv g.Value, rc *g.Closure) {
 				case ir_ExitScope:
 					for _, name := range i.NameList {
 						f.vars[name] = nil // allow garbage collection
+					}
+					for _, name := range i.DynamicList {
+						f.env.VarMap[name] = nil
 					}
 				case ir_Move:
 					f.temps[i.Lhs] = f.temps[i.Rhs]
