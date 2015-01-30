@@ -81,7 +81,7 @@ for F in $SRCS; do
 			QUIT=exit
 			;;
 		x)	# no flag: produce temporary file.gir for later execution
-			O=$SCR/${B%%*/}.gir
+			O=$SCR/${B##*/}.gir
 			OBJS="$OBJS $O"
 			$TRAN >$O || QUIT=exit
 			;;
