@@ -12,10 +12,13 @@ import (
 	"strings"
 )
 
+var fileNumber = 0
+
 //  load -- read a single JSON-encoded IR file as a tree of objects
 func load(fname string) []interface{} {
 
-	babble("loading %s", fname)
+	fileNumber++
+	babble("loading file %d: %s", fileNumber, fname)
 
 	//  open the file
 	var gfile *os.File
@@ -186,8 +189,15 @@ func setField(f reflect.Value, key string, val interface{}) {
 	if !f.CanSet() {
 		panic(g.Malfunction("cannot set key " + key))
 	}
+
+	// prefix the file number to any field "Fn" or "Name" beginning with "$"
+	if (key == "Name" || key == "Fn") && val.(string)[0] == '$' {
+		val = fmt.Sprintf("%d%s", fileNumber, val)
+	}
+
 	t := f.Type()
 	if t.Kind() != reflect.Slice || t.Elem().Kind() == reflect.Interface {
+		// set a simple value
 		v := reflect.ValueOf(val)
 		if f.Kind() == reflect.Ptr && v.Kind() != reflect.Ptr {
 			// we have a value but need a pointer;
@@ -199,6 +209,7 @@ func setField(f reflect.Value, key string, val interface{}) {
 		f.Set(v)
 		return
 	}
+
 	// we have to make a typed slice and copy in the elements
 	resultp := reflect.New(t)
 	result := resultp.Elem()
