@@ -1438,7 +1438,7 @@ end
 
 # record a_Compound( exprList )
 procedure ir_a_Compound(p, st, target, bounded, rval)
-    local L, i, locals, failure
+    local L, i, locals, failure, dynamics
 
     st.syms := ir_scope(st.syms)
 
@@ -1470,6 +1470,10 @@ procedure ir_a_Compound(p, st, target, bounded, rval)
         if member(st.localSet, i) then {
 	    put(locals, i)
 	}
+    }
+    dynamics := []
+    every i := !\st.syms.Dynamic do {
+        put(dynamics, i)
     }
 
     # should the following have ExitScope if this is bounded?
