@@ -6,9 +6,6 @@ record message(
 	what,	# something more
 )
 
-record recordAsVariable()
-global recordAsVariable
-
 procedure main() {
 	# local i, x
 	local i
@@ -54,10 +51,6 @@ procedure main() {
 	evaluation("1234567890", "abcdefghi")
 
 	every write(image(nullsuspend()))
-
-	write(image(recordAsVariable))
-	recordAsVariable := 3
-	write(image(recordAsVariable))
 
 	every write(tstreturn())
 

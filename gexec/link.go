@@ -56,14 +56,18 @@ func link(parts [][]interface{}) {
 //
 //	Install declared global variables as trapped refs in global dictionary.
 //	Install procedures in proc info table.
-//  Register initial procedures and global initialization procedures,
-//  altering their names to make them unique across all files.
+//  Register initial procedures and global initialization procedures.
 func irDecl(decl interface{}) {
 	switch x := decl.(type) {
 	case ir_Global:
 		for _, name := range x.NameList {
-			if GlobalDict[name] == nil {
+			gv := GlobalDict[name]
+			if gv == nil {
 				GlobalDict[name] = g.NewVariable(g.NilValue)
+			} else if t, ok := gv.(*g.VTrapped); ok && *t.Target == g.NilValue {
+				// okay, previously declared global, no problem
+			} else {
+				fatal("duplicate global declaration: global " + name)
 			}
 		}
 		if x.Fn != "" {
@@ -104,16 +108,11 @@ func registerMethod(pr *pr_Info, recname string, methname string) {
 func registerProc(pr *pr_Info) {
 	gv := GlobalDict[pr.name]
 	if gv == nil {
-		// not declared as global, and not seen before:
 		// create global with unmodifiable procedure value
 		GlobalDict[pr.name] = irProcedure(pr, nil)
-	} else if t, ok := gv.(*g.VTrapped); ok && *t.Target == g.NilValue {
-		// uninitialized declared global:
-		// initialize global trapped variable with procedure value
-		*t.Target = irProcedure(pr, nil) //#%#% TEST THIS!
 	} else {
 		// duplicate global: fatal error
-		fatal("duplicate global declaration: " + pr.name)
+		fatal("duplicate global declaration: procedure " + pr.name)
 	}
 	delete(Undeclared, pr.name)
 }
@@ -122,16 +121,11 @@ func registerProc(pr *pr_Info) {
 func registerRecord(sc *ir_Record) {
 	gv := GlobalDict[sc.Name]
 	if gv == nil {
-		// not declared as global, and not seen before:
 		// create global with unmodifiable procedure value
 		GlobalDict[sc.Name] = g.NewCtor(sc.Name, sc.FieldList)
-	} else if t, ok := gv.(*g.VTrapped); ok && *t.Target == g.NilValue {
-		// uninitialized declared global:
-		// initialize global trapped variable with procedure value
-		*t.Target = g.NewCtor(sc.Name, sc.FieldList)
 	} else {
 		// duplicate global: fatal error
-		fatal("duplicate global declaration: " + sc.Name)
+		fatal("duplicate global declaration: record " + sc.Name)
 	}
 	delete(Undeclared, sc.Name)
 }

@@ -25,6 +25,9 @@ var ProcTable = make(map[string]*pr_Info)
 
 //  declareProc initializes and returns a procedure info structure
 func declareProc(ir *ir_Function) *pr_Info {
+	if ProcTable[ir.Name] != nil {
+		fatal("duplicate procedure definition: " + ir.Name)
+	}
 	pr := &pr_Info{}
 	pr.name = ir.Name
 	pr.ir = ir
