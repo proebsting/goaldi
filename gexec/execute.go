@@ -135,15 +135,19 @@ func execute(f *pr_frame, label string) (rv g.Value, rc *g.Closure) {
 					}
 					f.temps[i.Lhs] = v
 				case ir_EnterScope:
-					e := f.env
+					e := f.env                 // environment at procedure entry
+					p := f.vars[i.ParentScope] // look it up
+					if p != nil {              // if known
+						e = p.(*g.Env) // now e has our current env
+					}
 					if len(i.DynamicList) > 0 { // if any dynamic vars declared
-						e = g.NewEnv(e)                      // make a new env
-						for _, name := range i.DynamicList { // and init them
+						e = g.NewEnv(e)                      // make new env
+						for _, name := range i.DynamicList { // init dynamics
 							e.VarMap[name] = g.NewVariable(g.NilValue)
 						}
 					}
-					f.vars[i.Scope] = e // save the envmt of this scope
-					for _, name := range i.NameList {
+					f.vars[i.Scope] = e               // save envmt of scope
+					for _, name := range i.NameList { // init locals
 						f.vars[name] = g.NewVariable(g.NilValue)
 					}
 				case ir_ExitScope:
