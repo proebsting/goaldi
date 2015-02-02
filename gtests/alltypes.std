@@ -17,7 +17,7 @@ p    p:main          procedure main()               0xXXXXXX
 L    L:5             [2,3,5,7,11]                   [2 3 5 7 11]
 T    T:2             table{Au:Gold,Fe:Iron}         T:2
 R    Point{}         Point{x:7,y:5}                 Point{}
-R    key:value{}     key:value{key:Au,value:Gold}   key:value{}
+R    elemtype{}      elemtype{key:Au,value:Gold}    elemtype{}
 R    tuple{}         tuple{w:6,h:4}                 tuple{}
 X    1h2m3s          3723000000000                  1h2m3s
 
@@ -39,7 +39,7 @@ p    p:main          t:procedure     procedure       t:procedure
 L    L:5             t:list          list            t:list
 T    T:2             t:table         table           t:table
 R    Point{}         t:Point         Point           t:Point
-R    key:value{}     t:key:value     key:value       
+R    elemtype{}      t:elemtype      elemtype        
 R    tuple{}         t:tuple         tuple           
 X    1h2m3s          t:external      external        t:external
 

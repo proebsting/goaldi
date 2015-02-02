@@ -24,6 +24,13 @@ var GoMapMethods = MethodTable([]*VProcedure{
 	DefMeth(GoMapSort, "sort", "", "produce sorted list"),
 })
 
+//  Declare elemtype record for generating table values
+var ElemType = NewCtor("elemtype", []string{"key", "value"})
+
+func init() {
+	StdLib["elemtype"] = ElemType
+}
+
 //  Table() returns a new table
 func Table(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("table", args)
@@ -74,15 +81,12 @@ func GoMapSort(m Value, args ...Value) (Value, *Closure) {
 	for i, kv := range klist {
 		k := Import(kv.Interface())
 		v := Import(mv.MapIndex(kv).Interface())
-		vlist[i] = kvRecord.New([]Value{k, v})
+		vlist[i] = ElemType.New([]Value{k, v})
 	}
 	return InitList(vlist).Sort(i)
 }
 
 //  -------------------------- key/value pairs ---------------------
-
-//  kvRecord defines the {key,value} struct returned by ?T and !T
-var kvRecord = NewCtor("key:value", []string{"key", "value"})
 
 //  ChooseMap returns a key/value pair from any Goaldi table or Go map
 func ChooseMap(m interface{} /*anymap*/) Value {
@@ -95,7 +99,7 @@ func ChooseMap(m interface{} /*anymap*/) Value {
 	i := rand.Intn(n)
 	k := Import(klist[i].Interface())
 	v := Import(mv.MapIndex(klist[i]).Interface())
-	return kvRecord.New([]Value{k, v})
+	return ElemType.New([]Value{k, v})
 }
 
 //  DispenseMap generates key/value pairs for any Goaldi table or Go map
@@ -109,7 +113,7 @@ func DispenseMap(m interface{} /*anymap*/) (Value, *Closure) {
 		if i < len(klist) {
 			k := Import(klist[i].Interface())
 			v := Import(mv.MapIndex(klist[i]).Interface())
-			return kvRecord.New([]Value{k, v}), c
+			return ElemType.New([]Value{k, v}), c
 		} else {
 			return Fail()
 		}

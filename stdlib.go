@@ -32,7 +32,7 @@ func GoLib(entry interface{}, name string, pspec string, descr string) *VProcedu
 
 //  ShowLibrary(f) lists all library functions and standard types on file f
 func ShowLibrary(f io.Writer) {
-	typelist := make([]*VType, 0)
+	typelist := make([]Value, 0)
 	linelen := 79
 	fmt.Fprintln(f)
 	fmt.Fprintln(f, "Standard Library")
@@ -47,6 +47,8 @@ func ShowLibrary(f io.Writer) {
 			fmt.Fprintln(f, s1, s2, s3)
 		case *VType:
 			typelist = append(typelist, v)
+		case *VCtor:
+			typelist = append(typelist, v)
 		default:
 			fmt.Fprintf(f, "%x : UNRECOGNIZED : %T\n", k, x)
 		}
@@ -60,16 +62,22 @@ func ShowLibrary(f io.Writer) {
 		m := UniMethods[k]
 		fmt.Fprintf(f, "    x.%s -- %s\n", m.GoString()[10:], m.Descr)
 	}
-	for _, t := range typelist {
-		ctor := t.Ctor
-		fmt.Fprintln(f, ctor.GoString()[10:]+" -- "+ctor.Descr)
-		if t.Methods != nil {
-			for k := range SortedKeys(t.Methods) {
-				m := t.Methods[k]
-				fmt.Fprintf(f, "    %s.%s -- %s\n",
-					t.Abbr, m.GoString()[10:], m.Descr)
+	for _, x := range typelist {
+		switch t := x.(type) {
+		case *VType:
+			ctor := t.Ctor
+			fmt.Fprintln(f, ctor.GoString()[10:]+" -- "+ctor.Descr)
+			if t.Methods != nil {
+				for k := range SortedKeys(t.Methods) {
+					m := t.Methods[k]
+					fmt.Fprintf(f, "    %s.%s -- %s\n",
+						t.Abbr, m.GoString()[10:], m.Descr)
+				}
 			}
+		case *VCtor:
+			fmt.Fprintln(f, t.GoString()[12:])
 		}
+
 	}
 }
 
