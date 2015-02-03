@@ -40,7 +40,7 @@ func options() (files []string, args []string) {
 	flag.BoolVar(&opt_envmt, "E", false, "show initial environment")
 	flag.BoolVar(&opt_tally, "F", false, "tally IR field usage")
 	flag.BoolVar(&opt_jdump, "J", false, "dump JSON IR in outline form")
-	flag.BoolVar(&opt_profile, "P", false, "produce CPU profile on ./PROFILE")
+	flag.BoolVar(&opt_profile, "P", false, "produce ./PROFILE file (Linux)")
 	flag.BoolVar(&opt_trace, "T", false, "trace IR instruction execution")
 	flag.Usage = usage
 	flag.Parse()

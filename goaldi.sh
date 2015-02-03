@@ -11,7 +11,7 @@ FLAGS=acdNltvADEFJPT
 usage() {
 	exec >&2
 	cat <<==EOF==
-Usage: $0 [-$FLAGS] file [arg...]
+Usage: $0 [-$FLAGS] file.gd... [--] [arg...]
   -N  no optimization
   -c  compile only, producing IR on file.gir
   -a  compile only, producing IR on file.gir and assembly listing on file.gia
