@@ -12,7 +12,6 @@ Goaldi should run on any platform that supports:
 [Go 1.2](http://golang.org/)  
 [Icon 9.5](http://www.cs.arizona.edu/icon/)  
 
-
 ## Building
 Install Go and Icon and add them to your search path  
 Set your $GOPATH environment variable  
@@ -22,3 +21,6 @@ Type **make**
 
 ## Running a Goaldi program
 goaldi [options] sourcefile.gd [program arguments]
+
+## Mailing list
+goaldi-language@list.arizona.edu
