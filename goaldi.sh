@@ -50,7 +50,7 @@ while [ "$1" != "${1%.gd}" ]; do	# while name ends in .gd
 done
 
 #  remove a "--" separator argument if present
-if [ "$1" == "--" ]; then
+if [ "$1" = "--" ]; then
 	shift
 fi
 
