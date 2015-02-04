@@ -1408,7 +1408,8 @@ procedure parse_do_with()
             init := parse_expr()
     }
     parse_match_token(lex_DO)
-    e := parse_expr()
+    # e := parse_expr()
+    e := parse_braced()
     return a_With(id, init, e, coord)
 end
 
