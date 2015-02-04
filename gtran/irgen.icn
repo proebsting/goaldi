@@ -1156,6 +1156,9 @@ procedure ir_a_With(p, st, target, bounded, rval)
     ir_init(p)
 
     st.syms := newscope
+    st.syms.Static := table()
+    st.syms.Dynamic := table()
+    st.syms.Dynamic[p.id] := p.id
     suspend ir(p.expr, st, target, bounded, rval)
     st.syms := st.syms.parent
 
