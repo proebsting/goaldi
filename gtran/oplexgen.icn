@@ -50,6 +50,7 @@ procedure init_lex_tables()
                ["to",              "TO",        ""  ],
                ["until",           "UNTIL",     "b" ],
                ["while",           "WHILE",     "b" ],
+               ["with",            "WITH",     "b" ],
                ["yield",           "YIELD",  "be"]
                ]
 

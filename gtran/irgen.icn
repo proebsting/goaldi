@@ -1147,6 +1147,56 @@ procedure ir_a_Dynamic(p, st, target, bounded, rval)
     suspend ir_a_Key(p, st, target, bounded, rval)
 end
 
+procedure ir_a_With(p, st, target, bounded, rval)
+    local L, i, dynamics, parent, tmp, tmpkey, newscope
+
+    parent := ir_stname(st.syms)
+    newscope := ir_scope(st.syms)
+
+    ir_init(p)
+
+    st.syms := newscope
+    suspend ir(p.expr, st, target, bounded, rval)
+    st.syms := st.syms.parent
+
+    if \p.init then {
+        tmp := ir_tmp(st)
+        tmpkey := ir_tmp(st)
+        suspend ir(p.init, st, tmp, "bounded", "rval")
+        suspend ir_chunk(p.init.ir.success, [
+            ir_EnterScope(ir_coord(p.coord), [], [p.id], ir_stname(newscope), parent),
+            ir_Key(ir_coord(p.coord), tmpkey, p.id, ir_stname(newscope)),
+            ir_opfn(ir_coord(p.coord), &null, &null, ir_operator(":=", 2, "rval"), [ tmpkey, tmp ], &null),
+            ir_Goto(ir_coord(p.coord), p.expr.ir.start)
+	    ])
+        suspend ir_chunk(p.init.ir.failure, [ ir_Goto(ir_coord(p.coord), p.ir.failure) ])
+        suspend ir_chunk(p.ir.start, [
+            ir_Goto(ir_coord(p.coord), p.init.ir.start)
+        ])
+    } else {
+        suspend ir_chunk(p.ir.start, [
+            ir_EnterScope(ir_coord(p.coord), [], [p.id], ir_stname(newscope), parent),
+            ir_Goto(ir_coord(p.coord), p.expr.ir.start)
+        ])
+    }
+
+    if /bounded then {
+        suspend ir_chunk(p.expr.ir.success, [
+            ir_ExitScope(ir_coord(p.coord), [], [p.id], ir_stname(newscope)),
+	    ir_Goto(ir_coord(p.coord), p.ir.success)
+	    ])
+    } else {
+        suspend ir_chunk(p.expr.ir.success, [ ir_Goto(ir_coord(p.coord), p.ir.success) ])
+    }
+
+    suspend ir_chunk(p.expr.ir.failure, [
+        ir_ExitScope(ir_coord(p.coord), [], [p.id], ir_stname(newscope)),
+        ir_Goto(ir_coord(p.coord), p.ir.failure)
+	])
+
+
+end
+
 procedure ir_lookupD(st, name)
     local s, syms
     syms := st.syms
@@ -1648,6 +1698,7 @@ procedure ir(p, st, target, bounded, rval)
     "a_Fail" : suspend ir_a_Fail(p, st, target, bounded, rval)
     "a_Suspend" : suspend ir_a_Suspend(p, st, target, bounded, rval)
     "a_While" : suspend ir_a_While(p, st, target, bounded, rval)
+    "a_With" : suspend ir_a_With(p, st, target, bounded, rval)
     "a_Create" : suspend ir_a_Create(p, st, target, bounded, rval)
     "a_Ident" : suspend ir_a_Ident(p, st, target, bounded, rval)
     "a_Continue" : suspend ir_a_Continue(p, st, target, bounded, rval)
