@@ -23,7 +23,6 @@ procedure init_lex_tables()
                ["create",          "CREATE",    "b" ],
                ["default",         "DEFAULT",   "b" ],
                ["do",              "DO",        ""  ],
-               ["dynamic",         "DYNAMIC",   ""  ],
                ["else",            "ELSE",      ""  ],
                ["every",           "EVERY",     "b" ],
                ["extends",         "EXTENDS",   "" ],

@@ -1136,17 +1136,6 @@ procedure ir_a_Static(p, st, target, bounded, rval)
     suspend ir_a_Ident(p, st, target, bounded, rval)
 end
 
-# record a_Dynamic( id )
-procedure ir_a_Dynamic(p, st, target, bounded, rval)
-    /st.syms.Dynamic := table()
-
-    /st.syms.Dynamic[p.id] | semantic_error(image(p.id) || ": redeclared dynamic identifier", p.coord)
-
-    st.syms.Dynamic[p.id] := p.id
-
-    suspend ir_a_Key(p, st, target, bounded, rval)
-end
-
 procedure ir_a_With(p, st, target, bounded, rval)
     local L, i, dynamics, parent, tmp, tmpkey, newscope
 
@@ -1718,7 +1707,6 @@ procedure ir(p, st, target, bounded, rval)
     "a_Key" : suspend ir_a_Key(p, st, target, bounded, rval)
     "a_Arglist" : suspend ir_a_Arglist(p, st, target, bounded, rval)
     "a_Local" : suspend ir_a_Local(p, st, target, bounded, rval)
-    "a_Dynamic" : suspend ir_a_Dynamic(p, st, target, bounded, rval)
     "a_Static" : suspend ir_a_Static(p, st, target, bounded, rval)
     default : runerr(500, p)
     }
