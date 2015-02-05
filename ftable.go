@@ -25,7 +25,7 @@ var GoMapMethods = MethodTable([]*VProcedure{
 })
 
 //  Declare elemtype record for generating table values
-var ElemType = NewCtor("elemtype", []string{"key", "value"})
+var ElemType = NewCtor("elemtype", nil, []string{"key", "value"})
 
 func init() {
 	StdLib["elemtype"] = ElemType

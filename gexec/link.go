@@ -8,8 +8,14 @@ import (
 	"strings"
 )
 
-//  list of record declarations seen
-var RecordList = make([]*ir_Record, 0)
+//  A RecordEntry adds info to an ir_Record
+type RecordEntry struct {
+	ir_Record          // ir struct
+	ctor      *g.VCtor // constructor
+}
+
+//  RecordTable registers all the record declarations that have been seen
+var RecordTable = make(map[string]*RecordEntry, 0)
 
 //  link combines IR files to make a complete program.
 func link(parts [][]interface{}) {
@@ -24,8 +30,8 @@ func link(parts [][]interface{}) {
 	}
 
 	//  register the record constructors
-	for _, sc := range RecordList {
-		registerRecord(sc)
+	for _, re := range RecordTable {
+		registerRecord(re)
 	}
 
 	//  register methods in constructors and procedures in global namespace
@@ -81,7 +87,11 @@ func irDecl(decl interface{}) {
 			Undeclared[id] = true
 		}
 	case ir_Record:
-		RecordList = append(RecordList, &x)
+		if RecordTable[x.Name] == nil {
+			RecordTable[x.Name] = &RecordEntry{x, nil}
+		} else {
+			fatal("duplicate record declaration: record " + x.Name)
+		}
 	default: // including ir_Invocable, ir_Link
 		panic(g.Malfunction(fmt.Sprintf("unrecognized: %#v", x)))
 	}
@@ -117,17 +127,32 @@ func registerProc(pr *pr_Info) {
 	delete(Undeclared, pr.name)
 }
 
-//  registerRecord(sc) -- register a record constructor in the globals
-func registerRecord(sc *ir_Record) {
-	gv := GlobalDict[sc.Name]
-	if gv == nil {
-		// create global with unmodifiable procedure value
-		GlobalDict[sc.Name] = g.NewCtor(sc.Name, sc.FieldList)
-	} else {
-		// duplicate global: fatal error
-		fatal("duplicate global declaration: record " + sc.Name)
+//  registerRecord(re) -- register a record constructor in the globals
+func registerRecord(re *RecordEntry) {
+	if re.ctor == nil { // if not already processed
+		gv := GlobalDict[re.Name]
+		if gv == nil {
+			// this is a new definition
+			var ext *g.VCtor
+			if re.Extends != "" {
+				pt := RecordTable[re.Extends]
+				if pt != nil {
+					registerRecord(pt) // ensure parent is done first
+					ext = pt.ctor
+				} else {
+					fatal("parent type not found: record " +
+						re.Name + " extends " + re.Extends)
+				}
+			}
+			// create global with unmodifiable procedure value
+			re.ctor = g.NewCtor(re.Name, ext, re.FieldList)
+			GlobalDict[re.Name] = re.ctor
+		} else {
+			// duplicate global: fatal error
+			fatal("duplicate global declaration: record " + re.Name)
+		}
+		delete(Undeclared, re.Name)
 	}
-	delete(Undeclared, sc.Name)
 }
 
 //  stdProcs() -- add referenced stdlib procedures to globals

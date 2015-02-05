@@ -41,7 +41,7 @@ func TupleType(names []string) *VCtor {
 	// check for already known type
 	t := KnownTuples[s]
 	if t == nil {
-		t = NewCtor("tuple", names)
+		t = NewCtor("tuple", nil, names)
 		KnownTuples[s] = t
 	}
 	return t

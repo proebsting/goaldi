@@ -1,0 +1,14 @@
+constructor outer(a,b)
+constructor inner(a,b,c)
+constructor innie(a,b,e,f,g)
+constructor point(x,y)
+constructor circle(x,y,r)
+constructor square(x,y,w)
+constructor rect(x,y,w,h)
+outer{a:1,b:2}
+inner{a:3,b:4,c:5}
+innie{a:6,b:7,e:8,f:9,g:0}
+point{x:0,y:0}
+circle{x:2,y:1,r:3}
+square{x:1,y:2,w:3}
+rect{x:5,y:3,w:4,h:3}

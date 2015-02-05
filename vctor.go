@@ -14,19 +14,29 @@ var _ = fmt.Printf // enable debugging
 
 //  VCtor is the constructor structure
 type VCtor struct {
-	VType                // embedded type struct (VCtor extends VType, sort of)
-	Flist []string       // ordered list of field names
-	Fmap  map[string]int // map of names to indexes (1-based)
+	VType                 // embedded type struct (VCtor extends VType, sort of)
+	Parent *VCtor         // parent type
+	Flist  []string       // ordered list of field names
+	Fmap   map[string]int // map of names to indexes (1-based)
 }
 
-//  NewCtor(name, fields) -- construct new definition
+//  NewCtor(name, parent, fields) -- make constructor: name extends parent
 //  Panics if a field name is duplicated.
-func NewCtor(name string, fields []string) *VCtor {
+func NewCtor(name string, parent *VCtor, newfields []string) *VCtor {
+
+	// combine the parent's fields with the new fields
+	fields := []string{}
+	if parent != nil {
+		fields = append(fields, parent.Flist...)
+	}
+	fields = append(fields, newfields...)
+
+	// now build the structures
 	cproc := NewProcedure(name, &fields, false, nil, (*VCtor).New, "")
 	meth := make(map[string]*VProcedure)
 	fmap := make(map[string]int)
 	ctype := VType{name, "R", rRecord, cproc, meth}
-	ctor := &VCtor{ctype, fields, fmap}
+	ctor := &VCtor{ctype, parent, fields, fmap}
 	for i, s := range fields {
 		if ctor.Methods[s] != nil || ctor.Fmap[s] != 0 {
 			panic(NewExn("duplicate field name", s))
@@ -156,7 +166,7 @@ func Constructor(env *Env, args ...Value) (Value, *Closure) {
 	for i := 1; i < len(args); i++ {
 		fields[i-1] = Identifier(args[i])
 	}
-	return Return(NewCtor(name, fields))
+	return Return(NewCtor(name, nil, fields))
 }
 
 //  Identifier converts its argument to a Go string and validates its form
