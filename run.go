@@ -11,9 +11,9 @@ import (
 
 //  An InitItem is a global initialization procedure with dependencies
 type InitItem struct {
-	Proc     *VProcedure // procedure to execute
-	Uses     []string    // variables used by this procedure
-	Sets     string      // variable set by running this procedure
+	Proc     *VProcedure // initialization procedure for globals (only!)
+	Uses     []string    // variables used by this global or procedure
+	Sets     string      // name of procedure or associated global
 	pending  int         // number of others we are waiting on
 	releases []int       // list of others to notify on set
 }
@@ -81,7 +81,7 @@ func RunDep(ilist []*InitItem, trace bool) error {
 	// if tracing, show initial data structures
 	if trace {
 		for _, item := range ilist {
-			fmt.Printf("global %s depends on [", item.Sets)
+			fmt.Printf("[-] global %s depends on [", item.Sets)
 			for _, s := range item.Uses {
 				fmt.Printf("%s,", s)
 			}
@@ -102,13 +102,19 @@ func RunDep(ilist []*InitItem, trace bool) error {
 	for trynext < len(ilist) {
 		item := ilist[trynext] // get next potential candidate
 		trynext++              // and bump the pointer
-		if item.pending == 0 { // if this one is ready to run
+		if item.pending == 0 { // if ready to run
 			if trace {
-				fmt.Printf("global %s initializing:\n", item.Sets)
+				if item.Proc != nil { // if a global initializer
+					fmt.Printf("[-] global %s initializing:\n", item.Sets)
+				} else {
+					fmt.Printf("[-] procedure %s ready\n", item.Sets)
+				}
 			}
-			Run(item.Proc, []Value{}) // run the procedure
-			item.pending--            // mark it as done
-			todo--                    // count it
+			if item.Proc != nil { // if a global initializer
+				Run(item.Proc, []Value{}) // run the procedure
+			}
+			item.pending = -1 // mark it as done
+			todo--            // count it
 			// decrement the wait count of each dependent item
 			for _, j := range item.releases {
 				ilist[j].pending--
@@ -119,20 +125,28 @@ func RunDep(ilist []*InitItem, trace bool) error {
 				}
 			}
 		} else if trace {
-			fmt.Printf("global %s wait count = %d\n", item.Sets, item.pending)
+			fmt.Printf("[-] global %s wait count = %d\n",
+				item.Sets, item.pending)
 		}
 	}
 
-	if todo == 0 {
-		return nil // success
-	}
-
-	// there was a circular dependency; report an error
-	s := "Circular dependency among:"
-	for _, item := range ilist {
-		if item.pending > 0 {
-			s = s + " " + item.Sets
+	if todo != 0 {
+		// there was a circular dependency
+		// this is an error only if it involves globals and not just procedures
+		isError := false
+		s := "Circular dependency among:"
+		for _, item := range ilist {
+			if item.pending > 0 {
+				s = s + " " + item.Sets
+			}
+			isError = isError || (item.Proc != nil)
+		}
+		if isError {
+			return errors.New(s)
 		}
 	}
-	return errors.New(s)
+	if trace {
+		fmt.Printf("[-] global variable initialization complete\n")
+	}
+	return nil // success
 }

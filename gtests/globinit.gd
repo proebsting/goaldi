@@ -37,6 +37,7 @@ initial { v -:= 1; w +:= 3; printall("init3") }
 
 procedure main() {
 	printall("main")
+	write("aa=", aa, " bb=", bb, " cc=", cc, " dd=", dd)
 	%stdin.println("done")	# appears on stdout due to initial{} reassignment
 }
 
@@ -49,3 +50,22 @@ procedure printall(label) {
 }
 
 initial { z := 6789; printall("init5") }
+
+# test dependency involving a procedure call
+# (from the Go language reference page)
+
+global aa := show("aa", cc + bb)
+global bb := show("bb", ff())
+global cc := show("cc", ff())
+global dd := show("dd", 3)
+
+procedure ff() {
+	dd +:= 1
+	write("ff returning ", dd)
+	return dd
+}
+
+procedure show(label, value) {
+	write(label, " := ", value)
+	return value
+}

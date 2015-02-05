@@ -7,6 +7,7 @@ import (
 	g "goaldi"
 	"os"
 	"runtime/pprof"
+	"unicode"
 )
 
 //  globals
@@ -14,7 +15,7 @@ import (
 var GlobalDict = make(map[string]g.Value) // global dictionary
 var Undeclared = make(map[string]bool)    // is var x undeclared?
 
-var GlobInit = make([]*ir_Global, 0)  // globals with initializaion
+var GlobInit = make([]*ir_Global, 0)  // globals with initialization
 var InitList = make([]*ir_Initial, 0) // sequential initialization blocks
 
 var nFatals = 0   // count of fatal errors
@@ -85,12 +86,22 @@ func main() {
 
 	// run the interdependent global initialization procedures
 	ilist := make([]*g.InitItem, 0)
-	for _, ir := range GlobInit {
+	for _, ir := range GlobInit { // enter all globals that initialize
 		p := GlobalDict[ir.Fn].(*g.VProcedure)
 		uses := ProcTable[ir.Fn].ir.UnboundList
 		ilist = append(ilist, g.NewInit(p, uses, ir.NameList[0]))
 	}
-	err := g.RunDep(ilist, opt_trace)
+	// need to factor in the dependencies of called procedures, too
+	for _, proc := range ProcTable { // enter real procedures that ref globals
+		if !unicode.IsDigit(rune(proc.name[0])) {
+			// this is a top-level user-declared procedure
+			ulist := proc.ir.UnboundList
+			if ulist != nil && len(ulist) > 0 {
+				ilist = append(ilist, g.NewInit(nil, ulist, proc.name))
+			}
+		}
+	}
+	err := g.RunDep(ilist, opt_trace) // init globals in dependency order
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "fatal:   %v\n", err)
 		pprof.StopCPUProfile()
@@ -98,12 +109,11 @@ func main() {
 	}
 
 	// run the sequence of initialization procedures
+	//#%#% each call to Run resets a clean environment. is that valid?
 	for _, ir := range InitList {
 		g.Run(GlobalDict[ir.Fn].(*g.VProcedure), []g.Value{})
 	}
-
-	//#%#% each call to Run resets a clean environment.
-	//#%#% this probably isn't right.  fix.
+	showInterval("initialization")
 
 	// find and execute main()
 	arglist := make([]g.Value, 0)
