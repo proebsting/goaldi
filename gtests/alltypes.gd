@@ -11,12 +11,16 @@ record Example(	# one example for display
 
 record Point(x,y)								# a simple illustrative record
 procedure Point.dist() { return hypot(self.x, self.y) }	# and a method for it
+record Circle extends Point(r)
 
+global ttable	# table of distinct types
+global tlist	# list of distinct types
 
 procedure main() {
 
 	# make a list of examples with associated global type values
 	^E := []
+	ttable := table()
 	add(E, nil, niltype)
 	add(E, type(), type)
 	add(E, 17, number)
@@ -28,6 +32,7 @@ procedure main() {
 	add(E, Point, constructor)
 	add(E, ^P := Point(7,5), Point)
 	add(E, P.dist, methodvalue)
+	add(E, Circle(7,5,2), Circle)
 	add(E, main, proctype)
 	add(E, ^L := [2,3,5,7,11], list)
 	add(E, ^T := table(){"Fe":"Iron","Au":"Gold"}, table)
@@ -54,24 +59,34 @@ procedure main() {
 		printf(format, t.char(), s, i, f)
 	}
 
+	# make list of distinct types for instanceof testing
+	tlist := [: (!ttable.sort()).key :]
+
 	write()
 	write("Examples sorted by type, showing type information:")
 	# n.b. stable sort keeps ordering reproducible within type
 	E := E.sort(Example.type)
 	write()
-	format := "%-4s %-15s %-15s %-15s %s\n"
-	printf(format, "ch", "x.string()", "x.type()", "t.name()", "global")
-	printf(format, "--", "----------", "--------", "--------", "------")
+	format := "%-4s %-12s %-14s %-12s %-13s %s"
+	printf(format,
+		"ch", "x.string()", "x.type()", "t.name()", "global", "  instanceof\n")
+	printf(format,
+		"--", "----------", "--------", "--------", "------", "  ----------\n")
 	every x := !E do {
 		^v := x.value
 		^t := x.type
-		printf(format, t.char(), v.string(), t, t.name(), t===x.gtype | "")
+		printf(format, t.char(), v.string(), t, t.name(), t===x.gtype | "", "")
+		every t := !tlist do
+			if v.instanceof(t) then writes("  ", t)
+		write()
 	}
 	write()
 }
 
 procedure add(E, v, g) {			#: add global type and sample value
-	return E.put(Example(v, type(v), g))
+	^t := type(v)
+	ttable[t] := t
+	return E.put(Example(v, t, g))
 }
 
 procedure check(p, x, s) {			#: validate p(x) === s

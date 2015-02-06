@@ -16,6 +16,7 @@ m    m:dist          methodvalue (Point{}).dist     m:dist
 p    p:main          procedure main()               0xXXXXXX
 L    L:5             [2,3,5,7,11]                   [2 3 5 7 11]
 T    T:2             table{Au:Gold,Fe:Iron}         T:2
+R    Circle{}        Circle{x:7,y:5,r:2}            Circle{}
 R    Point{}         Point{x:7,y:5}                 Point{}
 R    elemtype{}      elemtype{key:Au,value:Gold}    elemtype{}
 R    tuple{}         tuple{w:6,h:4}                 tuple{}
@@ -23,23 +24,24 @@ X    1h2m3s          3723000000000                  1h2m3s
 
 Examples sorted by type, showing type information:
 
-ch   x.string()      x.type()        t.name()        global
---   ----------      --------        --------        ------
-z    ~               t:nil           nil             t:nil
-t    t:nil           t:type          type            t:type
-t    t:Point         t:type          type            
-n    3.142           t:number        number          t:number
-n    17              t:number        number          t:number
-n    6.022e+23       t:number        number          t:number
-s    abcd            t:string        string          t:string
-f    f:%stdin        t:file          file            t:file
-c    c:3             t:channel       channel         t:channel
-m    m:dist          t:methodvalue   methodvalue     t:methodvalue
-p    p:main          t:procedure     procedure       t:procedure
-L    L:5             t:list          list            t:list
-T    T:2             t:table         table           t:table
-R    Point{}         t:Point         Point           t:Point
-R    elemtype{}      t:elemtype      elemtype        
-R    tuple{}         t:tuple         tuple           
-X    1h2m3s          t:external      external        t:external
+ch   x.string()   x.type()       t.name()     global          instanceof
+--   ----------   --------       --------     ------          ----------
+z    ~            t:nil          nil          t:nil           t:nil
+t    t:nil        t:type         type         t:type          t:type
+t    t:Point      t:type         type                         t:type
+n    3.142        t:number       number       t:number        t:number
+n    17           t:number       number       t:number        t:number
+n    6.022e+23    t:number       number       t:number        t:number
+s    abcd         t:string       string       t:string        t:string
+f    f:%stdin     t:file         file         t:file          t:file
+c    c:3          t:channel      channel      t:channel       t:channel
+m    m:dist       t:methodvalue  methodvalue  t:methodvalue   t:methodvalue
+p    p:main       t:procedure    procedure    t:procedure     t:procedure
+L    L:5          t:list         list         t:list          t:list
+T    T:2          t:table        table        t:table         t:external
+R    Circle{}     t:Circle       Circle       t:Circle        t:Circle  t:Point
+R    Point{}      t:Point        Point        t:Point         t:Point
+R    elemtype{}   t:elemtype     elemtype                     t:elemtype
+R    tuple{}      t:tuple        tuple                        t:tuple
+X    1h2m3s       t:external     external     t:external      t:external
 

@@ -133,11 +133,12 @@ func UniMethod(v Value, s string) *VMethVal {
 
 //  Declare universal methods
 var UniMethods = map[string]*VProcedure{
-	"type":     DefProc(Type, "type", "", "return type of value"),
-	"string":   DefProc(String, "string", "", "render value as string"),
-	"image":    DefProc(Image, "image", "", "return detailed string image"),
-	"copy":     DefProc(Copy, "copy", "", "copy value"),
-	"external": DefProc(External, "external", "", "export and re-import"),
+	"type":       DefProc(Type, "type", "", "return type of value"),
+	"string":     DefProc(String, "string", "", "render value as string"),
+	"image":      DefProc(Image, "image", "", "return detailed string image"),
+	"copy":       DefProc(Copy, "copy", "", "copy value"),
+	"external":   DefProc(External, "external", "", "export and re-import"),
+	"instanceof": DefProc(InstanceOf, "instanceof", "t", "check type relationship"),
 }
 
 //  VMethVal.Call invokes the underlying method function.

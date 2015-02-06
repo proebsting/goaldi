@@ -131,3 +131,33 @@ func Type(env *Env, args ...Value) (Value, *Closure) {
 		return Return(ExternalType)
 	}
 }
+
+//  InstanceOf(v, t) -- return v if it is an instance of type t.
+
+func InstanceOf(env *Env, args ...Value) (Value, *Closure) {
+	defer Traceback("instanceof", args)
+	v := ProcArg(args, 0, NilValue)
+	t := ProcArg(args, 1, NilValue).(IRank)
+	// check for external
+	if _, ok := v.(ICore); !ok {
+		// v is an external
+		if t == ExternalType {
+			return Return(v)
+		} else {
+			return Fail()
+		}
+	}
+	// not an external
+	vtype := v.(ICore).Type() // get type of value
+	if vtype == t {
+		return Return(v) // exact match
+	}
+	// no match, but check ancestor classes if a record type
+	for c, _ := vtype.(*VCtor); c != nil; c = c.Parent {
+		if c == t {
+			return Return(v) // found a match
+		}
+	}
+	// no match at all
+	return Fail()
+}
