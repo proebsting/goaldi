@@ -16,9 +16,12 @@ func (v *VRecord) Field(f string) Value {
 	if i > 0 {
 		return Trapped(&v.Data[i-1])
 	}
-	m := d.Methods[f]
-	if m != nil {
-		return MethodVal(m, v)
+	for d != nil {
+		m := d.Methods[f]
+		if m != nil {
+			return MethodVal(m, v)
+		}
+		d = d.Parent
 	}
 	//  check for standard method
 	if mv := UniMethod(v, f); mv != nil {
