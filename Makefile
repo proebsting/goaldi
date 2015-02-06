@@ -31,10 +31,6 @@ test:
 	go test
 	cd gtests; $(MAKE)
 
-#  run translate-and-link tests of old Icon programs
-itest:
-	cd itests; $(MAKE)
-
 #  run expt.gd (presumably the test of the moment) if present
 #  passes $GXOPTS to interpreter if set in environment
 expt:
@@ -54,7 +50,6 @@ clean:
 	go clean $(PKG) $(PROGS)
 	cd gtran; $(MAKE) clean
 	cd gtests; $(MAKE) clean
-	cd itests; $(MAKE) clean
 
 #  remove files placed elsewhere in $GOPATH
 uninstall:
