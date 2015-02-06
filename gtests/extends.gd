@@ -21,6 +21,11 @@ procedure main() {
 	every (p|c|s|r).exhibit()
 }
 
+procedure circle.exhibit() {	# overrides point.exhibit
+	write("CIRCLE(", self.x, ",", self.y, ",", self.r, ") ",
+		type(self), "  ", image(self))
+}
+
 procedure point.exhibit() {
 	write("at ", self.x, ",", self.y, ":  ", self.type(), "  ",self.image())
 	case self.type() of {
