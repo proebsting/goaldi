@@ -129,19 +129,30 @@ func registerProc(pr *pr_Info) {
 
 //  registerRecord(re) -- register a record constructor in the globals
 func registerRecord(re *RecordEntry) {
+	defer func() { // catch "duplicate field name" exception
+		if e := recover(); e != nil {
+			x := e.(*g.Exception)
+			fatal(fmt.Sprintf("in record %s: %s: %v",
+				re.Name, x.Msg, x.Offv[0]))
+		}
+	}()
 	if re.ctor == nil { // if not already processed
+		re.ctor = regMark // prevent infinite recursion on error
 		gv := GlobalDict[re.Name]
 		if gv == nil {
 			// this is a new definition
 			var ext *g.VCtor
 			if re.Extends != "" {
 				pt := RecordTable[re.Extends]
-				if pt != nil {
-					registerRecord(pt) // ensure parent is done first
-					ext = pt.ctor
-				} else {
+				if pt == nil {
 					fatal("parent type not found: record " +
 						re.Name + " extends " + re.Extends)
+				} else if pt.ctor == regMark {
+					fatal("recursive definition: record " +
+						re.Name + " extends " + re.Extends + " extends...")
+				} else {
+					registerRecord(pt) // ensure parent is done first
+					ext = pt.ctor
 				}
 			}
 			// create global with unmodifiable procedure value
@@ -154,6 +165,8 @@ func registerRecord(re *RecordEntry) {
 		delete(Undeclared, re.Name)
 	}
 }
+
+var regMark = &g.VCtor{} // marker for catching recursive definitions
 
 //  stdProcs() -- add referenced stdlib procedures to globals
 func stdProcs() {
