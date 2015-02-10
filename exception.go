@@ -67,30 +67,6 @@ type CallFrame struct {
 	args  []Value     // procedure arguments
 }
 
-//  Cause(x) returns the original panic underlying a chain of CallFrame structs.
-func Cause(x interface{}) interface{} {
-	for {
-		if f, ok := x.(*CallFrame); ok {
-			x = f.cause
-		} else {
-			return x
-		}
-	}
-}
-
-//  Catcher(env) tries to recover from a panic and print a traceback.
-func Catcher(env *Env) {
-	if x := recover(); x != nil {
-		Diagnose(os.Stderr, x)            // write Goaldi stack trace
-		if env.VarMap["gostack"] != nil { // if interpreter set %gostack
-			fmt.Fprintf(os.Stderr, "Go stack:\n%s\n",
-				debug.Stack()) // write Go stack trace
-		}
-		Shutdown(1)
-		panic(x)
-	}
-}
-
 //  Traceback is called as a deferred function to catch and annotate a panic
 func Traceback(procname string, arglist []Value) {
 	if p := recover(); p != nil {
@@ -104,7 +80,33 @@ func Catch(p interface{}, ev []Value, coord string,
 	return &CallFrame{p, ev, coord, procname, arglist}
 }
 
-//  Diagnose handles traceback for a panic caught by Run()
+//  Cause(x) returns the original panic underlying a chain of CallFrame structs.
+//  This is the value passed to an exception catcher.
+func Cause(x interface{}) interface{} {
+	for {
+		if f, ok := x.(*CallFrame); ok {
+			x = f.cause
+		} else {
+			return x
+		}
+	}
+}
+
+//  Catcher(env) prints a tracepback after a panic.
+//  This is the recovery procedure at the top of the main (or coexpr) stack.
+func Catcher(env *Env) {
+	if x := recover(); x != nil {
+		Diagnose(os.Stderr, x)            // write Goaldi stack trace
+		if env.VarMap["gostack"] != nil { // if interpreter set %gostack
+			fmt.Fprintf(os.Stderr, "Go stack:\n%s\n",
+				debug.Stack()) // write Go stack trace
+		}
+		Shutdown(1)
+		panic(x)
+	}
+}
+
+//  Diagnose prints traceback of a panic.
 //  It returns true for an "expected" (recognized) error.
 func Diagnose(f io.Writer, v interface{}) bool {
 	switch x := v.(type) {
