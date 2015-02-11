@@ -17,27 +17,23 @@ type Exception struct {
 	Offv []Value // offending values (Goaldi or Go values)
 }
 
-//  Exception.String() returns a string form of a Exception
-func (e *Exception) String() string {
-	s := fmt.Sprintf("Exception(%s", e.Msg)
-	for _, v := range e.Offv {
-		s = fmt.Sprintf("%s,%v", s, v)
-	}
-	return s + ")"
-}
-
 //  Exception.Error(), by its existence, makes an Exception a Go "error"
 func (e *Exception) Error() string {
 	return e.String()
 }
 
-//  Exception.GoString() converts an exception for image() or printf(%#v)
-func (e *Exception) GoString() string {
+//  Exception.String() returns a string form of a Exception
+func (e *Exception) String() string {
 	s := fmt.Sprintf("Exception(%#v", e.Msg)
 	for _, v := range e.Offv {
 		s = fmt.Sprintf("%s,%#v", s, v)
 	}
 	return s + ")"
+}
+
+//  Exception.GoString() converts an exception for image() or printf(%#v)
+func (e *Exception) GoString() string {
+	return e.String()
 }
 
 //  NewExn(s,v,...) creates and returns an Exception struct

@@ -62,5 +62,5 @@ procedure zval() {
 
 procedure nope(e) {
 	# extract variable name from exception message
-	return "(" || string(e)[-3:0]
+	return "(" || string(e)[-4:-2] || ")"
 }

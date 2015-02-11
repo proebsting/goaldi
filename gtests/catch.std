@@ -3,17 +3,17 @@ expect failure:
 expect nil:
    got ~
 expect panic value:
-   got Exception(ToBy: bad increment,0)
+   got Exception("ToBy: bad increment",0)
 expect raspberry:
    got pbpbpbpbpttttt
 expect catch message:
-   got caught: Exception(ToBy: bad increment,0)
+   got caught: Exception("ToBy: bad increment",0)
 expect rethrow:
    caught panic; now reissuing
-   UNCAUGHT PANIC: Exception(ToBy: bad increment,0)
+   UNCAUGHT PANIC: Exception("ToBy: bad increment",0)
 expect custom panic:
    caught panic; throwing another
-   UNCAUGHT PANIC: Exception(CUSTOM PANIC)
+   UNCAUGHT PANIC: Exception("CUSTOM PANIC")
 expect type conversion error:
    got interface conversion: interface is *goaldi.VNumber, not *goaldi.VProcedure
 expect 17:
