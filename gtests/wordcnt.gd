@@ -15,7 +15,7 @@ procedure main() {
 	local kv
 
 	words := table()
-	rx := regex("[\\W]+")
+	rx := regex(`[\W]+`)
 	while line := read() do {
 		line := rx.ReplaceAllString(line, " ")
 		every w := !fields(line) do

@@ -9,7 +9,7 @@ procedure main() {
 
 	rex("a(x*)b(y|z)c", "-axxxbyc-", "-abzc-")
 	rex("(a|bcdef|g|ab|c|d|e|efg|fg)*", "abcdefg", )
-	rex("\\d+(\\.\\d*)?(e\\d+)?", "5", "2.71", "3e9", "x59", "16r99", "eleven")
+	rex(`\d+(\.\d*)?(e\d+)?`, "5", "2.71", "3e9", "x59", "16r99", "eleven")
 	v := "([aeiou]*)"
 	c := "([bcdfghj-np-tv-z]*)"
 	p := "p" ||  v || c || "ch"
