@@ -272,15 +272,16 @@ procedure lex_quoted(delim, getline)
                     lex_error("unclosed quote")
                 }
             } else {
-                every (str ||:= tab(upto('_'))) do {
-                    if pos(-1) then {
-                        &subject := lex_nextline(getline) | fail
-                        tab(many(' \t\f'))
-                        break next
-                    } else {
-                        str ||:= move(1)
-                    }
-                }
+#                Icon-style multi-line literals continued by "_\n" DISABLED
+#                every (str ||:= tab(upto('_'))) do {
+#                    if pos(-1) then {
+#                        &subject := lex_nextline(getline) | fail
+#                        tab(many(' \t\f'))
+#                        break next
+#                    } else {
+#                        str ||:= move(1)
+#                    }
+#                }
                 lex_error("unclosed quote")
             }
             runerr(500, lex_lineno)
