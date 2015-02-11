@@ -154,6 +154,14 @@ procedure lex_yylex0(getline)
             next
         }
 
+        # check if raw literal
+        if str := lex_rawquoted(getline) then {
+            ptok := lex_STRINGLIT
+            ptok.str := str
+            suspend ptok
+            next
+        }
+
         # check if cset
         if str := lex_quoted("'", getline) then {
             ptok := lex_CSETLIT
@@ -181,6 +189,23 @@ procedure lex_nextline(getline)
     s := @getline | fail
     lex_lineno +:= 1
     return s
+end
+
+procedure lex_rawquoted(getline)
+    local str
+    if ="`" then {
+        str := ""
+        repeat {
+            str ||:= tab(upto('`') | 0)
+            if ='`' then {
+                return str
+            }
+            str ||:= "\n"
+            &subject := lex_nextline(getline) |
+                lex_error("unclosed raw literal")
+        }
+    }
+    fail
 end
 
 procedure lex_quoted(delim, getline) 
