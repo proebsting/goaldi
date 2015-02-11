@@ -1,5 +1,6 @@
 #SRC: icon/proto.icn
 #  This program contains samples of all the basic syntactic forms in Icon.
+#  (Now modified somewhat for Goaldi but not necessarily complete.)
 
 record three(x,y,z)
 record zero()
@@ -156,7 +157,6 @@ procedure expr9() {
 	local X_
 	nil
 	"abc"
-	'abc'
 	"\n"
 	"^a"
 	"\001"
@@ -167,4 +167,5 @@ procedure expr9() {
 	3.5
 	2.5e4
 	4e-10
+	.127
 }
