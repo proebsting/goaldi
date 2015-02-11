@@ -236,20 +236,22 @@ procedure lex_quoted(delim, getline)
                 }
                 ="\\" | runerr(500, lex_lineno)
                 if ="u" | ="U" then {
-                    if hex:= tab(many('0123456789abcdefABCDEF',,,&pos+8)) then {
+                    if hex:= tab(many('0123456789abcdefABCDEF',,,&pos+8|0)) then {
                         u := "16r" || hex
                         str ||:= lex_utf8(u)
                         next
                     } else {
                         str ||:= "\\u"
+                        next
                     }
                 } else if ="x" | ="X" then {
-                    if hex:= tab(many('0123456789abcdefABCDEF',,,&pos+2)) then {
+                    if hex:= tab(many('0123456789abcdefABCDEF',,,&pos+2|0)) then {
                         h := "16r" || hex
                         str ||:= lex_utf8(h)
                         next
                     } else {
                         str ||:= "\\x"
+                        next
                     }
                 } else if ="^" then {
                     if ch := move(1) then {
@@ -257,8 +259,9 @@ procedure lex_quoted(delim, getline)
                         next
                     } else {
                         str ||:= "\\^"
+                        next
                     }   
-                } else if octal := tab(many('01234567',,,&pos+3)) then {
+                } else if octal := tab(many('01234567',,,&pos+3|0)) then {
                     o := "8r" || octal
                     str ||:= lex_utf8(o)
                     next
