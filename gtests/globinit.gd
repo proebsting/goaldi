@@ -69,3 +69,16 @@ procedure show(label, value) {
 	write(label, " := ", value)
 	return value
 }
+
+# test dependency on mutually recursive procedures
+
+global rr := show("rr", r1(5))
+
+procedure r1(n) {
+	if n > 100 then return n
+	return r2(2 * n)
+}
+
+procedure r2(n) {
+	return r1(3 * n)
+}

@@ -84,15 +84,10 @@ func main() {
 		g.EnvInit("gostack", g.ONE)
 	}
 
-	// run the interdependent global initialization procedures
+	// make a list for dependency-based global initialization
 	ilist := make([]*g.InitItem, 0)
-	for _, ir := range GlobInit { // enter all globals that initialize
-		p := GlobalDict[ir.Fn].(*g.VProcedure)
-		uses := ProcTable[ir.Fn].ir.UnboundList
-		ilist = append(ilist, g.NewInit(p, uses, ir.NameList[0]))
-	}
-	// need to factor in the dependencies of called procedures, too
-	for _, proc := range ProcTable { // enter real procedures that ref globals
+	// put procedures at the front of the list for proper dependency checking
+	for _, proc := range ProcTable {
 		if !unicode.IsDigit(rune(proc.name[0])) {
 			// this is a top-level user-declared procedure
 			ulist := proc.ir.UnboundList
@@ -101,7 +96,14 @@ func main() {
 			}
 		}
 	}
-	err := g.RunDep(ilist, opt_trace) // init globals in dependency order
+	// enter all globals that initialize
+	for _, ir := range GlobInit {
+		p := GlobalDict[ir.Fn].(*g.VProcedure)
+		uses := ProcTable[ir.Fn].ir.UnboundList
+		ilist = append(ilist, g.NewInit(p, uses, ir.NameList[0]))
+	}
+	// initialize globals in dependency order
+	err := g.RunDep(ilist, opt_trace)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "fatal:   %v\n", err)
 		pprof.StopCPUProfile()
