@@ -698,31 +698,6 @@ procedure ir_a_Initial(p, st, target, bounded, rval)
     return i
 end
 
-# record a_Invocable( invocList )
-procedure ir_a_Invocable(p, st, target, bounded, rval)
-    local all, inv, i
-
-    inv := []
-    every i := !p.invocList do {
-        case type(i) of {
-        "a_Ident" : {
-            if i.id == "all" then {
-                all := 1
-            }
-            }
-        "a_Stringlit" : {
-            put(inv, i.str)
-            }
-        }
-    }
-    return ir_Invocable(ir_coord(p.coord), inv, all)
-end
-
-# record a_Link( linkfileList )
-procedure ir_a_Link(p, st, target, bounded, rval)
-    return ir_Link(ir_coord(p.coord), p.linkfileList)
-end
-
 procedure ir_value(p, st, target)
     return ( \target | ir_tmp(st))
 end
@@ -1641,9 +1616,7 @@ procedure ir_outer(p)
     "a_ProcDecl" : suspend ir_a_ProcDecl(p)
     "a_Global" : suspend ir_a_Global(p)
     "a_Record" : suspend ir_a_Record(p)
-    "a_Invocable" : suspend ir_a_Invocable(p)
     "a_Package" : suspend ir_a_Package(p)
-    "a_Link" : suspend ir_a_Link(p)
     "a_Initial" : suspend ir_a_Initial(p)
     default : runerr(500, p)
     }

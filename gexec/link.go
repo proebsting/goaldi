@@ -92,7 +92,7 @@ func irDecl(decl interface{}) {
 		} else {
 			fatal("duplicate record declaration: record " + x.Name)
 		}
-	default: // including ir_Invocable, ir_Link
+	default:
 		panic(g.Malfunction(fmt.Sprintf("unrecognized: %#v", x)))
 	}
 }

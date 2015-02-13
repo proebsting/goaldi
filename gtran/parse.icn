@@ -180,9 +180,7 @@ procedure parse_decl()
     lex_RECORD    : return parse_do_record()
     lex_PROCEDURE : return parse_do_proc()
     lex_GLOBAL    : return parse_do_global()
-    lex_LINK      : return parse_do_link()
     lex_INITIAL   : return parse_do_initial()
-    lex_INVOCABLE : return parse_do_invocable()
     default   : parse_error("Expecting parse_declaration")
     }
 end
@@ -992,40 +990,6 @@ procedure parse_do_if()
     return a_If(ex, theparse_nexpr, elseparse_expr, coord)
 end
 
-procedure parse_do_invocable()
-#  INVOCABLE  invocop {  COMMA  invocop } 
-    local l, op, coord
-
-    coord := parse_tok_rec.coord
-    parse_match_token(lex_INVOCABLE)
-    l := [parse_invocop()]
-    while parse_tok_rec === lex_COMMA do {
-        parse_eat_token()
-        op := parse_invocop()
-        put(l, op)
-    }
-    return a_Invocable(l, coord)
-end
-
-procedure parse_invocop()
-    local ret, t, coord
-    coord := parse_tok_rec.coord
-    case parse_tok_rec of {
-    lex_IDENT   :   # IDENT 
-        return a_Ident(parse_eat_token(), &null, coord)
-    lex_STRINGLIT   :   { # STRINGLIT [  COLON  INTLIT ] 
-        t := a_Stringlit(parse_eat_token(), coord)
-        if parse_tok_rec === lex_COLON then {
-            parse_eat_token()
-            parse_match_token(lex_INTLIT)
-	}
-	return t
-	}
-    default : 
-        parse_error("\""||parse_tok_rec.str||"\": invocable list expected")
-    }
-end
-
 #  GLOBAL  idlist, coord
 procedure parse_do_global()
     local coord, e, L 
@@ -1052,21 +1016,6 @@ procedure parse_do_initial()
     return a_Initial(a_ProcCode(e), coord)
 end
 
-procedure parse_do_link()
-#  LINK  lnkfile {  COMMA  lnkfile } 
-    local l, lnkf, coord
-
-    coord := parse_tok_rec.coord
-    parse_match_token(lex_LINK)
-    l := [parse_lnkfile()]
-    while parse_tok_rec === lex_COMMA do {
-        parse_eat_token()
-        lnkf := parse_lnkfile()
-        put(l, lnkf)
-    }
-    return a_Link(l, coord)
-end
-
 procedure parse_literal()
     local coord
     coord := parse_tok_rec.coord
@@ -1079,17 +1028,6 @@ procedure parse_literal()
         return a_Stringlit(parse_eat_token(), coord)
     default :
         parse_error("Expecting parse_literal")
-    }
-end
-
-procedure parse_lnkfile()
-    case parse_tok_rec of {
-    lex_IDENT   :   # IDENT 
-        return parse_eat_token()
-    lex_STRINGLIT   :   # STRINGLIT 
-        return parse_eat_token()
-    default :
-        parse_error("\""||parse_tok_rec.str||"\": link list expected")
     }
 end
 
@@ -1275,8 +1213,7 @@ procedure parse_program()
     local d
 
     initial {
-        program_set := set([lex_GLOBAL, lex_INVOCABLE, lex_LINK, lex_PROCEDURE, lex_INITIAL,
-                            lex_RECORD])
+        program_set := set([lex_GLOBAL, lex_PROCEDURE, lex_INITIAL, lex_RECORD])
     }
 
     if  parse_tok_rec === lex_PACKAGE then {

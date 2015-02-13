@@ -6,19 +6,6 @@ procedure symbolic_emit(label, code)
     symbolic_emit_table[label] := code
 end
 
-procedure symbolic_invocables(all, L)
-    writes("invocable")
-    writes(\all & " all")
-    every writes(" ", image(!L))
-    write()
-end
-
-procedure symbolic_links(L)
-    writes("link ")
-    every writes(" ", !L)
-    write()
-end
-
 procedure symbolic_records(name, fields, coord)
     writes("record ", name, "(")
     every writes(" ", !fields)
@@ -74,15 +61,9 @@ procedure symbolic_File(irgen, flagList)
         "ir_Record" : {
             symbolic_records(p.name, p.fieldList)
         }
-        "ir_Invocable" : {
-            symbolic_invocables(p.all, p.nameList)
-        }
         "ir_Function" : {
             symbolic_function(p.name, p.paramList, p.accumulate, p.localList,
                         p.staticList, p.codeList, p.codeStart)
-        }
-        "ir_Link" : {
-            symbolic_links(p.nameList)
         }
         default: runerr(500, p)
         }

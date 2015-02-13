@@ -157,8 +157,6 @@ procedure dot_File(irgen, flagList)
         case type(p) of {
         "ir_Global" : { }
         "ir_Record" : { }
-        "ir_Invocable" : { }
-        "ir_Link" : { }
         "ir_Function" : {
             dot_function(p.name, p.paramList, p.accumulate, p.localList,
                          p.staticList, p.codeList, p.codeStart)
