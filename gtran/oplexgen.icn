@@ -10,7 +10,6 @@ procedure init_lex_tables()
                ["integer-literal", "INTLIT",    "be"],
                ["real-literal",    "REALLIT",   "be"],
                ["string-literal",  "STRINGLIT", "be"],
-               ["cset-literal",    "CSETLIT",   "be"],
                ["end-of-file",     "EOFX",      "" ]]
 
     # Reserved Words

@@ -53,7 +53,7 @@ procedure parse_cclause()
     initial {
     cclause_set := set([lex_AT, lex_BACKSLASH, lex_BANG,
                               lex_BAR, lex_BREAK, lex_CARET, lex_CASE,
-                              lex_CONCAT, lex_CREATE, lex_CSETLIT, lex_DIFF,
+                              lex_CONCAT, lex_CREATE, lex_DIFF,
                               lex_DOT, lex_EQUIV, lex_EVERY, lex_FAIL,
                               lex_IDENT, lex_IF, lex_INTER, lex_INTLIT,
                               lex_LBRACE, lex_LBRACK, lex_LCONCAT, lex_LPAREN,
@@ -274,7 +274,7 @@ procedure parse_expr10()
 
     initial {
     expr10_set1 := set([lex_BREAK, lex_CASE, lex_CREATE,
-                              lex_CSETLIT, lex_EVERY, lex_FAIL, lex_IDENT,
+                              lex_EVERY, lex_FAIL, lex_IDENT,
                               lex_IF, lex_INTLIT, lex_LBRACE, lex_LBRACK,
                               lex_LPAREN, lex_CONTINUE, lex_REALLIT, lex_REPEAT,
                               lex_RETURN, lex_STRINGLIT, lex_SUSPEND, 
@@ -344,7 +344,6 @@ end
 procedure parse_expr11()
     local e, id, coord, ns
     case parse_tok_rec of {
-    lex_CSETLIT |
     lex_INTLIT  |
     lex_REALLIT |
     lex_STRINGLIT   :   # literal 
@@ -514,7 +513,7 @@ procedure parse_expr11suffix(lhs)
         expr11suffix_set1 := set([lex_AT, lex_BACKSLASH, lex_BANG,
                                   lex_BAR, lex_BREAK, lex_CARET, lex_CASE,
                                   lex_COMMA, lex_CONCAT, lex_CREATE,
-                                  lex_CSETLIT, lex_DIFF, lex_DOT, lex_EQUIV,
+                                  lex_DIFF, lex_DOT, lex_EQUIV,
                                   lex_EVERY, lex_FAIL, lex_IDENT, lex_IF,
                                   lex_INTER, lex_INTLIT, lex_LBRACE, lex_LBRACK,
                                   lex_LCONCAT, lex_LPAREN, lex_MINUS,
@@ -792,7 +791,7 @@ procedure new_parse_exprlist()
     initial {
     expr_set := set([lex_AT, lex_BACKSLASH, lex_BANG, lex_BAR,
                       lex_BREAK, lex_CARET, lex_CASE, lex_CONCAT, lex_CREATE,
-                      lex_CSETLIT, lex_DIFF, lex_DOT, lex_EQUIV, lex_EVERY,
+                      lex_DIFF, lex_DOT, lex_EQUIV, lex_EVERY,
                       lex_FAIL, lex_IDENT, lex_IF, lex_INTER, lex_INTLIT,
                       lex_LBRACE, lex_LBRACK, lex_LCONCAT, lex_LPAREN,
                       lex_MINUS, lex_NEQUIV, lex_CONTINUE, lex_NMEQ, lex_NMNE,
@@ -1078,8 +1077,6 @@ procedure parse_literal()
         return a_Reallit(real(parse_eat_token()), coord)
     lex_STRINGLIT   :   # STRINGLIT 
         return a_Stringlit(parse_eat_token(), coord)
-    lex_CSETLIT :   # CSETLIT 
-        return a_Csetlit(cset(parse_eat_token()), coord)
     default :
         parse_error("Expecting parse_literal")
     }
@@ -1103,7 +1100,7 @@ procedure parse_nexpr()
     initial {
     nexpr_set := set([lex_AT, lex_BACKSLASH, lex_BANG, lex_BAR,
                       lex_BREAK, lex_CARET, lex_CASE, lex_CONCAT, lex_CREATE,
-                      lex_CSETLIT, lex_DIFF, lex_DOT, lex_EQUIV, lex_EVERY,
+                      lex_DIFF, lex_DOT, lex_EQUIV, lex_EVERY,
                       lex_FAIL, lex_IDENT, lex_IF, lex_INTER, lex_INTLIT,
                       lex_LBRACE, lex_LBRACK, lex_LCONCAT, lex_LPAREN,
                       lex_MINUS, lex_NEQUIV, lex_CONTINUE, lex_NMEQ, lex_NMNE,
@@ -1139,7 +1136,7 @@ procedure parse_do_lambda()
     initial {
     do_proc_set := set([lex_AT, lex_BACKSLASH, lex_BANG, lex_BAR,
                         lex_BREAK, lex_CARET, lex_CASE, lex_CONCAT, lex_CREATE,
-                        lex_CSETLIT, lex_DIFF, lex_DOT, lex_EQUIV, lex_EVERY,
+                        lex_DIFF, lex_DOT, lex_EQUIV, lex_EVERY,
                         lex_FAIL, lex_IDENT, lex_IF, lex_INTER, lex_INTLIT,
                         lex_LBRACE, lex_LBRACK, lex_LCONCAT, lex_LPAREN,
                         lex_MINUS, lex_NEQUIV, lex_CONTINUE, lex_NMEQ, lex_NMNE,
@@ -1199,7 +1196,7 @@ procedure parse_do_proc(noident)
     initial {
     do_proc_set := set([lex_AT, lex_BACKSLASH, lex_BANG, lex_BAR,
                         lex_BREAK, lex_CARET, lex_CASE, lex_CONCAT, lex_CREATE,
-                        lex_CSETLIT, lex_DIFF, lex_DOT, lex_EQUIV, lex_EVERY,
+                        lex_DIFF, lex_DOT, lex_EQUIV, lex_EVERY,
                         lex_FAIL, lex_IDENT, lex_IF, lex_INTER, lex_INTLIT,
                         lex_LBRACE, lex_LBRACK, lex_LCONCAT, lex_LPAREN,
                         lex_MINUS, lex_NEQUIV, lex_CONTINUE, lex_NMEQ, lex_NMNE,

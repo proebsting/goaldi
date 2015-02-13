@@ -775,20 +775,6 @@ procedure ir_a_Stringlit(p, st, target, bounded, rval)
     /bounded & suspend ir_chunk(p.ir.resume, [ ir_Goto(ir_coord(p.coord), p.ir.failure) ])
 end
 
-# record a_Csetlit( str )
-procedure ir_a_Csetlit(p, st, target, bounded, rval)
-
-    if type(target) == "ir_CsetLit" then target := &null
-
-    ir_init(p)
-
-    suspend ir_chunk(p.ir.start, [
-        ir_CsetLit(ir_coord(p.coord), target, *p.str, p.str),
-        ir_Goto(ir_coord(p.coord), p.ir.success)
-        ])
-    /bounded & suspend ir_chunk(p.ir.resume, [ ir_Goto(ir_coord(p.coord), p.ir.failure) ])
-end
-
 # record a_ProcDecl( ident paramList accumulate localsList code )
 procedure ir_a_ProcDeclNested(p, st, target, bounded, rval)
     local f, scope, st1
@@ -1685,7 +1671,6 @@ procedure ir(p, st, target, bounded, rval)
     "a_Intlit" : suspend ir_a_Intlit(p, st, target, bounded, rval)
     "a_Reallit" : suspend ir_a_Reallit(p, st, target, bounded, rval)
     "a_Stringlit" : suspend ir_a_Stringlit(p, st, target, bounded, rval)
-    "a_Csetlit" : suspend ir_a_Csetlit(p, st, target, bounded, rval)
     "a_ProcDecl" : suspend ir_a_ProcDeclNested(p, st, target, bounded, rval)
     "a_ProcCode" : suspend ir_a_ProcCode(p, st, target, bounded, rval)
     "a_Repeat" : suspend ir_a_Repeat(p, st, target, bounded, rval)

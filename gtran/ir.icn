@@ -26,7 +26,6 @@ record ir_IntLit(coord, lhs, val)
 record ir_NilLit(coord, lhs)
 record ir_RealLit(coord, lhs, val)
 record ir_StrLit(coord, lhs, len, val)	# UTF-8 encoded string
-record ir_CsetLit(coord, lhs, len, val)
 
 record ir_operator(name, arity, rval)
 

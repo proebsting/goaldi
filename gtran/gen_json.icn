@@ -68,7 +68,7 @@ procedure json(p, indent)
 		case type(p) of {
 		"list": return json_list(p, indent)
 		"set": return json_list(p, indent)
-		"cset" | "string": return json_image(string(p))
+		"string": return json_image(string(p))
 		"real" | "integer": return image(string(p))
 		default: runerr(500, p)
 		}

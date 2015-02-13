@@ -162,14 +162,6 @@ procedure lex_yylex0(getline)
             next
         }
 
-#        # check if cset -- DISABLED FOR GOALDI
-#        if str := lex_quoted("'", getline) then {
-#            ptok := lex_CSETLIT
-#            ptok.str := str
-#            suspend ptok
-#            next
-#        }
-
         # default
         lex_error("invalid character: " || image(&subject[&pos]))
     }

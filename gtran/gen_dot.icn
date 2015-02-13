@@ -65,7 +65,6 @@ procedure dot_dump(i)
     "ir_CoRet" : return type(i)[4:0] || " " || n(i.value)
     "ir_Create" : return type(i)[4:0] || " " || n(i.lhs)
     "ir_StrLit" |  # going to cause problems...
-    "ir_CsetLit" |  # going to cause problems...
     "ir_RealLit" |
     "ir_IntLit" : return type(i)[4:0] || " " || n(i.lhs) || " " || i.val
     "ir_Field" : return type(i)[4:0] || " " || n(i.lhs) || " " || n(i.expr) || " " || i.field
