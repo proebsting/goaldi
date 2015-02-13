@@ -26,9 +26,10 @@ build:
 	cd gtran; $(MAKE)
 	cp goaldi.sh $(GOBIN)/goaldi
 
-#  run Go unit tests and Goaldi test suite
+#  run Go unit tests; build and link demos; run Goaldi test suite
 test:
 	go test
+	cd demo; $(MAKE) link
 	cd gtests; $(MAKE)
 
 #  run expt.gd (presumably the test of the moment) if present
