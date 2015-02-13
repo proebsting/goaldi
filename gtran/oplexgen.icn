@@ -81,6 +81,7 @@ procedure init_lex_tables()
                ["^",               "CARET",     "b" ],
                ["^:=",             "AUGCARET", "b" ],
                [":",               "COLON",     ""  ],
+               ["::",              "COLONCOLON", ""  ],
                [",",               "COMMA",     ""  ],
                ["||",              "CONCAT",    "b" ],
                ["||:=",            "AUGCONCAT",""  ],

@@ -120,10 +120,11 @@ type ir_ExitScope struct {
 }
 
 type ir_Var struct {
-	Coord string
-	Lhs   string
-	Name  string
-	Scope string
+	Coord     string
+	Lhs       string
+	Name      string
+	Namespace string
+	Scope     string
 }
 
 type ir_Key struct {

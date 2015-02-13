@@ -1222,11 +1222,16 @@ procedure ir_a_Ident(p, st, target, bounded, rval)
 
     ir_init(p)
 
-    T := ir_lookupS(st, p.id)
-    s := ((\T).Static[p.id] | p.id)
+    if /p.namespace then {
+        T := ir_lookupS(st, p.id)
+        s := ((\T).Static[p.id] | p.id)
+    } else {
+    	type(p.namespace) == "string" | runerr(500, p.namespace)
+        s := p.id
+    }
 
     suspend ir_chunk(p.ir.start, [
-        ir_Var(ir_coord(p.coord), target, s, ir_stname(T)),
+        ir_Var(ir_coord(p.coord), target, s, p.namespace, ir_stname(T)),
         ir_Goto(ir_coord(p.coord), p.ir.success)
         ])
     /bounded & suspend ir_chunk(p.ir.resume, [ ir_Goto(ir_coord(p.coord), p.ir.failure) ])

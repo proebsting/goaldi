@@ -342,7 +342,7 @@ procedure parse_braced()
 end
 
 procedure parse_expr11()
-    local e, id, coord
+    local e, id, coord, ns
     case parse_tok_rec of {
     lex_CSETLIT |
     lex_INTLIT  |
@@ -387,7 +387,13 @@ procedure parse_expr11()
         {
         coord := parse_tok_rec.coord
         id := parse_eat_token()
-        return a_Ident(id, coord)
+	ns := &null
+	if parse_tok_rec === lex_COLONCOLON then {
+            parse_eat_token()
+	    ns := id
+            id := parse_match_token(lex_IDENT)
+	}
+        return a_Ident(id, ns, coord)
         }
     lex_CARET   | 
     lex_LOCAL   : 
@@ -576,7 +582,7 @@ procedure parse_expr11suffix(lhs)
         x := parse_eat_token()
 	idcoord := parse_tok_rec.coord
         id := parse_match_token(lex_IDENT)
-        return a_Field(lhs, a_Ident(id, idcoord), coord)
+        return a_Field(lhs, a_Ident(id, &null, idcoord), coord)
         }
     lex_LBRACK  :   # LBRACK  expr [  sectop  expr ]  RBRACK
         {
@@ -945,7 +951,7 @@ procedure parse_do_package()
     parse_match_token(lex_PACKAGE)
 
     coord2 := parse_tok_rec.coord
-    id := a_Ident(parse_match_token(lex_IDENT), coord2)
+    id := a_Ident(parse_match_token(lex_IDENT), &null, coord2)
 
     return a_Package(id, coord)
 end
@@ -957,14 +963,14 @@ procedure parse_idlist()
 
     coord := parse_tok_rec.coord
 
-    l := [a_Ident(parse_match_token(lex_IDENT), coord)]
+    l := [a_Ident(parse_match_token(lex_IDENT), &null, coord)]
     while parse_tok_rec === lex_COMMA do {
         parse_eat_token()
         coord := parse_tok_rec.coord
 	if parse_tok_rec ~=== lex_IDENT then {
 	    break
 	}
-        id := a_Ident(parse_match_token(lex_IDENT), coord)
+        id := a_Ident(parse_match_token(lex_IDENT), &null, coord)
         put(l, id)
     }
     return l
@@ -1007,7 +1013,7 @@ procedure parse_invocop()
     coord := parse_tok_rec.coord
     case parse_tok_rec of {
     lex_IDENT   :   # IDENT 
-        return a_Ident(parse_eat_token(), coord)
+        return a_Ident(parse_eat_token(), &null, coord)
     lex_STRINGLIT   :   { # STRINGLIT [  COLON  INTLIT ] 
         t := a_Stringlit(parse_eat_token(), coord)
         if parse_tok_rec === lex_COLON then {
@@ -1180,7 +1186,7 @@ procedure parse_do_lambda()
 
     body := parse_expr()
     endcoord := parse_tok_rec.coord
-    return a_ProcDecl( a_Ident(&null, idcoord) , paramList, accumulate,
+    return a_ProcDecl( a_Ident(&null, &null, idcoord) , paramList, accumulate,
                       a_ProcCode(a_Compound([a_Suspend(body, &null, &null, coord)], coord), endcoord),
 		      coord, endcoord)
 end
@@ -1220,13 +1226,13 @@ procedure parse_do_proc(noident)
     parse_match_token(lex_PROCEDURE)
     idcoord := parse_tok_rec.coord
     if /noident then {
-        ident := a_Ident(parse_match_token(lex_IDENT), idcoord)
+        ident := a_Ident(parse_match_token(lex_IDENT), &null, idcoord)
         if parse_tok_rec === lex_DOT then {	# it's a method!
             parse_eat_token()
             ident.id ||:= "." || parse_match_token(lex_IDENT)
         }
     } else {
-        ident := a_Ident(&null, idcoord)
+        ident := a_Ident(&null, &null, idcoord)
     }
     parse_match_token(lex_LPAREN)
     paramList := []
@@ -1240,7 +1246,7 @@ procedure parse_do_proc(noident)
     }
     if upto('.', ident.id) then {	# if a method
         # add an initial "self" parameter; note NOT a reserved word
-        push(paramList, a_Ident("self", idcoord))
+        push(paramList, a_Ident("self", &null, idcoord))
     }
 
     parse_match_token(lex_RPAREN)
@@ -1300,17 +1306,17 @@ procedure parse_do_record()
     coord := parse_tok_rec.coord
     parse_match_token(lex_RECORD)
     idcoord := parse_tok_rec.coord
-    id := a_Ident(parse_match_token(lex_IDENT), idcoord)
+    id := a_Ident(parse_match_token(lex_IDENT), &null, idcoord)
 
     if parse_tok_rec === lex_EXTENDS then {
 	parse_eat_token()
         excoord := parse_tok_rec.coord
-	ex := a_Ident(parse_match_token(lex_IDENT), excoord)
+	ex := a_Ident(parse_match_token(lex_IDENT), &null, excoord)
         if parse_tok_rec === lex_DOT then {
 	    parse_eat_token()
 	    expkg := ex
             excoord := parse_tok_rec.coord
-	    ex := a_Ident(parse_match_token(lex_IDENT), excoord)
+	    ex := a_Ident(parse_match_token(lex_IDENT), &null, excoord)
 	}
     }
 
