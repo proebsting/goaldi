@@ -1388,20 +1388,32 @@ end
 
 #  WITH  % id [ := expr ] DO  expr
 procedure parse_do_with()
-    local e, init, coord, id
+    local e, init, coord, id, current, root, tmp
 
     coord := parse_tok_rec.coord
     parse_match_token(lex_WITH)
-    parse_match_token(lex_MOD)
-    id := parse_match_token(lex_IDENT)
-    if parse_tok_rec === lex_ASSIGN then {
+
+    while parse_tok_rec === lex_MOD do {
+        parse_match_token(lex_MOD)
+        id := parse_match_token(lex_IDENT)
+	init := &null
+        if parse_tok_rec === lex_ASSIGN then {
             parse_eat_token()
             init := parse_expr()
+        }
+        tmp := a_With(id, init, &null, coord)
+        /root:= tmp
+        (\current).expr := tmp
+        current := tmp
+	if parse_tok_rec ~=== lex_COMMA then {
+	    break
+	}
+	parse_match_token(lex_COMMA)
     }
+
     parse_match_token(lex_DO)
-    # e := parse_expr()
-    e := parse_braced()
-    return a_With(id, init, e, coord)
+    current.expr := parse_braced()
+    return root
 end
 
 #  WHILE  expr [  DO  expr ] 
@@ -1431,7 +1443,7 @@ procedure parse_match_token(which_token)
         return saved
     } else {
 	if which_token ~=== lex_IDENT then {
-            parse_error("Expecting "|| which_token.str)
+            parse_error("Expecting "|| which_token.str || ", but found " || parse_tok_rec.str)
 	} else {
             parse_error("Expecting identifier")
 	}
