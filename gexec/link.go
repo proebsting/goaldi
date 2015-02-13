@@ -8,6 +8,9 @@ import (
 	"strings"
 )
 
+//  currentSpace is the declared namespace in effect at the moment
+var currentSpace *g.Namespace
+
 //  A RecordEntry adds info to an ir_Record
 type RecordEntry struct {
 	ir_Record          // ir struct
@@ -24,6 +27,7 @@ func link(parts [][]interface{}) {
 
 	//  process individual declarations (proc, global, etc) from IR
 	for _, file := range parts {
+		currentSpace = PubSpace
 		for _, decl := range file {
 			irDecl(decl)
 		}
@@ -35,6 +39,7 @@ func link(parts [][]interface{}) {
 	}
 
 	//  register methods in constructors and procedures in global namespace
+	//#%#% NAMESPACES?
 	for _, pr := range ProcTable {
 		a := strings.Split(pr.name, ".") // look for xxx.yyy form
 		if len(a) == 1 {                 // if simple procedure name
@@ -48,7 +53,7 @@ func link(parts [][]interface{}) {
 	stdProcs()
 
 	//  remove globals from "Undeclared" list
-	for name := range GlobalDict {
+	for name := range PubSpace.All() {
 		delete(Undeclared, name)
 	}
 
@@ -67,9 +72,9 @@ func irDecl(decl interface{}) {
 	switch x := decl.(type) {
 	case ir_Global:
 		for _, name := range x.NameList {
-			gv := GlobalDict[name]
+			gv := currentSpace.Get(name)
 			if gv == nil {
-				GlobalDict[name] = g.NewVariable(g.NilValue)
+				currentSpace.Declare(name, g.NewVariable(g.NilValue))
 			} else if t, ok := gv.(*g.VTrapped); ok && *t.Target == g.NilValue {
 				// okay, previously declared global, no problem
 			} else {
@@ -99,7 +104,7 @@ func irDecl(decl interface{}) {
 
 //  registerMethod(pr, recname, methname) -- register method in record ctor
 func registerMethod(pr *pr_Info, recname string, methname string) {
-	gv := GlobalDict[recname]
+	gv := currentSpace.Get(recname)
 	if gv != nil {
 		gv = g.Deref(gv)
 	}
@@ -116,10 +121,11 @@ func registerMethod(pr *pr_Info, recname string, methname string) {
 
 //  registerProc(pr) -- register procedure pr in globals
 func registerProc(pr *pr_Info) {
-	gv := GlobalDict[pr.name]
+	currentSpace := PubSpace //#%#% NAMESPACE
+	gv := currentSpace.Get(pr.name)
 	if gv == nil {
 		// create global with unmodifiable procedure value
-		GlobalDict[pr.name] = irProcedure(pr, nil)
+		currentSpace.Declare(pr.name, irProcedure(pr, nil))
 	} else {
 		// duplicate global: fatal error
 		fatal("duplicate global declaration: procedure " + pr.name)
@@ -136,9 +142,10 @@ func registerRecord(re *RecordEntry) {
 				re.Name, x.Msg, x.Offv[0]))
 		}
 	}()
-	if re.ctor == nil { // if not already processed
+	currentSpace := PubSpace // #%#%#% NAMESPACE
+	if re.ctor == nil {      // if not already processed
 		re.ctor = regMark // prevent infinite recursion on error
-		gv := GlobalDict[re.Name]
+		gv := currentSpace.Get(re.Name)
 		if gv == nil {
 			// this is a new definition
 			var ext *g.VCtor
@@ -157,7 +164,7 @@ func registerRecord(re *RecordEntry) {
 			}
 			// create global with unmodifiable procedure value
 			re.ctor = g.NewCtor(re.Name, ext, re.FieldList)
-			GlobalDict[re.Name] = re.ctor
+			currentSpace.Declare(re.Name, re.ctor)
 		} else {
 			// duplicate global: fatal error
 			fatal("duplicate global declaration: record " + re.Name)
@@ -172,10 +179,10 @@ var regMark = &g.VCtor{} // marker for catching recursive definitions
 func stdProcs() {
 	for name, p := range g.StdLib {
 		if Undeclared[name] {
-			if GlobalDict[name] != nil {
+			if PubSpace.Get(name) != nil {
 				panic(g.Malfunction("undeclared but present: " + name))
 			}
-			GlobalDict[name] = p
+			PubSpace.Declare(name, p)
 			delete(Undeclared, name)
 		}
 	}

@@ -127,11 +127,13 @@ func execute(f *pr_frame, label string) (rv g.Value, rc *g.Closure) {
 					frame := f
 					v := frame.vars[i.Name]
 					if v == nil {
-						v = GlobalDict[i.Name]
+						v = f.info.space.Get(i.Name)
+						if v == nil {
+							v = PubSpace.Get(i.Name)
+						}
 					}
 					if v == nil {
-						panic(g.Malfunction(
-							"Undeclared identifier: " + i.Name))
+						panic(g.Malfunction("Unbound identifier: " + i.Name))
 					}
 					f.temps[i.Lhs] = v
 				case ir_EnterScope:

@@ -12,8 +12,8 @@ import (
 
 //  globals
 
-var GlobalDict = make(map[string]g.Value) // global dictionary
-var Undeclared = make(map[string]bool)    // is var x undeclared?
+var PubSpace = g.GetSpace("")          // the public (unnamed) namespace
+var Undeclared = make(map[string]bool) // is var x undeclared?
 
 var GlobInit = make([]*ir_Global, 0)  // globals with initialization
 var InitList = make([]*ir_Initial, 0) // sequential initialization blocks
@@ -63,14 +63,21 @@ func main() {
 
 	// list the globals
 	if opt_verbose {
-		fmt.Printf("\nGLOBALS:")
-		for name := range g.SortedKeys(GlobalDict) {
-			fmt.Printf(" %s", name)
-			if _, ok := GlobalDict[name].(*g.VProcedure); ok {
-				fmt.Print("()")
+		for nsname := range g.AllSpaces() {
+			ns := g.GetSpace(nsname)
+			if nsname == "" {
+				fmt.Printf("\nGLOBALS:")
+			} else {
+				fmt.Printf("\n%s::", nsname)
 			}
+			for name := range ns.All() {
+				fmt.Printf(" %s", name)
+				if _, ok := ns.Get(name).(*g.VProcedure); ok {
+					fmt.Print("()")
+				}
+			}
+			fmt.Printf("\n")
 		}
-		fmt.Printf("\n")
 	}
 
 	// quit now if -c was given
@@ -98,7 +105,7 @@ func main() {
 	}
 	// enter all globals that initialize
 	for _, ir := range GlobInit {
-		p := GlobalDict[ir.Fn].(*g.VProcedure)
+		p := PubSpace.Get(ir.Fn).(*g.VProcedure) //#%#% NAMESPACE
 		uses := ProcTable[ir.Fn].ir.UnboundList
 		dlist.Add(ir.NameList[0], p, uses)
 	}
@@ -113,7 +120,7 @@ func main() {
 	// run the sequence of initialization procedures
 	//#%#% each call to Run resets a clean environment. is that valid?
 	for _, ir := range InitList {
-		g.Run(GlobalDict[ir.Fn].(*g.VProcedure), []g.Value{})
+		g.Run(PubSpace.Get(ir.Fn).(*g.VProcedure), []g.Value{}) //#%#% NAMESPACE
 	}
 	showInterval("initialization")
 
@@ -122,9 +129,9 @@ func main() {
 	for _, s := range args {
 		arglist = append(arglist, g.NewString(s))
 	}
-	gmain := GlobalDict["main"]
+	gmain := PubSpace.Get("main")
 	if gmain == nil {
-		abort("no main procedure")
+		abort("no main procedure in public namespace")
 	}
 	if gv, ok := gmain.(g.IVariable); ok {
 		gmain = gv.Deref()

@@ -10,6 +10,7 @@ import (
 
 //  information about a procedure that is shared by all invocations
 type pr_Info struct {
+	space    *g.Namespace             // procedure namespace
 	name     string                   // procedure name
 	outer    *pr_Info                 // enclosing procedure, if any
 	ir       *ir_Function             // intermediate code structure
@@ -29,6 +30,7 @@ func declareProc(ir *ir_Function) *pr_Info {
 		fatal("duplicate procedure definition: " + ir.Name)
 	}
 	pr := &pr_Info{}
+	pr.space = g.GetSpace("") //#%#% NAMESPACE
 	pr.name = ir.Name
 	pr.ir = ir
 	pr.variadic = (ir.Accumulate != "")
@@ -43,7 +45,7 @@ func setupProc(pr *pr_Info) {
 
 	// report undeclared identifiers
 	for _, id := range pr.ir.UnboundList {
-		if GlobalDict[id] == nil {
+		if pr.space.Get(id) == nil && PubSpace.Get(id) == nil {
 			fatal("in " + pr.name + "(): undeclared identifier: " + id)
 		}
 	}
