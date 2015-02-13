@@ -33,8 +33,14 @@ procedure main() {
 				}
 			}
 		}
-	show("v")
+		show("v")
 	}
+	show("w")
+	with %x := 555, %y := 666, %z := 777 do {
+		show ("x")
+		showxyz("y", %x, %y, %z)
+	}
+	show("z")
 }
 
 procedure show(label) {
