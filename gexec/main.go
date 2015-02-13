@@ -85,14 +85,14 @@ func main() {
 	}
 
 	// make a list for dependency-based global initialization
-	ilist := make([]*g.InitItem, 0)
+	dlist := &g.DependencyList{}
 	// put procedures at the front of the list for proper dependency checking
 	for _, proc := range ProcTable {
 		if !unicode.IsDigit(rune(proc.name[0])) {
 			// this is a top-level user-declared procedure
 			ulist := proc.ir.UnboundList
 			if ulist != nil && len(ulist) > 0 {
-				ilist = append(ilist, g.NewInit(nil, ulist, proc.name))
+				dlist.Add(proc.name, nil, ulist)
 			}
 		}
 	}
@@ -100,10 +100,10 @@ func main() {
 	for _, ir := range GlobInit {
 		p := GlobalDict[ir.Fn].(*g.VProcedure)
 		uses := ProcTable[ir.Fn].ir.UnboundList
-		ilist = append(ilist, g.NewInit(p, uses, ir.NameList[0]))
+		dlist.Add(ir.NameList[0], p, uses)
 	}
 	// initialize globals in dependency order
-	err := g.RunDep(ilist, opt_trace)
+	err := dlist.Run(opt_trace)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "fatal:   %v\n", err)
 		pprof.StopCPUProfile()
