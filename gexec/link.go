@@ -13,8 +13,9 @@ var currentSpace *g.Namespace
 
 //  A RecordEntry adds info to an ir_Record
 type RecordEntry struct {
-	ir_Record          // ir struct
-	ctor      *g.VCtor // constructor
+	ns        *g.Namespace // namespace
+	ir_Record              // ir struct
+	ctor      *g.VCtor     // constructor
 }
 
 //  RecordTable registers all the record declarations that have been seen
@@ -39,7 +40,6 @@ func link(parts [][]interface{}) {
 	}
 
 	//  register methods in constructors and procedures in global namespace
-	//#%#% NAMESPACES?
 	for _, pr := range ProcTable {
 		a := strings.Split(pr.name, ".") // look for xxx.yyy form
 		if len(a) == 1 {                 // if simple procedure name
@@ -94,10 +94,11 @@ func irDecl(decl interface{}) {
 			Undeclared[id] = true
 		}
 	case ir_Record:
-		if RecordTable[x.Name] == nil {
-			RecordTable[x.Name] = &RecordEntry{x, nil}
+		qname := currentSpace.GetQual() + x.Name
+		if RecordTable[qname] == nil {
+			RecordTable[qname] = &RecordEntry{currentSpace, x, nil}
 		} else {
-			fatal("duplicate record declaration: record " + x.Name)
+			fatal("duplicate record declaration: record " + qname)
 		}
 	default:
 		panic(g.Malfunction(fmt.Sprintf("unrecognized: %#v", x)))
@@ -106,7 +107,7 @@ func irDecl(decl interface{}) {
 
 //  registerMethod(pr, recname, methname) -- register method in record ctor
 func registerMethod(pr *pr_Info, recname string, methname string) {
-	gv := currentSpace.Get(recname)
+	gv := pr.space.Get(recname)
 	if gv != nil {
 		gv = g.Deref(gv)
 	}
@@ -144,10 +145,9 @@ func registerRecord(re *RecordEntry) {
 				re.Name, x.Msg, x.Offv[0]))
 		}
 	}()
-	currentSpace := PubSpace // #%#%#% NAMESPACE
-	if re.ctor == nil {      // if not already processed
+	if re.ctor == nil { // if not already processed
 		re.ctor = regMark // prevent infinite recursion on error
-		gv := currentSpace.Get(re.Name)
+		gv := re.ns.Get(re.Name)
 		if gv == nil {
 			// this is a new definition
 			var ext *g.VCtor
@@ -166,7 +166,7 @@ func registerRecord(re *RecordEntry) {
 			}
 			// create global with unmodifiable procedure value
 			re.ctor = g.NewCtor(re.Name, ext, re.FieldList)
-			currentSpace.Declare(re.Name, re.ctor)
+			re.ns.Declare(re.Name, re.ctor)
 		} else {
 			// duplicate global: fatal error
 			fatal("duplicate global declaration: record " + re.Name)
