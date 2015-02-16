@@ -8,6 +8,7 @@ import (
 
 //  list of IR struct examples for use by JSON input converter
 var irlist = [...]interface{}{
+	&ir_Package{},
 	&ir_Record{},
 	&ir_Global{},
 	&ir_Initial{},
@@ -56,6 +57,11 @@ func init() {
 
 //  intermediate representation struct definitions
 //  all fields must be capitalized for access by the reflection package
+
+type ir_Package struct {
+	Coord string
+	Name  string
+}
 
 type ir_Record struct {
 	Coord      string

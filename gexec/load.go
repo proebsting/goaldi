@@ -15,6 +15,9 @@ import (
 var fileNumber = 0
 
 //  load -- read a single JSON-encoded IR file as a tree of objects
+//
+//  A per-file distinguishing integer is prepended to each procedure name
+//  that begins with "$".  No other changes are made during input.
 func load(fname string) []interface{} {
 
 	fileNumber++
@@ -31,7 +34,7 @@ func load(fname string) []interface{} {
 	}
 	gcode := bufio.NewReader(gfile)
 
-	//  skip initial comment lines (e.g. #!/usr/bin/env gdx...)
+	//  skip initial comment lines (e.g. #!/usr/bin/env gexec ...)
 	for {
 		b, e := gcode.Peek(1)
 		if e != nil || b[0] != '#' {
@@ -49,6 +52,7 @@ func load(fname string) []interface{} {
 	}
 	jtree = jstructs(jtree).([]interface{})
 	if opt_adump {
+		fmt.Printf("\n========== file %s ==========\n", fname)
 		dumptree("", jtree)
 		fmt.Println()
 	}

@@ -105,7 +105,7 @@ func main() {
 	}
 	// enter all globals that initialize
 	for _, ir := range GlobInit {
-		p := PubSpace.Get(ir.Fn).(*g.VProcedure) //#%#% NAMESPACE
+		p := ProcTable[ir.Fn].vproc
 		uses := ProcTable[ir.Fn].ir.UnboundList
 		dlist.Add(ir.NameList[0], p, uses)
 	}
@@ -120,7 +120,7 @@ func main() {
 	// run the sequence of initialization procedures
 	//#%#% each call to Run resets a clean environment. is that valid?
 	for _, ir := range InitList {
-		g.Run(PubSpace.Get(ir.Fn).(*g.VProcedure), []g.Value{}) //#%#% NAMESPACE
+		g.Run(ProcTable[ir.Fn].vproc, []g.Value{})
 	}
 	showInterval("initialization")
 

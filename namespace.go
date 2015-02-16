@@ -5,8 +5,9 @@ package goaldi
 import ()
 
 type Namespace struct {
-	name    string
-	entries map[string]Value
+	name    string           // actual name, possibly empty
+	qname   string           // name:: or empty
+	entries map[string]Value // mapping of names to variables
 }
 
 var allSpaces = make(map[string]*Namespace)
@@ -19,6 +20,11 @@ func GetSpace(name string) *Namespace {
 		ns = &Namespace{}
 		ns.name = name
 		ns.entries = make(map[string]Value)
+		if ns.name == "" {
+			ns.name = ""
+		} else {
+			ns.qname = ns.name + "::"
+		}
 		allSpaces[name] = ns
 	}
 	return ns
@@ -30,6 +36,11 @@ func (ns *Namespace) Declare(name string, contents Value) {
 		panic(Malfunction("duplicate entry " + ns.name + "::" + name))
 	}
 	ns.entries[name] = contents
+}
+
+//  Namespace.GetQual() -- return "" if default space else name + "::"
+func (ns *Namespace) GetQual() string {
+	return ns.qname
 }
 
 //  Namespace.Get(name) -- retrieve namespace entry (or nil)

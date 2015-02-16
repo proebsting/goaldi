@@ -124,12 +124,16 @@ func execute(f *pr_frame, label string) (rv g.Value, rc *g.Closure) {
 					}
 					f.temps[i.Lhs] = g.InitList(a)
 				case ir_Var:
-					frame := f
-					v := frame.vars[i.Name]
-					if v == nil {
-						v = f.info.space.Get(i.Name)
+					var v g.Value
+					if i.Namespace != "" {
+						v = g.GetSpace(i.Namespace).Get(i.Name)
+					} else {
+						v = f.vars[i.Name]
 						if v == nil {
-							v = PubSpace.Get(i.Name)
+							v = f.info.space.Get(i.Name)
+							if v == nil {
+								v = PubSpace.Get(i.Name)
+							}
 						}
 					}
 					if v == nil {

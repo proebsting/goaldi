@@ -54,7 +54,7 @@ func interp(env *g.Env, pr *pr_Info, outer map[string]interface{},
 	args ...g.Value) (g.Value, *g.Closure) {
 
 	if opt_trace {
-		fmt.Printf("[%d] procedure %s\n", env.ThreadID, pr.name)
+		fmt.Printf("[%d] enter procedure %s\n", env.ThreadID, pr.qname)
 	}
 
 	// initialize procedure frame

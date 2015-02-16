@@ -70,6 +70,8 @@ func link(parts [][]interface{}) {
 //  Register initial procedures and global initialization procedures.
 func irDecl(decl interface{}) {
 	switch x := decl.(type) {
+	case ir_Package:
+		currentSpace = g.GetSpace(x.Name)
 	case ir_Global:
 		for _, name := range x.NameList {
 			gv := currentSpace.Get(name)
@@ -121,11 +123,11 @@ func registerMethod(pr *pr_Info, recname string, methname string) {
 
 //  registerProc(pr) -- register procedure pr in globals
 func registerProc(pr *pr_Info) {
-	currentSpace := PubSpace //#%#% NAMESPACE
-	gv := currentSpace.Get(pr.name)
+	pr.vproc = irProcedure(pr, nil)
+	gv := pr.space.Get(pr.name)
 	if gv == nil {
 		// create global with unmodifiable procedure value
-		currentSpace.Declare(pr.name, irProcedure(pr, nil))
+		pr.space.Declare(pr.name, pr.vproc)
 	} else {
 		// duplicate global: fatal error
 		fatal("duplicate global declaration: procedure " + pr.name)

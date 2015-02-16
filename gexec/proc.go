@@ -6,12 +6,14 @@ import (
 	"fmt"
 	g "goaldi"
 	"strings"
+	"unicode"
 )
 
 //  information about a procedure that is shared by all invocations
 type pr_Info struct {
 	space    *g.Namespace             // procedure namespace
 	name     string                   // procedure name
+	qname    string                   // qualified name (namespace::name)
 	outer    *pr_Info                 // enclosing procedure, if any
 	ir       *ir_Function             // intermediate code structure
 	insns    map[string][]interface{} // map from labels to IR code chunks
@@ -19,36 +21,47 @@ type pr_Info struct {
 	locals   []string                 // list of local names
 	params   []string                 // list of parameter names
 	variadic bool                     // true if last param is []
+	vproc    *g.VProcedure            // execution-time procedure struct
 }
 
-//  global index of procedure information
+//  global index of procedure information (indexed by qualified name)
 var ProcTable = make(map[string]*pr_Info)
 
 //  declareProc initializes and returns a procedure info structure
 func declareProc(ir *ir_Function) *pr_Info {
-	if ProcTable[ir.Name] != nil {
+	pr := &pr_Info{}
+	pr.name = ir.Name
+	pr.space = currentSpace
+	if unicode.IsDigit(rune(pr.name[0])) { // if generated procedure
+		pr.qname = pr.name // leave the name alone
+	} else { // if explicit user procedure
+		pr.qname = pr.space.GetQual() + pr.name // add namespace qualifier
+	}
+	if ProcTable[pr.qname] != nil {
 		fatal("duplicate procedure definition: " + ir.Name)
 	}
-	pr := &pr_Info{}
-	pr.space = g.GetSpace("") //#%#% NAMESPACE
-	pr.name = ir.Name
 	pr.ir = ir
 	pr.variadic = (ir.Accumulate != "")
 	pr.params = pr.ir.ParamList
 	pr.locals = pr.ir.LocalList
-	ProcTable[ir.Name] = pr
+	ProcTable[pr.qname] = pr
 	return pr
 }
 
 //  setupProc finishes procedure setup now that all globals are known
 func setupProc(pr *pr_Info) {
 
-	// report undeclared identifiers
-	for _, id := range pr.ir.UnboundList {
-		if pr.space.Get(id) == nil && PubSpace.Get(id) == nil {
-			fatal("in " + pr.name + "(): undeclared identifier: " + id)
+	// add qualifiers to unbound identifiers for dependency processing
+	// report identifiers not declared anywhere
+	for i, id := range pr.ir.UnboundList {
+		if pr.space.Get(id) != nil {
+			pr.ir.UnboundList[i] = pr.space.GetQual() + id
+		} else if PubSpace.Get(id) == nil {
+			fatal("in " + pr.qname + "(): undeclared identifier: " + id)
 		}
 	}
+
+	// #%#%# need to propagate unbound ID list to/thru parents for dependencies
 
 	// make a trapped variable for every static
 	pr.statics = make(map[string]interface{})
@@ -67,7 +80,7 @@ func setupProc(pr *pr_Info) {
 
 	if opt_verbose {
 		fmt.Printf("\n%s()  %d param  %d local  %d static\n",
-			pr.name, len(pr.params), len(pr.locals), len(pr.statics))
+			pr.qname, len(pr.params), len(pr.locals), len(pr.statics))
 	}
 }
 
@@ -88,7 +101,7 @@ func irProcedure(pr *pr_Info, outer map[string]interface{}) *g.VProcedure {
 		}
 	}
 
-	return g.NewProcedure(pr.name, &pnames, pr.variadic,
+	return g.NewProcedure(pr.qname, &pnames, pr.variadic,
 		func(env *g.Env, args ...g.Value) (g.Value, *g.Closure) {
 			return interp(env, pr, vars, args...)
 		}, nil, "")
