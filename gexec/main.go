@@ -99,7 +99,8 @@ func main() {
 			// this is a top-level user-declared procedure
 			ulist := proc.ir.UnboundList
 			if ulist != nil && len(ulist) > 0 {
-				dlist.Add(proc.name, nil, ulist)
+				q := proc.space.GetQual()
+				dlist.Add(q+proc.name, nil, ulist)
 			}
 		}
 	}

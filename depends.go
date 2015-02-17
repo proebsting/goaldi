@@ -70,7 +70,7 @@ OuterLoop:
 		// if nothing is left, we are done
 		if len(ilist) == 0 {
 			if trace {
-				fmt.Printf("[-] global variable initialization complete\n")
+				fmt.Printf("[-] global initialization complete\n")
 			}
 			return nil // success
 		}
