@@ -5,9 +5,9 @@ package goaldi
 import ()
 
 type Namespace struct {
-	name    string           // actual name, possibly empty
-	qname   string           // name:: or empty
-	entries map[string]Value // mapping of names to variables
+	Name    string           // actual name, possibly empty
+	Qname   string           // identifier:: or empty
+	Entries map[string]Value // mapping of names to variables
 }
 
 var allSpaces = make(map[string]*Namespace)
@@ -18,12 +18,10 @@ func GetSpace(name string) *Namespace {
 	ns := allSpaces[name]
 	if ns == nil {
 		ns = &Namespace{}
-		ns.name = name
-		ns.entries = make(map[string]Value)
-		if ns.name == "" {
-			ns.name = ""
-		} else {
-			ns.qname = ns.name + "::"
+		ns.Name = name
+		ns.Entries = make(map[string]Value)
+		if name != "" {
+			ns.Qname = name + "::"
 		}
 		allSpaces[name] = ns
 	}
@@ -32,26 +30,26 @@ func GetSpace(name string) *Namespace {
 
 //  Namespace.Declare(name, contents) -- initialize a namespace entry
 func (ns *Namespace) Declare(name string, contents Value) {
-	if ns.entries[name] != nil {
-		panic(Malfunction("duplicate entry " + ns.name + "::" + name))
+	if ns.Entries[name] != nil {
+		panic(Malfunction("duplicate entry " + ns.Qname + name))
 	}
-	ns.entries[name] = contents
+	ns.Entries[name] = contents
 }
 
 //  Namespace.GetQual() -- return "" if default space else name + "::"
 func (ns *Namespace) GetQual() string {
-	return ns.qname
+	return ns.Qname
 }
 
 //  Namespace.Get(name) -- retrieve namespace entry (or nil)
 func (ns *Namespace) Get(name string) Value {
-	return ns.entries[name]
+	return ns.Entries[name]
 }
 
 //  Namespace.All() -- generate all names over a channel.
 //  usage:  for k := range ns.All() {...}
 func (ns *Namespace) All() chan string {
-	return SortedKeys(ns.entries)
+	return SortedKeys(ns.Entries)
 }
 
 //  AllSpaces() -- generate names of all namespaces, in sorted order

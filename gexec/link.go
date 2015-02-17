@@ -73,6 +73,9 @@ func irDecl(decl interface{}) {
 	case ir_Package:
 		currentSpace = g.GetSpace(x.Name)
 	case ir_Global:
+		if x.Namespace == "" {
+			x.Namespace = currentSpace.Name
+		}
 		for _, name := range x.NameList {
 			gv := currentSpace.Get(name)
 			if gv == nil {

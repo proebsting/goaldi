@@ -107,7 +107,8 @@ func main() {
 	for _, ir := range GlobInit {
 		p := ProcTable[ir.Fn].vproc
 		uses := ProcTable[ir.Fn].ir.UnboundList
-		dlist.Add(ir.NameList[0], p, uses)
+		q := g.GetSpace(ir.Namespace).GetQual()
+		dlist.Add(q+ir.NameList[0], p, uses)
 	}
 	// initialize globals in dependency order
 	err := dlist.Run(opt_trace)
