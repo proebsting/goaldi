@@ -29,7 +29,8 @@ for F in $*; do
 	else
 		exec </dev/null
 	fi
-	if $GOALDI $F.gd >$F.out 2>$F.err; then
+	INCL=`sed -n 's/^#INCL://p' $F.gd`
+	if $GOALDI $F.gd $INCL >$F.out 2>$F.err; then
 		if cmp -s $F.std $F.out; then
 			echo "ok"
 			rm $F.out

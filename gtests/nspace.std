@@ -1,0 +1,18 @@
+----- note(g1,12)
+pack::note(g2,24)
+pack::note(gvinit,7)
+ilen(procedure pack::n3(n)) = 21
+main initial
+pack initial
+g1 = 12
+g2 = 24
+pack::gval = 7
+pack::glen = 21
+pack::n3(3) = 27
+----- note(a,20)
+pack::note(b,21)
+pack::run here
+n3(4) = 64
+pack::note(run,47)
+r{a:12,b:34}
+r{a:98,b:76}
