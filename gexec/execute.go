@@ -137,7 +137,8 @@ func execute(f *pr_frame, label string) (rv g.Value, rc *g.Closure) {
 						}
 					}
 					if v == nil {
-						panic(g.Malfunction("Unbound identifier: " + i.Name))
+						panic(g.Malfunction("Unbound identifier: " +
+							i.Namespace + "::" + i.Name))
 					}
 					f.temps[i.Lhs] = v
 				case ir_EnterScope:
