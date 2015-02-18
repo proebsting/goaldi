@@ -1189,6 +1189,7 @@ procedure ir_a_Ident(p, st, target, bounded, rval)
     } else {
     	type(p.namespace) == "string" | runerr(500, p.namespace)
         s := p.id
+        # insert(st.globalSet, p.namespace || "::" || p.id)
     }
 
     suspend ir_chunk(p.ir.start, [
