@@ -54,10 +54,18 @@ func setupProc(pr *pr_Info) {
 	// add qualifiers to unbound identifiers for dependency processing
 	// report identifiers not declared anywhere
 	for i, id := range pr.ir.UnboundList {
-		if pr.space.Get(id) != nil {
-			pr.ir.UnboundList[i] = pr.space.GetQual() + id
-		} else if PubSpace.Get(id) == nil {
-			fatal("in " + pr.qname + "(): undeclared identifier: " + id)
+		nsid := strings.Split(id, "::")
+		if len(nsid) == 1 { // if unqualified name
+			if pr.space.Get(id) != nil {
+				// found in current space; make this explicit
+				pr.ir.UnboundList[i] = pr.space.GetQual() + id
+			} else if PubSpace.Get(id) == nil {
+				fatal("in " + pr.qname + "(): undeclared identifier: " + id)
+			}
+		} else { // explicitly qualified by namespace
+			if g.GetSpace(nsid[0]).Get(nsid[1]) == nil {
+				fatal("in " + pr.qname + "(): undeclared identifier: " + id)
+			}
 		}
 	}
 

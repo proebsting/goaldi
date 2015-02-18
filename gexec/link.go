@@ -84,7 +84,9 @@ func irDecl(decl interface{}) {
 	case ir_Function:
 		declareProc(&x)
 		for _, id := range x.UnboundList {
-			Undeclared[id] = true
+			if !strings.Contains(id, "::") { // if no explicit namespace
+				Undeclared[id] = true
+			}
 		}
 	case ir_Record:
 		ns := g.GetSpace(x.Namespace)
