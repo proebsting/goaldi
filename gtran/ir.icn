@@ -1,11 +1,11 @@
 #  ir.icn -- data structures for the Goaldi intermediate representation.
 
 record ir_Package(coord, name)
-record ir_Record(coord, name, extends, extendspkg, fieldList)
-record ir_Global(coord, nameList, fn)
-record ir_Initial(coord, fn)
+record ir_Record(coord, name, extends, extendspkg, fieldList, namespace)
+record ir_Global(coord, nameList, fn, namespace)
+record ir_Initial(coord, fn, namespace)
 record ir_Function(coord, name, paramList, accumulate,
-               localList, staticList, unboundList, codeList, codeStart, parent)
+               localList, staticList, unboundList, codeList, codeStart, parent, namespace)
 record ir_chunk(label, insnList)
 
 record ir_NoOp(coord, comment)

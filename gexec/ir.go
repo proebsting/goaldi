@@ -70,11 +70,13 @@ type ir_Record struct {
 	Extends    string
 	Extendspkg string
 	FieldList  []string
+	Namespace  string
 }
 
 type ir_Initial struct {
-	Coord string
-	Fn    string
+	Coord     string
+	Fn        string
+	Namespace string
 }
 
 type ir_Global struct {
@@ -95,6 +97,7 @@ type ir_Function struct {
 	CodeList    []ir_chunk
 	CodeStart   string
 	Parent      string
+	Namespace   string
 }
 
 type ir_chunk struct {

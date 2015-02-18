@@ -1,6 +1,6 @@
 #  irgen.icn -- translate abstract syntax trees to intermediate representation.
 
-global ir_deferred, ir_declare_set
+global ir_deferred, ir_declare_set, ir_namespace
 
 record ir_info(start, resume, failure, success, x)
 record ir_loopinfo(nextlabel, continue, value, bounded, rval, indirects)
@@ -609,6 +609,7 @@ end
 
 # record a_Package( name )
 procedure ir_a_Package(p, st, target, bounded, rval)
+    ir_namespace := p.name.id
     return ir_Package(ir_coord(p.name.coord), p.name.id)
 end
 
@@ -674,7 +675,7 @@ procedure ir_a_Global(p, st, target, bounded, rval)
         fn := ir_a_ProcDecl1(st, p.expr, [], &null, p.coord)
         suspend fn
     }
-    return ir_Global(ir_coord(p.coord), globals, \(\st).current_proc | &null)
+    return ir_Global(ir_coord(p.coord), globals, \(\st).current_proc | &null, ir_namespace)
 end
 
 # record a_Initial( expr )
@@ -694,7 +695,7 @@ procedure ir_a_Initial(p, st, target, bounded, rval)
 
     fn := ir_a_ProcDecl1(st, p.expr, [], &null, p.coord)
     suspend fn
-    i := ir_Initial(ir_coord(p.coord), st.current_proc)
+    i := ir_Initial(ir_coord(p.coord), st.current_proc, ir_namespace)
     return i
 end
 
@@ -834,7 +835,7 @@ procedure ir_a_ProcDecl1(st, body, params, accumulate, coord)
 
     return ir_Function(ir_coord(coord), st.current_proc, params,
 		      accumulate, locals, statics, globals, code,
-                      body.ir.start, st.parent)
+                      body.ir.start, st.parent, ir_namespace)
 end
 
 # record a_ProcCode( body )
@@ -869,7 +870,7 @@ procedure ir_a_Record(p, st, target, bounded, rval)
     }
     fields := []
     every put(fields, (!p.idlist).id)
-    return ir_Record(ir_coord(p.ident.coord), p.ident.id, (\p.extends).id |&null, (\p.extendspkg).id | &null, fields)
+    return ir_Record(ir_coord(p.ident.coord), p.ident.id, (\p.extends).id |&null, (\p.extendspkg).id | &null, fields, ir_namespace)
 end
 
 # record a_Repeat( expr )
