@@ -42,13 +42,16 @@ func (dl *DependencyList) Add(
 	dl.list = append(dl.list, item)
 }
 
-//  DependencyList.Run executes procedures in dependency order.
+//  DependencyList.Reorder places the procedures in dependency order.
 //  This is used for initializing globals.
-//  Execution errors are handled by the usual exception handling.
-//  RunDep returns an error if circular dependencies remain at the end,
+//  Reorder returns an error if circular dependencies remain at the end,
 //  or if an attempt is made to set the same global twice.
-func (dl *DependencyList) Run(trace bool) error {
+func (dl *DependencyList) Reorder(trace bool) error {
+	if trace {
+		fmt.Printf("[-] begin dependency computation\n")
+	}
 	ilist := dl.list
+	runlist := make([]*InitItem, 0, len(dl.list))
 	// initialize table of items
 	dl.table = make(map[string]*InitItem)
 	for _, item := range ilist {
@@ -56,7 +59,7 @@ func (dl *DependencyList) Run(trace bool) error {
 			return errors.New("Multiple initializations of global: " + item.sets)
 		}
 		if trace {
-			fmt.Printf("[-] init %s: depends on %s\n", item.sets, item.uses)
+			fmt.Printf("[-]    %s depends on %s\n", item.sets, item.uses)
 		}
 		dl.table[item.sets] = item
 	}
@@ -69,8 +72,9 @@ OuterLoop:
 		}
 		// if nothing is left, we are done
 		if len(ilist) == 0 {
+			dl.list = runlist
 			if trace {
-				fmt.Printf("[-] global initialization complete\n")
+				fmt.Printf("[-] dependency reordering complete\n")
 			}
 			return nil // success
 		}
@@ -82,18 +86,16 @@ OuterLoop:
 				// found something; run it and mark it
 				if trace {
 					if item.proc != nil { // if a global initializer
-						fmt.Printf("[-] global %s initializing:\n", item.sets)
+						fmt.Printf("[-] global %s scheduled\n", item.sets)
 					} else {
 						fmt.Printf("[-] procedure %s ready\n", item.sets)
 					}
 				}
-				if item.proc != nil { // if a global initializer
-					Run(item.proc, []Value{}) // run the procedure
-				}
+				runlist = append(runlist, item)
 				item.status = initDone
 				continue OuterLoop
 			} else if item.status != initDone && trace {
-				fmt.Printf("[-] %s waiting on %s\n",
+				fmt.Printf("[-] %s awaits %s\n",
 					item.sets, item.awaiting.sets)
 			}
 		}
@@ -105,6 +107,16 @@ OuterLoop:
 			}
 		}
 		return errors.New(s)
+	}
+}
+
+//  DependencyList.RunAll runs all the initializers in their current order.
+//  Execution errors are handled by the usual exception handling.
+func (dl *DependencyList) RunAll() {
+	for _, item := range dl.list {
+		if item.proc != nil { // if a global initializer
+			Run(item.proc, []Value{}) // run it
+		}
 	}
 }
 

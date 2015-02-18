@@ -111,8 +111,8 @@ func main() {
 		q := g.GetSpace(ir.Namespace).GetQual()
 		dlist.Add(q+ir.Name, p, uses)
 	}
-	// initialize globals in dependency order
-	err := dlist.Run(opt_trace)
+	// reorder the list for dependencies
+	err := dlist.Reorder(opt_trace)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "fatal:   %v\n", err)
 		pprof.StopCPUProfile()
@@ -121,7 +121,8 @@ func main() {
 
 	// run the sequence of initialization procedures
 	//#%#% each call to Run resets a clean environment. is that valid?
-	for _, ir := range InitList {
+	dlist.RunAll()                // global initializers as reordered
+	for _, ir := range InitList { // initial{} blocks in lexical order
 		g.Run(ProcTable[ir.Fn].vproc, []g.Value{})
 	}
 	showInterval("initialization")
