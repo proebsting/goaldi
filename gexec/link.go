@@ -65,8 +65,6 @@ func link(parts [][]interface{}) {
 //  Register initial procedures and global initialization procedures.
 func irDecl(decl interface{}) {
 	switch x := decl.(type) {
-	case ir_Package:
-		//#%#% no longer used; remove and delete
 	case ir_Global:
 		name := x.Name
 		ns := g.GetSpace(x.Namespace)

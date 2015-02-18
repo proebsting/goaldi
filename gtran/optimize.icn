@@ -468,7 +468,6 @@ procedure optim(irgen, flagList)
 
     while p := @irgen do {
         case type(p) of {
-        "ir_Package" |
         "ir_Record" |
         "ir_Global" |
         "ir_Initial" : {

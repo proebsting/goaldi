@@ -610,7 +610,7 @@ end
 # record a_Package( name )
 procedure ir_a_Package(p, st, target, bounded, rval)
     ir_namespace := p.name.id
-    return ir_Package(ir_coord(p.name.coord), p.name.id)
+    fail			# generate no code
 end
 
 # record a_If( expr thenexpr elseexpr )
