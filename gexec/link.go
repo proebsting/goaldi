@@ -10,9 +10,8 @@ import (
 
 //  A RecordEntry adds info to an ir_Record
 type RecordEntry struct {
-	ns        *g.Namespace // namespace
-	ir_Record              // ir struct
-	ctor      *g.VCtor     // constructor
+	ir_Record          // ir struct
+	ctor      *g.VCtor // constructor
 }
 
 //  RecordTable registers all the record declarations that have been seen
@@ -93,7 +92,7 @@ func irDecl(decl interface{}) {
 		ns := g.GetSpace(x.Namespace)
 		qname := ns.GetQual() + x.Name
 		if RecordTable[qname] == nil {
-			RecordTable[qname] = &RecordEntry{ns, x, nil}
+			RecordTable[qname] = &RecordEntry{x, nil}
 		} else {
 			fatal("duplicate record declaration: record " + qname)
 		}
@@ -144,7 +143,8 @@ func registerRecord(re *RecordEntry) {
 	}()
 	if re.ctor == nil { // if not already processed
 		re.ctor = regMark // prevent infinite recursion on error
-		gv := re.ns.Get(re.Name)
+		ns := g.GetSpace(re.Namespace)
+		gv := ns.Get(re.Name)
 		if gv == nil {
 			// this is a new definition
 			var ext *g.VCtor
@@ -163,7 +163,7 @@ func registerRecord(re *RecordEntry) {
 			}
 			// create global with unmodifiable procedure value
 			re.ctor = g.NewCtor(re.Name, ext, re.FieldList)
-			re.ns.Declare(re.Name, re.ctor)
+			ns.Declare(re.Name, re.ctor)
 		} else {
 			// duplicate global: fatal error
 			fatal("duplicate global declaration: record " + re.Name)
