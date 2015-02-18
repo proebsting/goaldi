@@ -2,7 +2,7 @@
 
 record ir_Package(coord, name)
 record ir_Record(coord, name, extends, extendspkg, fieldList, namespace)
-record ir_Global(coord, nameList, fn, namespace)
+record ir_Global(coord, name, fn, namespace)
 record ir_Initial(coord, fn, namespace)
 record ir_Function(coord, name, paramList, accumulate,
                localList, staticList, unboundList, codeList, codeStart, parent, namespace)

@@ -42,11 +42,10 @@
 #
 ############################################################################
 
-global
-	n,                           # Number of rows/columns
-	rw,                          # List of queens in each row
-	dd,                          # List of queens in each down diagonal
-	ud                           # List of queens in each up diagonal
+global	n                           # Number of rows/columns
+global	rw                          # List of queens in each row
+global	dd                          # List of queens in each down diagonal
+global	ud                           # List of queens in each up diagonal
 
 procedure main (arg) {           # Program arguments
 	n := integer (\arg) | 6

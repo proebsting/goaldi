@@ -652,14 +652,11 @@ procedure ir_a_If(p, st, target, bounded, rval)
     suspend ir_chunk(p.elseexpr.ir.failure, [ ir_Goto(ir_coord(p.coord), p.ir.failure) ])
 end
 
-# record a_Global( idList )
+# record a_Global( id)
 procedure ir_a_Global(p, st, target, bounded, rval)
-    local globals, fn, i, susp
+    local fn, i, susp
     static counter
     initial counter := 0
-
-    globals := []
-    every put(globals, (!p.idList).id)
 
     /st | runerr(500, p)
     if \p.expr then {
@@ -675,7 +672,7 @@ procedure ir_a_Global(p, st, target, bounded, rval)
         fn := ir_a_ProcDecl1(st, p.expr, [], &null, p.coord)
         suspend fn
     }
-    return ir_Global(ir_coord(p.coord), globals, \(\st).current_proc | &null, ir_namespace)
+    return ir_Global(ir_coord(p.coord), p.id, \(\st).current_proc | &null, ir_namespace)
 end
 
 # record a_Initial( expr )

@@ -48,7 +48,8 @@
 #
 ############################################################################
 
-global n, solution
+global n
+global solution
 
 procedure main(arg) {
 	# local i, opts

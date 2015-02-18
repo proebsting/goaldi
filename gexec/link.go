@@ -76,15 +76,14 @@ func irDecl(decl interface{}) {
 		if x.Namespace == "" {
 			x.Namespace = currentSpace.Name
 		}
-		for _, name := range x.NameList {
-			gv := currentSpace.Get(name)
-			if gv == nil {
-				currentSpace.Declare(name, g.NewVariable(g.NilValue))
-			} else if t, ok := gv.(*g.VTrapped); ok && *t.Target == g.NilValue {
-				// okay, previously declared global, no problem
-			} else {
-				fatal("duplicate global declaration: global " + name)
-			}
+		name := x.Name
+		gv := currentSpace.Get(name)
+		if gv == nil {
+			currentSpace.Declare(name, g.NewVariable(g.NilValue))
+		} else if t, ok := gv.(*g.VTrapped); ok && *t.Target == g.NilValue {
+			// okay, previously declared global, no problem
+		} else {
+			fatal("duplicate global declaration: global " + name)
 		}
 		if x.Fn != "" {
 			GlobInit = append(GlobInit, &x)

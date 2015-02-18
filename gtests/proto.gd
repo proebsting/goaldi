@@ -6,7 +6,8 @@ record three(x,y,z)
 record zero()
 record one(z)
 
-global line, count
+global line
+global count
 
 procedure main() {
 	write()

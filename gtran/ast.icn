@@ -16,7 +16,7 @@ record a_Every(expr, body, name, coord, ir)
 record a_Sectionop(op, val, left, right, coord, ir)
 record a_Binop(op, left, right, coord, ir)
 record a_Unop(op, operand, coord, ir)
-record a_Global(idList, expr, coord, ir, namespace) # phone namespace
+record a_Global(id, expr, coord, ir, namespace) # phone namespace
 record a_Package(name, coord, ir)
 record a_If(expr, thenexpr, elseexpr, coord, ir)
 record a_Initial(expr, coord, ir)

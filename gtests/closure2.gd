@@ -2,7 +2,8 @@
 #
 #	closures with lots of variables of various kinds
 
-global g, r
+global g
+global r
 
 procedure main() {
 	static s

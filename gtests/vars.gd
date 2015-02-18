@@ -1,5 +1,6 @@
 #SRC: goaldi original
-global a, g
+global a
+global g
 
 procedure main() {
 	a := "Ahoy"

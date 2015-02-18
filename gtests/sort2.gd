@@ -3,7 +3,8 @@
 # test sorting and copying
 
 
-global letters, digits
+global letters
+global digits
 
 procedure main(args) {
 	letters := "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"

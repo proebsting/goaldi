@@ -81,7 +81,7 @@ type ir_Initial struct {
 
 type ir_Global struct {
 	Coord     string
-	NameList  []string
+	Name      string
 	Namespace string // added on input
 	Fn        string
 }

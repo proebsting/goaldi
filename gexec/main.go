@@ -109,7 +109,7 @@ func main() {
 		p := ProcTable[ir.Fn].vproc
 		uses := ProcTable[ir.Fn].ir.UnboundList
 		q := g.GetSpace(ir.Namespace).GetQual()
-		dlist.Add(q+ir.NameList[0], p, uses)
+		dlist.Add(q+ir.Name, p, uses)
 	}
 	// initialize globals in dependency order
 	err := dlist.Run(opt_trace)

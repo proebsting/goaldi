@@ -180,4 +180,8 @@ procedure main() {
 	p12()
 }
 
-global i, s, c, one, two, x
+global i
+global s
+global c
+global one
+global x
