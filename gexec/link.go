@@ -8,9 +8,6 @@ import (
 	"strings"
 )
 
-//  currentSpace is the declared namespace in effect at the moment
-var currentSpace *g.Namespace
-
 //  A RecordEntry adds info to an ir_Record
 type RecordEntry struct {
 	ns        *g.Namespace // namespace
@@ -28,7 +25,6 @@ func link(parts [][]interface{}) {
 
 	//  process individual declarations (proc, global, etc) from IR
 	for _, file := range parts {
-		currentSpace = PubSpace
 		for _, decl := range file {
 			irDecl(decl)
 		}
@@ -71,15 +67,13 @@ func link(parts [][]interface{}) {
 func irDecl(decl interface{}) {
 	switch x := decl.(type) {
 	case ir_Package:
-		currentSpace = g.GetSpace(x.Name)
+		//#%#% no longer used; remove and delete
 	case ir_Global:
-		if x.Namespace == "" {
-			x.Namespace = currentSpace.Name
-		}
 		name := x.Name
-		gv := currentSpace.Get(name)
+		ns := g.GetSpace(x.Namespace)
+		gv := ns.Get(name)
 		if gv == nil {
-			currentSpace.Declare(name, g.NewVariable(g.NilValue))
+			ns.Declare(name, g.NewVariable(g.NilValue))
 		} else if t, ok := gv.(*g.VTrapped); ok && *t.Target == g.NilValue {
 			// okay, previously declared global, no problem
 		} else {
@@ -96,9 +90,10 @@ func irDecl(decl interface{}) {
 			Undeclared[id] = true
 		}
 	case ir_Record:
-		qname := currentSpace.GetQual() + x.Name
+		ns := g.GetSpace(x.Namespace)
+		qname := ns.GetQual() + x.Name
 		if RecordTable[qname] == nil {
-			RecordTable[qname] = &RecordEntry{currentSpace, x, nil}
+			RecordTable[qname] = &RecordEntry{ns, x, nil}
 		} else {
 			fatal("duplicate record declaration: record " + qname)
 		}

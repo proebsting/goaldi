@@ -31,7 +31,7 @@ var ProcTable = make(map[string]*pr_Info)
 func declareProc(ir *ir_Function) *pr_Info {
 	pr := &pr_Info{}
 	pr.name = ir.Name
-	pr.space = currentSpace
+	pr.space = g.GetSpace(ir.Namespace)
 	if unicode.IsDigit(rune(pr.name[0])) { // if generated procedure
 		pr.qname = pr.name // leave the name alone
 	} else { // if explicit user procedure

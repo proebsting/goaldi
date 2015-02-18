@@ -57,7 +57,6 @@ func init() {
 
 //  intermediate representation struct definitions
 //  all fields must be capitalized for access by the reflection package
-//  fields marked as "added on input" are not set by the front end
 
 type ir_Package struct {
 	Coord string
@@ -82,7 +81,7 @@ type ir_Initial struct {
 type ir_Global struct {
 	Coord     string
 	Name      string
-	Namespace string // added on input
+	Namespace string
 	Fn        string
 }
 
