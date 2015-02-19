@@ -14,7 +14,6 @@ type pr_Info struct {
 	space    *g.Namespace             // procedure namespace
 	name     string                   // procedure name
 	qname    string                   // qualified name (namespace::name)
-	outer    *pr_Info                 // enclosing procedure, if any
 	ir       *ir_Function             // intermediate code structure
 	insns    map[string][]interface{} // map from labels to IR code chunks
 	statics  map[string]interface{}   // table of statics (including globals)
@@ -69,7 +68,11 @@ func setupProc(pr *pr_Info) {
 		}
 	}
 
-	// #%#%# need to propagate unbound ID list to/thru parents for dependencies
+	// add this proc to outer procedure's dependency list
+	if pr.ir.Parent != "" {
+		pt := ProcTable[pr.space.GetQual()+pr.ir.Parent]
+		pt.ir.UnboundList = append(pt.ir.UnboundList, pr.qname)
+	}
 
 	// make a trapped variable for every static
 	pr.statics = make(map[string]interface{})

@@ -194,8 +194,8 @@ func setField(f reflect.Value, key string, val interface{}) {
 		panic(g.Malfunction("cannot set key " + key))
 	}
 
-	// prefix the file number to any field "Fn" or "Name" beginning with "$"
-	if (key == "Name" || key == "Fn") && val.(string)[0] == '$' {
+	// prefix file number "Fn" or "Name" or "Parent" beginning with "$"
+	if (key == "Name" || key == "Fn" || key == "Parent") && val.(string)[0] == '$' {
 		val = fmt.Sprintf("%d%s", fileNumber, val)
 	}
 

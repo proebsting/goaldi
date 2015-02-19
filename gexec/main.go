@@ -7,7 +7,7 @@ import (
 	g "goaldi"
 	"os"
 	"runtime/pprof"
-	"unicode"
+	"strings"
 )
 
 //  globals
@@ -94,13 +94,13 @@ func main() {
 	// make a list for dependency-based global initialization
 	dlist := &g.DependencyList{}
 	// put procedures at the front of the list for proper dependency checking
+	// (excluding procedures associated with global:= and initial{})
 	for _, proc := range ProcTable {
-		if !unicode.IsDigit(rune(proc.name[0])) {
-			// this is a top-level user-declared procedure
+		if !strings.Contains(proc.name, "$global$") &&
+			!strings.Contains(proc.name, "$initial$") {
 			ulist := proc.ir.UnboundList
 			if ulist != nil && len(ulist) > 0 {
-				q := proc.space.GetQual()
-				dlist.Add(q+proc.name, nil, ulist)
+				dlist.Add(proc.qname, nil, ulist)
 			}
 		}
 	}
