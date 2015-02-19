@@ -142,10 +142,10 @@ func (m *InitItem) setStatus(dl *DependencyList) int {
 		s := o.setStatus(dl)
 		if s != initDone { // if we need to wait for this
 			m.awaiting = o
-			if o.proc != nil { // if this is a global
-				m.status = waitGlob
+			if o.proc != nil || o.status == waitGlob {
+				m.status = waitGlob // waiting on a global, or indirectly so
 			} else if m.status != waitGlob {
-				m.status = waitProc
+				m.status = waitProc // waiting on a procedure
 			}
 		}
 	}

@@ -38,6 +38,7 @@ initial { v -:= 1; w +:= 3; printall("init3") }
 procedure main() {
 	printall("main")
 	write("aa=", aa, " bb=", bb, " cc=", cc, " dd=", dd)
+	write("xx=", xx, " yy=", yy)
 	%stdin.println("done")	# appears on stdout due to initial{} reassignment
 }
 
@@ -81,4 +82,13 @@ procedure r1(n) {
 
 procedure r2(n) {
 	return r1(3 * n)
+}
+
+# test tricky dependency involving nested procedure
+
+global yy := tricky()()
+global xx := 443
+
+procedure tricky() {
+	return lambda() xx + 124
 }
