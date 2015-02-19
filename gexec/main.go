@@ -119,6 +119,15 @@ func main() {
 		os.Exit(1)
 	}
 
+	// before running any initialization code, make sure main() exists
+	gmain := PubSpace.Get("main")
+	if gmain == nil {
+		abort("no main procedure")
+	}
+	if gv, ok := gmain.(g.IVariable); ok {
+		gmain = gv.Deref()
+	}
+
 	// run the sequence of initialization procedures
 	//#%#% each call to Run resets a clean environment. is that valid?
 	dlist.RunAll()                // global initializers as reordered
@@ -127,17 +136,10 @@ func main() {
 	}
 	showInterval("initialization")
 
-	// find and execute main()
+	// execute main()
 	arglist := make([]g.Value, 0)
 	for _, s := range args {
 		arglist = append(arglist, g.NewString(s))
-	}
-	gmain := PubSpace.Get("main")
-	if gmain == nil {
-		abort("no main procedure in public namespace")
-	}
-	if gv, ok := gmain.(g.IVariable); ok {
-		gmain = gv.Deref()
 	}
 	g.Run(gmain, arglist)
 
