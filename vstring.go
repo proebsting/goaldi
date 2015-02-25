@@ -9,6 +9,8 @@
 //	Viable alternative not chosen: a rune array, fast and easy but space-costly.
 //	Difficult alternative not chosen: Go strings with annotations for quicker
 //	*s, s[i], etc. operations.
+//
+//  Not known at the time:  package golang.org/x/exp/utf8string.
 
 package goaldi
 
