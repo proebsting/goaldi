@@ -8,6 +8,7 @@
 *.dot
 *.u[12]
 PROFILE
+libdoc.txt
 gtran/gtran
 gtran/oplexgen
 gtran/do_ops.icn

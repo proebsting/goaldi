@@ -46,8 +46,15 @@ format:
 bundle:
 	@bundle *.go */*.go
 
+#  extract stdlib procedure documentation
+libdoc:	libdoc.txt
+	@: # don't try to build ./libdoc, it's just an alias
+libdoc.txt:	libdoc.sh build
+	./libdoc.sh >libdoc.txt
+
 #  remove temporary and built files from source tree
 clean:
+	rm -f libdoc.txt
 	go clean $(PKG) $(PROGS)
 	cd gtran; $(MAKE) clean
 	cd gtests; $(MAKE) clean
