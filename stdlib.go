@@ -30,55 +30,54 @@ func GoLib(entry interface{}, name string, pspec string, descr string) *VProcedu
 	return p
 }
 
+const showLen = 79
+
 //  ShowLibrary(f) lists all library functions and standard types on file f
 func ShowLibrary(f io.Writer) {
-	typelist := make([]Value, 0)
-	linelen := 79
+	typelist := make([]*VType, 0)
+	hrule := strings.Repeat("-", showLen)
 	fmt.Fprintln(f)
 	fmt.Fprintln(f, "Standard Library")
-	fmt.Fprintln(f, strings.Repeat("-", linelen))
+	fmt.Fprintln(f, hrule)
 	for k := range SortedKeys(StdLib) {
 		x := StdLib[k]
 		switch v := x.(type) {
 		case *VProcedure:
-			s1 := v.GoString()[10:] + " -- " + v.Descr
-			s3 := v.ImplBy()
-			s2 := strings.Repeat(" ", linelen-len(s1)-len(s3)-2)
-			fmt.Fprintln(f, s1, s2, s3)
+			showProc(f, "", v)
 		case *VType:
 			typelist = append(typelist, v)
+			showProc(f, "", v.Ctor)
 		case *VCtor:
-			typelist = append(typelist, v)
+			// ignore (e.g. elemtype)
 		default:
 			fmt.Fprintf(f, "%x : UNRECOGNIZED : %T\n", k, x)
 		}
 	}
 
-	fmt.Fprintln(f)
-	fmt.Fprintln(f, "Standard Methods and Types")
-	fmt.Fprintln(f, "-------------------------------------------")
-	fmt.Fprintln(f, "[any]")
+	fmt.Fprintln(f, hrule)
 	for k := range SortedKeys(UniMethods) {
-		m := UniMethods[k]
-		fmt.Fprintf(f, "    x.%s -- %s\n", m.GoString()[10:], m.Descr)
+		showProc(f, "x.", UniMethods[k])
 	}
-	for _, x := range typelist {
-		switch t := x.(type) {
-		case *VType:
-			ctor := t.Ctor
-			fmt.Fprintln(f, ctor.GoString()[10:]+" -- "+ctor.Descr)
-			if t.Methods != nil {
-				for k := range SortedKeys(t.Methods) {
-					m := t.Methods[k]
-					fmt.Fprintf(f, "    %s.%s -- %s\n",
-						t.Abbr, m.GoString()[10:], m.Descr)
-				}
+	for _, t := range typelist {
+		if t.Methods != nil && len(t.Methods) > 0 {
+			fmt.Fprintln(f, hrule)
+			for k := range SortedKeys(t.Methods) {
+				showProc(f, t.Abbr+".", t.Methods[k])
 			}
-		case *VCtor:
-			fmt.Fprintln(f, t.GoString()[12:])
 		}
-
 	}
+	fmt.Fprintln(f, hrule)
+}
+
+//  showProc(f, c, p) -- format and print one-line procedure reference
+//  f is the output file
+//  c is a prefix (e.g. "x." or nothing)
+//  p is the procedure
+func showProc(f io.Writer, c string, p *VProcedure) {
+	l := fmt.Sprintf("%s%s -- %s", c, p.GoString()[10:], p.Descr)
+	r := p.ImplBy()
+	s := strings.Repeat(" ", showLen-len(l)-len(r))
+	fmt.Fprintln(f, l+s+r)
 }
 
 //  VProcedure.ImplBy -- return name of implementing underlying function

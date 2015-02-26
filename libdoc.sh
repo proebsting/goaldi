@@ -13,8 +13,8 @@ HBAR="$UL12$UL12$UL12$UL12$UL12$UL12"
 goaldi -E /dev/null 2>/dev/null |
 sed '
 	# delete everything except procedure listing
-	1,/-------/d
-	/^$/,$d
+	1,/^-------/d
+	/^-------/,$d
 	# reformat each line as: name(args)#descr#package#func
 	s/ -- /#/
 	s/    */#/
