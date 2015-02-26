@@ -25,7 +25,7 @@ func init() {
 	DefLib(Date, "date", "", "return the current date")
 	DefLib(Time, "time", "", "return the current time")
 	DefLib(Now, "now", "", "return the current instant as a Go Time struct")
-	DefLib(Duration, "duration", "n", "convert value to a Go Duration struct")
+	DefLib(Duration, "duration", "x", "convert value to a Go Duration struct")
 	DefLib(CPUtime, "cputime", "", "return total processor time used")
 	// Go library functions
 	GoLib(os.Getenv, "getenv", "key", "read environment variable")
@@ -39,7 +39,9 @@ func init() {
 	GoLib(zip.OpenReader, "zipreader", "name", "open a Zip file")
 }
 
-//  Copy(v) -- return a copy of v (or just v if a simple value).
+//  copy(x) returns a copy of x if x is a structure,
+//  or just x itself if x is a simple value.
+//  This is a shallow copy; nested structures are not duplicated.
 func Copy(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("copy", args)
 	x := ProcArg(args, 0, NilValue)
@@ -52,29 +54,34 @@ func Copy(env *Env, args ...Value) (Value, *Closure) {
 	return Return(y.Interface())
 }
 
-//  Image(v) -- return string image of value v
+//  image(x) returns a string image of x.
+//  This is exactly the conversion applied by sprintf("%#v",x)
+//  and is typically more verbose and detailed than the result of string(x).
 func Image(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("image", args)
 	return Return(NewString(fmt.Sprintf("%#v", ProcArg(args, 0, NilValue))))
 }
 
-//  NoResult(e) -- fail immediately -- can be used as a catch handler
+//  noresult(e) fails immediately, ignoring e.
+//  It is suitable for use as a catch handler.
 func NoResult(env *Env, args ...Value) (Value, *Closure) {
 	return Fail()
 }
 
-//  NilResult(e) -- return nilresult -- can be used as a catch handler
+//  nilresult(e) returns nil, ignoring e.
+//  It is suitable for use as a catch handler.
 func NilResult(env *Env, args ...Value) (Value, *Closure) {
 	return Return(NilValue)
 }
 
-//  ErrResult(e) -- return e -- can be used as a catch handler
+//  errresult(e) returns its argument e.
+//  It is suitable for use as a catch handler.
 func ErrResult(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("errresult", args)
 	return Return(ProcArg(args, 0, NilValue))
 }
 
-//  Sleep(n) -- delay execution for n seconds (may be fractional)
+//  sleep(n) delays execution for n seconds, which may be a fractional value.
 func Sleep(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("sleep", args)
 	v := ProcArg(args, 0, ONE).(Numerable).ToNumber()
@@ -84,27 +91,30 @@ func Sleep(env *Env, args ...Value) (Value, *Closure) {
 	return Return(v)
 }
 
-//  Date() -- return current date in the form yyyy/mm/dd
+//  date() returns the current date in the form "yyyy/mm/dd".
 func Date(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("date", args)
 	return Return(NewString(time.Now().Format("2006/01/02")))
 }
 
-//  Time() -- return current time in the form hh:mm:ss
+//  time() returns the current time of day in the form "hh:mm:ss".
 func Time(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("time", args)
 	return Return(NewString(time.Now().Format("15:04:05")))
 }
 
-//  Now() -- return current time as a Go.Time struct for user formatting
+//  now() returns the current time as an external Go time.Time value,
+//  which can then be formatted or otherwise manipulated
+//  by calling its associated methods.
 func Now(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("now", args)
 	return Return(time.Now())
 }
 
-//  Duration(x) -- convert x to a duration, or fail
+//  duration(x) converts x to an external Go time.Duration value.
 //  If x is a string, it is passed directly to time.ParseDuration.
 //  If x is a number, "s" is appended to interpret it as an interval in seconds.
+//  If the conversion is unsuccessful, duration() fails.
 func Duration(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("duration", args)
 	v := ProcArg(args, 0, ZERO)
@@ -122,7 +132,8 @@ func Duration(env *Env, args ...Value) (Value, *Closure) {
 	}
 }
 
-//  CPUtime() -- return u+s CPU usage in seconds (may be fractional)
+//  cputime() returns processor usage in seconds, likely a fractional value.
+//  The result includes both "user" and "system" time.
 func CPUtime(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("cputime", args)
 	var ustruct syscall.Rusage
@@ -136,16 +147,21 @@ func CPUtime(env *Env, args ...Value) (Value, *Closure) {
 	return Return(NewNumber(total.Seconds()))
 }
 
-//  Exit(n) -- terminate program
+//  exit(i) terminates execution and returns exit status i,
+//  truncated to integer, to the system.
+//  A status of 0 signifies normal termination.
 func Exit(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("exit", args)
 	Shutdown(int(ProcArg(args, 0, ZERO).(Numerable).ToNumber().Val()))
 	return Fail() // NOTREACHED
 }
 
-//  Throw(x, v...) -- terminate with error x and offending values v
-//  If x is a number or string, a Goaldi exception is created using v.
-//  Otherwise, the value x is thrown directly.
+//  throw(e, x...) raises an exception
+//  with error value e and zero or more offending values.
+//  If not caught, the exception terminates execution.
+//
+//  If x is a number or string, a Goaldi exception is created using x.
+//  Otherwise, the value x is thrown directly, without interpretation.
 func Throw(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("throw", args)
 	x := ProcArg(args, 0, err_fatal)

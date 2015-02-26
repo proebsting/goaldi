@@ -38,7 +38,8 @@ func String(env *Env, args ...Value) (Value, *Closure) {
 	return Return(NewString(fmt.Sprint(v)))
 }
 
-//  Char(i) -- return one-character string with Unicode value i
+//  char(n) returns the one-character string corresponding to the
+//  Unicode value of n truncated to integer.
 func Char(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("char", args)
 	var r [1]rune
@@ -50,7 +51,7 @@ func Char(env *Env, args ...Value) (Value, *Closure) {
 	return Return(RuneString(r[:]))
 }
 
-//  Ord(c) -- return Unicode value of one-character string
+//  ord(s) returns the Unicode value corresponding to the one-character string s.
 func Ord(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("ord", args)
 	r := ProcArg(args, 0, NilValue).(Stringable).ToString().ToRunes()
@@ -60,7 +61,7 @@ func Ord(env *Env, args ...Value) (Value, *Closure) {
 	return Return(NewNumber(float64(r[0])))
 }
 
-//  Reverse(s) -- return mirror image of string
+//  reverse(s) returns the end-for-end reversal of the string s.
 func Reverse(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("reverse", args)
 	r := ProcArg(args, 0, NilValue).(Stringable).ToString().ToRunes()

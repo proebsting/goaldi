@@ -17,7 +17,7 @@ func init() {
 	DefLib(Max, "max", "n[]", "find maximum value")
 	DefLib(Seq, "seq", "n,incr", "produce n to infinity")
 	DefLib(Log, "log", "n,b", "compute logarithm to base b")
-	DefLib(Atan, "atan", "x,y", "compute arctangent of x / y")
+	DefLib(Atan, "atan", "y,x", "compute arctangent of y / x")
 	DefLib(GCD, "gcd", "i[]", "find greatest common divisor")
 	DefLib(Randomize, "randomize", "", "irreproducibly seed random generation")
 	DefLib(RandGen, "randgen", "seed", "create independent random sequence")
@@ -46,7 +46,9 @@ func init() {
 	GoLib(math.Acos, "acos", "n", "compute arccosine")
 }
 
-//  Number(x) -- return argument converted to number, or fail
+//  number(x) return is argument converted to number,
+//  or fails if this is not possible.
+//  BUG: radix forms are not recognized.
 func Number(env *Env, args ...Value) (Value, *Closure) {
 	// nonstandard entry; on panic, returns default nil values to fail
 	defer func() { recover() }()
@@ -58,7 +60,8 @@ func Number(env *Env, args ...Value) (Value, *Closure) {
 	}
 }
 
-//  Seq(n1,n2) -- produce n1 to infinity by n2
+//  seq(n,incr) generates an endless sequence of values beginning at n
+//  with increments of incr.
 func Seq(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("seq", args)
 	n1 := ProcArg(args, 0, ONE).(Numerable).ToNumber()
@@ -66,7 +69,7 @@ func Seq(env *Env, args ...Value) (Value, *Closure) {
 	return ToBy(n1, INF, n2)
 }
 
-//  Min(n1, ...) -- return numeric minimum
+//  min(n, ...) returns the smallest of its arguments.
 func Min(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("min", args)
 	v := ProcArg(args, 0, NilValue).(Numerable).ToNumber().Val()
@@ -79,7 +82,7 @@ func Min(env *Env, args ...Value) (Value, *Closure) {
 	return Return(NewNumber(v))
 }
 
-//  Max(n1, ...) -- return numeric maximum
+//  max(n, ...) returns the largest of its arguments.
 func Max(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("max", args)
 	v := ProcArg(args, 0, NilValue).(Numerable).ToNumber().Val()
@@ -92,7 +95,9 @@ func Max(env *Env, args ...Value) (Value, *Closure) {
 	return Return(NewNumber(v))
 }
 
-//  Log(r1, r2) -- logarithm of r1 to base r2, default r2 = e
+//  log(n, b) returns the logarithm of n to base b.
+//  The default value of b is %e (2.7183...),
+//  so log(n) returns the natural logarithm of n.
 func Log(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("log", args)
 	r1 := ProcArg(args, 0, NilValue).(Numerable).ToNumber().Val()
@@ -104,7 +109,9 @@ func Log(env *Env, args ...Value) (Value, *Closure) {
 	}
 }
 
-//  Atan(r1, r2) -- arctangent(r1/r2), default r2 = 1.0
+//  atan(y, x) returns the arctangent, in radians, of (y/x).
+//  The default value of x is 1, so atan(y) returns the arctangent of y.
+//  For the handling of special cases see http://golang.org/pkg/math/#Atan2.
 func Atan(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("atan", args)
 	r1 := ProcArg(args, 0, NilValue).(Numerable).ToNumber().Val()
@@ -116,9 +123,10 @@ func Atan(env *Env, args ...Value) (Value, *Closure) {
 	}
 }
 
-//  GCD(i, ...) -- greatest common divisor
-//  Returns the GCD of one or more values, which are truncated to int.
-//  Negative values are allowed.  Returns zero if all values are zero.
+//  gcd(i,...) truncates its arguments to integer and
+//  returns their greatest common divisor.
+//  Negative values are allowed.
+//  gcd() returns zero if all values are zero.
 func GCD(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("gcd", args)
 	a := int(ProcArg(args, 0, NilValue).(Numerable).ToNumber().Val())
@@ -137,7 +145,8 @@ func GCD(env *Env, args ...Value) (Value, *Closure) {
 	return Return(NewNumber(float64(a)))
 }
 
-//  Randomize() -- seed random number generator irreproducibly
+//  randomize() seeds the random number generator
+//  with an irreproducible value obtained from /dev/urandom.
 func Randomize(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("randomize", args)
 	var seed int64
@@ -155,73 +164,79 @@ func Randomize(env *Env, args ...Value) (Value, *Closure) {
 	return Return(NewNumber(float64(seed)))
 }
 
-//  RandGen(i) -- return new random generator seeded by i
-//  Returns a new Go math.rand/Rand object whose methods may be called.
+//  randgen(i) returns a new random generator seeded by i.
+//  The returned external value is a Go math.rand/Rand object
+//  whose methods may be called from Goaldi to produce random values.
 func RandGen(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("randgen", args)
 	i := int64(ProcArg(args, 0, ZERO).(Numerable).ToNumber().Val())
 	return Return(rand.New(rand.NewSource(i)))
 }
 
-//  DtoR(r1) -- convert degrees to radians
+//  dtor(d) returns the radian equivalent of the angle d given in degrees.
 func DtoR(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("dtor", args)
 	r := ProcArg(args, 0, NilValue).(Numerable).ToNumber().Val()
 	return Return(NewNumber(r * math.Pi / 180.0))
 }
 
-//  RtoD(r1) -- convert radians to degrees
+//  rtod(r) returns the degree equivalent of the angle r given in radians.
 func RtoD(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("rtod", args)
 	r := ProcArg(args, 0, NilValue).(Numerable).ToNumber().Val()
 	return Return(NewNumber(r * 180.0 / math.Pi))
 }
 
-//  IAnd(i1, i2) -- bitwise AND of i1 and i2
+//  iand(i, j) returns the bitwise AND of the values i and j truncated to integer.
 func IAnd(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("iand", args)
-	i1 := int64(ProcArg(args, 0, NilValue).(Numerable).ToNumber().Val())
-	i2 := int64(ProcArg(args, 1, NilValue).(Numerable).ToNumber().Val())
-	return Return(NewNumber(float64(i1 & i2)))
+	i := int64(ProcArg(args, 0, NilValue).(Numerable).ToNumber().Val())
+	j := int64(ProcArg(args, 1, NilValue).(Numerable).ToNumber().Val())
+	return Return(NewNumber(float64(i & j)))
 }
 
-//  IOr(i1, i2) -- bitwise OR of i1 and i2
+//  ior(i, j) returns the bitwise OR of the values i and j truncated to integer.
 func IOr(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("ior", args)
-	i1 := int64(ProcArg(args, 0, NilValue).(Numerable).ToNumber().Val())
-	i2 := int64(ProcArg(args, 1, NilValue).(Numerable).ToNumber().Val())
-	return Return(NewNumber(float64(i1 | i2)))
+	i := int64(ProcArg(args, 0, NilValue).(Numerable).ToNumber().Val())
+	j := int64(ProcArg(args, 1, NilValue).(Numerable).ToNumber().Val())
+	return Return(NewNumber(float64(i | j)))
 }
 
-//  IXor(i1, i2) -- bitwise XOR of i1 and i2
+//  ixor(i, j) returns the bitwise exclusive OR
+//  of the values i and j truncated to integer.
 func IXor(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("ixor", args)
-	i1 := int64(ProcArg(args, 0, NilValue).(Numerable).ToNumber().Val())
-	i2 := int64(ProcArg(args, 1, NilValue).(Numerable).ToNumber().Val())
-	return Return(NewNumber(float64(i1 ^ i2)))
+	i := int64(ProcArg(args, 0, NilValue).(Numerable).ToNumber().Val())
+	j := int64(ProcArg(args, 1, NilValue).(Numerable).ToNumber().Val())
+	return Return(NewNumber(float64(i ^ j)))
 }
 
-//  IClear(i1, i2) -- bitwise clear of i1 by i2
+//  iclear(i, j) returns the value of i cleared of those bits set in j,
+//  after truncating both arguments to integer.
 func IClear(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("iclear", args)
-	i1 := int64(ProcArg(args, 0, NilValue).(Numerable).ToNumber().Val())
-	i2 := int64(ProcArg(args, 1, NilValue).(Numerable).ToNumber().Val())
-	return Return(NewNumber(float64(i1 &^ i2)))
+	i := int64(ProcArg(args, 0, NilValue).(Numerable).ToNumber().Val())
+	j := int64(ProcArg(args, 1, NilValue).(Numerable).ToNumber().Val())
+	return Return(NewNumber(float64(i &^ j)))
 }
 
-//  IShift(i1, i2) -- bitwise shift of i1 by i2
+//  ishift(i, j) shifts i by j bits and returns the result.
+//  If j > 0, the shift is to the left with zero fill.
+//  If j < 0, the shift is to the right with sign extension.
+//  The arguments are both truncated to integer before operating.
 func IShift(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("ishift", args)
-	i1 := int64(ProcArg(args, 0, NilValue).(Numerable).ToNumber().Val())
-	i2 := int64(ProcArg(args, 1, NilValue).(Numerable).ToNumber().Val())
-	if i2 > 0 {
-		return Return(NewNumber(float64(i1 << uint(i2))))
+	i := int64(ProcArg(args, 0, NilValue).(Numerable).ToNumber().Val())
+	j := int64(ProcArg(args, 1, NilValue).(Numerable).ToNumber().Val())
+	if j > 0 {
+		return Return(NewNumber(float64(i << uint(j))))
 	} else {
-		return Return(NewNumber(float64(i1 >> uint(-i2))))
+		return Return(NewNumber(float64(i >> uint(-j))))
 	}
 }
 
-//  ICom(i) -- bitwise complement of i
+//  icom(i) truncates i to integer and returns its bitwise complement.
 func ICom(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("icom", args)
 	i := int64(ProcArg(args, 0, NilValue).(Numerable).ToNumber().Val())

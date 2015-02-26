@@ -67,16 +67,13 @@ var spByte = []byte(" ")
 var nlByte = []byte("\n")
 var dflt_open = NewString("r")
 
-//  Open(name,flags) -- open a file
-//	flags:
-//		r	open for reading
-//		w	open for writing
-//      a	open for appending
-//		f	fail on error (instead of panicking)  #%#% new
-//  #%#% no flag "b": use "rw"
-//  #%#% no flag "c": implied by "w"
-//  #%#% no flag "t" or "u": done differently (see readb/writeb)
-//  #%#% no flag "p": to be considered
+//  open(name,flags) opens a file and returns a file value.
+//
+//  Each character of the optional flags argument selects an option:
+//		"r"	open for reading
+//		"w"	open for writing
+//		"a"	open for appending
+//		"f"	fail on error (instead of panicking)
 func Open(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("open", args)
 
@@ -157,8 +154,9 @@ func (f *VFile) FClose(args ...Value) (Value, *Closure) {
 	return Return(f)
 }
 
-//  Read(f) -- return next line from file
-//  Fails at EOF when no more data is available.
+//  read(f) consumes and returns next line of text from file f.
+//  The trailing linefeed or CRLF is removed from the returned value.
+//  read() fails at EOF when no more data is available.
 func Read(env *Env, args ...Value) (Value, *Closure) {
 	return ProcArg(args, 0, STDIN).(*VFile).FRead(args)
 }
@@ -207,7 +205,7 @@ func (f *VFile) FWriteb(args ...Value) (Value, *Closure) {
 	return Return(f)
 }
 
-//  Write(x,...) -- write values and newline to stdout
+//  write(x,...) writes its arguments to %stdout followed by a newline.
 func Write(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("write", args)
 	return Wrt(STDOUT, noBytes, nlByte, args)
@@ -219,7 +217,7 @@ func (f *VFile) FWrite(args ...Value) (Value, *Closure) {
 	return Wrt(f, noBytes, nlByte, args)
 }
 
-//  Writes(x,...) -- write values without newline to stdout
+//  writes(x,...) write its arguments to %stdout with no following newline.
 func Writes(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("writes", args)
 	return Wrt(STDOUT, noBytes, noBytes, args)
@@ -231,7 +229,7 @@ func (f *VFile) FWrites(args ...Value) (Value, *Closure) {
 	return Wrt(f, noBytes, noBytes, args)
 }
 
-//  Print(x,...) -- write values with separating whitespace to stdout
+//  print(x,...) writes its arguments to %stdout, separated by spaces.
 func Print(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("print", args)
 	return Wrt(STDOUT, spByte, noBytes, args)
@@ -243,7 +241,8 @@ func (f *VFile) FPrint(args ...Value) (Value, *Closure) {
 	return Wrt(f, spByte, noBytes, args)
 }
 
-//  Println(x,...)  -- write values with whitespace and newline to stdout
+//  println(x,...) writes its arguments to %stdout,
+//  separated by spaces and terminated by a newline character.
 func Println(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("println", args)
 	return Wrt(STDOUT, spByte, nlByte, args)
@@ -255,7 +254,8 @@ func (f *VFile) FPrintln(args ...Value) (Value, *Closure) {
 	return Wrt(f, spByte, nlByte, args)
 }
 
-//  Stop(x,...): -- write values to stderr and terminate program
+//  stop(x,...) writes its arguments to %stderr and terminates execution
+//  with an exit code of 1 (indicating an error).
 func Stop(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("stop", args)
 	Wrt(STDERR, noBytes, nlByte, args)

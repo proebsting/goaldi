@@ -158,7 +158,9 @@ func (v *VCtor) Call(env *Env, args []Value, names []string) (Value, *Closure) {
 	return Return(v.New(args))
 }
 
-//  Constructor(name, fields[]) builds a record constructor dynamically
+//  constructor(name, field...) builds a record constructor for creating
+//  records with the given type name and field list.
+//  There is no requirement or guarantee that record names be distinct.
 func Constructor(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("constructor", args)
 	name := Identifier(ProcArg(args, 0, NilValue))

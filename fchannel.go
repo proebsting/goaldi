@@ -146,8 +146,10 @@ func (c VChannel) Buffer(args ...Value) (Value, *Closure) {
 	return Return(r)
 }
 
-//  Buffer(i, C) is the static version of c.Buffer(i).
-//  This is useful in the Goaldi form buffer(i, create e).
+//  buffer(size, c) returns a channel that interposes a buffer of given size
+//  before the channel c.
+//  This is useful in the Goaldi form buffer(size, create e)
+//  to provide buffering of the results produced by an asynchronous thread.
 func Buffer(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("buffer", args)
 	i := ProcArg(args, 0, ONE)
