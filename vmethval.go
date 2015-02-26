@@ -24,7 +24,7 @@ func MethodVal(p *VProcedure, v Value) *VMethVal {
 
 //  MethValType is the methodvalue instance of type type.
 var MethValType = NewType("methodvalue", "m", rMethVal, MethodValue, nil,
-	"methodvalue", "m", "succeed if methodvalue")
+	"methodvalue", "x", "succeed if methodvalue")
 
 //  VMethVal.String -- conversion to Go string returns "m:Name"
 func (v *VMethVal) String() string {
@@ -82,7 +82,7 @@ func (v *VMethVal) Export() interface{} {
 	return v
 }
 
-//  The "constructor" returns its argument if methodvalue and otherwise fails.
+//  methodvalue(x) returns x if x is a method value, and fails otherwise.
 func MethodValue(env *Env, args ...Value) (Value, *Closure) {
 	x := ProcArg(args, 0, NilValue)
 	if v, ok := x.(*VMethVal); ok {

@@ -21,7 +21,8 @@ var ListMethods = MethodTable([]*VProcedure{
 	DefMeth((*VList).Shuffle, "shuffle", "", "return randomized copy"),
 })
 
-//  List(n, x) -- return a new list of n elements initialized to copy(x)
+//  list(size, x) builds and returns a new list of the given size
+//  with each element initialized to a copy of x.
 func List(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("list", args)
 	n := int(ProcArg(args, 0, ZERO).(Numerable).ToNumber().Val())

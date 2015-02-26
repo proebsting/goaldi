@@ -16,7 +16,7 @@ type vnil struct {
 //  For convenience, its type is Value, not vnil.
 var NilValue Value = &vnil{}
 
-//  The constructor just returns the only nil value.
+//  niltype() always returns the sole instance of the nil value.
 func Nil(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("nil", args)
 	return Return(NilValue)

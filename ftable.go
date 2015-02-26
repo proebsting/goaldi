@@ -31,7 +31,7 @@ func init() {
 	StdLib["elemtype"] = ElemType
 }
 
-//  Table() returns a new table
+//  table() creates a new, empty table.
 func Table(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("table", args)
 	return Return(NewTable())

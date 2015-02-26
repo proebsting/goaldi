@@ -52,7 +52,7 @@ func NewProcedure(name string, pnames *[]string, allowvar bool,
 
 //  ProcType is the procedure instance of type type.
 var ProcType = NewType("procedure", "p", rProc, ProcCtor, nil,
-	"proctype", "p", "succeed if procedure")
+	"proctype", "x", "succeed if procedure")
 
 //  VProcedure.String -- default conversion to Go string returns "p:procname"
 func (v *VProcedure) String() string {
@@ -113,8 +113,7 @@ func (v *VProcedure) Call(env *Env, args []Value, names []string) (Value, *Closu
 	}
 }
 
-//  The "constructor" returns its argument if procedure and otherwise fails.
-//  Note that this is tricky to access, but you can say:  type(main)(p).
+//  proctype(x) return x if x is a procdure, and fails otherwise.
 func ProcCtor(env *Env, args ...Value) (Value, *Closure) {
 	x := ProcArg(args, 0, NilValue)
 	if p, ok := x.(*VProcedure); ok {

@@ -26,7 +26,7 @@ var GoChanMethods = MethodTable([]*VProcedure{
 	DefMeth(GoChanClose, "close", "", "close channel"),
 })
 
-//  Channel(i) returns a new channel with buffer size i
+//  channel(size) creates and returns a new channel with the given buffer size.
 func Channel(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("channel", args)
 	i := int(ProcArg(args, 0, ZERO).(Numerable).ToNumber().Val())

@@ -67,9 +67,9 @@ var spByte = []byte(" ")
 var nlByte = []byte("\n")
 var dflt_open = NewString("r")
 
-//  open(name,flags) opens a file and returns a file value.
+//	open(name,flags) opens a file and returns a file value.
 //
-//  Each character of the optional flags argument selects an option:
+//	Each character of the optional flags argument selects an option:
 //		"r"	open for reading
 //		"w"	open for writing
 //		"a"	open for appending

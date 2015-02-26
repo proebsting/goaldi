@@ -15,7 +15,7 @@ import (
 var ExternalType = NewType("external", "X", rExternal, External, nil,
 	"external", "x", "export and re-import")
 
-//  The external constructor exports and re-imports its argument
+//  external(x) exports and then re-imports the value x.
 func External(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("external", args)
 	x := ProcArg(args, 0, NilValue)

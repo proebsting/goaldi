@@ -30,8 +30,8 @@ func init() {
 	GoLib(strings.Trim, "trim", "s,cutset", "remove leading and trailing characters")
 }
 
-//  String(x) -- return argument converted to string (always)
-//  The result is exactly the same value used by write(x) etc.
+//  string(x) returns a string representation of x.
+//  The result is identical to the value used by write(x) or sprintf("%v",x).
 func String(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("string", args)
 	v := ProcArg(args, 0, NilValue)

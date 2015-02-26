@@ -121,7 +121,7 @@ func (t *VType) Char(args ...Value) (Value, *Closure) {
 	return Return(NewString(t.Abbr))
 }
 
-//  Type(v) -- construct (or sometimes just find) an instance of type v
+//  type(x) returns the value of type "type" that represents the type of x.
 func Type(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("type", args)
 	v := ProcArg(args, 0, NilValue)
