@@ -111,12 +111,12 @@ func (t *VType) Call(env *Env, args []Value, names []string) (Value, *Closure) {
 	return t.Ctor.Call(env, args, names)
 }
 
-//  VType.Name returns the type name
+//  t.name() returns the name of type t.
 func (t *VType) Name(args ...Value) (Value, *Closure) {
 	return Return(NewString(t.TypeName))
 }
 
-//  VType.Char returns the abbreviation character.
+//  t.char() returns single character used to abbreviate type t.
 func (t *VType) Char(args ...Value) (Value, *Closure) {
 	return Return(NewString(t.Abbr))
 }
@@ -132,8 +132,7 @@ func Type(env *Env, args ...Value) (Value, *Closure) {
 	}
 }
 
-//  InstanceOf(v, t) -- return v if it is an instance of type t.
-
+//  x.instanceof(t) returns x if it is an instance of type t.
 func InstanceOf(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("instanceof", args)
 	v := ProcArg(args, 0, NilValue)

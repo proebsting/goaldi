@@ -30,38 +30,38 @@ func List(env *Env, args ...Value) (Value, *Closure) {
 	return Return(NewList(n, x))
 }
 
-//------------------------------------  Push:  L.push(x...)
-
+//  L.push(x...) adds its arguments, in order, to the beginning of list L.
+//  The last argument thus ends up as the first element of L.
 func (v *VList) Push(args ...Value) (Value, *Closure) {
 	return v.Grow(true, "L.push", args...)
 }
 
-//------------------------------------  Pop:  L.pop()
-
+//  L.pop() removes the first element from list L
+//  and returns the element's value.
 func (v *VList) Pop(args ...Value) (Value, *Closure) {
 	return v.Snip(true, "L.pop", args...)
 }
 
-//------------------------------------  Get:  L.get()
-
+//  L.get() removes the first element from list L
+//  and returns the element's value.
 func (v *VList) Get(args ...Value) (Value, *Closure) {
 	return v.Snip(true, "L.get", args...)
 }
 
-//------------------------------------  Put:  L.put(x...)
-
+//  L.put(x...) adds its arguments, in order, to the end of list L.
+//  The last argument becomes the final element of L.
 func (v *VList) Put(args ...Value) (Value, *Closure) {
 	return v.Grow(false, "L.put", args...)
 }
 
-//------------------------------------  Pull:  L.pull()
-
+//  L.pull() removes the final element from list L
+//  and returns the element's value.
 func (v *VList) Pull(args ...Value) (Value, *Closure) {
 	return v.Snip(false, "L.pull", args...)
 }
 
-//------------------------------------  Shuffle:  L.shffle()
-
+//  L.shuffle() returns a copy of list L in which the elements
+//  have been randomly reordered.
 func (v *VList) Shuffle(args ...Value) (Value, *Closure) {
 	defer Traceback("shuffle", args)
 	n := len(v.data)
@@ -74,9 +74,12 @@ func (v *VList) Shuffle(args ...Value) (Value, *Closure) {
 	return Return(InitList(d))
 }
 
-//------------------------------------  Sort: L.Sort(i)
-
-//  L.Sort(i) -- sort list L on field i (default i=1)
+//  L.sort(i) returns a copy of list L in which the elements have been sorted.
+//  Values are ordered first by type, then within types by their values.
+//  Among lists and among records of the same type,
+//  ordering is based on field i.
+//  Lists with no element i are sorted ahead of lists that have one.
+//  The value i defaults to 1 and must be strictly positive.
 func (v *VList) Sort(args ...Value) (Value, *Closure) {
 	defer Traceback("sort", args)
 	i := int(ProcArg(args, 0, ONE).(Numerable).ToNumber().Val()) - 1

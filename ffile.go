@@ -139,14 +139,14 @@ func Open(env *Env, args ...Value) (Value, *Closure) {
 	return Return(NewFile(name, reader, writer, f))
 }
 
-//  VFile.FFlush() -- flush output
+//  f.flush() flushes output on file f.
 func (f *VFile) FFlush(args ...Value) (Value, *Closure) {
 	defer Traceback("f.flush", args)
 	f.Flush()
 	return Return(f)
 }
 
-//  VFile.FClose() -- close a Goaldi file
+//  f.close() closes file f.
 func (f *VFile) FClose(args ...Value) (Value, *Closure) {
 	defer Traceback("f.close", args)
 	f.Flush()
@@ -161,7 +161,9 @@ func Read(env *Env, args ...Value) (Value, *Closure) {
 	return ProcArg(args, 0, STDIN).(*VFile).FRead(args)
 }
 
-//  VFile.FRead() -- read next line from file, failing at EOF.
+//  f.read() consumes and returns next line of text from file f.
+//  The trailing linefeed or CRLF is removed from the returned value.
+//  read() fails at EOF when no more data is available.
 func (f *VFile) FRead(args ...Value) (Value, *Closure) {
 	defer Traceback("f.read", args)
 	s := f.ReadLine()
@@ -172,10 +174,10 @@ func (f *VFile) FRead(args ...Value) (Value, *Closure) {
 	}
 }
 
-//  VFile.FReadb(n) -- read next n binary bytes from file
-//  Reads up to n bytes into individual characters without decoding as UTF-8.
-//  Useful for reading binary files.
-//  Fails at EOF when no more data is available.
+//  f.readb(n) reads up to n bytes into individual characters
+//  without attempting any UTF-8 decoding.
+//  This is useful for reading binary files.
+//  f.readb() fails at EOF when no more data is available.
 func (f *VFile) FReadb(args ...Value) (Value, *Closure) {
 	defer Traceback("f.readb", args)
 	if f.Reader == nil {
@@ -193,8 +195,10 @@ func (f *VFile) FReadb(args ...Value) (Value, *Closure) {
 	}
 }
 
-//  VFile.FWriteb(s) -- write string s as bytes
-//  Writes the low 8 bits of each character of s to file f.
+//  f.writeb(s) writes the string s to file f without any UTF-8 encoding.
+//  Instead, the low 8 bits of each character are written as a single byte,
+//  ignoring all other bits.
+//  This is useful for writing binary files.
 func (f *VFile) FWriteb(args ...Value) (Value, *Closure) {
 	defer Traceback("f.writeb", args)
 	if f.Writer == nil {
@@ -211,7 +215,7 @@ func Write(env *Env, args ...Value) (Value, *Closure) {
 	return Wrt(STDOUT, noBytes, nlByte, args)
 }
 
-//  VFile.FWrite(x,...) -- write values and newline to file
+//  f.write(x,...) writes its arguments to file f followed by a newline.
 func (f *VFile) FWrite(args ...Value) (Value, *Closure) {
 	defer Traceback("f.write", args)
 	return Wrt(f, noBytes, nlByte, args)
@@ -223,7 +227,7 @@ func Writes(env *Env, args ...Value) (Value, *Closure) {
 	return Wrt(STDOUT, noBytes, noBytes, args)
 }
 
-//  VFile.FWrites(x,...) -- write values without newline to file
+//  f.writes(x,...) write its arguments to file f with no following newline.
 func (f *VFile) FWrites(args ...Value) (Value, *Closure) {
 	defer Traceback("f.writes", args)
 	return Wrt(f, noBytes, noBytes, args)
@@ -235,7 +239,7 @@ func Print(env *Env, args ...Value) (Value, *Closure) {
 	return Wrt(STDOUT, spByte, noBytes, args)
 }
 
-//  VFile.FPrint(x,...)  -- write values with separating whitespace to file
+//  f.print(x,...) writes its arguments to file f, separated by spaces.
 func (f *VFile) FPrint(args ...Value) (Value, *Closure) {
 	defer Traceback("f.print", args)
 	return Wrt(f, spByte, noBytes, args)
@@ -248,7 +252,8 @@ func Println(env *Env, args ...Value) (Value, *Closure) {
 	return Wrt(STDOUT, spByte, nlByte, args)
 }
 
-//  VFile.FPrintln(x,...) -- write values with whitespace and newline to file
+//  f.println(x,...) writes its arguments to file f,
+//  separated by spaces and terminated by a newline character.
 func (f *VFile) FPrintln(args ...Value) (Value, *Closure) {
 	defer Traceback("f.println", args)
 	return Wrt(f, spByte, nlByte, args)

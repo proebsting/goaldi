@@ -33,7 +33,7 @@ func Channel(env *Env, args ...Value) (Value, *Closure) {
 	return Return(NewChannel(i))
 }
 
-//  VChannel.Get() reads the next value from a channel
+//  c.get() reads the next value from channel c.
 func (c VChannel) Get(args ...Value) (Value, *Closure) {
 	defer Traceback("c.get", args)
 	return c.Take(), nil
@@ -79,7 +79,7 @@ func DispenseChan(c interface{} /*anychan*/) (Value, *Closure) {
 	return f.Resume()
 }
 
-//  VChannel.Put(e...) writes values to a Goaldi channel
+//  c.put(e...) writes its argument values, in order, to channel c.
 func (c VChannel) Put(args ...Value) (Value, *Closure) {
 	defer Traceback("c.put", args)
 	for _, v := range args {
@@ -112,7 +112,7 @@ func Send(x Value, v Value) Value {
 	return v
 }
 
-//  VChannel.Close() closes the channel
+//  c.close() closes the channel c.
 func (c VChannel) Close(args ...Value) (Value, *Closure) {
 	defer Traceback("c.close", args)
 	close(c)
@@ -126,7 +126,8 @@ func GoChanClose(c Value, args ...Value) (Value, *Closure) {
 	return Return(c)
 }
 
-//  VChannel.Buffer(i) interposes a buffer of size i in front of a channel.
+//  c.buffer(size) returns a channel that interposes a buffer of the given size
+//  before the channel c.
 func (c VChannel) Buffer(args ...Value) (Value, *Closure) {
 	defer Traceback("c.buffer", args)
 	i := int(ProcArg(args, 0, ONE).(Numerable).ToNumber().Val())
@@ -146,7 +147,7 @@ func (c VChannel) Buffer(args ...Value) (Value, *Closure) {
 	return Return(r)
 }
 
-//  buffer(size, c) returns a channel that interposes a buffer of given size
+//  buffer(size, c) returns a channel that interposes a buffer of the given size
 //  before the channel c.
 //  This is useful in the Goaldi form buffer(size, create e)
 //  to provide buffering of the results produced by an asynchronous thread.

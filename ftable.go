@@ -37,7 +37,8 @@ func Table(env *Env, args ...Value) (Value, *Closure) {
 	return Return(NewTable())
 }
 
-//  VTable.Member(k) succeeds if k is an existing key
+//  T.member(k) returns k if k is an existing key in table T;
+//  otherwise it fails.
 func (m VTable) Member(args ...Value) (Value, *Closure) {
 	return GoMapMember(m, args...)
 }
@@ -53,7 +54,8 @@ func GoMapMember(m Value, args ...Value) (Value, *Closure) {
 	}
 }
 
-//  VTable.Delete(k) deletes the entry, if any, with key k
+//  T.delete(k) deletes the entry with key k, if any, from the table T.
+//  It returns T.
 func (m VTable) Delete(args ...Value) (Value, *Closure) {
 	return GoMapDelete(m, args...)
 }
@@ -66,7 +68,10 @@ func GoMapDelete(m Value, args ...Value) (Value, *Closure) {
 	return Return(m)
 }
 
-//  VTable.Sort(i) produces [:!T:].sort(i)
+//  T.sort(i) returns a sorted list of elemtype(key,value) records
+//  holding the contents of table T.
+//  Sorting is by key if i=1 and by value if i=2.
+//  T.sort(i) is equivalent to [:!T:].sort(i).
 func (m VTable) Sort(args ...Value) (Value, *Closure) {
 	return GoMapSort(m, args...)
 }
