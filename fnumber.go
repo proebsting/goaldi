@@ -13,12 +13,9 @@ import (
 
 func init() {
 	// Goaldi procedures
-	DefLib(Min, "min", "n[]", "find minimum value")
-	DefLib(Max, "max", "n[]", "find maximum value")
 	DefLib(Seq, "seq", "n,incr", "produce n to infinity")
 	DefLib(Log, "log", "n,b", "compute logarithm to base b")
 	DefLib(Atan, "atan", "y,x", "compute arctangent of y / x")
-	DefLib(GCD, "gcd", "i[]", "find greatest common divisor")
 	DefLib(Randomize, "randomize", "", "irreproducibly seed random generation")
 	DefLib(RandGen, "randgen", "seed", "create independent random sequence")
 	DefLib(RtoD, "rtod", "r", "convert radians to degrees")
@@ -75,32 +72,6 @@ func Seq(env *Env, args ...Value) (Value, *Closure) {
 	return ToBy(n1, INF, n2)
 }
 
-//  min(n, ...) returns the smallest of its arguments.
-func Min(env *Env, args ...Value) (Value, *Closure) {
-	defer Traceback("min", args)
-	v := ProcArg(args, 0, NilValue).(Numerable).ToNumber().Val()
-	for i := 1; i < len(args); i++ {
-		vi := args[i].(Numerable).ToNumber().Val()
-		if vi < v {
-			v = vi
-		}
-	}
-	return Return(NewNumber(v))
-}
-
-//  max(n, ...) returns the largest of its arguments.
-func Max(env *Env, args ...Value) (Value, *Closure) {
-	defer Traceback("max", args)
-	v := ProcArg(args, 0, NilValue).(Numerable).ToNumber().Val()
-	for i := 1; i < len(args); i++ {
-		vi := args[i].(Numerable).ToNumber().Val()
-		if vi > v {
-			v = vi
-		}
-	}
-	return Return(NewNumber(v))
-}
-
 //  log(n, b) returns the logarithm of n to base b.
 //  The default value of b is %e (2.7183...),
 //  so log(n) returns the natural logarithm of n.
@@ -127,28 +98,6 @@ func Atan(env *Env, args ...Value) (Value, *Closure) {
 	} else {
 		return Return(NewNumber(math.Atan2(r1, r2)))
 	}
-}
-
-//  gcd(i,...) truncates its arguments to integer and
-//  returns their greatest common divisor.
-//  Negative values are allowed.
-//  gcd() returns zero if all values are zero.
-func GCD(env *Env, args ...Value) (Value, *Closure) {
-	defer Traceback("gcd", args)
-	a := int(ProcArg(args, 0, NilValue).(Numerable).ToNumber().Val())
-	if a < 0 {
-		a = -a
-	}
-	for i := 1; i < len(args); i++ {
-		b := int(args[i].(Numerable).ToNumber().Val())
-		if b < 0 {
-			b = -b
-		}
-		for b > 0 {
-			a, b = b, a%b
-		}
-	}
-	return Return(NewNumber(float64(a)))
 }
 
 //  randomize() seeds the random number generator

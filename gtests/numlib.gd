@@ -4,6 +4,7 @@
 procedure main() {
 	write("\narithmetic:")
 	every testarith(-%phi | "0" | 1.0 | 2 | %e | %pi)
+	testmeans()
 	write("\ntrigonometry:")
 	every testtrig(-%phi | "0" | 1.0 | 2 | %e | %pi)
 	write("\nhypertrigonometry:")
@@ -47,6 +48,16 @@ procedure testhyper(v) {
 	every apply(sinh | cosh | tanh | asinh | acosh | atanh, v)
 	write()
 	return
+}
+
+procedure testmeans() {
+	local L := [1, 1, 2, 3, 5, 8, 13, 21, 42]
+	write()
+	writes("amean: ", amean ! L, "   ")
+	writes("gmean: ", gmean ! L, "   ")
+	writes("hmean: ", hmean ! L, "   ")
+	writes("qmean: ", qmean ! L)
+	write()
 }
 
 procedure testpot() {

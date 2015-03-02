@@ -7,6 +7,8 @@ arithmetic:
 2.718: abs()2.718 integer()2 ceil()3 floor()2 log()1 sqrt()1.649 cbrt()1.396 exp()15.15
 3.142: abs()3.142 integer()3 ceil()4 floor()3 log()1.145 sqrt()1.772 cbrt()1.465 exp()23.14
 
+amean: 10.67   gmean: 5.194   hmean: 2.722   qmean: 16.59
+
 trigonometry:
 -1.618: sin()-0.9989 cos()-0.04722 tan()21.15 asin()NaN acos()NaN atan()-1.017
 0: sin()0 cos()1 tan()0 asin()0 acos()1.571 atan()0
