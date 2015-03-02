@@ -44,6 +44,12 @@ func init() {
 	GoLib(math.Tan, "tan", "n", "compute tangent")
 	GoLib(math.Asin, "asin", "n", "compute arcsine")
 	GoLib(math.Acos, "acos", "n", "compute arccosine")
+	GoLib(math.Sinh, "sinh", "n", "compute hyperbolic sine")
+	GoLib(math.Cosh, "cosh", "n", "compute hyperbolic cosine")
+	GoLib(math.Tanh, "tanh", "n", "compute hyperbolic tangent")
+	GoLib(math.Asinh, "asinh", "n", "compute hyperbolic arcsine")
+	GoLib(math.Acosh, "acosh", "n", "compute hyperbolic arccosine")
+	GoLib(math.Atanh, "atanh", "n", "compute hyperbolic arccosine")
 }
 
 //  number(x) return is argument converted to number,

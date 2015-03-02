@@ -14,6 +14,14 @@ trigonometry:
 2: sin()0.9093 cos()-0.4161 tan()-2.185 asin()NaN acos()NaN atan()1.107
 2.718: sin()0.4108 cos()-0.9117 tan()-0.4505 asin()NaN acos()NaN atan()1.218
 3.142: sin()1.225e-16 cos()-1 tan()-1.225e-16 asin()NaN acos()NaN atan()1.263
+
+hypertrigonometry:
+-1.618: sinh()-2.422 cosh()2.621 tanh()-0.9243 asinh()-1.259 acosh()NaN atanh()NaN
+0: sinh()0 cosh()1 tanh()0 asinh()0 acosh()NaN atanh()0
+1: sinh()1.175 cosh()1.543 tanh()0.7616 asinh()0.8814 acosh()0 atanh()+Inf
+2: sinh()3.627 cosh()3.762 tanh()0.964 asinh()1.444 acosh()1.317 atanh()NaN
+2.718: sinh()7.544 cosh()7.61 tanh()0.9913 asinh()1.725 acosh()1.657 atanh()NaN
+3.142: sinh()11.55 cosh()11.59 tanh()0.9963 asinh()1.862 acosh()1.812 atanh()NaN
 hypot:  2:3:3.606 2:5:5.385 2:8:8.246 3:3:4.243 3:5:5.831 3:8:8.544 4:3:5 4:5:6.403 4:8:8.944
 dtortod: -45/-0.7854/-45 0/0/0 30/0.5236/30 60/1.047/60 90/1.571/90 114.6/2/114.6 180/3.142/180
 

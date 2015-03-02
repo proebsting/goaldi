@@ -6,6 +6,8 @@ procedure main() {
 	every testarith(-%phi | "0" | 1.0 | 2 | %e | %pi)
 	write("\ntrigonometry:")
 	every testtrig(-%phi | "0" | 1.0 | 2 | %e | %pi)
+	write("\nhypertrigonometry:")
+	every testhyper(-%phi | "0" | 1.0 | 2 | %e | %pi)
 	testpot()
 	testrad()
 	write("\nbased logarithms:")
@@ -36,6 +38,13 @@ procedure testarith(v) {
 procedure testtrig(v) {
 	writes(v, ":")
 	every apply(sin | cos | tan | asin | acos | atan, v)
+	write()
+	return
+}
+
+procedure testhyper(v) {
+	writes(v, ":")
+	every apply(sinh | cosh | tanh | asinh | acosh | atanh, v)
 	write()
 	return
 }
