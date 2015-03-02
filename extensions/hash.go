@@ -25,7 +25,7 @@ func init() {
 	g.GoLib(crc32.NewIEEE, "crc32", "", "create IEEE CRC-32 checksum engine")
 	g.GoLib(fnv.New32, "fnv32", "", "create 32-bit FNV-1 checksum engine")
 	g.GoLib(fnv.New32a, "fnv32a", "", "create 32-bit FNV-1a checksum engine")
-	g.GoLib(hashvalue, "hashvalue", "", "return current value of checksum engine")
+	g.GoLib(hashvalue, "hashvalue", "", "return accumulated checksum value")
 }
 
 //  hashvalue(f) returns the current value of the hash engine f.

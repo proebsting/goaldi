@@ -8,6 +8,11 @@
 #  Parsing assume relatively simple types like those we are actually using.
 #  This probably can't handle double indirection or multiple parenthesis levels.
 
+global exclude := [				# funcname patterns to exclude from list
+	"goaldi/extensions",
+	"hash/",
+	"archive/zip",
+]
 
 global funcs := table()			# function documentation indexed by name
 global hrule := repl("_", 72)	# standard output separator
@@ -90,6 +95,10 @@ procedure gendoc(e) {
 			local fspec := words[-1]
 			local descr := trim(line[1:-*fspec], " ")
 			local func := split(fspec, "/")[-1]
+
+			if contains(fspec, !exclude) == 1 then {
+				continue
+			}
 
 			if \(local x := prx.FindStringSubmatch(func)) then {
 				# change "goaldi.(*VFile).FRead" to "goaldi.VFile.FRead"

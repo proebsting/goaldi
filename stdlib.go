@@ -76,7 +76,11 @@ func ShowLibrary(f io.Writer) {
 func showProc(f io.Writer, c string, p *VProcedure) {
 	l := fmt.Sprintf("%s%s -- %s", c, p.GoString()[10:], p.Descr)
 	r := p.ImplBy()
-	s := strings.Repeat(" ", showLen-len(l)-len(r))
+	n := showLen - len(l) - len(r)
+	if n < 2 {
+		n = 2
+	}
+	s := strings.Repeat(" ", n)
 	fmt.Fprintln(f, l+s+r)
 }
 
