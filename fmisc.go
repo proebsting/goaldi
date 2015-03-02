@@ -3,7 +3,6 @@
 package goaldi
 
 import (
-	"archive/zip"
 	"fmt"
 	"os"
 	"reflect"
@@ -35,8 +34,6 @@ func init() {
 	GoLib(os.Hostname, "hostname", "", "get host machine name")
 	GoLib(os.Getpid, "getpid", "", "get process ID")
 	GoLib(os.Getppid, "getppid", "", "get parent process ID")
-	// Heavy-duty package interfaces
-	GoLib(zip.OpenReader, "zipreader", "name", "open a Zip file")
 }
 
 //  copy(x) returns a copy of x if x is a structure,

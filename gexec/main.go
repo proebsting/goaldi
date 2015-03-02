@@ -5,6 +5,7 @@ package main
 import (
 	"fmt"
 	g "goaldi"
+	_ "goaldi/extensions"
 	"os"
 	"runtime/pprof"
 	"strings"

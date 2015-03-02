@@ -41,6 +41,7 @@ expt:
 format:
 	go fmt *.go
 	go fmt gexec/*.go
+	go fmt extensions/*.go
 
 #  gather together source for single-file editing; requires "bundle" util
 bundle:
