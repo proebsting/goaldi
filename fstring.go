@@ -15,6 +15,8 @@ func init() {
 	DefLib(Char, "char", "n", "return single character for Unicode value")
 	DefLib(Ord, "ord", "s", "return Unicode ordinal of single character")
 	DefLib(Reverse, "reverse", "s", "return mirror image of string")
+	DefLib(Left, "left", "s,i,p", "left-justify with padding p to width i")
+	DefLib(Right, "right", "s,i,p", "right-justify with padding p to width i")
 	// Go library functions
 	GoLib(strings.Contains, "contains", "s,substr", "return 1 if substr is in s")
 	GoLib(strings.ContainsAny, "containsany", "s,chars", "return 1 if any char is in s")
@@ -59,6 +61,48 @@ func Ord(env *Env, args ...Value) (Value, *Closure) {
 		panic(NewExn("string length not 1", args[0]))
 	}
 	return Return(NewNumber(float64(r[0])))
+}
+
+//  left(s,i,p) left-justifies s in a string of width i, padding with p.
+func Left(env *Env, args ...Value) (Value, *Closure) {
+	defer Traceback("left", args)
+	s := ProcArg(args, 0, NilValue).(Stringable).ToString().ToRunes()
+	i := int(ProcArg(args, 1, ONE).(Numerable).ToNumber().Val())
+	p := ProcArg(args, 2, SPACE).(Stringable).ToString().ToRunes()
+	if len(p) == 0 {
+		panic(NewExn("Empty padding string", args[2]))
+	}
+	r := make([]rune, i)
+	copy(r, s)
+	n := i - len(s)
+	for j := 0; j < n; j++ {
+		k := j % len(p)
+		r[i-j-1] = p[len(p)-k-1]
+	}
+	return Return(RuneString(r))
+}
+
+//  right(s,i,p) right-justifies s in a string of width i, padding with p.
+func Right(env *Env, args ...Value) (Value, *Closure) {
+	defer Traceback("right", args)
+	s := ProcArg(args, 0, NilValue).(Stringable).ToString().ToRunes()
+	i := int(ProcArg(args, 1, ONE).(Numerable).ToNumber().Val())
+	p := ProcArg(args, 2, SPACE).(Stringable).ToString().ToRunes()
+	if len(p) == 0 {
+		panic(NewExn("Empty padding string", args[2]))
+	}
+	n := i - len(s)
+	if n > 0 {
+		r := make([]rune, i)
+		copy(r[n:], s)
+		for j := 0; j < n; j++ {
+			k := j % len(p)
+			r[j] = p[k]
+		}
+		return Return(RuneString(r))
+	} else {
+		return Return(RuneString(s[-n:]))
+	}
 }
 
 //  reverse(s) returns the end-for-end reversal of the string s.
