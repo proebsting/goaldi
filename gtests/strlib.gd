@@ -24,17 +24,19 @@ procedure main() {
 		println("char/ord:", i, image(c1), n1, image(c2), n2)
 	}
 
-	local proc
-	local pad
-	local wid
 	local s
-	every proc := left | right do {
+	local pad
+	local proc
+	local w
+	every s := "" | "*" | "xy" | "abc" do {
+		every proc := left | center | right do {
+			every pad := "-" | "123" do {
+				every w := 0 to 7 do {
+					writes(proc(s,w,pad)," ")
+				}
+				writes(" ")
+			}
 		write()
-		write(image(proc), ":")
-		every pad := nil | "=" | "123" do
-			every s := "" | "X" | "Tucson" do
-				every wid := 1 | 5 | 10 do
-					write("p(", image(s), ",", wid, ",", image(pad), ") => ",
-						image(proc(s,wid,pad)))
+		}
 	}
 }
