@@ -24,6 +24,8 @@ import (
 var (
 	EMPTY = NewString("")  // the empty string
 	SPACE = NewString(" ") // a single space character
+	LCASE = NewString("abcdefghijklmnopqrstuvwxyz")
+	UCASE = NewString("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
 )
 
 //  A string is encoded by one (usually) or two parallel slices.

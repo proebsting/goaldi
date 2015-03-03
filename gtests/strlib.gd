@@ -30,13 +30,35 @@ procedure main() {
 	local w
 	every s := "" | "*" | "xy" | "abc" do {
 		every proc := left | center | right do {
+			writes("pad:")
 			every pad := "-" | "123" do {
-				every w := 0 to 7 do {
-					writes(proc(s,w,pad)," ")
-				}
 				writes(" ")
+				every w := 0 to 7 do {
+					writes(" ", proc(s,w,pad))
+				}
 			}
-		write()
+			write()
 		}
 	}
+
+	write("map: ", map("aBcDeF"))
+	write("map: ", map("AbCdEf"))
+	write("map: ", map("aBcDeF", "abcdefghijklmnopqrstuvwxyz"))
+	write("map: ", map("AbCdEf", "abcdefghijklmnopqrstuvwxyz"))
+	write("map: ", map("aBcDeF", , "12345678901234567890123456"))
+	write("map: ", map("AbCdEf", , "12345678901234567890123456"))
+	write("map: ", map("aBcDeF", "abcdef", "!@#$%^"))
+	write("map: ", map("AbCdEf", "abcdef", "!@#$%^"))
+	write("map: ", map("", "abcdef", "!@#$%^"))
+	write("map: ", map("abcdef", "aa", "bc"))
+	write("map: ", map("Capitals Make A Title Or Slogan More Important"))
+	write("map: ", map("but not too many!!!!", "abmnotuy", "ABMNOTUY"))
+	write("map: ", map("If you can read this you can get a good job", "aeiou", ""))
+	write("map: ", map("♠♥♦♣"))
+	write("map: ", map("SDHC♠♥♦♣","♠♥♦♣","SHDC"))
+	write("map: ", map("SDHC♠♥♦♣", "SHDC", "♠♥♦♣"))
+	write("map: ", map("123456", "654321", "abcdef"))
+	write("map: ", map("124578", "12345678", "03:56:42"))
+	write("map: ", map("Hh:Mm:Ss", "HhMmSs", "035642"))
+	write("map: ", map("123321", "123", "abc"))
 }
