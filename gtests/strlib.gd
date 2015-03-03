@@ -23,4 +23,18 @@ procedure main() {
 		n2 := ord(c2)
 		println("char/ord:", i, image(c1), n1, image(c2), n2)
 	}
+
+	local proc
+	local pad
+	local wid
+	local s
+	every proc := left | right do {
+		write()
+		write(image(proc), ":")
+		every pad := nil | "=" | "123" do
+			every s := "" | "X" | "Tucson" do
+				every wid := 1 | 5 | 10 do
+					write("p(", image(s), ",", wid, ",", image(pad), ") => ",
+						image(proc(s,wid,pad)))
+	}
 }
