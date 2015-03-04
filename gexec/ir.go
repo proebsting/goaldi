@@ -105,6 +105,7 @@ type ir_NoOp struct {
 
 type ir_Catch struct {
 	Coord string
+	Lhs   string
 	Fn    string
 }
 

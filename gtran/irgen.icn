@@ -902,7 +902,7 @@ procedure ir_a_Catch(p, st, target, bounded, rval)
 
     suspend ir_chunk(p.expr.ir.failure, [ ir_Goto(ir_coord(p.coord), p.ir.failure) ])
     suspend ir_chunk(p.expr.ir.success, [ 
-	ir_Catch(ir_coord(p.coord), t),
+	ir_Catch(ir_coord(p.coord), target, t),
     	ir_Goto(ir_coord(p.coord), p.ir.success)
 	])
 end
