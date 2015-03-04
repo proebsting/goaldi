@@ -80,7 +80,11 @@ func execute(f *pr_frame, label string) (rv g.Value, rc *g.Closure) {
 					}
 				case ir_Catch:
 					f.offv = g.Deref(f.temps[i.Fn])
-					f.onerr = f.offv.(*g.VProcedure)
+					if f.offv == g.NilValue {
+						f.onerr = nil // clear if nil
+					} else {
+						f.onerr = f.offv.(*g.VProcedure) // else must be proc
+					}
 					if i.Lhs != "" {
 						f.temps[i.Lhs] = f.onerr
 					}

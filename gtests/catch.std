@@ -26,3 +26,7 @@ expect type conversion error:
 expect 17:
    catch procedure suspender(e)
    got 17
+
+dp1. Exception("ToBy: bad increment",0)
+dp3. nil
+main caught Exception("ToBy: bad increment",0); exiting
