@@ -23,6 +23,10 @@ func execute(f *pr_frame, label string) (rv g.Value, rc *g.Closure) {
 			if f.onerr != nil {
 				// find true panic value hiding under traceback info
 				arglist := []g.Value{g.Cause(p)}
+				if opt_trace {
+					fmt.Printf("[%d] panic: %v\n", f.env.ThreadID, arglist[0])
+					fmt.Printf("[%d] calling %v\n", f.env.ThreadID, f.onerr)
+				}
 				// call recovery procedure and return its result
 				rv, _ = f.onerr.Call(f.env, arglist, []string{})
 				rc = nil
@@ -270,6 +274,9 @@ func getArgs(f *pr_frame, nd int, arglist []interface{}) []g.Value {
 			a = f.temps[t]
 		default:
 			// nothing to do: use entry as is
+		}
+		if a == nil {
+			panic("Go nil in getArgs()")
 		}
 		if i < nd {
 			argl[i] = a.(g.Value)
