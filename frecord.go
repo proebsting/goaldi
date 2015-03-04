@@ -15,9 +15,12 @@ func init() {
 	StdLib["tuple"].(*VProcedure).RawCall = true // add magic bit
 }
 
-//  Tuple(id:v, ...) creates an anonymous record dynamically
-//  Note the special argument list here (and special registration above).
+//  tuple(id:e, ...) creates an anonymous record value.
+//  Each argument must be named.
+//  Each distinct identifier list defines a new type,
+//  all of which have the name "tuple".
 func Tuple(env *Env, args []Value, names []string) (Value, *Closure) {
+	//  Note the special RawCall argument list (and special registration above).
 	defer Traceback("tuple", args)
 	if len(names) < len(args) {
 		panic(NewExn("unnamed tuple arguments not allowed"))
