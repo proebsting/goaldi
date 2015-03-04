@@ -40,6 +40,7 @@ func execute(f *pr_frame, label string) (rv g.Value, rc *g.Closure) {
 	self = &g.Closure{func() (g.Value, *g.Closure) {
 
 		// interpret the IR code
+	NextChunk:
 		for {
 			if opt_trace {
 				fmt.Printf("[%d] %s:\n", f.env.ThreadID, label)
@@ -48,7 +49,8 @@ func execute(f *pr_frame, label string) (rv g.Value, rc *g.Closure) {
 			if len(ilist) == 0 {
 				panic(g.Malfunction("No instructions for IR label: " + label))
 			}
-		Chunk:
+			inchunk := label
+			label = "UNSET"              // should never see this
 			for _, insn := range ilist { // execute insns in chunk
 				if opt_trace {
 					t := fmt.Sprintf("%T", insn)[8:]
@@ -87,13 +89,14 @@ func execute(f *pr_frame, label string) (rv g.Value, rc *g.Closure) {
 					go coexecute(fnew, i.CoexpLabel)
 				case ir_Select:
 					label = irSelect(f, i)
-					break Chunk
+					continue NextChunk
 				case ir_CoRet:
 					f.coord = i.Coord
 					if g.CoSend(f.cxout, f.temps[i.Value]) == nil {
 						return nil, nil // kill self: channel was closed
 					}
 					label = i.ResumeLabel
+					continue NextChunk
 				case ir_CoFail:
 					close(f.cxout)
 					return nil, nil // i.e. die
@@ -170,13 +173,13 @@ func execute(f *pr_frame, label string) (rv g.Value, rc *g.Closure) {
 					f.temps[i.Lhs] = i.Label
 				case ir_Goto:
 					label = i.TargetLabel
-					break Chunk
+					continue NextChunk
 				case ir_IndirectGoto:
 					label = i.TargetTmpLabel
 					label = f.temps[label].(string)
 					for _, s := range i.LabelList {
 						if s == label {
-							break Chunk
+							continue NextChunk
 						}
 					}
 					panic(g.Malfunction(
@@ -198,7 +201,7 @@ func execute(f *pr_frame, label string) (rv g.Value, rc *g.Closure) {
 						}
 					} else if i.FailLabel != "" {
 						label = i.FailLabel
-						break Chunk
+						continue NextChunk
 					}
 				case ir_Field:
 					f.coord = i.Coord
@@ -225,7 +228,7 @@ func execute(f *pr_frame, label string) (rv g.Value, rc *g.Closure) {
 						}
 					} else if i.FailLabel != "" {
 						label = i.FailLabel
-						break Chunk
+						continue NextChunk
 					}
 				case ir_ResumeValue:
 					f.coord = i.Coord
@@ -243,10 +246,11 @@ func execute(f *pr_frame, label string) (rv g.Value, rc *g.Closure) {
 						}
 					} else if i.FailLabel != "" {
 						label = i.FailLabel
-						break Chunk
+						continue NextChunk
 					}
 				}
 			}
+			panic(g.Malfunction("Fell off end of ir_Chunk: " + inchunk))
 		}
 		return nil, nil
 	}}
