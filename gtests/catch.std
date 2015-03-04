@@ -1,20 +1,28 @@
 expect failure:
+   catch procedure noresult(e)
    got [FAILED]
 expect nil:
+   catch procedure nilresult(e)
    got ~
 expect panic value:
+   catch procedure errresult(e)
    got Exception("ToBy: bad increment",0)
 expect raspberry:
+   catch procedure myrasp(e)
    got pbpbpbpbpttttt
 expect catch message:
+   catch procedure mycatch(e)
    got caught: Exception("ToBy: bad increment",0)
 expect rethrow:
+   catch procedure rethrow(e)
    caught panic; now reissuing
    UNCAUGHT PANIC: Exception("ToBy: bad increment",0)
 expect custom panic:
+   catch procedure altpanic(e)
    caught panic; throwing another
    UNCAUGHT PANIC: Exception("CUSTOM PANIC")
 expect type conversion error:
    got interface conversion: interface is *goaldi.VNumber, not *goaldi.VProcedure
 expect 17:
+   catch procedure suspender(e)
    got 17

@@ -30,7 +30,7 @@ procedure tryfailed(e) {
 #	register rproc, force error
 procedure boom(rproc) {
 	catch errresult	# superseded unless rproc is invalid
-	catch rproc
+	write("   catch ", image(catch rproc))
 	2 to 1 by 0
 }
 
