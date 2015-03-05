@@ -3,9 +3,12 @@
 package goaldi
 
 import (
+	"errors"
 	"fmt"
 	"math"
+	"regexp"
 	"strconv"
+	"strings"
 )
 
 type VNumber float64
@@ -20,29 +23,46 @@ func NewNumber(n float64) *VNumber {
 var NumberType = NewType("number", "n", rNumber, Number, nil,
 	"number", "x", "convert to number")
 
-//  ParseNumber -- standard string-to-number conversion for Goaldi
-//  Currently allows only Go standard format, plus leading and trailing spaces.
+//  ParseNumber -- standard string-to-number conversion for Goaldi.
+//  Trims leading spaces and tabs, then allows either stadard Go
+//  "ParseFloat" form or any Goaldi radix form (nnb, nno, nnx, nnrxxxx).
 func ParseNumber(s string) (float64, error) {
-	var f float64
-	var b byte
-	n, _ := fmt.Sscanf(s, "%f %c", &f, &b)
-	if n == 1 {
+	// trim leading and trailing strings; must have something left
+	s = strings.Trim(s, " \t")
+	if len(s) == 0 {
+		return 0, mtyerr
+	}
+	// try first to interpret as a decimal number (fixed or floating)
+	f, err := strconv.ParseFloat(s, 64)
+	if err == nil {
 		return f, nil
-	} else {
-		return math.NaN(), NewExn("Not a number", s)
 	}
-
+	// check next for old Icon nnRxxx form
+	parts := nnrxx.FindStringSubmatch(s)
+	if parts != nil {
+		radix, _ := strconv.Atoi(parts[1])
+		value, err := strconv.ParseInt(parts[2], radix, 64)
+		return float64(value), err
+	}
+	// the only other possibility is radix suffix form:  nnnb, nnno, nnnx
+	radix := 0
+	switch s[len(s)-1] {
+	case 'b':
+		radix = 2
+	case 'o':
+		radix = 8
+	case 'x':
+		radix = 16
+	default:
+		return 0, numerr
+	}
+	value, err := strconv.ParseInt(s[0:len(s)-1], radix, 64)
+	return float64(value), err
 }
 
-//  MustParseNum -- make a float from a string, or throw an Exception
-func MustParseNum(s string) float64 {
-	f, e := ParseNumber(s)
-	if e != nil {
-		panic(e)
-	} else {
-		return f
-	}
-}
+var nnrxx = regexp.MustCompile("^([0-9]+)[rR]([0-9a-zA-Z]+)$")
+var mtyerr = errors.New("empty string for numeric conversion")
+var numerr = errors.New("malformed number")
 
 // predefined constants
 var (

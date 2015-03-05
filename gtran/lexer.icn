@@ -44,13 +44,17 @@ end
 
 
 procedure lex_yylex0(getline)
-    local sym, str, op, ptok
+    local sym, str, op, ptok, t
     static let_und, let_und_dig, let_dig
+    static bin_dig, oct_dig, hex_dig
 
     initial {
         let_und := &letters ++ '_'
         let_und_dig := &letters ++ '_' ++ &digits
         let_dig := &letters ++ &digits
+        bin_dig := '01'
+        oct_dig := '01234567'
+        hex_dig := '0123456789ABCDEFabcdef'
     }
 
     repeat {
@@ -100,10 +104,32 @@ procedure lex_yylex0(getline)
         # check if int lit  (digit or radix)
         # check if digit
         if str := tab(many(&digits)) then {
-            sym := lex_INTLIT
+            sym := lex_INTLIT        # assume this is an integer literal
+
+            # check if nnRxxxx form radix literal
             if str ||:= =("r"|"R") then { # radix
-                str ||:= tab(many(let_dig)) |
+                str ||:= tab(many(let_dig))
+                if not integer(str) then   # validates digits vs base
                     lex_error("invalid integer literal")
+                ptok := sym
+                ptok.str := str
+                suspend ptok
+                next
+            }
+
+            # check if nxxxxxx{b|o|x} suffixed radix literal
+            # (n.b. must do this before checking for "e" meaning "exponent")
+            if t := tab(many(let_dig)) & any('box',t[-1]) then {
+                str ||:= t
+                case t[-1] of {
+                    "b" : t := "2r" || str[1:-1]
+                    "o" : t := "8r" || str[1:-1]
+                    "x" : t := "16r" || str[1:-1]
+                }
+                # convert to a form integer() understands later
+                if not (str := string(integer(t))) then {
+                    lex_error("invalid integer literal")
+                }
                 ptok := sym
                 ptok.str := str
                 suspend ptok
