@@ -49,9 +49,12 @@ func init() {
 	GoLib(math.Atanh, "atanh", "n", "compute hyperbolic arccosine")
 }
 
-//  number(x) return is argument converted to number,
-//  or fails if this is not possible.
-//  BUG: radix forms are not recognized.
+//  number(x) returns its argument converted to number,
+//  or fails if it cannot be converted due to its form or dataype.
+//  For string (or stringable) arguments,
+//  number() trims leading and trailing spaces
+//  and then accepts standard Go decimal forms (fixed and floating)
+//  or Goaldi radix forms (101010b, 52o, 2Ax, 23r1J).
 func Number(env *Env, args ...Value) (Value, *Closure) {
 	// nonstandard entry; on panic, returns default nil values to fail
 	defer func() { recover() }()
