@@ -19,13 +19,14 @@ j. "line "
 39: "Latin1: naïve Häagen-Dazs Frusen Glädjé"
 39: "Latin1: naïve Häagen-Dazs Frusen Glädjé"
 39: "Latin1: naïve Häagen-Dazs Frusen Glädjé"
+24: "Unicode: ✔§⌘±∮π€♻★☯♖☂☮♫¶"
 46: "Unicode:  ♠ A K Q  ♥ A K Q  ♦ A K Q J  ♣ K J 9"
 46: "Unicode:  ♠ A K Q  ♥ A K Q  ♦ A K Q J  ♣ K J 9"
 46: "Unicode:  ♠ A K Q  ♥ A K Q  ♦ A K Q J  ♣ K J 9"
 19: "another normal line"
 17: "unterminated line"
 
-441: "first line normal\nraw\r    CR embedded in this line\nline ending in CRLF\r\nanother normal line\n12 34 56 78 90\nLatin1: naÃ¯ve HÃ¤agen-Dazs Frusen GlÃ¤djÃ©\nLatin1: naÃ¯ve HÃ¤agen-Dazs Frusen GlÃ¤djÃ©\nLatin1: naÃ¯ve HÃ¤agen-Dazs Frusen GlÃ¤djÃ©\nUnicode:  â\u0099\u00a0 A K Q  â\u0099¥ A K Q  â\u0099¦ A K Q J  â\u0099£ K J 9\nUnicode:  â\u0099\u00a0 A K Q  â\u0099¥ A K Q  â\u0099¦ A K Q J  â\u0099£ K J 9\nUnicode:  â\u0099\u00a0 A K Q  â\u0099¥ A K Q  â\u0099¦ A K Q J  â\u0099£ K J 9\nanother normal line\nunterminated line"
+492: "first line normal\nraw\r    CR embedded in this line\nline ending in CRLF\r\nanother normal line\n12 34 56 78 90\nLatin1: naÃ¯ve HÃ¤agen-Dazs Frusen GlÃ¤djÃ©\nLatin1: naÃ¯ve HÃ¤agen-Dazs Frusen GlÃ¤djÃ©\nLatin1: naÃ¯ve HÃ¤agen-Dazs Frusen GlÃ¤djÃ©\nUnicode: â\u009c\u0094Â§â\u008c\u0098Â±â\u0088®Ï\u0080â\u0082¬â\u0099»â\u0098\u0085â\u0098¯â\u0099\u0096â\u0098\u0082â\u0098®â\u0099«Â¶\nUnicode:  â\u0099\u00a0 A K Q  â\u0099¥ A K Q  â\u0099¦ A K Q J  â\u0099£ K J 9\nUnicode:  â\u0099\u00a0 A K Q  â\u0099¥ A K Q  â\u0099¦ A K Q J  â\u0099£ K J 9\nUnicode:  â\u0099\u00a0 A K Q  â\u0099¥ A K Q  â\u0099¦ A K Q J  â\u0099£ K J 9\nanother normal line\nunterminated line"
 [open failed as expected]
 
 skip: abcde
