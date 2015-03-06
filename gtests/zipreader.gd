@@ -18,15 +18,14 @@ procedure main(fname) {
 }
 
 procedure showfile(zf) {
-	# local f, h
-	local f
-	local h
 	write(repl("-", 60))
-	h := zf.FileHeader
+	local h := zf.FileHeader
 	write(h.Name, ":  ", h.UncompressedSize64, " bytes")
-	f := zf.Open()	# u.c. "Open": Go method on zip file reader object
-	contents(f)		# show contents
-	f.close()		# l.c. "close": Goaldi method on Goaldi file value
+	local retv := zf.Open()		# u.c. "Open": Go method on zip file
+	throw(\retv[2]) 			# handle error from Open
+	local f := retv[1]			# extract file result
+	contents(f)					# show contents
+	f.close()					# l.c. "close": Goaldi method on Goaldi file
 }
 
 procedure contents(f) {

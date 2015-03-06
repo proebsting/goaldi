@@ -14,6 +14,10 @@ procedure main() {
 	c := "([bcdfghj-np-tv-z]*)"
 	p := "p" ||  v || c || "ch"
 	rex(p, "punch", "patch", "peach", "pitch", "porch", "pooch", "prunch", )
+
+	every ^rx := `\d` | `a\d` | `ab` | `\.\d+` do
+		write("regex(", image(rx), ").LiteralPrefix => ",
+			image(regex(rx).LiteralPrefix()))
 }
 
 procedure rex(expr, s[]) {

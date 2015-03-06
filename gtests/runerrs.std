@@ -40,6 +40,8 @@
 84. Exception("Not open for writing",file(/dev/null,r))
 85. Exception("Not open for reading",file(/dev/null,w))
 86. Exception("Not open for reading",file(/dev/null,))
+87. remove /no/such/file: no such file or directory
+88. error parsing regexp: missing closing ): `(`
 95. Exception("my double error",12,34)
 96. Exception("my own error")
 97. Exception("my nil error",nil)

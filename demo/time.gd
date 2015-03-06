@@ -13,14 +13,15 @@ procedure main() {
 	write("time:  ", time())
 	local t := now()
 	write("now:   ", t)
-	write("fmt:   ", t.Format("Mon 2006-01-02 03:04:05 pm"))
+	write("fmt:   ", t.Format("Mon 2006-01-02 03:04:05 pm MST"))
 	write("or:    ", t.Format("Monday, January 2, 2006 at 03:04:05 pm"))
+	write("or:    ", image(t.Date()), " ", image(t.Clock()))
 
 	local dt := 100000
 	local du := duration(dt)
 	write(dt, " seconds from now, it will be:")
 	t := t.Add(du)
-	write(t.Format("Monday, January 2, 2006 at 03:04:05 pm"))
+	write(t.Format("Monday, January 2, 2006 at 03:04:05 pm MST"))
 
 	write()
 	local tmid := 0.03

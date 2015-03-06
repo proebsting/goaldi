@@ -150,9 +150,9 @@ const (
 	RNILF = 2 // turn a sole nil return value into failure
 )
 
-//  GoShim(name, func, ret) makes a shim for converting args to a Go function.
-//  ret indicates the special handling, if any, of function returns.
-func GoShim(name string, f interface{} /*func*/, ret int) Procedure {
+//  GoShim(name, func, retf) makes a shim for converting args to a Go function.
+//  retf indicates the special handling, if any, of function returns.
+func GoShim(name string, f interface{} /*func*/, retf int) Procedure {
 
 	//  get information about the Go function
 	ftype := reflect.TypeOf(f)
@@ -166,6 +166,15 @@ func GoShim(name string, f interface{} /*func*/, ret int) Procedure {
 		nfixed--
 	}
 	nrtn := ftype.NumOut()
+	// clear inapplicable retf flags
+	if nrtn == 0 {
+		retf = 0 // no flags apply if there is no return
+	} else {
+		tn := ftype.Out(nrtn - 1)
+		if tn.Name() != "error" || tn.PkgPath() != "" {
+			retf = retf & ^ETOSS // last return is not of type "error"
+		}
+	}
 
 	//  make an array of conversion functions, one per parameter
 	passer := make([]func(Value) reflect.Value, nargs)
@@ -210,31 +219,34 @@ func GoShim(name string, f interface{} /*func*/, ret int) Procedure {
 		if nrtn == 0 {
 			return Return(NilValue) // no return value: return nil
 		}
-		// if ETOSS is set, check the final (or only) return value
-		if (ret & ETOSS) != 0 {
-			if e, ok := out[nrtn-1].Interface().(error); ok {
-				// final return value is error type
-				if e != nil {
-					panic(e) // throw error value as an exception
-				} else if nrtn > 1 {
-					nrtn-- // remove error return, keep the rest
-				} else {
-					return Return(NilValue) // nothing left, return nil
-				}
+		nrtn := nrtn // need private copy; may change later
+		// if ETOSS is (still) set, check the final (or only) return value
+		if (retf & ETOSS) != 0 {
+			e := out[nrtn-1].Interface()
+			if e != nil {
+				panic(e) // throw error value as an exception
+			} else if nrtn > 1 {
+				nrtn-- // remove error return, keep the rest
+			} else {
+				return Return(NilValue) // nothing left, return nil
 			}
 		}
 		// if there is (now) just one return value, return a simple value;
 		// if RNILF is set, turn nil into failure
 		if nrtn == 1 {
 			r := Import(out[0].Interface()) // import the first return value
-			if r == NilValue && (ret&RNILF) != 0 {
+			if r == NilValue && (retf&RNILF) != 0 {
 				return Fail()
 			} else {
 				return Return(r)
 			}
 		}
-		// for multiple return values, make a list //#%#% NEED TO DO THIS
-		return Return(Import(out[0].Interface())) // return first value
+		// for multiple return values, make a list
+		rlist := make([]Value, nrtn)
+		for i := 0; i < nrtn; i++ {
+			rlist[i] = Import(out[i].Interface())
+		}
+		return Return(InitList(rlist))
 	}
 }
 

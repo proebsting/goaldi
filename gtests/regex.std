@@ -14,3 +14,7 @@ p([aeiou]*)([bcdfghj-np-tv-z]*)ch : "pitch" : "pitch" "i" "t"
 p([aeiou]*)([bcdfghj-np-tv-z]*)ch : "porch" : "porch" "o" "r" 
 p([aeiou]*)([bcdfghj-np-tv-z]*)ch : "pooch" : "pooch" "oo" "" 
 p([aeiou]*)([bcdfghj-np-tv-z]*)ch : "prunch" : [no match]
+regex("\\d").LiteralPrefix => [,0]
+regex("a\\d").LiteralPrefix => [a,0]
+regex("ab").LiteralPrefix => [ab,1]
+regex("\\.\\d+").LiteralPrefix => [.,0]
