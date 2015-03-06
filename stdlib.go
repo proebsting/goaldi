@@ -22,10 +22,13 @@ func DefLib(entry Procedure, name string, pspec string, descr string) *VProcedur
 	return p
 }
 
-//  GoLib registers a Go function as a standard library procedure
+//  GoLib registers a Go function as a standard library procedure.
+//  The ETOSS option is used to make regex, printf, remove, etc. throw
+//  an exceptions when an error occurs.
 func GoLib(entry interface{}, name string, pspec string, descr string) *VProcedure {
 	pnames, isvar := ParmsFromSpec(pspec)
-	p := NewProcedure(name, pnames, isvar, GoShim(name, entry), entry, descr)
+	p := NewProcedure(name, pnames, isvar,
+		GoShim(name, entry, ETOSS), entry, descr)
 	StdLib[name] = p
 	return p
 }

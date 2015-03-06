@@ -70,6 +70,8 @@ procedure provoke(i) {
 		84: open("/dev/null").write()
 		85: !open("/dev/null", "w")
 		86: open("/dev/null").close().read()
+		87: remove("/no/such/file")
+		88: regex("(")
 
 		95: throw("my double error", 12, 34)
 		96: throw("my own error")

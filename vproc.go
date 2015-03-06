@@ -129,20 +129,30 @@ var KnownMethods = make(map[uintptr]*VProcedure)
 //  ImportMethod(val, name, meth) -- construct a Goaldi method from a Go method.
 //  meth is a method struct such as returned by reflect.Type.MethodByName(),
 //  not a bound method value such as returned by reflect.Value.MethodByName().
+//  No GoShim flags are set, so errors and nil results get no special treatment.
 func ImportMethod(val Value, name string, meth reflect.Method) Value {
 	addr := meth.Func.Pointer()
 	p := KnownMethods[addr]
 	if p == nil {
 		gofunc := meth.Func.Interface()
-		proc := GoShim(name, gofunc)
+		proc := GoShim(name, gofunc, RNORM)
 		p = NewProcedure(name, nil, true, proc, gofunc, "")
 		KnownMethods[addr] = p
 	}
 	return MethodVal(p, Deref(val))
 }
 
-//  GoShim(name, func) -- make a shim for converting args to a Go function
-func GoShim(name string, f interface{} /*func*/) Procedure {
+//  Flags for how GoShim should handle special return situations.
+//  ETOSS and RNILF may both be set in which case ETOSS is applied first.
+const (
+	RNORM = 0 // normal return
+	ETOSS = 1 // strip final error return and throw exception if not nil
+	RNILF = 2 // turn a sole nil return value into failure
+)
+
+//  GoShim(name, func, ret) makes a shim for converting args to a Go function.
+//  ret indicates the special handling, if any, of function returns.
+func GoShim(name string, f interface{} /*func*/, ret int) Procedure {
 
 	//  get information about the Go function
 	ftype := reflect.TypeOf(f)
@@ -196,16 +206,35 @@ func GoShim(name string, f interface{} /*func*/) Procedure {
 		}
 		//  call the Go function
 		out := fval.Call(in)
+		//  process the return values
 		if nrtn == 0 {
-			return Return(NilValue) // no return value: return %nil
+			return Return(NilValue) // no return value: return nil
 		}
-		r := Import(out[0].Interface()) // import the first return value
-		if r == NilValue && nrtn == 2 { // if result is nil and there's one more
-			if e, ok := out[1].Interface().(error); ok && e != nil { // if error
-				return Fail() // then fail
+		// if ETOSS is set, check the final (or only) return value
+		if (ret & ETOSS) != 0 {
+			if e, ok := out[nrtn-1].Interface().(error); ok {
+				// final return value is error type
+				if e != nil {
+					panic(e) // throw error value as an exception
+				} else if nrtn > 1 {
+					nrtn-- // remove error return, keep the rest
+				} else {
+					return Return(NilValue) // nothing left, return nil
+				}
 			}
 		}
-		return Return(r) // return first value
+		// if there is (now) just one return value, return a simple value;
+		// if RNILF is set, turn nil into failure
+		if nrtn == 1 {
+			r := Import(out[0].Interface()) // import the first return value
+			if r == NilValue && (ret&RNILF) != 0 {
+				return Fail()
+			} else {
+				return Return(r)
+			}
+		}
+		// for multiple return values, make a list //#%#% NEED TO DO THIS
+		return Return(Import(out[0].Interface())) // return first value
 	}
 }
 
