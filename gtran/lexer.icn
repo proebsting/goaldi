@@ -35,7 +35,7 @@ procedure yylex(getline)
             last_token := t
         }
         ptok := lex_EOFX
-        ptok.str := &null
+        ptok.str := "end-of-file"	# used in diagnostics
         ptok.coord := lex_coordinate(lex_filename, lex_lineno, lex_coord_pos)
         last_pos := &pos
         suspend ptok
