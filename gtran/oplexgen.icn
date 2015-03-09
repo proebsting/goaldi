@@ -135,17 +135,7 @@ procedure init_lex_tables()
                [":=:",             "SWAP",      ""  ],
                ["~",               "TILDE",     "b" ],
                ["++",              "UNION",     "b" ],
-               ["++:=",            "AUGUNION", ""  ],
-               ["$(",              "LBRACE",    "b" ],
-               ["$)",              "RBRACE",    "e" ],
-               ["$<",              "LBRACK",    "b" ],
-               ["$>",              "RBRACK",    "e" ],
-               ["$",               "RHSARG",    "b" ],
-               ["%$(",             "BEGGLOB",   "b" ],
-               ["%$)",             "ENDGLOB",   "e" ],
-               ["%{",              "BEGGLOB",   "b" ],
-               ["%}",              "ENDGLOB",   "e" ],
-               ["%%",              "NEWSECT",   "be"]]
+               ["++:=",            "AUGUNION", ""  ]]
 end
 
 procedure main(L)
