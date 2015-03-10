@@ -30,6 +30,8 @@ procedure main() {
 	trynum(   1123, 1.123e+3, "1.123e+3")
 	trynum(  .0123,  .123e-1, ".123e-1")
 	trynum(   1230,  .123e+4, ".123e+4")
+	trynum(123.456,  123.456, "123.456")
+	trynum(    789,     789., "789.")
 }
 
 procedure trynum(want, n, s) {
