@@ -5,6 +5,7 @@ package goaldi
 import (
 	"fmt"
 	"regexp"
+	"strconv"
 	"strings"
 	"unicode"
 )
@@ -18,6 +19,7 @@ func init() {
 	DefLib(Left, "left", "s,w,p", "left-justify with padding p to width w")
 	DefLib(Center, "center", "s,w,p", "center with padding p to width w")
 	DefLib(Right, "right", "s,w,p", "right-justify with padding p to width w")
+	DefLib(Unquote, "unquote", "s", "remove delimters and escapes from s")
 	// Go library functions
 	GoLib(strings.Contains, "contains", "s,substr", "return 1 if substr is in s")
 	GoLib(strings.ContainsAny, "containsany", "s,chars", "return 1 if any char is in s")
@@ -25,6 +27,7 @@ func init() {
 	GoLib(strings.Fields, "fields", "s", "return fields of s delimited by whitespace")
 	GoLib(regexp.Compile, "regex", "expr", "compile Go regular expression")
 	GoLib(regexp.CompilePOSIX, "regexp", "expr", "compile POSIX regular expression")
+	GoLib(strconv.Quote, "quote", "s", "add quotation marks and escapes to s")
 	GoLib(strings.Replace, "replace", "s,old,new", "return s with new replacing old")
 	GoLib(strings.Repeat, "repl", "s,count", "concatenate copies of s")
 	GoLib(strings.Split, "split", "s,sep", "return fields delimited by sep")
@@ -145,4 +148,19 @@ func Reverse(env *Env, args ...Value) (Value, *Closure) {
 		r[i], r[n-1-i] = r[n-1-i], r[i]
 	}
 	return Return(RuneString(r))
+}
+
+//  unquote(s) removes delmiters and escapes from a quoted string.
+//  The argument s must begin and end with explicit "double quotes" or
+//  `backticks`.  unquote() fails if s is not properly quoted or if it
+//  contains an invalid (by Go rules) escape sequence.
+func Unquote(env *Env, args ...Value) (Value, *Closure) {
+	defer Traceback("unquote", args)
+	s := ProcArg(args, 0, NilValue).(Stringable).ToString().ToUTF8()
+	s, err := strconv.Unquote(s)
+	if err != nil {
+		return Fail()
+	} else {
+		return Return(NewString(s))
+	}
 }

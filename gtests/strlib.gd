@@ -16,6 +16,8 @@ procedure main() {
 	every write("toupper: ", toupper("AbCdE"))
 	writes("fields: "); every writes(" ", image(!fields(el)) | "\n")
 	writes("split:  "); every writes(" ", image(!split(el, ", ")) | "\n")
+
+	write()
 	every i := 0 | 1 | 33 | 100 | 200 | 300 | 1000 | 10000 | 100000 do {
 		c1 := char(i)
 		n1 := ord(c1)
@@ -28,6 +30,7 @@ procedure main() {
 	local pad
 	local proc
 	local w
+	write()
 	every s := "" | "*" | "xy" | "abc" do {
 		every proc := left | center | right do {
 			writes("pad:")
@@ -41,6 +44,21 @@ procedure main() {
 		}
 	}
 
+	write()
+	tryquote(`"abc"`)
+	tryquote("`abc`")
+	tryquote(`"abc\tdef"`)
+	tryquote("`abc\tdef`")
+	tryquote("`t0±Δt`")
+	tryquote(`"t0±Δt"`)
+	tryquote("abc")
+	tryquote(`"ab`)
+	tryquote("`ab")
+	tryquote(`"ab\fyz"`)
+	tryquote(`"ab\kyz"`)
+	tryquote(`"ab\"`)
+
+	write()
 	write("map: ", map("aBcDeF"))
 	write("map: ", map("AbCdEf"))
 	write("map: ", map("aBcDeF", "abcdefghijklmnopqrstuvwxyz"))
@@ -61,4 +79,10 @@ procedure main() {
 	write("map: ", map("124578", "12345678", "03:56:42"))
 	write("map: ", map("Hh:Mm:Ss", "HhMmSs", "035642"))
 	write("map: ", map("123321", "123", "abc"))
+}
+
+procedure tryquote(a) {
+	^b := unquote(a) | "[FAILED]"
+	^c := quote(b)
+	write("quoting: ", a, " => ", image(b), " => " ,c)
 }

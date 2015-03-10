@@ -10,6 +10,7 @@ tolower: abcde
 toupper: ABCDE
 fields:  "argon," "boron," "carbon," "freon," "krypton," "silicon," "teflon" 
 split:   "argon" "boron" "carbon" "freon" "krypton" "silicon" "teflon" 
+
 char/ord: 0 "\x00" 0 "\x00" 0
 char/ord: 1 "\x01" 1 "\x01" 1
 char/ord: 33 "!" 33 "!" 33
@@ -19,6 +20,7 @@ char/ord: 300 "Ĭ" 300 "Ĭ" 300
 char/ord: 1000 "Ϩ" 1000 "Ϩ" 1000
 char/ord: 10000 "✐" 10000 "✐" 10000
 char/ord: 100000 "\U000186a0" 100000 "\U000186a0" 100000
+
 pad:   - -- --- ---- ----- ------ -------   3 23 123 3123 23123 123123 3123123
 pad:   - -- --- ---- ----- ------ -------   3 13 123 1223 12123 123123 1233123
 pad:   - -- --- ---- ----- ------ -------   1 12 123 1231 12312 123123 1231231
@@ -31,6 +33,20 @@ pad:   y xy -xy --xy ---xy ----xy -----xy   y xy 1xy 12xy 123xy 1231xy 12312xy
 pad:   a ab abc abc- abc-- abc--- abc----   a ab abc abc3 abc23 abc123 abc3123
 pad:   b bc abc abc- -abc- -abc-- --abc--   b bc abc abc3 1abc3 1abc23 12abc23
 pad:   c bc abc -abc --abc ---abc ----abc   c bc abc 1abc 12abc 123abc 1231abc
+
+quoting: "abc" => "abc" => "abc"
+quoting: `abc` => "abc" => "abc"
+quoting: "abc\tdef" => "abc\tdef" => "abc\tdef"
+quoting: `abc	def` => "abc\tdef" => "abc\tdef"
+quoting: `t0±Δt` => "t0±Δt" => "t0±Δt"
+quoting: "t0±Δt" => "t0±Δt" => "t0±Δt"
+quoting: abc => "[FAILED]" => "[FAILED]"
+quoting: "ab => "[FAILED]" => "[FAILED]"
+quoting: `ab => "[FAILED]" => "[FAILED]"
+quoting: "ab\fyz" => "ab\fyz" => "ab\fyz"
+quoting: "ab\kyz" => "[FAILED]" => "[FAILED]"
+quoting: "ab\" => "[FAILED]" => "[FAILED]"
+
 map: abcdef
 map: abcdef
 map: aBcDeF
