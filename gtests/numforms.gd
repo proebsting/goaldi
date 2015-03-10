@@ -26,6 +26,10 @@ procedure main() {
 	trynum( 524095,   7Ff3Fx, "7Ff3Fx")
 	trynum(6.02e23,   602e21, "602e21")
 	trynum(6303265,  602e21x, "602e21x")
+	trynum(  .0123, 0.123e-1, "0.123e-1")
+	trynum(   1123, 1.123e+3, "1.123e+3")
+	trynum(  .0123,  .123e-1, ".123e-1")
+	trynum(   1230,  .123e+4, ".123e+4")
 }
 
 procedure trynum(want, n, s) {
