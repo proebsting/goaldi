@@ -240,6 +240,8 @@ global lex_DOT           := lex_opr(".",      "b")
 global lex_DIFF          := lex_opr("--",     "b")
 global lex_AUGDIFF       := lex_opr("--:=",   "")
 global lex_EQUIV         := lex_opr("===",    "b")
+global lex_INTER         := lex_opr("**",     "b")
+global lex_AUGINTER      := lex_opr("**:=",   "")
 global lex_LBRACE        := lex_opr("{",      "b")
 global lex_LBRACK        := lex_opr("[",      "b")
 global lex_LCOMP         := lex_opr("[:",     "b")
@@ -284,6 +286,8 @@ global lex_STAR          := lex_opr("*",      "b")
 global lex_AUGSTAR       := lex_opr("*:=",    "")
 global lex_SWAP          := lex_opr(":=:",    "")
 global lex_TILDE         := lex_opr("~",      "b")
+global lex_UNION         := lex_opr("++",     "b")
+global lex_AUGUNION      := lex_opr("++:=",   "")
 
 #  lex_lit defines a literal token.
 procedure lex_lit(text, flags) {
