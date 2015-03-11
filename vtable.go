@@ -99,16 +99,9 @@ func TrapMap(m Value, key Value) *vMapTrap {
 	mv := reflect.ValueOf(m)
 	if _, ok := mv.Interface().(VTable); ok {
 		// this is a Goaldi table; must convert string or number key
-		switch t := key.(type) {
-		case *VString:
-			key = t.ToUTF8()
-		case *VNumber:
-			key = t.Val()
-		default:
-			// nothing: use key as is
-		}
-		return &vMapTrap{true, mv, reflect.ValueOf(key)}
-	} else { // else key will be converted by passfunc
+		return &vMapTrap{true, mv, reflect.ValueOf(GoKey(key))}
+	} else {
+		// otherwise, key will be converted by passfunc
 		return &vMapTrap{false, mv, passfunc(mv.Type().Key())(key)}
 	}
 }

@@ -20,6 +20,7 @@ const (
 	rMethVal
 	rProc
 	rList
+	rSet
 	rTable
 	rRecord
 	rExternal
