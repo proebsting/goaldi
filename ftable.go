@@ -13,14 +13,14 @@ var _ = fmt.Printf // enable debugging
 //  Declare methods
 var TableMethods = MethodTable([]*VProcedure{
 	DefMeth(VTable.Member, "member", "x", "test membership"),
-	DefMeth(VTable.Delete, "delete", "x", "remove entry"),
-	DefMeth(VTable.Sort, "sort", "", "produce sorted list"),
+	DefMeth(VTable.Delete, "delete", "x[]", "remove entry"),
+	DefMeth(VTable.Sort, "sort", "i", "produce sorted list"),
 })
 
 //  Declare methods on Go Tables
 var GoMapMethods = MethodTable([]*VProcedure{
 	DefMeth(GoMapMember, "member", "x", "test membership"),
-	DefMeth(GoMapDelete, "delete", "x", "remove entry"),
+	DefMeth(GoMapDelete, "delete", "x[]", "remove entry"),
 	DefMeth(GoMapSort, "sort", "", "produce sorted list"),
 })
 
@@ -54,7 +54,7 @@ func GoMapMember(m Value, args ...Value) (Value, *Closure) {
 	}
 }
 
-//  T.delete(k) deletes the entry with key k, if any, from the table T.
+//  T.delete(k...) deletes the entries with the given keys from the table T.
 //  It returns T.
 func (m VTable) Delete(args ...Value) (Value, *Closure) {
 	return GoMapDelete(m, args...)
@@ -63,8 +63,10 @@ func (m VTable) Delete(args ...Value) (Value, *Closure) {
 //  GoMapDelete(m, k) deletes the entry in Go map m, if any, with key k
 func GoMapDelete(m Value, args ...Value) (Value, *Closure) {
 	defer Traceback("T.delete", args)
-	key := ProcArg(args, 0, NilValue)
-	TrapMap(m, key).Delete()
+	for i := 0; i < len(args); i++ {
+		key := ProcArg(args, i, NilValue)
+		TrapMap(m, key).Delete()
+	}
 	return Return(m)
 }
 

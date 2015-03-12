@@ -18,7 +18,7 @@ local T
 
 	write ( "Assignment test:  \t", T [], "\t", T [] := "Assigned" )
 	write ( "Reassignment test:\t", T [], "\t", T [] := "Reassigned" )
-	write ( "Deletion test:    \t", T [], "\t", T.delete () & T [] )
+	write ( "Deletion test:    \t", T [], "\t", T.delete(nil) & T [] )
 	write ( "Insertion test:   \t", T [], "\t",
 		T [] := ( ( T[] := "Assigned" ) & "Reassigned" ) )
 
