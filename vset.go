@@ -84,7 +84,7 @@ func (S VSet) Copy() Value {
 }
 
 //  VSet.Before compares two sets for sorting
-func (a *VSet) Before(b Value, i int) bool {
+func (a VSet) Before(b Value, i int) bool {
 	return false // no ordering defined
 }
 

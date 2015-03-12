@@ -69,7 +69,7 @@ func (m VTable) Copy() Value {
 }
 
 //  VTable.Before compares two tables for sorting
-func (a *VTable) Before(b Value, i int) bool {
+func (a VTable) Before(b Value, i int) bool {
 	return false // no ordering defined
 }
 

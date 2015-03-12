@@ -38,7 +38,7 @@ c    c:3          t:channel      channel      t:channel       t:channel
 m    m:dist       t:methodvalue  methodvalue  t:methodvalue   t:methodvalue
 p    p:main       t:procedure    procedure    t:procedure     t:procedure
 L    L:5          t:list         list         t:list          t:list
-T    T:2          t:table        table        t:table         t:external
+T    T:2          t:table        table        t:table         t:table
 R    Circle{}     t:Circle       Circle       t:Circle        t:Circle  t:Point
 R    Point{}      t:Point        Point        t:Point         t:Point
 R    elemtype{}   t:elemtype     elemtype                     t:elemtype
