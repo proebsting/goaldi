@@ -35,6 +35,7 @@ procedure main() {
 	add(E, Circle(7,5,2), Circle)
 	add(E, main, proctype)
 	add(E, ^L := [2,3,5,7,11], list)
+	add(E, ^S := set([10,23,34,31,42]), set)
 	add(E, ^T := table(){"Fe":"Iron","Au":"Gold"}, table)
 	add(E, !T.sort())	# table element
 	add(E, tuple(w:6,h:4))
