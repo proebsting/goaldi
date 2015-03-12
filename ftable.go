@@ -13,14 +13,14 @@ var _ = fmt.Printf // enable debugging
 //  Declare methods
 var TableMethods = MethodTable([]*VProcedure{
 	DefMeth(VTable.Member, "member", "x", "test membership"),
-	DefMeth(VTable.Delete, "delete", "x[]", "remove entry"),
+	DefMeth(VTable.Delete, "delete", "x[]", "remove entries"),
 	DefMeth(VTable.Sort, "sort", "i", "produce sorted list"),
 })
 
 //  Declare methods on Go Tables
 var GoMapMethods = MethodTable([]*VProcedure{
 	DefMeth(GoMapMember, "member", "x", "test membership"),
-	DefMeth(GoMapDelete, "delete", "x[]", "remove entry"),
+	DefMeth(GoMapDelete, "delete", "x[]", "remove entries"),
 	DefMeth(GoMapSort, "sort", "", "produce sorted list"),
 })
 
