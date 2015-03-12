@@ -11,6 +11,14 @@ procedure main() {
 	testset("insert",   S.insert(4, 7,9))
 	testset("strings",	set(["three","one","four","one","five"]))
 	testset("mixed",	set([,1,"two",channel(3),%stdin,type,main]))
+	every ^S2 := set([] | [0,2,4,6,8]) do {
+		every ^S3 := set([] | [0,3,6,9]) do {
+			write("S2 = ", image(S2), "  S3 = ", image(S3))
+			testset("S2 ++ S3", S2 ++ S3)
+			testset("S2 -- S3", S2 -- S3)
+			testset("S2 ** S3", S2 ** S3)
+		}
+	}
 }
 
 #   print set contents and run some tests

@@ -84,6 +84,14 @@ func operator(env *g.Env, f *pr_frame, i *ir_OpFunction) (g.Value, *g.Closure) {
 	case "2|||":
 		return a[0].(g.IListCat).ListCat(a[1]), nil
 
+	// set operations
+	case "2++":
+		return a[0].(g.IUnion).Union(a[1]), nil
+	case "2--":
+		return a[0].(g.ISetDiff).SetDiff(a[1]), nil
+	case "2**":
+		return a[0].(g.IIntersect).Intersect(a[1]), nil
+
 	// string operations
 	case "2||":
 		return a[0].(g.IConcat).Concat(a[1]), nil

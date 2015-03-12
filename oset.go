@@ -61,3 +61,55 @@ func (S VSet) Index(lval Value, x Value) Value {
 		return nil // fail
 	}
 }
+
+//------------------------------------  Union: S1 ++ S2
+
+type IUnion interface {
+	Union(Value) Value
+}
+
+func (S1 VSet) Union(x Value) Value {
+	S2 := x.(VSet)
+	S3 := NewSet(EMPTYLIST)
+	for k := range S1 {
+		S3[k] = true
+	}
+	for k := range S2 {
+		S3[k] = true
+	}
+	return S3
+}
+
+//------------------------------------  SetDiff: S1 -- S2
+
+type ISetDiff interface {
+	SetDiff(Value) Value
+}
+
+func (S1 VSet) SetDiff(x Value) Value {
+	S2 := x.(VSet)
+	S3 := NewSet(EMPTYLIST)
+	for k := range S1 {
+		if !S2[k] {
+			S3[k] = true
+		}
+	}
+	return S3
+}
+
+//------------------------------------  Intersect: S1 ** S2
+
+type IIntersect interface {
+	Intersect(Value) Value
+}
+
+func (S1 VSet) Intersect(x Value) Value {
+	S2 := x.(VSet)
+	S3 := NewSet(EMPTYLIST)
+	for k := range S1 {
+		if S2[k] {
+			S3[k] = true
+		}
+	}
+	return S3
+}
