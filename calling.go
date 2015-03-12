@@ -107,7 +107,7 @@ func ArgNames(p *VProcedure, args []Value, names []string) []Value {
 
 	// expand varargs list:
 	// If the final parameter is present, it must have been specified by name.
-	// For a variadic procdure, this must be a list, and we need to expand it.
+	// For a variadic procedure, this must be a list, and we need to expand it.
 	if nslots == len(*p.Pnames) && p.Variadic {
 		list := newargs[nslots-1].(*VList)
 		xlist := list.Export().([]Value)

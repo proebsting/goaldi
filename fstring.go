@@ -19,7 +19,7 @@ func init() {
 	DefLib(Left, "left", "s,w,p", "left-justify with padding p to width w")
 	DefLib(Center, "center", "s,w,p", "center with padding p to width w")
 	DefLib(Right, "right", "s,w,p", "right-justify with padding p to width w")
-	DefLib(Unquote, "unquote", "s", "remove delimters and escapes from s")
+	DefLib(Unquote, "unquote", "s", "remove delimiters and escapes from s")
 	// Go library functions
 	GoLib(strings.Contains, "contains", "s,substr", "return 1 if substr is in s")
 	GoLib(strings.ContainsAny, "containsany", "s,chars", "return 1 if any char is in s")
@@ -150,7 +150,7 @@ func Reverse(env *Env, args ...Value) (Value, *Closure) {
 	return Return(RuneString(r))
 }
 
-//  unquote(s) removes delmiters and escapes from a quoted string.
+//  unquote(s) removes delimiters and escapes from a quoted string.
 //  The argument s must begin and end with explicit "double quotes" or
 //  `backticks`.  unquote() fails if s is not properly quoted or if it
 //  contains an invalid (by Go rules) escape sequence.

@@ -113,7 +113,7 @@ func (v *VProcedure) Call(env *Env, args []Value, names []string) (Value, *Closu
 	}
 }
 
-//  proctype(x) return x if x is a procdure, and fails otherwise.
+//  proctype(x) return x if x is a procedure, and fails otherwise.
 func ProcCtor(env *Env, args ...Value) (Value, *Closure) {
 	x := ProcArg(args, 0, NilValue)
 	if p, ok := x.(*VProcedure); ok {
