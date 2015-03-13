@@ -15,7 +15,7 @@ c    c:3             channel(3)                     c:3
 m    m:dist          methodvalue (Point{}).dist     m:dist
 p    p:main          procedure main()               0xXXXXXX
 L    L:5             [2,3,5,7,11]                   [2 3 5 7 11]
-S    S:5             set{10,23,31,34,42}            S:5
+S    S:3             set{1,4,7}                     map[1:true 4:true 7:true]
 T    T:2             table{Au:Gold,Fe:Iron}         map[Fe:Iron Au:Gold]
 R    Circle{}        Circle{x:7,y:5,r:2}            Circle{}
 R    Point{}         Point{x:7,y:5}                 Point{}
@@ -39,7 +39,7 @@ c    c:3          t:channel      channel      t:channel       t:channel
 m    m:dist       t:methodvalue  methodvalue  t:methodvalue   t:methodvalue
 p    p:main       t:procedure    procedure    t:procedure     t:procedure
 L    L:5          t:list         list         t:list          t:list
-S    S:5          t:set          set          t:set           t:set
+S    S:3          t:set          set          t:set           t:set
 T    T:2          t:table        table        t:table         t:table
 R    Circle{}     t:Circle       Circle       t:Circle        t:Circle  t:Point
 R    Point{}      t:Point        Point        t:Point         t:Point

@@ -94,8 +94,8 @@ func (S VSet) Import() Value {
 	return S
 }
 
-//  VSet.Export returns itself, which is usable as map[Value]bool.
+//  VSet.Export returns its underlying map[Value]bool.
 //  Go extensions may wish to use GoKey() for proper conversion of keys.
 func (S VSet) Export() interface{} {
-	return S
+	return map[Value]bool(S)
 }
