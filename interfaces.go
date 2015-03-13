@@ -42,7 +42,7 @@ var _ ICore = &VMethVal{}
 var _ ICore = &VProcedure{}
 var _ ICore = &VList{}
 var _ ICore = VSet{}
-var _ ICore = VTable{}
+var _ ICore = &VTable{}
 var _ ICore = &VRecord{}
 
 //  IRank designates anything usable as a type: VType or VCtor

@@ -16,7 +16,7 @@ m    m:dist          methodvalue (Point{}).dist     m:dist
 p    p:main          procedure main()               0xXXXXXX
 L    L:5             [2,3,5,7,11]                   [2 3 5 7 11]
 S    S:5             set{10,23,31,34,42}            S:5
-T    T:2             table{Au:Gold,Fe:Iron}         T:2
+T    T:2             table{Au:Gold,Fe:Iron}         map[Fe:Iron Au:Gold]
 R    Circle{}        Circle{x:7,y:5,r:2}            Circle{}
 R    Point{}         Point{x:7,y:5}                 Point{}
 R    elemtype{}      elemtype{key:Au,value:Gold}    elemtype{}

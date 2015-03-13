@@ -48,6 +48,11 @@ procedure main() {
 		writes(" ", kv.key, ":", kv.value)
 	write()
 
+	write()
+	t := table("#")
+	t { 2 to 3 : "l", 4 | "F": "a", "E": "m"}
+	ck(t)
+
 	#%#% random portion disabled
 	#  every t[!4 | !"EFGH"] := ?"abcdefghijklmnopqrstuvwxyz"
 	#  ck(t)

@@ -14,12 +14,12 @@ procedure main() {
 	local w
 	local kv
 
-	words := table()
+	words := table(0)
 	rx := regex(`[\W]+`)
 	while line := read() do {
 		line := rx.ReplaceAllString(line, " ")
 		every w := !fields(line) do
-			(\words[w] +:= 1) | (words[w] := 1)
+			words[w] +:= 1
 	}
 	every kv := !words.sort() do
 	printf("%6.0f  %s\n", kv.value, kv.key)
