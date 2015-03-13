@@ -31,6 +31,7 @@ func NewSet(L *VList) VSet {
 //  GoKey(v) turns a Goaldi value into something usable as a Go map key.
 //  Strings and numbers must be converted becuase otherwise two
 //  identical values in different objects would be seen as distinct keys.
+//  The inverse of GoKey() is Import().
 func GoKey(v Value) interface{} {
 	switch t := v.(type) {
 	case *VString:
@@ -89,13 +90,12 @@ func (a VSet) Before(b Value, i int) bool {
 }
 
 //  VSet.Import returns itself
-func (v VSet) Import() Value {
-	return v
+func (S VSet) Import() Value {
+	return S
 }
 
-//  VSet.Export returns itself.
-//  Go extensions may wish to use v.Member(), v.Delete(), etc.
-//  to ensure proper conversion of keys.
-func (v VSet) Export() interface{} {
-	return v
+//  VSet.Export returns itself, which is usable as map[Value]bool.
+//  Go extensions may wish to use GoKey() for proper conversion of keys.
+func (S VSet) Export() interface{} {
+	return S
 }
