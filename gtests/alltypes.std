@@ -15,7 +15,7 @@ c    c:3             channel(3)                     c:3
 m    m:dist          methodvalue (Point{}).dist     m:dist
 p    p:main          procedure main()               0xXXXXXX
 L    L:5             [2,3,5,7,11]                   [2 3 5 7 11]
-S    S:3             set{1,4,7}                     map[1:true 4:true 7:true]
+S    S:3             set{1,4,7}                     map[4:true 7:true 1:true]
 T    T:2             table{Au:Gold,Fe:Iron}         map[Fe:Iron Au:Gold]
 R    Circle{}        Circle{x:7,y:5,r:2}            Circle{}
 R    Point{}         Point{x:7,y:5}                 Point{}

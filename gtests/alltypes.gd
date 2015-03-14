@@ -41,6 +41,16 @@ procedure main() {
 	add(E, tuple(w:6,h:4))
 	add(E, duration(3600+120+3), external)
 
+	# define alternate acceptable sprintf representations we might see
+	^subst := table() {
+		"map[Au:Gold Fe:Iron]" : "map[Fe:Iron Au:Gold]",
+		"map[1:true 4:true 7:true]" : "map[4:true 7:true 1:true]",
+		"map[1:true 7:true 4:true]" : "map[4:true 7:true 1:true]",
+		"map[4:true 1:true 7:true]" : "map[4:true 7:true 1:true]",
+		"map[7:true 1:true 4:true]" : "map[4:true 7:true 1:true]",
+		"map[7:true 4:true 1:true]" : "map[4:true 7:true 1:true]",
+	}
+
 	# show values various ways, checking universal methods in the process
 	write()
 	write("Examples sorted by value, showing presentation options:")
@@ -57,6 +67,7 @@ procedure main() {
 		^f := sprintf("%v", v)
 		if f[1+:2] == "0x" then		# if hex address
 			f := "0xXXXXXX"			# hide actual value for reproducibility
+		f := \subst[f]				# substitute alternate for reproducibility
 		printf(format, t.char(), s, i, f)
 	}
 
