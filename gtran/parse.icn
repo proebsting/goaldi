@@ -240,7 +240,7 @@ procedure parse_expr1()
     static expr1_set
 
     initial {
-    expr1_set := set([lex_ASSIGN, lex_AUGAND, lex_AUGAT, lex_AUGCARET,
+    expr1_set := set([lex_ASSIGN, lex_AUGAND, lex_AUGCARET,
                             lex_AUGCONCAT, lex_AUGDIFF, lex_AUGEQUIV,
                             lex_AUGINTER, lex_AUGLCONCAT, lex_AUGMINUS,
                             lex_AUGMOD, lex_AUGNEQUIV, lex_AUGNMEQ, lex_AUGNMGE,

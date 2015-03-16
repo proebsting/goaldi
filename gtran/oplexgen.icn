@@ -55,7 +55,6 @@ procedure init_lex_tables()
                [":=",              "ASSIGN",    ""  ],
                ["@",               "AT",        "b" ],
                ["@:",              "ATCOLON",   ""  ],
-               ["@:=",             "AUGAT",    ""  ],
                ["&:=",             "AUGAND",    ""  ],
                ["=:=",             "AUGNMEQ",     ""  ],
                ["===:=",           "AUGEQUIV",    ""  ],
