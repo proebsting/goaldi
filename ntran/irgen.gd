@@ -1118,7 +1118,8 @@ procedure ir_a_Create(p, st, target, bounded, rval) {
 }
 
 procedure mkSuffix(t) {
-    return ":" || (image(t) ? (tab(upto(&digits)) & tab(upto('('))))
+    # return ":" || (image(t) ? (tab(upto(&digits)) & tab(upto('('))))
+    # GMT .*([0-9].*)\(
 }
 
 procedure ir_stname(s) {
@@ -1826,11 +1827,12 @@ procedure ir_label(p, suffix) {
 procedure ir_naming(p, suffix) {
     local s
 
-    image(p) ? {
-        tab(upto(' '))
-        move(1)
-        s := tab(upto('('))
-    }
+    # GMT .* (.*)\(
+    # image(p) ? {
+        # tab(upto(' '))
+        # move(1)
+        # s := tab(upto('('))
+    # }
     return s || "_" || suffix
 }
 
