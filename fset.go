@@ -16,7 +16,7 @@ var SetMethods = MethodTable([]*VProcedure{
 	DefMeth(VSet.Sort, "sort", "i", "produce sorted list"),
 })
 
-//  set() creates a new, empty set.
+//  set(L) creates a set initialized by the values of list L.
 func Set(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("set", args)
 	L := ProcArg(args, 0, EMPTYLIST).(*VList)
@@ -57,7 +57,7 @@ func (S VSet) Delete(args ...Value) (Value, *Closure) {
 	return Return(S)
 }
 
-//  S.sort(i) returns a sorted list of the members of s.
+//  S.sort(i) returns a sorted list of the members of set S.
 //  This is equivalent to [:!S:].sort(i).
 func (S VSet) Sort(args ...Value) (Value, *Closure) {
 	defer Traceback("S.sort", args)

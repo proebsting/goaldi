@@ -52,7 +52,7 @@ func Copy(env *Env, args ...Value) (Value, *Closure) {
 }
 
 //  image(x) returns a string image of x.
-//  This is exactly the conversion applied by sprintf("%#v",x)
+//  This is the same conversion applied by sprintf("%#v",x)
 //  and is typically more verbose and detailed than the result of string(x).
 func Image(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("image", args)

@@ -30,7 +30,7 @@ func init() {
 	StdLib["elemtype"] = ElemType
 }
 
-//  table(dfval) creates a new, empty table.
+//  table(x) creates a new, empty table having x as the default value.
 func Table(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("table", args)
 	dfval := ProcArg(args, 0, NilValue)

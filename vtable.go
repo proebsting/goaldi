@@ -22,7 +22,7 @@ func NewTable(dfval Value) *VTable {
 
 //  TableType is the table instance of type type.
 var TableType = NewType("table", "T", rTable, Table, TableMethods,
-	"table", "x", "create an empty table")
+	"table", "x", "create a table with default value x")
 
 //  VTable.String -- default conversion to Go string returns "T:size"
 func (T *VTable) String() string {

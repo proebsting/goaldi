@@ -133,7 +133,8 @@ func Type(env *Env, args ...Value) (Value, *Closure) {
 	}
 }
 
-//  x.instanceof(t) returns x if it is an instance of type t.
+//  x.instanceof(t) returns x if x is an instance of type t;
+//  otherwise the call fails.
 func InstanceOf(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("instanceof", args)
 	v := ProcArg(args, 0, NilValue)
