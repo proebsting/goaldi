@@ -58,6 +58,7 @@ clean:
 	rm -f libdoc.txt
 	go clean $(PKG) $(PROGS)
 	cd gtran; $(MAKE) clean
+	cd ntran; $(MAKE) clean
 	cd gtests; $(MAKE) clean
 
 #  remove files placed elsewhere in $GOPATH
