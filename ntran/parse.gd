@@ -217,7 +217,7 @@ procedure parse_do_every() {
 }
 
 procedure parse_expr() {
-#  expr1a {  ANDAND  expr1 } 
+#  expr1x {  ANDAND  expr1x } 
     local ret
     local L
 
@@ -236,15 +236,15 @@ procedure parse_expr() {
 }
 
 procedure parse_expr1x() {
-#  expr1a {  AND  expr1 } 
+#  expr1 {  AND  expr1 } 
     local ret
     local op
     local right
 
-    ret := parse_expr1a()
+    ret := parse_expr1()
     while parse_tok_rec === lex_AND do {
         op := parse_eat_token()
-        right := parse_expr1a()
+        right := parse_expr1()
         ret := a_Binop(op, ret, right, ret.coord)
     }
     return ret
@@ -257,12 +257,12 @@ procedure parse_expr1() {
     local coord
     static expr1_set
 
-    /expr1_set := set([lex_ASSIGN, lex_AUGAND, lex_AUGAT, lex_AUGCARET,
+    /expr1_set := set([lex_ASSIGN, lex_AUGAND, lex_AUGCARET,
                             lex_AUGCONCAT, lex_AUGDIFF, lex_AUGEQUIV,
                             lex_AUGINTER, lex_AUGLCONCAT, lex_AUGMINUS,
                             lex_AUGMOD, lex_AUGNEQUIV, lex_AUGNMEQ, lex_AUGNMGE,
                             lex_AUGNMGT, lex_AUGNMLE, lex_AUGNMLT, lex_AUGNMNE,
-                            lex_AUGPLUS, lex_AUGQMARK, lex_AUGSEQ, lex_AUGSGE,
+                            lex_AUGPLUS, lex_AUGSEQ, lex_AUGSGE,
                             lex_AUGSGT, lex_AUGSLASH, lex_AUGSLE, lex_AUGSLT,
                             lex_AUGSNE, lex_AUGSTAR, lex_AUGUNION,
 			    lex_AUGSLASHSLASH,
@@ -270,14 +270,10 @@ procedure parse_expr1() {
     #  expr2 {  expr1op  expr1 } (Right Associative)
     ret := parse_expr2()
     while member(expr1_set, parse_tok_rec) do {
-	coord := parse_tok_rec.coord
-        op := parse_eat_token()
-        right := parse_expr1()
-        if op == "?:=" then {
-            ret := a_Scan(op, ret, right, coord)
-        } else {
-            ret := a_Binop(op, ret, right, coord)
-        }
+		coord := parse_tok_rec.coord
+		op := parse_eat_token()
+		right := parse_expr1()
+		ret := a_Binop(op, ret, right, coord)
     }
     return ret
 }
@@ -637,22 +633,6 @@ procedure parse_expr11suffix(lhs) {
         parse_error("Malformed argument list")
     }
     }
-}
-
-procedure parse_expr1a() {
-#  expr1 {  QMARK  expr1a } 
-    local left
-    local right
-    local coord
-
-    left := parse_expr1()
-    while parse_tok_rec === lex_QMARK do {
-	coord := parse_tok_rec.coord
-        parse_eat_token()
-        right := parse_expr1()
-        left := a_Scan("?", left, right, coord)
-    }
-    return left
 }
 
 procedure parse_expr2() {

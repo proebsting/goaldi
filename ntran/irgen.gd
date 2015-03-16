@@ -500,7 +500,7 @@ procedure ir_conjunction(p, st, target, bounded, rval) {
 procedure ir_augmented_assignment(p, target, bounded, rval, lv, rv, tmp) {
     local op
 
-    op := (p.op ? tab(find(":=")))
+	op := p.op[1:-2]	 # was: op := (p.op ? tab(find(":=")))
     /bounded & suspend ir_chunk(p.ir.resume, [ ir_Goto(ir_coord(p.coord), p.right.ir.resume) ])
     suspend ir_chunk(p.right.ir.success, [
         ir_opfn(ir_coord(p.coord), tmp, nil, ir_operator(op, 2, "rval"), [ lv, rv ], p.right.ir.resume),
