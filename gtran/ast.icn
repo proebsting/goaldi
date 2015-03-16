@@ -2,7 +2,6 @@
 
 record a_NoOp(coord, ir)
 record a_Field(expr, field, coord, ir)
-record a_Scan(op, expr, body, coord, ir)
 record a_Limitation(expr, limit, coord, ir)
 record a_Not(expr, coord, ir)
 record a_Alt(eList, coord, ir)

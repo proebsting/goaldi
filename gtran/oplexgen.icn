@@ -125,7 +125,6 @@ procedure init_lex_tables()
                [":]",              "RCOMP",     "e" ],
                [")",               "RPAREN",    "e" ],
                [";",               "SEMICOL",   ""  ],
-               ["?:=",             "AUGQMARK",  ""  ],
                ["/",               "SLASH",     "b" ],
                ["/:=",             "AUGSLASH", ""  ],
                ["//",              "SLASHSLASH",   "b" ],
