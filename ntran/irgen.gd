@@ -540,15 +540,25 @@ procedure ir_binary(p, target, bounded, rval, lv, rv, clsr, funcs) {
 }
 
 procedure ir_rval(op, arity, arg, parent) {
-    if find(":=", op) & arg = 1 then return nil
-    else if op == "<-" & arg = 1 then return nil
-    else if op == (":=:" | "<->") then return nil
-    else if op == "[]" & arg = 1 then return parent
-    else if op == "!" & arity = 1 then return parent
-    else if op == "?" & arity = 1 then return parent
-    else if op == "/" & arity = 1 then return parent
-    else if op == "\\" & arity = 1 then return parent
-    else return "rval"
+    if find(":=", op) & arg = 1 then { 
+        return nil
+    } else if op == "<-" & arg = 1 then { 
+        return nil
+    } else if op == (":=:" | "<->") then { 
+        return nil
+    } else if op == "[]" & arg = 1 then { 
+        return parent
+    } else if op == "!" & arity = 1 then { 
+        return parent
+    } else if op == "?" & arity = 1 then { 
+        return parent
+    } else if op == "/" & arity = 1 then { 
+        return parent
+    } else if op == "\\" & arity = 1 then { 
+        return parent
+    } else { 
+        return "rval"
+    }
 }
 
 # record a_Binop( op left right )
@@ -925,7 +935,7 @@ procedure ir_a_Record(p, st, target, bounded, rval) {
     }
     fields := []
     every fields.put((!p.idlist).id)
-    return ir_Record(ir_coord(p.ident.coord), p.ident.id, (\p.extends).id |nil, (\p.extendspkg).id | nil, fields, ir_namespace)
+    return ir_Record(ir_coord(p.ident.coord), p.ident.id, (\p.extendsrec).id |nil, (\p.extendspkg).id | nil, fields, ir_namespace)
 }
 
 # record a_Repeat( expr )
@@ -1434,7 +1444,7 @@ procedure ir_a_Select(p, st, target, bounded, rval) {
     local sc
     local c
     local t
-    local select
+    local selectlab
     local lab
     local dest
     local indirects
@@ -1445,7 +1455,7 @@ procedure ir_a_Select(p, st, target, bounded, rval) {
 
     /bounded & (t := ir_tmploc(st))
 
-    select := ir_label(p, "select")
+    selectlab := ir_label(p, "select")
 
     caseList := []
     every i := *p.caseList to 1 by -1 do {
@@ -1471,12 +1481,12 @@ procedure ir_a_Select(p, st, target, bounded, rval) {
         suspend ir(c.left, st, left, nil, nil)
         suspend ir(c.right, st, right, "bounded", "rval")
         suspend ir_chunk(c.left.ir.success, [ ir_Goto(ir_coord(c.coord), c.right.ir.start) ])
-        dest := p.caseList[i+1].left.ir.start | select
+        dest := p.caseList[i+1].left.ir.start | selectlab
         suspend ir_chunk(c.left.ir.failure, [
             ir_NoValue(ir_coord(c.coord), left),
             ir_Goto(ir_coord(c.coord), dest),
             ])
-        dest := p.caseList[i+1].left.ir.start | select
+        dest := p.caseList[i+1].left.ir.start | selectlab
         suspend ir_chunk(c.right.ir.success, [ ir_Goto(ir_coord(c.coord), dest) ])
         suspend ir_chunk(c.right.ir.failure, [ ir_Goto(ir_coord(c.coord), c.left.ir.resume) ])
     }
@@ -1499,12 +1509,12 @@ procedure ir_a_Select(p, st, target, bounded, rval) {
     }
     /bounded & suspend ir_chunk(p.ir.resume, [ ir_IndirectGoto(ir_coord(p.coord), t, indirects) ])
 
-    suspend ir_chunk(select, [ ir_Select(ir_coord(p.coord), caseList, p.ir.failure) ])
+    suspend ir_chunk(selectlab, [ ir_Select(ir_coord(p.coord), caseList, p.ir.failure) ])
 
     if p.caseList[1] then {
         suspend ir_chunk(p.ir.start, [ ir_Goto(ir_coord(p.coord), p.caseList[1].left.ir.start) ])
     } else {
-        suspend ir_chunk(p.ir.start, [ ir_Goto(ir_coord(p.coord), select) ])
+        suspend ir_chunk(p.ir.start, [ ir_Goto(ir_coord(p.coord), selectlab) ])
     }
 }
 
@@ -1630,12 +1640,6 @@ procedure ir_a_Key(p, st, target, bounded, rval) {
         ir_Goto(ir_coord(p.coord), p.ir.success),
         ])
     suspend ir_chunk(p.ir.resume, [ ir_Goto(ir_coord(p.coord), p.ir.failure) ])
-}
-
-# record a_Arglist( exprList )
-procedure ir_a_Arglist(p, st, target, bounded, rval) {
-    stop("FATAL ERROR: a_Arglist should be handled in ir_a_Call(), file ",
-         image(&file), ", line ", image(&line))
 }
 
 # record a_ListConstructor( exprList )
@@ -1770,7 +1774,6 @@ procedure ir(p, st, target, bounded, rval) {
     a_ListComprehension : suspend ir_a_ListComprehension(p, st, target,
                                                    bounded, rval)
     a_Key : suspend ir_a_Key(p, st, target, bounded, rval)
-    a_Arglist : suspend ir_a_Arglist(p, st, target, bounded, rval)
     a_Local : suspend ir_a_Local(p, st, target, bounded, rval)
     a_Static : suspend ir_a_Static(p, st, target, bounded, rval)
     default : runerr(500, p)
@@ -1786,8 +1789,8 @@ procedure ir_opfn(coord, lhs, lhsclsr, op, args, failLabel) {
             "+", "-", "*", "/", "%", "^", 
             "++", "--", "**", 
             "||", "|||",
-            ".", "&"
-            # ":=", ":=:" omited because &pos:=*&subject+2 fails
+            ".", "&",
+            ":=", ":=:",
         ])
         neverfail[3] := set([ ])
     }
@@ -1871,7 +1874,7 @@ procedure ir_make_sentinel(L) {
 }
 
 procedure semantic_error(msg, coord) {
-    writes(&errout, "File ", (\coord).file, "; Line ", coord.line)
+    writes(%stdout, "File ", (\coord).file, "; Line ", coord.line)
     stop(" # ", msg)
 }
 
