@@ -867,7 +867,7 @@ procedure ir_a_ProcDecl0(p, st) {
 	params.put(s)
     }
     if ir_declare_set.member(p.ident.id) then {
-	semantic_error(image(name) || ": inconsistent redeclaration",
+		semantic_error(image(p.ident.id) || ": inconsistent redeclaration",
 		       p.ident.coord)
     }
     ir_declare_set.insert(p.ident.id)
@@ -920,7 +920,7 @@ procedure ir_a_Record(p, st, target, bounded, rval) {
     local i
 
     if ir_declare_set.member(p.ident.id) then {
-	semantic_error(image(name) || ": inconsistent redeclaration",
+		semantic_error(image(p.ident.id) || ": inconsistent redeclaration",
 		       p.ident.coord)
     }
     ir_declare_set.insert(p.ident.id)
