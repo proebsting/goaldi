@@ -1,17 +1,17 @@
-#  ir.icn -- data structures for the Goaldi intermediate representation.
+#  ir.gd -- data structures for the Goaldi intermediate representation.
 
 record ir_Record(coord, name, extendsrec, extendspkg, fieldList, namespace)
 record ir_Global(coord, name, fn, namespace)
 record ir_Initial(coord, fn, namespace)
 record ir_Function(coord, name, paramList, accumulate,
-   localList, staticList, unboundList, codeList, codeStart, parent, namespace)
+	localList, staticList, unboundList, codeList, codeStart, parent, namespace)
 record ir_chunk(label, insnList)
 
 record ir_NoOp(coord, comment)
 record ir_Catch(coord, lhs, fn)
 record ir_EnterScope(coord, nameList, dynamicList, scope, parentScope)
 record ir_ExitScope(coord, nameList, dynamicList, scope)
- 
+
 record ir_Tmp(name)
 record ir_TmpLabel(name)
 record ir_TmpClosure(name)

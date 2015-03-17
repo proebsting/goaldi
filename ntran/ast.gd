@@ -1,4 +1,4 @@
-#  ast.icn -- record definitions for Abstract Syntax Tree nodes
+#  ast.gd -- record definitions for Abstract Syntax Tree nodes
 
 record a_NoOp(coord, ir)
 record a_Field(expr, field, coord, ir)

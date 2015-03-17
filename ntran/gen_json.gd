@@ -1,20 +1,19 @@
-#  gen_json.icn -- create json output from intermediate representation.
+#  gen_json.gd -- create json output from intermediate representation.
 
 procedure json_File(irgen, flagList) {
-    local p
-    local flag
-    local s
+	local p
+	local flag
+	local s
 
-    flag := nil
-    s := "[\n"
-    while p := @irgen do {
-        if \flag then s ||:= ",\n"
-	flag := "true"
-
-	s ||:= json(p, "")
-    }
-    s ||:= "\n]"
-    return s
+	flag := nil
+	s := "[\n"
+	while p := @irgen do {
+		if \flag then s ||:= ",\n"
+		flag := "true"
+		s ||:= json(p, "")
+	}
+	s ||:= "\n]"
+	return s
 }
 
 procedure json_list(p, indent) {
@@ -48,7 +47,6 @@ procedure json_record(p, indent) {
 	}
 	s ||:= "\n" || indent || "}"
 	return s
-	
 }
 
 procedure json(p, indent) {
@@ -66,10 +64,10 @@ procedure json(p, indent) {
 		return json_record(p, indent)
 	} else {
 		case type(p) of {
-			list: return json_list(p, indent)
-			set: return json_list(p, indent)
-			string: return json_image(string(p))
-			number: return image(string(p))
+			list:	return json_list(p, indent)
+			set:	return json_list(p, indent)
+			string:	return json_image(string(p))
+			number:	return image(string(p))
 			default: throw("bad type for json", p)
 		}
 	}
