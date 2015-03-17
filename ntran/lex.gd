@@ -1,6 +1,4 @@
-#SRC: Goaldi original
-#
-#  A prototype Goaldi tokenizer written in Goaldi.
+#  lex.gd -- Goaldi tokenizer
 
 
 #  a token record -- one shared/reused instance for each distinct token type
@@ -14,34 +12,36 @@ record lex_tkrec (
 
 #  data structures for tokenizing
 
+global lex_lnum					# current line number
 global lex_kwtab := table()		# maps keyword strings to token records
 global lex_optab := table()		# maps operator strings to token records
 global lex_flags := table()		# maps token records flag strings
 
 
-#  a simple test driver
-
-procedure main(fname) {
-	^f := open(\fname) | %stdin
-	every ^t := lex_gentok(f) do {
-		writes(t.text, " ")
-		if t === lex_SEMICOL then write()
-	}
-	write()
-}
-
-
-#  report an error (and do nothing else)
+#  report an error (and do nothing else)	#%#%#%
 
 procedure lex_error(problem, input) {
 	%stderr.write("lex error: ", problem, ": ", image(input))
 }
 
 
-#  generate a sequence of tokens from an input file
+#  generate a sequence of tokens, with coordinates, from a stream of input lines
 
-procedure lex_gentok(f) {
-	while ^line := f.read() do {
+procedure lex(src, fname) {
+	fname := fname || ":"
+	lex_lnum := 0
+	every ^tk := lex_gentok(src) do {
+		tk.coord := fname || lex_lnum
+		suspend tk
+	}
+}
+
+
+#  generate a sequence of tokens from a stream of lines
+
+procedure lex_gentok(src) {
+	while ^line := @src do {
+		lex_lnum +:= 1
 		^tk := nil
 		while *line > 0 do {
 			if ^s := match(line, lex_ws_rx) then {
@@ -56,7 +56,7 @@ procedure lex_gentok(f) {
 					lex_IDENT.text := s
 					suspend tk := lex_IDENT
 				}
-			} else if s := match(line, lex_n1_rx | lex_n2_rx | lex_n3_rx ) then {
+			} else if s := match(line, lex_n1_rx | lex_n2_rx | lex_n3_rx) then {
 				# number: test must precede operators to match ".123"
 				line := line[1+*s:0]
 				if ^n := number(s) then {
@@ -82,7 +82,8 @@ procedure lex_gentok(f) {
 				# unterminated raw literal: may span lines, so keep reading
 				repeat {
 					s ||:= "\n"
-					if line := f.read() then {
+					if line := @src then {
+						lex_lnum +:= 1
 						if ^t := match(line, lex_r3_rx) then {
 							# found terminator
 							line := line[1+*t:0]
@@ -108,9 +109,10 @@ procedure lex_gentok(f) {
 			}
 		}
 		if (\lex_flags[tk])[-1] == "e" then {
-			suspend lex_SEMICOL						# semicolon insertion
+			suspend lex_SEMICOL				# semicolon insertion
 		}
 	}
+	lex_lnum +:= 1
 	suspend lex_EOFX
 }
 
