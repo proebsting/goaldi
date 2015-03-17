@@ -811,7 +811,8 @@ procedure ir_a_ProcDeclNested(p, st, target, bounded, rval) {
 
     ir_init(p)
 
-    if type(target) == ir_ProcDecl then target := nil
+	#%#% DISABLED (there is no such type):
+    #%#% if type(target) == ir_ProcDecl then target := nil
 
     p.ident.id := "$" || st.current_proc || "$nested$" || counter
 
@@ -1828,10 +1829,6 @@ procedure ir_naming(p, suffix) {
 	/static rx := regex("a_[^(]+")
 	local s := rx.FindString(p)
     return s || "_" || suffix
-}
-
-procedure ir_dump(insn) {
-    return dump_simple(insn, set(["x"]))
 }
 
 procedure ir_key(str) {
