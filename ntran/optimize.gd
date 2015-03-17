@@ -168,7 +168,7 @@ procedure optim_def_use(p, uses, defs) {
 
     ir_Unreachable:{ }
 
-    default :   { runerr(500, p); }
+    default :   { throw("unrecognized type", p) }
     }
 }
 
@@ -245,7 +245,7 @@ procedure optim_rewrite(p, rename) {
             p.fn := optim_rename(p.fn, rename)
             }
 
-    default :   { runerr(500,p); }
+    default :   { throw("unrecognized type", p) }
     }
     return p;
 }
@@ -287,7 +287,7 @@ procedure optim_fallthrough(new) {
               type(insn) == ir_Goto &
               type(insn.targetLabel) == ir_Label &
               refcount[insn.targetLabel] = 1 do {
-            \new[insn.targetLabel] | runerr(500, insn.targetLabel)
+            \new[insn.targetLabel] | throw("/new", insn.targetLabel)
             new[lab] := chunk[1:-1] ||| new[insn.targetLabel]
             new.delete(insn.targetLabel)
         }
@@ -322,7 +322,7 @@ procedure optim_goto_transitive(t, new, lab) {
     local sc
     local i
 
-    \t[lab] | runerr(500, lab)
+    \t[lab] | throw("/t[lab]", t, lab)
 
     if \new[lab] then {
 	return
@@ -354,7 +354,7 @@ procedure optim_goto_transitive(t, new, lab) {
 		# nothing
 		}
 	    ir_Label : {  # ir_Label : ( value )
-	            runerr(500, p)
+				throw("case ir_Label", p)
 		}
 	    ir_IndirectGoto : {
 	            every i := 1 to *p.labelList do {
@@ -402,7 +402,7 @@ procedure optim_goto_transitive(t, new, lab) {
 		p.resumeLabel := optim_goto_chain(p.resumeLabel, t)
 		optim_goto_transitive(t, new, p.resumeLabel)
 		}
-	    default : runerr(500, p)
+	    default : throw("unrecognized type", p)
 	    }
     }
 }
@@ -469,7 +469,7 @@ procedure optim_refcountX(refcount, p) {
     ir_EnterScope :    { }
     ir_ExitScope :    { }
     ir_Catch :   { }
-    default : runerr(500, p)
+    default : throw("unrecognized type", p)
     }
 }
 
@@ -513,7 +513,7 @@ procedure optim(irgen, flagList) {
             }
 	    suspend p
         }
-        default: runerr(500, p)
+        default: throw("unrecognized type", p)
         }
     }
 }

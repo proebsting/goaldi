@@ -86,7 +86,7 @@ procedure parse_cclause() {
         coord := parse_tok_rec.coord
         parse_match_token(lex_COLON)
         body := parse_expr()
-    } else if member(cclause_set, parse_tok_rec) then {
+    } else if cclause_set.member(parse_tok_rec) then {
         e := parse_expr()
         coord := parse_tok_rec.coord
         parse_match_token(lex_COLON)
@@ -269,7 +269,7 @@ procedure parse_expr1() {
                             lex_REVASSIGN, lex_REVSWAP, lex_SWAP, lex_ATCOLON])
     #  expr2 {  expr1op  expr1 } (Right Associative)
     ret := parse_expr2()
-    while member(expr1_set, parse_tok_rec) do {
+    while expr1_set.member(parse_tok_rec) do {
 		coord := parse_tok_rec.coord
 		op := parse_eat_token()
 		right := parse_expr1()
@@ -314,9 +314,9 @@ procedure parse_expr10() {
 			      lex_SLASHSLASH,
                               lex_DIFF])
 
-    if member(expr10_set1, parse_tok_rec) then {
+    if expr10_set1.member(parse_tok_rec) then {
         return parse_expr11a()
-    } else if member(expr10_set2, parse_tok_rec) then {
+    } else if expr10_set2.member(parse_tok_rec) then {
         coord := parse_tok_rec.coord
         op := parse_eat_token()
         operand := parse_expr10()
@@ -325,7 +325,7 @@ procedure parse_expr10() {
         "not":      return a_Not(operand, coord)
         default:    return a_Unop(op, operand, coord)
         }
-    } else if member(expr10_set3, parse_tok_rec) then {
+    } else if expr10_set3.member(parse_tok_rec) then {
         tmp_tok := parse_tok_rec
         coord := parse_tok_rec.coord
         op := parse_eat_token()
@@ -337,7 +337,7 @@ procedure parse_expr10() {
         lex_UNION     : return a_Unop("+", operand, coord)
         lex_INTER     : return a_Unop("*",a_Unop("*", operand, coord), coord)
         lex_DIFF      : return a_Unop("-",a_Unop("-", operand, coord), coord)
-        default     : runerr(500)
+        default     : throw("unrecognized token", tmp_tok)
         }
     } else {
         parse_error("\""||parse_tok_rec.str||"\": expression expected")
@@ -516,7 +516,7 @@ procedure parse_expr11a() {
     /expr11_set := set([lex_DOT, lex_LBRACE, lex_LBRACK, lex_LPAREN, lex_LCOMP])
     #  expr11 {  expr11suffix } 
     left := parse_expr11()
-    while member(expr11_set, parse_tok_rec) do {
+    while expr11_set.member(parse_tok_rec) do {
         left := parse_expr11suffix(left)
     }
     return left
@@ -613,7 +613,7 @@ procedure parse_expr11suffix(lhs) {
 	coord := parse_tok_rec.coord
         parse_eat_token()
         left := parse_nexpr()
-        if member(expr11suffix_set2, parse_tok_rec) then {
+        if expr11suffix_set2.member(parse_tok_rec) then {
 	    coord := parse_tok_rec.coord
             op := "[" || parse_eat_token() || "]"
             right := parse_expr()
@@ -705,7 +705,7 @@ procedure parse_expr4() {
     #  expr5 {  expr4op  expr4 } 
     ret := parse_expr5()
 
-    while member(expr4_set, parse_tok_rec) do {
+    while expr4_set.member(parse_tok_rec) do {
 	coord := parse_tok_rec.coord
         op := parse_eat_token()
         right := parse_expr5()
@@ -743,7 +743,7 @@ procedure parse_expr6() {
         /expr6_set := set([lex_DIFF, lex_MINUS, lex_PLUS, lex_UNION])
 
     ret := parse_expr7()
-    while member(expr6_set, parse_tok_rec) do {
+    while expr6_set.member(parse_tok_rec) do {
 	coord := parse_tok_rec.coord
         op := parse_eat_token()
         right := parse_expr7()
@@ -764,7 +764,7 @@ procedure parse_expr7() {
 
     ret := parse_expr8()
 
-    while member(expr7_set, parse_tok_rec) do {
+    while expr7_set.member(parse_tok_rec) do {
 	coord := parse_tok_rec.coord
         op := parse_eat_token()
         right := parse_expr8()
@@ -843,7 +843,7 @@ procedure new_parse_exprlist() {
 		      lex_PROCEDURE ])
     
     L := []
-    while member(expr_set, parse_tok_rec) do {
+    while expr_set.member(parse_tok_rec) do {
         e := parse_expr()
 	L.put(e)
 	if (parse_tok_rec === lex_COMMA) then {
@@ -1105,7 +1105,7 @@ procedure parse_nexpr() {
 		      lex_STATIC,
 		      lex_LCOMP,
 		      lex_PROCEDURE ])
-    if member(nexpr_set, parse_tok_rec) then {
+    if nexpr_set.member(parse_tok_rec) then {
         return parse_expr()
     }
     return nil
@@ -1252,7 +1252,7 @@ procedure parse_do_proc(noident) {
 
     body := parse_braced()
 #    nexprList := []
-#    while member(do_proc_set, parse_tok_rec) do {
+#    while do_proc_set.member(parse_tok_rec) do {
 #        e := parse_nexpr()
 #        put(nexprList, e)
 #        parse_match_token(lex_SEMICOL)
@@ -1280,7 +1280,7 @@ procedure parse_program() {
         if \d then {
             parse_match_token(lex_SEMICOL)
 	}
-        if member(program_set, parse_tok_rec) then {
+        if program_set.member(parse_tok_rec) then {
             d := parse_decl()
             suspend d
         } else {

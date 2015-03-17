@@ -349,7 +349,7 @@ procedure ir_a_Every(p, st, target, bounded, rval) {
     st.loop_stack.put(p)
     suspend ir(p.expr, st, nil, nil, "rval")
     suspend ir(p.body, st, nil, "always bounded", "rval")
-    pull(st.loop_stack)
+    st.loop_stack.pull()
 
     suspend ir_chunk(p.ir.x.nextlabel, [ ir_Goto(ir_coord(p.coord), p.expr.ir.resume) ])
     suspend ir_chunk(p.ir.start, [ ir_Goto(ir_coord(p.coord), p.expr.ir.start) ])
@@ -399,7 +399,7 @@ procedure ir_a_Parallel(p, st, target, bounded, rval) {
     local t
     local success
 
-    \p.coord | runerr(500, p)
+    \p.coord | throw("/p.coord", p)
     ir_init(p)
 
     L := p.exprList
@@ -446,9 +446,9 @@ procedure ir_a_Call(p, st, target, bounded, rval) {
     local args
     local clsr
 
-    \p.coord | runerr(500, p)
+    \p.coord | throw("/p.coord", p)
     every /(!p.args.exprList) := a_Nil(p.coord)
-    type(p.args) == a_Arglist | runerr(500, p.args)
+    type(p.args) == a_Arglist | throw("not type a_Arglist", p.args)
 
     ir_init(p)
     value := ir_tmp(st)
@@ -465,7 +465,7 @@ procedure ir_a_Call(p, st, target, bounded, rval) {
     }
 
     L := [p.fn] ||| p.args.exprList
-    \p.coord | runerr(500, p)
+    \p.coord | throw("/p.coord", p)
 
     suspend ir_chunk(p.ir.start, [ ir_Goto(ir_coord(p.coord), p.fn.ir.start) ])
     suspend ir_chunk(p.ir.resume, [
@@ -712,7 +712,7 @@ procedure ir_a_Global(p, st, target, bounded, rval) {
     static counter
     /counter := 0
 
-    /st | runerr(500, p)
+    /st | throw("\st", st)
     if \p.expr then {
         st := ir_stacks(0)
         st.localSet := set([])
@@ -736,7 +736,7 @@ procedure ir_a_Initial(p, st, target, bounded, rval) {
     static counter
     /counter := 0
 
-    /st | runerr(500, p)
+    /st | throw("\st", st)
     st := ir_stacks(0)
     st.localSet := set([])
     st.staticSet := set([])
@@ -876,7 +876,8 @@ procedure ir_a_ProcDecl0(p, st) {
     ir_declare_set.insert(p.ident.id)
 
     f := ir_a_ProcDecl1(st, p.code, params, p.accumulate, p.ident.coord)
-    st.syms := st.syms.parent # this is very odd, why is it here?  Should it be in the caller?
+    st.syms := st.syms.parent # this is very odd, why is it here?
+							# Should it be in the caller?
     return f
 }
 
@@ -944,7 +945,7 @@ procedure ir_a_RepeatX(p, st, target, bounded, rval) {
     ir_init_loop(p, st, target, bounded, rval)
     st.loop_stack.put(p)
     suspend ir(p.body, st, nil, "always bounded", "rval")
-    pull(st.loop_stack)
+    st.loop_stack.pull()
 
     suspend ir_chunk(p.ir.x.nextlabel, [ ir_Goto(ir_coord(p.coord), p.body.ir.start) ])
     suspend ir_chunk(p.ir.start, [ ir_Goto(ir_coord(p.coord), p.body.ir.start) ])
@@ -1022,7 +1023,7 @@ procedure ir_a_Suspend(p, st, target, bounded, rval) {
     st.loop_stack.put(p)
     suspend ir(p.expr, st, susp, nil, "rval")
     suspend ir(p.body, st, nil, "always bounded", nil)
-    pull(st.loop_stack)
+    st.loop_stack.pull()
 
     suspend ir_chunk(p.ir.x.nextlabel, [ ir_Goto(ir_coord(p.coord), p.expr.ir.resume) ])
     suspend ir_chunk(p.ir.start, [ ir_Goto(ir_coord(p.coord), p.expr.ir.start) ])
@@ -1044,7 +1045,7 @@ procedure ir_a_Until(p, st, target, bounded, rval) {
     st.loop_stack.put(p)
     suspend ir(p.expr, st, nil, "always bounded", "rval")
     suspend ir(p.body, st, nil, "always bounded", "rval")
-    pull(st.loop_stack)
+    st.loop_stack.pull()
 
     suspend ir_chunk(p.ir.x.nextlabel, [ ir_Goto(ir_coord(p.coord), p.expr.ir.start) ])
     suspend ir_chunk(p.ir.start, [ ir_Goto(ir_coord(p.coord), p.expr.ir.start) ])
@@ -1067,7 +1068,7 @@ procedure ir_a_While(p, st, target, bounded, rval) {
     st.loop_stack.put(p)
     suspend ir(p.expr, st, nil, "always bounded", "rval")
     suspend ir(p.body, st, nil, "always bounded", "rval")
-    pull(st.loop_stack)
+    st.loop_stack.pull()
 
     suspend ir_chunk(p.ir.x.nextlabel, [ ir_Goto(ir_coord(p.coord), p.expr.ir.start) ])
     suspend ir_chunk(p.ir.start, [ ir_Goto(ir_coord(p.coord), p.expr.ir.start) ])
@@ -1091,7 +1092,7 @@ procedure ir_a_Repeat(p, st, target, bounded, rval) {
     st.loop_stack.put(p)
     suspend ir(p.expr, st, nil, "always bounded", "rval")
     suspend ir(p.body, st, nil, "always bounded", "rval")
-    pull(st.loop_stack)
+    st.loop_stack.pull()
 
     suspend ir_chunk(p.ir.x.nextlabel, [ ir_Goto(ir_coord(p.coord), p.expr.ir.start) ])
 
@@ -1110,7 +1111,7 @@ procedure ir_a_Repeat(p, st, target, bounded, rval) {
 procedure ir_a_Create(p, st, target, bounded, rval) {
     local t
 
-    \p.coord | runerr(500, p)
+    \p.coord | throw("/p.coord", p)
     ir_init(p)
     t := (\target | ir_tmp(st))
 
@@ -1266,7 +1267,7 @@ procedure ir_a_Ident(p, st, target, bounded, rval) {
         T := ir_lookupS(st, p.id)
         s := ((\T).Static[p.id] | p.id)
     } else {
-    	type(p.namespace) == string | runerr(500, p.namespace)
+    	type(p.namespace) == string | throw("namespace not string", p)
         s := p.id
         st.globalSet.insert(p.namespace || "::" || p.id)
     }
@@ -1573,7 +1574,7 @@ procedure ir_a_Compound(p, st, target, bounded, rval) {
     suspend ir(p.exprList[-1], st, target, bounded, rval)
 
     L := p.exprList
-    *L > 0 | stop("fatal error in ir_a_Compound")
+    *L > 0 | throw("*L=0", L)
 
     /bounded & suspend ir_chunk(p.ir.resume, [ ir_Goto(ir_coord(p.coord), L[-1].ir.resume) ])
 
@@ -1633,7 +1634,7 @@ procedure ir_a_Key(p, st, target, bounded, rval) {
     local s
 
     ir_init(p)
-    \p.coord | runerr(500, p)
+    \p.coord | throw("/p.coord", p)
 
     suspend ir_chunk(p.ir.start, [
         ir_Key(ir_coord(p.coord), target, p.id, ir_stname(ir_lookupD(st,p.id))),
@@ -1648,7 +1649,7 @@ procedure ir_a_ListConstructor(p, st, target, bounded, rval) {
     local i
     local args
 
-    \p.coord | runerr(500, p)
+    \p.coord | throw("/p.coord", p)
     every /(!p.exprList) := a_Nil(p.coord)
 
     ir_init(p)
@@ -1675,7 +1676,7 @@ procedure ir_a_ListConstructor(p, st, target, bounded, rval) {
         suspend ir_chunk(L[i].ir.success, [ ir_Goto(ir_coord(p.coord), L[i+1].ir.start) ])
         suspend ir_chunk(L[i].ir.failure, [ ir_Goto(ir_coord(p.coord), L[i-1].ir.resume) ])
     }
-    \p.coord | runerr(500, p)
+    \p.coord | throw("/p.coord", p)
     if \target then {
         suspend ir_chunk(L[-1].ir.start, [
             ir_MakeList(ir_coord(p.coord), target, args),
@@ -1693,7 +1694,7 @@ procedure ir_a_ListComprehension(p, st, target, bounded, rval) {
     local tmp
     local v
 
-    \p.coord | runerr(500, p)
+    \p.coord | throw("/p.coord", p)
     ir_init(p)
 
     tmp := ir_tmp(st)
@@ -1724,7 +1725,7 @@ procedure ir_outer(p) {
     a_Record : suspend ir_a_Record(p)
     a_Package : suspend ir_a_Package(p)
     a_Initial : suspend ir_a_Initial(p)
-    default : runerr(500, p)
+    default : throw("unrecognized type", p)
     }
 }
 
@@ -1776,7 +1777,7 @@ procedure ir(p, st, target, bounded, rval) {
     a_Key : suspend ir_a_Key(p, st, target, bounded, rval)
     a_Local : suspend ir_a_Local(p, st, target, bounded, rval)
     a_Static : suspend ir_a_Static(p, st, target, bounded, rval)
-    default : runerr(500, p)
+    default : throw("unrecognized type", p)
     }
 }
 
@@ -1795,7 +1796,7 @@ procedure ir_opfn(coord, lhs, lhsclsr, op, args, failLabel) {
         neverfail[3] := set([ ])
     }
 
-    op.arity = *args | runerr(500, op)
+    op.arity = *args | throw("no arity", op)
     if neverfail[op.arity].member(op.name) then {
         failLabel := nil
     }

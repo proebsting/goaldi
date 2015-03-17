@@ -66,11 +66,11 @@ procedure json(p, indent) {
 		return json_record(p, indent)
 	} else {
 		case type(p) of {
-		"list": return json_list(p, indent)
-		"set": return json_list(p, indent)
-		"string": return json_image(string(p))
-		"real" | "integer": return image(string(p))
-		default: runerr(500, p)
+			list: return json_list(p, indent)
+			set: return json_list(p, indent)
+			string: return json_image(string(p))
+			number: return image(string(p))
+			default: throw("bad type for json", p)
 		}
 	}
 }
