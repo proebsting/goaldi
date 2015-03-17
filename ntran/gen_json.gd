@@ -43,6 +43,7 @@ procedure json_record(p, indent) {
 	s := "{\n" || indent || "\t\"tag\" : " || image(type(p))
 	every i := 1 to *p do {
 		s ||:= ",\n" || indent || "\t"
+		# find name of field i
 		# GMT .*\.(.*)
 		# name(p[i]) ? {
 			# tab(upto('.'))

@@ -1,18 +1,32 @@
-constructor empty() : empty{}
-constructor point(x,y) : point{x:3,y:5}
-constructor point(x,y) : point{x:2,y:3}
-constructor point(x,y) : point{x:4,y:8}
-constructor rect(x,y,w,h) : rect{x:4,y:3,w:2,h:1}
-constructor rect(x,y,w,h) : rect{x:1,y:3,w:6,h:4}
+constructor empty() : 0 : empty{}
+constructor point(xpos,ypos) : 2 : point{xpos:3,ypos:5}
+   c[1] == "xpos"    c["xpos"] = 1    v[1] = 3    v["xpos"] = 3
+   c[2] == "ypos"    c["ypos"] = 2    v[2] = 5    v["ypos"] = 5
+constructor point(xpos,ypos) : 2 : point{xpos:2,ypos:3}
+   c[1] == "xpos"    c["xpos"] = 1    v[1] = 2    v["xpos"] = 2
+   c[2] == "ypos"    c["ypos"] = 2    v[2] = 3    v["ypos"] = 3
+constructor point(xpos,ypos) : 2 : point{xpos:4,ypos:8}
+   c[1] == "xpos"    c["xpos"] = 1    v[1] = 4    v["xpos"] = 4
+   c[2] == "ypos"    c["ypos"] = 2    v[2] = 8    v["ypos"] = 8
+constructor rect(x,y,w,h) : 4 : rect{x:4,y:3,w:2,h:1}
+   c[1] == "x"    c["x"] = 1    v[1] = 4    v["x"] = 4
+   c[2] == "y"    c["y"] = 2    v[2] = 3    v["y"] = 3
+   c[3] == "w"    c["w"] = 3    v[3] = 2    v["w"] = 2
+   c[4] == "h"    c["h"] = 4    v[4] = 1    v["h"] = 1
+constructor rect(x,y,w,h) : 4 : rect{x:1,y:3,w:6,h:4}
+   c[1] == "x"    c["x"] = 1    v[1] = 1    v["x"] = 1
+   c[2] == "y"    c["y"] = 2    v[2] = 3    v["y"] = 3
+   c[3] == "w"    c["w"] = 3    v[3] = 6    v["w"] = 6
+   c[4] == "h"    c["h"] = 4    v[4] = 4    v["h"] = 4
 L: constructor empty()
-L: constructor point(x,y)
-L: constructor point(x,y)
-L: constructor point(x,y)
+L: constructor point(xpos,ypos)
+L: constructor point(xpos,ypos)
+L: constructor point(xpos,ypos)
 L: constructor rect(x,y,w,h)
 L: constructor rect(x,y,w,h)
 V: empty{}
-V: point{x:2,y:3}
-V: point{x:3,y:5}
-V: point{x:4,y:8}
+V: point{xpos:2,ypos:3}
+V: point{xpos:3,ypos:5}
+V: point{xpos:4,ypos:8}
 V: rect{x:1,y:3,w:6,h:4}
 V: rect{x:4,y:3,w:2,h:1}

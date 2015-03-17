@@ -31,36 +31,15 @@ func (v *VRecord) Field(f string) Value {
 	panic(NewExn("Field not found: "+f, v))
 }
 
-//  VRecord.Index(u, k) implements an indexed reference R[k]
+//  VRecord.Index(lval, x) implements an indexed reference R[x]
 func (v *VRecord) Index(lval Value, x Value) Value {
-	n := len(v.Data)
-	// if this is a string, check first for matching field name
-	if s, ok := x.(*VString); ok {
-		key := s.ToUTF8()
-		for i, f := range v.Ctor.Flist {
-			if f == key {
-				if lval == nil {
-					return v.Data[i]
-				} else {
-					return Trapped(&v.Data[i])
-				}
-			}
-		}
-		k := s.TryNumber()
-		if k == nil {
-			return nil // fail: unmatched string, not a number
-		}
-		x = k
-	}
-	// otherwise index by number
-	i := int(x.(Numerable).ToNumber().Val())
-	i = GoIndex(i, n)
-	if i >= n {
-		return nil // fail: subscript out of range
+	i, _ := v.Ctor.Lookup(x)
+	if i < 0 {
+		return nil // fail: not found
 	} else if lval == nil {
-		return v.Data[i]
+		return v.Data[i] // return value
 	} else {
-		return Trapped(&v.Data[i])
+		return Trapped(&v.Data[i]) // return trapped lvalue
 	}
 }
 

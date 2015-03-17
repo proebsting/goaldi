@@ -99,6 +99,54 @@ func (c *VCtor) Field(f string) Value {
 	return GetMethod(TypeMethods, &c.VType, f)
 }
 
+//  VCtor.Size() returns the number of fields.
+func (c *VCtor) Size() Value {
+	return NewNumber(float64(len(c.Flist)))
+}
+
+//  VCtor.Index -- implement C[x] to return name of field i.
+func (c *VCtor) Index(lval Value, x Value) Value {
+	i, isNumber := c.Lookup(x)
+	if i < 0 {
+		return nil // fail: subscript out of range
+	}
+	if isNumber {
+		// for numeric argument, return field name
+		return NewString(c.Flist[i])
+	} else {
+		// for string argument, return corresponding Goaldi index
+		return NewNumber(float64(i + 1))
+	}
+}
+
+//  VCtor.Lookup(x) converts x (s or n) to zero-based Go index, or -1 to fail.
+func (c *VCtor) Lookup(x Value) (index int, isNumber bool) {
+	n := len(c.Flist)
+	// if this is a string, check first for matching field name
+	if s, ok := x.(*VString); ok {
+		key := s.ToUTF8()
+		i := c.Fmap[key]
+		if i > 0 {
+			return i - 1, false
+		} else {
+			return -1, false // fail: name not found
+		}
+		k := s.TryNumber()
+		if k == nil {
+			return -1, false // fail: unmatched string, not a number
+		}
+		x = k
+	}
+	// not a string; must be a number, else throw error
+	i := int(x.(Numerable).ToNumber().Val())
+	i = GoIndex(i, n)
+	if i < n {
+		return i, true // in range
+	} else {
+		return -1, true // fail: not in range
+	}
+}
+
 //  VCtor.GoString -- convert to Go string for image() and printf("%#v")
 func (v *VCtor) GoString() string {
 	s := "constructor " + v.TypeName + "("
