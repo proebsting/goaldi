@@ -1128,8 +1128,8 @@ procedure ir_a_Create(p, st, target, bounded, rval) {
 }
 
 procedure mkSuffix(t) {
-    # return ":" || (image(t) ? (tab(upto(&digits)) & tab(upto('('))))
-    # GMT .*([0-9].*)\(
+	/static rx := regex("[0-9]+")
+	return rx.FindString(t)
 }
 
 procedure ir_stname(s) {
@@ -1828,14 +1828,8 @@ procedure ir_label(p, suffix) {
 }
 
 procedure ir_naming(p, suffix) {
-    local s
-
-    # GMT .* (.*)\(
-    # image(p) ? {
-        # tab(upto(' '))
-        # move(1)
-        # s := tab(upto('('))
-    # }
+	/static rx := regex("a_[^(]+")
+	local s := rx.FindString(p)
     return s || "_" || suffix
 }
 

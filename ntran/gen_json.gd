@@ -38,19 +38,11 @@ procedure json_list(p, indent) {
 procedure json_record(p, indent) {
 	local s
 	local i
-	local t
 
 	s := "{\n" || indent || "\t\"tag\" : " || image(type(p))
 	every i := 1 to *p do {
 		s ||:= ",\n" || indent || "\t"
-		# find name of field i
-		# GMT .*\.(.*)
-		# name(p[i]) ? {
-			# tab(upto('.'))
-			# move(1)
-			# t := tab(0)
-		# }
-		s ||:= image(t)
+		s ||:= image(p.type()[i])
 		s ||:= " : "
 		s ||:= json(p[i], indent || "\t")
 	}
