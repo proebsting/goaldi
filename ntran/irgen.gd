@@ -500,7 +500,7 @@ procedure ir_conjunction(p, st, target, bounded, rval) {
 procedure ir_augmented_assignment(p, target, bounded, rval, lv, rv, tmp) {
     local op
 
-	op := p.op[1:-2]	 # was: op := (p.op ? tab(find(":=")))
+	op := p.op[1:-2]
     /bounded & suspend ir_chunk(p.ir.resume, [ ir_Goto(ir_coord(p.coord), p.right.ir.resume) ])
     suspend ir_chunk(p.right.ir.success, [
         ir_opfn(ir_coord(p.coord), tmp, nil, ir_operator(op, 2, "rval"), [ lv, rv ], p.right.ir.resume),
@@ -540,11 +540,7 @@ procedure ir_binary(p, target, bounded, rval, lv, rv, clsr, funcs) {
 }
 
 procedure ir_rval(op, arity, arg, parent) {
-    if find(":=", op) & arg = 1 then { 
-        return nil
-    } else if op == "<-" & arg = 1 then { 
-        return nil
-    } else if op == (":=:" | "<->") then { 
+	if contains(op, ":=" | "<-") & arg = 1 then { 
         return nil
     } else if op == "[]" & arg = 1 then { 
         return parent
@@ -583,7 +579,7 @@ procedure ir_a_Binop(p, st, target, bounded, rval) {
 
     ir_init(p)
     if not funcs.member(p.op) &
-       not funcs.member(p.op[1:find(":=", p.op)]) then {
+       not (funcs.member(p.op[1:-2]) & p.op[-2:0] == ":=") then {
         clsr := ir_tmpclosure(st)
     }
     lv := ir_value(p.left, st, nil)
@@ -598,7 +594,7 @@ procedure ir_a_Binop(p, st, target, bounded, rval) {
     suspend ir_chunk(p.left.ir.failure, [ ir_Goto(ir_coord(p.coord), p.ir.failure) ])
     suspend ir_chunk(p.right.ir.failure, [ ir_Goto(ir_coord(p.coord), p.left.ir.resume) ])
 
-    if find(":=", p.op) > 1 then {
+	if *p.op > 2 & contains(p.op, ":=") then {
         suspend ir_augmented_assignment(p, target, bounded, rval, lv, rv, tmp)
     } else {
         suspend ir_binary(p, target, bounded, rval, lv, rv, clsr, funcs)
@@ -779,7 +775,7 @@ procedure ir_a_Reallit(p, st, target, bounded, rval) {
 
     ir_init(p)
 
-    if not (p.real := real(p.real)) then {
+    if not (p.real := number(p.real)) then {
         semantic_error(p.real || ": illegal real literal", ir_coord(p.coord))
     }
     suspend ir_chunk(p.ir.start, [

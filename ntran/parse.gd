@@ -1070,7 +1070,7 @@ procedure parse_literal() {
     lex_INTLIT  :   # INTLIT 
         return a_Intlit(integer(parse_eat_token()), coord)
     lex_REALLIT :   # REALLIT 
-        return a_Reallit(real(parse_eat_token()), coord)
+        return a_Reallit(number(parse_eat_token()), coord)
     lex_STRINGLIT   :   # STRINGLIT 
         return a_Stringlit(parse_eat_token(), coord)
     default :
@@ -1237,7 +1237,7 @@ procedure parse_do_proc(noident) {
             accumulate := 1
         }
     }
-    if upto(".", ident.id) then {	# if a method # goaldi issue
+	if contains(ident.id, ".") then {	# if a method # goaldi issue
         # add an initial "self" parameter; note NOT a reserved word
         paramList.push(a_Ident("self", nil, idcoord))
     }
