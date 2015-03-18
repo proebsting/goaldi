@@ -7,4 +7,4 @@ default:
 	goaldi *.gd -- gtran.gd
 
 clean:
-	rm -f *.gir
+	rm -f *.tok *.ast *.rir *.oir *.gir
