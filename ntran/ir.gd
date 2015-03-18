@@ -50,5 +50,3 @@ record ir_SelectCase(coord, kind, lhs, rhs, bodyLabel)
 record ir_NoValue(coord, lhs)
 
 record ir_Unreachable(coord)
-
-record ir_coordinate(file, line, column)

@@ -55,9 +55,8 @@ procedure json(p, indent) {
 	}
 
 	case type(p) of {
-	"ir_Tmp" | "ir_TmpLabel" | "ir_TmpClosure" : return image(p.name)
-	"ir_Label" : return image(p.value)
-	"ir_coordinate" : return image(p.file || ":" || p.line || ":" || p.column)
+		"ir_Tmp" | "ir_TmpLabel" | "ir_TmpClosure" : return image(p.name)
+		"ir_Label" : return image(p.value)
 	}
 
 	if match("record", image(p)) & type(p) ~== "string" then {
