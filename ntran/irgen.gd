@@ -540,7 +540,7 @@ procedure ir_binary(p, target, bounded, rval, lv, rv, clsr, funcs) {
 }
 
 procedure ir_rval(op, arity, arg, parent) {
-		if contains(op, ":=" | "<-") & arg = 1 then {
+	if contains(op, ":=" | "<-") & arg = 1 then {
 		return nil
 	} else if op == "[]" & arg = 1 then {
 		return parent
@@ -579,7 +579,7 @@ procedure ir_a_Binop(p, st, target, bounded, rval) {
 
 	ir_init(p)
 	if not funcs.member(p.op) &
-	   not (funcs.member(p.op[1:-2]) & p.op[-2:0] == ":=") then {
+			not (funcs.member(p.op[1:-2]) & p.op[-2:0] == ":=") then {
 		clsr := ir_tmpclosure(st)
 	}
 	lv := ir_value(p.left, st, nil)
@@ -867,7 +867,7 @@ procedure ir_a_ProcDecl0(p, st) {
 		params.put(s)
 	}
 	if ir_declare_set.member(p.ident.id) then {
-				semantic_error(image(p.ident.id) || ": inconsistent redeclaration",
+		semantic_error(image(p.ident.id) || ": inconsistent redeclaration",
 					   p.ident.coord)
 	}
 	ir_declare_set.insert(p.ident.id)
@@ -920,7 +920,7 @@ procedure ir_a_Record(p, st, target, bounded, rval) {
 	local i
 
 	if ir_declare_set.member(p.ident.id) then {
-				semantic_error(image(p.ident.id) || ": inconsistent redeclaration",
+		semantic_error(image(p.ident.id) || ": inconsistent redeclaration",
 					   p.ident.coord)
 	}
 	ir_declare_set.insert(p.ident.id)
@@ -1126,8 +1126,8 @@ procedure ir_a_Create(p, st, target, bounded, rval) {
 }
 
 procedure mkSuffix(t) {
-		/static rx := regex("[0-9]+")
-		return rx.FindString(t)
+	/static rx := regex("[0-9]+")
+	return rx.FindString(t)
 }
 
 procedure ir_stname(s) {
@@ -1717,64 +1717,64 @@ procedure ir_a_ListComprehension(p, st, target, bounded, rval) {
 
 procedure ir_outer(p) {
 	case type(p) of {
-	a_ProcDecl : suspend ir_a_ProcDecl(p)
-	a_Global : suspend ir_a_Global(p)
-	a_Record : suspend ir_a_Record(p)
-	a_Package : suspend ir_a_Package(p)
-	a_Initial : suspend ir_a_Initial(p)
-	default : throw("unrecognized type", p)
+		a_ProcDecl : suspend ir_a_ProcDecl(p)
+		a_Global : suspend ir_a_Global(p)
+		a_Record : suspend ir_a_Record(p)
+		a_Package : suspend ir_a_Package(p)
+		a_Initial : suspend ir_a_Initial(p)
+		default : throw("unrecognized type", p)
 	}
 }
 
 procedure ir(p, st, target, bounded, rval) {
 	case type(p) of {
-	a_NoOp : suspend ir_a_NoOp(p, st, target, bounded, rval)
-	a_Field : suspend ir_a_Field(p, st, target, bounded, rval)
-	a_Call : suspend ir_a_Call(p, st, target, bounded, rval)
-	a_Paired : suspend ir_a_Paired(p, st, target, bounded, rval)
-	a_Limitation : suspend ir_a_Limitation(p, st, target, bounded, rval)
-	a_Not : suspend ir_a_Not(p, st, target, bounded, rval)
-	a_Alt : suspend ir_a_Alt(p, st, target, bounded, rval)
-	a_ExcAlt : suspend ir_a_ExcAlt(p, st, target, bounded, rval)
-	a_RepAlt : suspend ir_a_RepAlt(p, st, target, bounded, rval)
-	a_Case : suspend ir_a_Case(p, st, target, bounded, rval)
-	a_Select : suspend ir_a_Select(p, st, target, bounded, rval)
-	a_Every : suspend ir_a_Every(p, st, target, bounded, rval)
-	a_Sectionop : suspend ir_a_Sectionop(p, st, target, bounded, rval)
-	a_Binop : suspend ir_a_Binop(p, st, target, bounded, rval)
-	a_Unop : suspend ir_a_Unop(p, st, target, bounded, rval)
-	a_If : suspend ir_a_If(p, st, target, bounded, rval)
-	a_Initial : suspend ir_a_Initial(p, st, target, bounded, rval)
-	a_Intlit : suspend ir_a_Intlit(p, st, target, bounded, rval)
-	a_Reallit : suspend ir_a_Reallit(p, st, target, bounded, rval)
-	a_Stringlit : suspend ir_a_Stringlit(p, st, target, bounded, rval)
-	a_ProcDecl : suspend ir_a_ProcDeclNested(p, st, target, bounded, rval)
-	a_ProcCode : suspend ir_a_ProcCode(p, st, target, bounded, rval)
-	a_Repeat : suspend ir_a_Repeat(p, st, target, bounded, rval)
-	a_Return : suspend ir_a_Return(p, st, target, bounded, rval)
-	a_Nil : suspend ir_a_Nil(p, st, target, bounded, rval)
-	a_Catch : suspend ir_a_Catch(p, st, target, bounded, rval)
-	a_Fail : suspend ir_a_Fail(p, st, target, bounded, rval)
-	a_Suspend : suspend ir_a_Suspend(p, st, target, bounded, rval)
-	a_While : suspend ir_a_While(p, st, target, bounded, rval)
-	a_With : suspend ir_a_With(p, st, target, bounded, rval)
-	a_Create : suspend ir_a_Create(p, st, target, bounded, rval)
-	a_Ident : suspend ir_a_Ident(p, st, target, bounded, rval)
-	a_Continue : suspend ir_a_Continue(p, st, target, bounded, rval)
-	a_Break : suspend ir_a_Break(p, st, target, bounded, rval)
-	a_Yield : suspend ir_a_Yield(p, st, target, bounded, rval)
-	a_ToBy : suspend ir_a_ToBy(p, st, target, bounded, rval)
-	a_Mutual : suspend ir_a_Mutual(p, st, target, bounded, rval)
-	a_Parallel : suspend ir_a_Parallel(p, st, target, bounded, rval)
-	a_Compound : suspend ir_a_Compound(p, st, target, bounded, rval)
-	a_ListConstructor : suspend ir_a_ListConstructor(p, st, target,
-												   bounded, rval)
-	a_ListComprehension : suspend ir_a_ListComprehension(p, st, target,
-												   bounded, rval)
-	a_Key : suspend ir_a_Key(p, st, target, bounded, rval)
-	a_Local : suspend ir_a_Local(p, st, target, bounded, rval)
-	a_Static : suspend ir_a_Static(p, st, target, bounded, rval)
-	default : throw("unrecognized type", p)
+		a_NoOp : suspend ir_a_NoOp(p, st, target, bounded, rval)
+		a_Field : suspend ir_a_Field(p, st, target, bounded, rval)
+		a_Call : suspend ir_a_Call(p, st, target, bounded, rval)
+		a_Paired : suspend ir_a_Paired(p, st, target, bounded, rval)
+		a_Limitation : suspend ir_a_Limitation(p, st, target, bounded, rval)
+		a_Not : suspend ir_a_Not(p, st, target, bounded, rval)
+		a_Alt : suspend ir_a_Alt(p, st, target, bounded, rval)
+		a_ExcAlt : suspend ir_a_ExcAlt(p, st, target, bounded, rval)
+		a_RepAlt : suspend ir_a_RepAlt(p, st, target, bounded, rval)
+		a_Case : suspend ir_a_Case(p, st, target, bounded, rval)
+		a_Select : suspend ir_a_Select(p, st, target, bounded, rval)
+		a_Every : suspend ir_a_Every(p, st, target, bounded, rval)
+		a_Sectionop : suspend ir_a_Sectionop(p, st, target, bounded, rval)
+		a_Binop : suspend ir_a_Binop(p, st, target, bounded, rval)
+		a_Unop : suspend ir_a_Unop(p, st, target, bounded, rval)
+		a_If : suspend ir_a_If(p, st, target, bounded, rval)
+		a_Initial : suspend ir_a_Initial(p, st, target, bounded, rval)
+		a_Intlit : suspend ir_a_Intlit(p, st, target, bounded, rval)
+		a_Reallit : suspend ir_a_Reallit(p, st, target, bounded, rval)
+		a_Stringlit : suspend ir_a_Stringlit(p, st, target, bounded, rval)
+		a_ProcDecl : suspend ir_a_ProcDeclNested(p, st, target, bounded, rval)
+		a_ProcCode : suspend ir_a_ProcCode(p, st, target, bounded, rval)
+		a_Repeat : suspend ir_a_Repeat(p, st, target, bounded, rval)
+		a_Return : suspend ir_a_Return(p, st, target, bounded, rval)
+		a_Nil : suspend ir_a_Nil(p, st, target, bounded, rval)
+		a_Catch : suspend ir_a_Catch(p, st, target, bounded, rval)
+		a_Fail : suspend ir_a_Fail(p, st, target, bounded, rval)
+		a_Suspend : suspend ir_a_Suspend(p, st, target, bounded, rval)
+		a_While : suspend ir_a_While(p, st, target, bounded, rval)
+		a_With : suspend ir_a_With(p, st, target, bounded, rval)
+		a_Create : suspend ir_a_Create(p, st, target, bounded, rval)
+		a_Ident : suspend ir_a_Ident(p, st, target, bounded, rval)
+		a_Continue : suspend ir_a_Continue(p, st, target, bounded, rval)
+		a_Break : suspend ir_a_Break(p, st, target, bounded, rval)
+		a_Yield : suspend ir_a_Yield(p, st, target, bounded, rval)
+		a_ToBy : suspend ir_a_ToBy(p, st, target, bounded, rval)
+		a_Mutual : suspend ir_a_Mutual(p, st, target, bounded, rval)
+		a_Parallel : suspend ir_a_Parallel(p, st, target, bounded, rval)
+		a_Compound : suspend ir_a_Compound(p, st, target, bounded, rval)
+		a_ListConstructor : suspend ir_a_ListConstructor(p, st, target,
+													   bounded, rval)
+		a_ListComprehension : suspend ir_a_ListComprehension(p, st, target,
+													   bounded, rval)
+		a_Key : suspend ir_a_Key(p, st, target, bounded, rval)
+		a_Local : suspend ir_a_Local(p, st, target, bounded, rval)
+		a_Static : suspend ir_a_Static(p, st, target, bounded, rval)
+		default : throw("unrecognized type", p)
 	}
 }
 
@@ -1826,8 +1826,8 @@ procedure ir_label(p, suffix) {
 }
 
 procedure ir_naming(p, suffix) {
-		/static rx := regex("a_[^(]+")
-		local s := rx.FindString(p)
+	/static rx := regex("a_[^(]+")
+	local s := rx.FindString(p)
 	return s || "_" || suffix
 }
 
@@ -1867,8 +1867,8 @@ procedure semantic_error(msg, coord) {
 }
 
 procedure ir_coord(p) {
-		if /p then return nil
-		return ir_coordinate(p.file, p.line, p.column)
+	if /p then return nil
+	return ir_coordinate(p.file, p.line, p.column)
 }
 
 procedure ast2ir(parse, flagList) {
