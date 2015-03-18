@@ -285,7 +285,6 @@ global lex_AUGSLASHSLASH := lex_opr("//:=",   "")
 global lex_STAR          := lex_opr("*",      "b")
 global lex_AUGSTAR       := lex_opr("*:=",    "")
 global lex_SWAP          := lex_opr(":=:",    "")
-global lex_TILDE         := lex_opr("~",      "b")
 global lex_UNION         := lex_opr("++",     "b")
 global lex_AUGUNION      := lex_opr("++:=",   "")
 

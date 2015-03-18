@@ -131,7 +131,6 @@ procedure init_lex_tables()
                ["*",               "STAR",      "b" ],
                ["*:=",             "AUGSTAR",  ""  ],
                [":=:",             "SWAP",      ""  ],
-               ["~",               "TILDE",     "b" ],
                ["++",              "UNION",     "b" ],
                ["++:=",            "AUGUNION", ""  ]]
 end
