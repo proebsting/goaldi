@@ -1126,10 +1126,13 @@ procedure ir_a_Create(p, st, target, bounded, rval) {
 }
 
 procedure mkSuffix(t) {
+	/static T := table()
+	/T[t] := *T
+	return T[t]
 	#%#% extract serial number of record from its image
 	#%#% won't work in Goali: they don't have serial numbers
-	/static rx := regex("[0-9]+")
-	return rx.FindString(t)
+	# /static rx := regex("[0-9]+")
+	# return rx.FindString(t)
 }
 
 procedure ir_stname(s) {
@@ -1828,6 +1831,12 @@ procedure ir_label(p, suffix) {
 }
 
 procedure ir_naming(p, suffix) {
+	# kludge
+	/static T := table()
+	/T[p] := *T
+	return "phonylab_" || T[p] || "_" || suffix
+
+	# obsolete stuff follows
 	/static rx := regex("a_[^(]+")
 	local s := rx.FindString(p)
 	return s || "_" || suffix
