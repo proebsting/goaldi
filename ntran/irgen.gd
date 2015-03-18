@@ -448,7 +448,7 @@ procedure ir_a_Call(p, st, target, bounded, rval) {
 
 	\p.coord | throw("/p.coord", p)
 	every /(!p.args.exprList) := a_Nil(p.coord)
-	type(p.args) == a_Arglist | throw("not type a_Arglist", p.args)
+	type(p.args) === a_Arglist | throw("not type a_Arglist", p.args)
 
 	ir_init(p)
 	value := ir_tmp(st)
@@ -461,7 +461,7 @@ procedure ir_a_Call(p, st, target, bounded, rval) {
 	every i := 1 to *p.args.exprList do {
 		# the embedded if below seems like an Icon remnant --Todd
 		suspend ir(p.args.exprList[i], st, args[i], nil,
-				   if type(p.args.exprList[i]) == a_Ident then "rval" else nil)
+				   if type(p.args.exprList[i]) === a_Ident then "rval" else nil)
 	}
 
 	L := [p.fn] ||| p.args.exprList
@@ -754,7 +754,7 @@ procedure ir_value(p, st, target) {
 # record a_Intlit( int )
 procedure ir_a_Intlit(p, st, target, bounded, rval) {
 
-	if type(target) == ir_IntLit then target := nil
+	if type(target) === ir_IntLit then target := nil
 
 	ir_init(p)
 
@@ -771,7 +771,7 @@ procedure ir_a_Intlit(p, st, target, bounded, rval) {
 # record a_Reallit( real )
 procedure ir_a_Reallit(p, st, target, bounded, rval) {
 
-	if type(target) == ir_RealLit then target := nil
+	if type(target) === ir_RealLit then target := nil
 
 	ir_init(p)
 
@@ -788,7 +788,7 @@ procedure ir_a_Reallit(p, st, target, bounded, rval) {
 # record a_Stringlit( str )
 procedure ir_a_Stringlit(p, st, target, bounded, rval) {
 
-	if type(target) == ir_StrLit then target := nil
+	if type(target) === ir_StrLit then target := nil
 
 	ir_init(p)
 
@@ -811,8 +811,8 @@ procedure ir_a_ProcDeclNested(p, st, target, bounded, rval) {
 
 	ir_init(p)
 
-		#%#% DISABLED (there is no such type):
-	#%#% if type(target) == ir_ProcDecl then target := nil
+	#%#% DISABLED (there is no such type):
+	#%#% if type(target) === ir_ProcDecl then target := nil
 
 	p.ident.id := "$" || st.current_proc || "$nested$" || counter
 
@@ -1126,6 +1126,8 @@ procedure ir_a_Create(p, st, target, bounded, rval) {
 }
 
 procedure mkSuffix(t) {
+	#%#% extract serial number of record from its image
+	#%#% won't work in Goali: they don't have serial numbers
 	/static rx := regex("[0-9]+")
 	return rx.FindString(t)
 }
@@ -1252,7 +1254,7 @@ procedure ir_a_Ident(p, st, target, bounded, rval) {
 	local s
 	local T
 
-	if type(\target) ~== ir_Tmp then {
+	if type(\target) ~=== ir_Tmp then {
 		# #%#%# prevents nasty interaction with targeting.
 		# %#%#% probably a symptom of bad design....
 		target := nil
@@ -1264,7 +1266,7 @@ procedure ir_a_Ident(p, st, target, bounded, rval) {
 		T := ir_lookupS(st, p.id)
 		s := ((\T).Static[p.id] | p.id)
 	} else {
-		type(p.namespace) == string | throw("namespace not string", p)
+		type(p.namespace) === string | throw("namespace not string", p)
 		s := p.id
 		st.globalSet.insert(p.namespace || "::" || p.id)
 	}

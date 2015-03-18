@@ -68,7 +68,7 @@ procedure optim_copy_propagation(t, start) {
 		every pair := !t & k := pair.key & chunk := pair.value do {
 			newchunk := []
 			every insn := !chunk do {
-				if type(insn) == ir_Move &
+				if type(insn) === ir_Move &
 						defs[insn.lhs] = 1 &
 						uses[insn.rhs] = 1 then {
 					rename[insn.lhs] := insn.rhs
@@ -255,7 +255,7 @@ procedure optim_indirect_elimination(t) {
 	local insn
 
 	every chunk := !t & insn := chunk[-1] &
-			type(insn) == ir_IndirectGoto &
+			type(insn) === ir_IndirectGoto &
 			*insn.labelList = 1 do {
 		chunk[-1] := ir_Goto(insn.coord, insn.labelList[1])
 	}
@@ -284,8 +284,8 @@ procedure optim_fallthrough(new) {
 	every lab := (!new).key do {
 		while chunk := \new[lab] &
 				insn := chunk[-1] &
-				type(insn) == ir_Goto &
-				type(insn.targetLabel) == ir_Label &
+				type(insn) === ir_Goto &
+				type(insn.targetLabel) === ir_Label &
 				refcount[insn.targetLabel] = 1 do {
 			\new[insn.targetLabel] | throw("/new", insn.targetLabel)
 			new[lab] := chunk[1:-1] ||| new[insn.targetLabel]
@@ -309,7 +309,7 @@ procedure optim_goto_chain(lab, t) {
 
 	seen := set([])
 	while chunk := \t[lab] &
-			type(chunk[1]) == ir_Goto &
+			type(chunk[1]) === ir_Goto &
 			not seen.member(chunk[1].targetLabel) do {
 		lab := chunk[1].targetLabel
 		seen.insert(lab)
@@ -478,8 +478,8 @@ procedure optim_test_elimination(t, start) {
 	local insn
 
 	every chunk := !t &
-		    type(chunk[-1]) == ir_Goto &
-		    type(chunk[-2]) == (ir_Call | ir_OpFunction | ir_Select) &
+		    type(chunk[-1]) === ir_Goto &
+		    type(chunk[-2]) === (ir_Call | ir_OpFunction | ir_Select) &
 			chunk[-1].targetLabel === \chunk[-2].failLabel do {
 		chunk[-2].failLabel := nil
 	}

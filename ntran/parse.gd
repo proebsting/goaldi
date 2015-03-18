@@ -147,7 +147,7 @@ procedure parse_selectby(sc) {
 		return
 	}
 	e := parse_expr()
-	type(e) == "a_Binop" | fail
+	type(e) === a_Binop | fail
 	sc.left := e.left
 	case e.op of {
 		default: {
@@ -160,7 +160,7 @@ procedure parse_selectby(sc) {
 		}
 		":=": {
 			r := e.right
-			type(r) == "a_Unop" | fail
+			type(r) === a_Unop | fail
 			r.op === "@" | fail
 			sc.kind := "receive"
 			sc.right := r.operand
@@ -593,7 +593,7 @@ procedure parse_expr11suffix(lhs) {
 			parse_eat_token()
 			l := parse_named_exprlist()
 			parse_match_token(lex_RPAREN)
-				if type(l) == "parse_named" then {
+				if type(l) === parse_named then {
 					return a_Call(lhs, a_Arglist(l.exprList, l.nameList), coord)
 				} else {
 					return a_Call(lhs, a_Arglist(l, nil), coord)
@@ -900,7 +900,7 @@ procedure parse_named_exprlistX() {
 	local e
 
 	e := parse_nexpr()
-	if \e & type(e) == "a_Ident" & parse_tok_rec === lex_COLON then {
+	if \e & type(e) === a_Ident & parse_tok_rec === lex_COLON then {
 		return parse_named_exprlist0(e)
 	} else if \e | (parse_tok_rec === lex_COMMA) then {
 		l := [ e ]
@@ -930,7 +930,7 @@ procedure parse_named_exprlist() {
 		if parse_tok_rec === lex_COMMA then {
 			L.put(e)
 		} else if \e then {
-			if type(e) == "a_Ident" & parse_tok_rec === lex_COLON then {
+			if type(e) === a_Ident & parse_tok_rec === lex_COLON then {
 				N.put(e.id)
 				parse_match_token(lex_COLON)
 				e := parse_expr()

@@ -4,7 +4,7 @@
 #  a token record -- one shared/reused instance for each distinct token type
 
 record lex_tkrec (
-	text,		# actual or canonicalized form of the source token
+	str,		# actual or canonicalized form of the source token
 	flags,		# beginning and/or ending flags
 	coord,		# coordinate in source code (#%#% TO BE DONE)
 )
@@ -53,14 +53,14 @@ procedure lex_gentok(src) {
 				if ^t := \lex_kwtab[s] then {
 					suspend tk := t
 				} else {
-					lex_IDENT.text := s
+					lex_IDENT.str := s
 					suspend tk := lex_IDENT
 				}
 			} else if s := match(line, lex_n1_rx | lex_n2_rx | lex_n3_rx) then {
 				# number: test must precede operators to match ".123"
 				line := line[1+*s:0]
 				if ^n := number(s) then {
-					lex_REALLIT.text := image(n)	# put in canonical form
+					lex_REALLIT.str := image(n)	# put in canonical form
 					suspend tk := lex_REALLIT
 				} else {
 					lex_error("malformed number", s)
@@ -72,7 +72,7 @@ procedure lex_gentok(src) {
 			} else if s := match(line, lex_s1_rx | lex_r1_rx) then {
 				# simple string literal
 				line := line[1+*s:0]
-				lex_STRINGLIT.text := stringval(s)
+				lex_STRINGLIT.str := stringval(s)
 				suspend tk := lex_STRINGLIT
 			} else if s := match(line, lex_s2_rx) then {
 				# unterminated string literal: error
@@ -88,7 +88,7 @@ procedure lex_gentok(src) {
 							# found terminator
 							line := line[1+*t:0]
 							s ||:= t
-							lex_STRINGLIT.text := stringval(s)
+							lex_STRINGLIT.str := stringval(s)
 							suspend tk := lex_STRINGLIT
 							break
 						} else {
@@ -290,23 +290,23 @@ global lex_UNION         := lex_opr("++",     "b")
 global lex_AUGUNION      := lex_opr("++:=",   "")
 
 #  lex_lit defines a literal token.
-procedure lex_lit(text, flags) {
-	return lex_token(text, flags)
+procedure lex_lit(str, flags) {
+	return lex_token(str, flags)
 }
 
 #  lex_kwd defines a keyword token and enters it in the lex_kwtab table.
-procedure lex_kwd(text, flags) {
-	return lex_kwtab[text] := lex_token(text, flags)
+procedure lex_kwd(str, flags) {
+	return lex_kwtab[str] := lex_token(str, flags)
 }
 
 #  lex_opr defines an operator token and enters it in the lex_optab table.
-procedure lex_opr(text, flags) {
-	return lex_optab[text] := lex_token(text, flags)
+procedure lex_opr(str, flags) {
+	return lex_optab[str] := lex_token(str, flags)
 }
 
 #  lex_token defines a token record and puts its flags in the lex_flags table.
-procedure lex_token(text, flags) {
-	^r := lex_tkrec(text, flags)
+procedure lex_token(str, flags) {
+	^r := lex_tkrec(str, flags)
 	lex_flags[r] := flags
 	return r
 }
