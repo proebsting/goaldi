@@ -499,7 +499,7 @@ procedure optim(irgen, flagList) {
 				suspend p
 			}
 			ir_Function : {
-				if match("-O", !flagList) then {
+				if "-O" == !flagList then {
 					T := table()
 					every i := !p.codeList do {
 						T[i.label] := i.insnList
