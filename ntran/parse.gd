@@ -1277,6 +1277,9 @@ procedure parse_program() {
 		if \d then {
 			parse_match_token(lex_SEMICOL)
 		}
+		if parse_tok_rec === lex_EOFX then {
+			break
+		}
 		if program_set.member(parse_tok_rec) then {
 			d := parse_decl()
 			suspend d
