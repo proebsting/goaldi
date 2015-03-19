@@ -1615,7 +1615,7 @@ procedure ir_a_Compound(p, st, target, bounded, rval) {
 		ir_Goto(p.coord, L[1].ir.start),
 	])
 	suspend ir_chunk(failure, [
-		ir_ExitScope(p.coord, locals, dynamics, ir_stname(st.syms), parent),
+		ir_ExitScope(p.coord, locals, dynamics, ir_stname(st.syms)),
 		ir_Goto(p.coord, p.ir.failure),
 	])
 
