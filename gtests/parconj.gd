@@ -15,6 +15,8 @@ procedure main() {
 	every i := toby(1,3) && j := toby(4,5) && k := toby(6, 9) do
 		write(": ", i, j, k)
 	write()
+	1 && 0	# too simple -- this used to panic
+	write("done")
 }
 
 procedure toby(i, j) {
