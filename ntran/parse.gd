@@ -1469,6 +1469,5 @@ procedure parse_eat_token() {
 
 
 procedure parse_error(msg) {
-	stop("File ", parse_tok_rec.coord.file,
-		 "; Line ", parse_tok_rec.coord.line, " # ", msg)
+	stop("At ", parse_tok_rec.coord, ,": ", msg)
 }
