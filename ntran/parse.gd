@@ -1469,5 +1469,5 @@ procedure parse_eat_token() {
 
 
 procedure parse_error(msg) {
-	stop("At ", parse_tok_rec.coord, ,": ", msg)
+	stop("At ", parse_tok_rec.coord, ": ", msg)
 }
