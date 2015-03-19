@@ -298,7 +298,7 @@ procedure optim_refcount(t) {
 	local refcount
 
 	refcount := table(0)
-	every optim_refcountX(refcount, !!t)
+	every optim_refcountX(refcount, !(!t).value)
 	return refcount
 }
 
