@@ -17,10 +17,10 @@ func coexecute(f *pr_frame, label string) (g.Value, *g.Closure) {
 //  execute IR instructions for procedure or co-expression
 func execute(f *pr_frame, label string) (rv g.Value, rc *g.Closure) {
 
-	// set up traceback recovery
+	// set up error catcher to call user recovery procedure
 	defer func() {
 		if p := recover(); p != nil {
-			if f.onerr != nil {
+			if f.onerr != nil { // if user called recover()
 				// find true panic value hiding under traceback info
 				arglist := []g.Value{g.Cause(p)}
 				if opt_trace {
@@ -31,9 +31,8 @@ func execute(f *pr_frame, label string) (rv g.Value, rc *g.Closure) {
 				rv, _ = f.onerr.Call(f.env, arglist, []string{})
 				rc = nil
 			} else {
-				// add traceback information and re-throw exception
-				panic(g.Catch(p,
-					[]g.Value{f.offv}, f.coord, f.info.name, f.args))
+				// re-throw the exception
+				panic(p)
 			}
 		}
 	}()
@@ -42,6 +41,16 @@ func execute(f *pr_frame, label string) (rv g.Value, rc *g.Closure) {
 	f.temps = make(map[string]interface{}) // each cx needs own copy
 	var self *g.Closure
 	self = &g.Closure{func() (g.Value, *g.Closure) {
+
+		// set up traceback recovery
+		// (must do that here to include resumed procedures in traceback)
+		defer func() {
+			if p := recover(); p != nil {
+				// add traceback information and re-throw exception
+				panic(g.Catch(p,
+					[]g.Value{f.offv}, f.coord, f.info.name, f.args))
+			}
+		}()
 
 		// interpret the IR code
 	NextChunk:
