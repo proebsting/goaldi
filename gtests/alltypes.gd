@@ -54,7 +54,7 @@ procedure main() {
 	# show values various ways, checking universal methods in the process
 	write()
 	write("Examples sorted by value, showing presentation options:")
-	E := E.sort(Example.value)
+	E := E.sort(Example["value"])
 	write()
 	^format := "%-4s %-15s %-30s %s\n"
 	printf(format, "ch", "x.string()", "x.image()", "printf(\"%v\")")
@@ -77,7 +77,7 @@ procedure main() {
 	write()
 	write("Examples sorted by type, showing type information:")
 	# n.b. stable sort keeps ordering reproducible within type
-	E := E.sort(Example.type)
+	E := E.sort(Example["type"])
 	write()
 	format := "%-4s %-12s %-14s %-12s %-13s %s"
 	printf(format,

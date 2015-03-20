@@ -47,7 +47,7 @@ procedure main() {
 	write(image(b))
 	write(image(c))
 
-	write("simple.f: ", simple.f)
-	write("rec.f1: ", rec.f1)
-	write("rec.f2: ", rec.f2)
+	write(`simple["f"]: `, simple["f"])
+	write(`rec["f1"] `, rec["f1"])
+	write(`rec["f2"] `, rec["f2"])
 }

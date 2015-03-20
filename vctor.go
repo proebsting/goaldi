@@ -84,12 +84,7 @@ func init() {
 
 //  VCtor.Field -- implement C.id to override methods in VType
 func (c *VCtor) Field(f string) Value {
-	// check first for field index
-	i := c.Fmap[f]
-	if i > 0 {
-		return NewNumber(float64(i)) // return Goaldi index of field f
-	}
-	// next check for universal method
+	// check for universal method
 	// (must pass VCtor, not Vtype, for c.copy() or c.image())
 	m := UniMethod(c, f)
 	if m != nil {
