@@ -50,25 +50,17 @@ procedure json_record(p, indent) {
 }
 
 procedure json(p, indent) {
-	if /p then {
-		return "null"
-	}
-
 	case type(p) of {
-		"ir_Tmp" | "ir_TmpLabel" | "ir_TmpClosure" : return image(p.name)
-		"ir_Label" : return image(p.value)
-	}
-
-	if match("record", image(p)) & type(p) ~== "string" then {
-		return json_record(p, indent)
-	} else {
-		case type(p) of {
-			list:	return json_list(p, indent)
-			set:	return json_list(p, indent)
-			string:	return json_image(string(p))
-			number:	return image(string(p))
-			default: throw("bad type for json", p)
-		}
+		niltype:		return "null"
+		number:			return image(string(p))
+		string:			return json_image(string(p))
+		list:			return json_list(p, indent)
+		set:			return json_list(p, indent)
+		ir_Label:		return image(p.value)
+		ir_Tmp:			return image(p.name)
+		ir_TmpLabel:	return image(p.name)
+		ir_TmpClosure:	return image(p.name)
+		default: 		return json_record(p, indent)
 	}
 }
 
