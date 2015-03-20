@@ -38,7 +38,7 @@ procedure json_record(p, indent) {
 	local s
 	local i
 
-	s := "{\n" || indent || "\t\"tag\" : " || image(type(p))
+	s := "{\n" || indent || "\t\"tag\" : " || image(type(p).name())
 	every i := 1 to *p do {
 		s ||:= ",\n" || indent || "\t"
 		s ||:= image(p.type()[i])
