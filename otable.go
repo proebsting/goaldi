@@ -48,14 +48,19 @@ func DispenseMap(T interface{} /*anymap*/) (Value, *Closure) {
 	i := -1
 	var c *Closure
 	c = &Closure{func() (Value, *Closure) {
-		i++
-		if i < len(klist) {
-			k := Import(klist[i].Interface())
-			v := Import(mv.MapIndex(klist[i]).Interface())
-			return ElemType.New([]Value{k, v}), c
-		} else {
-			return Fail()
+		for {
+			i++
+			if i >= len(klist) {
+				return Fail()
+			}
+			x := mv.MapIndex(klist[i])
+			if x.IsValid() { // if didn't disappear while suspended
+				k := Import(klist[i].Interface())
+				v := Import(x.Interface())
+				return ElemType.New([]Value{k, v}), c
+			}
 		}
+		return Fail()
 	}}
 	return c.Resume()
 }

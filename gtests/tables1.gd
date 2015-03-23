@@ -53,6 +53,17 @@ procedure main() {
 	t { 2 to 3 : "l", 4 | "F": "a", "E": "m"}
 	ck(t)
 
+	#  test deletion from table while suspended
+	write()
+	t := table()
+	every i := 1 to 10000 do	# fill table with 10000 integers
+		t[i] := i
+	every k := (!t).key do		# delete a random assortment
+		t.delete(?10000)
+	every k := (!t).key do		# delete all that are left
+		t.delete(k)
+	ck(t)
+
 	#%#% random portion disabled
 	#  every t[!4 | !"EFGH"] := ?"abcdefghijklmnopqrstuvwxyz"
 	#  ck(t)
