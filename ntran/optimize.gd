@@ -58,7 +58,7 @@ procedure optim_copy_propagation(t, start) {
 		changes := nil
 		uses := table(0)
 		defs := table(0)
-		every chunk := !t do {
+		every chunk := (!t).value do {
 			every insn := !chunk do {
 				optim_def_use(insn, uses, defs)
 			}
@@ -80,7 +80,7 @@ procedure optim_copy_propagation(t, start) {
 			t[k] := newchunk
 		}
 		if /changes then break;
-		every chunk := !t do {
+		every chunk := (!t).value do {
 			every i := 1 to *chunk do {
 				chunk[i] := optim_rewrite(chunk[i], rename)
 			}
@@ -254,7 +254,7 @@ procedure optim_indirect_elimination(t) {
 	local chunk
 	local insn
 
-	every chunk := !t & insn := chunk[-1] &
+	every chunk := (!t).value & insn := chunk[-1] &
 			type(insn) === ir_IndirectGoto &
 			*insn.labelList = 1 do {
 		chunk[-1] := ir_Goto(insn.coord, insn.labelList[1])
@@ -477,7 +477,7 @@ procedure optim_test_elimination(t, start) {
 	local chunk
 	local insn
 
-	every chunk := !t &
+	every chunk := (!t).value &
 		    type(chunk[-1]) === ir_Goto &
 		    type(chunk[-2]) === (ir_Call | ir_OpFunction | ir_Select) &
 			chunk[-1].targetLabel === \chunk[-2].failLabel do {
