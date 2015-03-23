@@ -1,10 +1,24 @@
-##  Makefile for new translator written in Goaldi
+##	Makefile for new translator written in Goaldi
 ##
-##  EXPERIMENTAL -- NOT CURRENTLY IN USE
+##	EXPERIMENTAL -- NOT CURRENTLY IN USE
 
-#  default action: build and run using main as the test file
-default:
-	goaldi *.gd -- gtran.gd
+TESTFILE = test.gd
+
+SRC = ast.gd gen_json.gd gtran.gd ir.gd irgen.gd lex.gd optimize.gd parse.gd
+GIR = $(SRC:.gd=.gir)
+GOBIN = ../../../bin
+
+.SUFFIXES:	.gd .gir
+.gd.gir:	; goaldi -c $<
+
+default:	runtest
+
+runtest:	ntran $(TESTFILE)
+			gexec -D $(GIR) -- $(TESTFILE)
+
+ntran:		$(GIR) 
+
+$(GIR):		$(GOBIN)/goaldi $(GOBIN)/gtran
 
 clean:
-	rm -f *.tok *.ast *.rir *.oir *.gir
+			rm -f *.gir *.json
