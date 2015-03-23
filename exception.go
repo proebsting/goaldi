@@ -93,7 +93,7 @@ func Cause(x interface{}) interface{} {
 func Catcher(env *Env) {
 	if x := recover(); x != nil {
 		Diagnose(os.Stderr, x)            // write Goaldi stack trace
-		if env.VarMap["gostack"] != nil { // if interpreter set %gostack
+		if env.Lookup("gostack") != nil { // if interpreter set %gostack
 			fmt.Fprintf(os.Stderr, "Go stack:\n%s\n",
 				debug.Stack()) // write Go stack trace
 		}
