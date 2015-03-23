@@ -1127,12 +1127,8 @@ procedure ir_a_Create(p, st, target, bounded, rval) {
 
 procedure mkSuffix(t) {
 	/static T := table()
-	/T[t] := *T
+	/T[t] := ":" || (*T + 1)
 	return T[t]
-	#%#% extract serial number of record from its image
-	#%#% won't work in Goali: they don't have serial numbers
-	# /static rx := regex("[0-9]+")
-	# return rx.FindString(t)
 }
 
 procedure ir_stname(s) {
