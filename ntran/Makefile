@@ -15,6 +15,7 @@ default:	runtest
 
 runtest:	ntran $(TESTFILE)
 			gexec $(GIR) -- $(TESTFILE)
+			gexec $(TESTFILE:.gd=.gir)
 
 ntran:		$(GIR) 
 
