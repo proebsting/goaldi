@@ -14,11 +14,11 @@ GOBIN = ../../../bin
 default:	runtest
 
 runtest:	ntran $(TESTFILE)
-			gexec -D $(GIR) -- $(TESTFILE)
+			gexec $(GIR) -- $(TESTFILE)
 
 ntran:		$(GIR) 
 
-$(GIR):		$(GOBIN)/goaldi $(GOBIN)/gtran
+$(GIR):		$(GOBIN)/gtran
 
 clean:
 			rm -f *.gir *.json
