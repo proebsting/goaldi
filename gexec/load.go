@@ -12,15 +12,19 @@ import (
 	"strings"
 )
 
-var fileNumber = 0
+var fileNumber = 1
 
-//  load -- read a single JSON-encoded IR file as a tree of objects
+//  load(fname) -- read a JSON-encoded IR file.
 //
-//  A per-file distinguishing integer is prepended to each procedure name
+//  Each section of the input file is a JSON list value corresponding to a
+//  single source file.  (It is typical, then, to find just one section.)
+//  A list of sections -- a list of lists of IR structs -- is returned.
+//
+//  A per-section distinguishing integer is prepended to each procedure name
 //  that begins with "$".  No other changes are made during input.
-func load(fname string) []interface{} {
+//
+func load(fname string) [][]interface{} {
 
-	fileNumber++
 	babble("loading file %d: %s", fileNumber, fname)
 
 	//  open the file
@@ -45,18 +49,33 @@ func load(fname string) []interface{} {
 
 	//  load the JSON-encoded program
 	jd := json.NewDecoder(gcode)
-	var jtree []interface{}
-	checkError(jd.Decode(&jtree))
-	if opt_jdump || opt_tally {
-		jwalk(jtree)
+	parts := make([][]interface{}, 0)
+
+	for {
+		var jtree []interface{}
+		err := jd.Decode(&jtree)
+		if err != nil {
+			if err.Error() == "EOF" {
+				break
+			} else {
+				abort(err)
+			}
+		}
+		if opt_jdump || opt_tally {
+			jwalk(jtree)
+		}
+		jtree = jstructs(jtree).([]interface{})
+		if opt_adump {
+			fmt.Printf("\n========== %d. file %s ==========\n",
+				fileNumber, fname)
+			dumptree("", jtree)
+			fmt.Println()
+		}
+		parts = append(parts, jtree)
+		fileNumber++
 	}
-	jtree = jstructs(jtree).([]interface{})
-	if opt_adump {
-		fmt.Printf("\n========== file %s ==========\n", fname)
-		dumptree("", jtree)
-		fmt.Println()
-	}
-	return jtree
+
+	return parts
 }
 
 //  dumptree -- print a human-readable listing of the IR

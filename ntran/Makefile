@@ -14,12 +14,15 @@ GOBIN = ../../../bin
 default:	runtest
 
 runtest:	ntran $(TESTFILE)
-			gexec $(GIR) -- $(TESTFILE)
+			./ntran $(TESTFILE)
 			gexec $(TESTFILE:.gd=.gir)
 
-ntran:		$(GIR) 
+ntran:		$(GIR)
+			echo '#!/usr/bin/env gexec' | cat - $(GIR) >ntran
+			chmod +x ntran
+			cp ntran $(GOBIN)
 
 $(GIR):		$(GOBIN)/gtran
 
 clean:
-			rm -f *.gir
+			rm -f *.gir ntran

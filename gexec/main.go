@@ -46,10 +46,10 @@ func main() {
 	// load the IR code
 	parts := make([][]interface{}, 0)
 	if len(files) == 0 {
-		parts = append(parts, load("-"))
+		parts = append(parts, load("-")...)
 	} else {
 		for _, f := range files {
-			parts = append(parts, load(f))
+			parts = append(parts, load(f)...)
 		}
 	}
 	showInterval("loading")
