@@ -10,7 +10,7 @@ procedure main(args[]) {
 		pipeline := create ast2ir(pipeline)
 		pipeline := create optim(pipeline, ["-O"])
 		pipeline := create json_File(pipeline)
-		pipeline := create tee(pipeline, fbase || ".json")
+		pipeline := create tee(pipeline, fbase || ".gir")
 		pipeline := create sink(pipeline)
 		@pipeline	# wait for processes to finish and close
 	}

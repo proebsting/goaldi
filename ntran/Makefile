@@ -21,4 +21,4 @@ ntran:		$(GIR)
 $(GIR):		$(GOBIN)/gtran
 
 clean:
-			rm -f *.gir *.json
+			rm -f *.gir
