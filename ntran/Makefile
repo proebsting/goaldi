@@ -11,6 +11,7 @@ GOBIN = ../../../bin
 
 ntran:		$(GIR)
 			echo '#!/usr/bin/env gexec' | cat - $(GIR) >ntran
+			gexec -l ntran			# check for link errors
 			chmod +x ntran
 			cp ntran $(GOBIN)
 
