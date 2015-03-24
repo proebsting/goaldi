@@ -11,7 +11,7 @@ PROGS = $(PKG)/gexec
 GOBIN = $${GOPATH%%:*}/bin
 
 #  default action: set up, build all, run test suite, run expt.gd if present
-default:  setup build test expt
+default:  setup build test buildx expt
 
 #  configure Git pre-commit hook
 HOOKMASTER = ./pre-commit.hook
@@ -25,6 +25,10 @@ build:
 	go install $(PROGS)
 	cd gtran; $(MAKE)
 	cp goaldi.sh $(GOBIN)/goaldi
+
+#  build and install ntran (experimental translator)
+buildx:
+	cd ntran; $(MAKE)
 
 #  run Go unit tests; build and link demos; run Goaldi test suite
 test:
@@ -63,5 +67,5 @@ clean:
 
 #  remove files placed elsewhere in $GOPATH
 uninstall:
-	rm -f $(GOBIN)/gtran $(GOBIN)/gexec $(GOBIN)/goaldi
+	rm -f $(GOBIN)/gtran $(GOBIN)/gexec $(GOBIN)/goaldi $(GOBIN)/ntran
 	go clean -i $(PKG) $(PROGS)

@@ -5,7 +5,7 @@
 #	To see options, run with no arguments.
 #	This script assumes that gtran and gexec are in the search path.
 
-FLAGS=acdNltvADEFJPT
+FLAGS=acdNltvADEFJPTX
 
 #  define the usage abort function
 usage() {
@@ -13,6 +13,7 @@ usage() {
 	cat <<==EOF==
 Usage: $0 [-$FLAGS] file.gd... [--] [arg...]
   -N  no optimization
+  -X  use experimental front end
   -c  compile only, producing IR on file.gir
   -a  compile only, producing IR on file.gir and assembly listing on file.gia
   -d  compile only, producing Dot directives on file.dot
@@ -22,20 +23,40 @@ Usage: $0 [-$FLAGS] file.gd... [--] [arg...]
 	exit 1
 }
 
+#  define the translation function
+tran() {
+	if [ -z "$XFLAG" ]; then
+		# standard translator
+		gtran cat $1 : yylex : parse : ast2ir $OPT : $FMT : stdout
+	else
+		# experimental translator
+		ntran $NFLAG $1
+	fi
+}
+
 #  process options
 XOPTS=
 WHAT=x
+FMT=json_File
+NFLAG=
+XFLAG=
 OPT=": optim -O"
 while getopts $FLAGS C; do
 	case $C in
 	a)			WHAT=$C;;
 	c)			WHAT=$C;;
-	d)			WHAT=$C;;
-	N)			OPT="";;
+	d)			WHAT=$C; FMT=dot_File;;
+	N)			NFLAG=-$C; OPT="";;
+	X)			XFLAG=-$C;;
 	[ltvADEFJPT])	XOPTS="$XOPTS -$C";;
 	?)			usage;;
 	esac
 done
+
+if [ "$WHAT" = d -a -n "$XFLAG" ]; then
+	echo 1>&2 "$0: -d and -X cannot be combined"
+	exit 1
+fi
 
 #  collect source file names:
 #  the first argument, always, plus any following that end in ".gd"
@@ -65,25 +86,23 @@ OBJS=
 QUIT=:
 for F in $SRCS; do
 	B=${F%.*}
-	DOT="gtran cat $F : yylex : parse : ast2ir $OPT : dot_File : stdout"
-	TRAN="gtran cat $F : yylex : parse : ast2ir $OPT : json_File : stdout"
 	case $WHAT in
 		a)	# -a: produce file.gir and file.gia
-			$TRAN >$B.gir && gexec $XOPTS -l -A $B.gir >$B.gia
+			tran $F >$B.gir && gexec $XOPTS -l -A $B.gir >$B.gia
 			QUIT=exit
 			;;
 		c)	# -c or nothing: produce file.gir
-			$TRAN >$B.gir
+			tran $F >$B.gir
 			QUIT=exit
 			;;
 		d)	# -d: produce file.dot
-			$DOT >$B.dot
+			tran $F >$B.dot
 			QUIT=exit
 			;;
 		x)	# no flag: produce temporary file.gir for later execution
 			O=$SCR/${B##*/}.gir
 			OBJS="$OBJS $O"
-			$TRAN >$O || QUIT=exit
+			tran $F >$O || QUIT=exit
 			;;
 	esac
 done

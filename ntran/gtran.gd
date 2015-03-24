@@ -2,16 +2,21 @@
 #  (quick-and-dirty experimental version)
 
 procedure main(args[]) {
+	local nflag
+	if args[1] == "-N" then {
+		nflag := @args
+	}
 	every ^fname := !args do {
 		^fbase := if fname[-3:0]==".gd" then fname[1:-3] else fname
 		^pipeline := create !open(fbase || ".gd")
 		pipeline := create lex(pipeline, fbase || ".gd")
 		pipeline := create parse(pipeline)
 		pipeline := create ast2ir(pipeline)
-		pipeline := create optim(pipeline, ["-O"])
+		if /nflag then {
+			pipeline := create optim(pipeline, ["-O"])
+		}
 		pipeline := create json_File(pipeline)
-		pipeline := create tee(pipeline, fbase || ".gir")
-		pipeline := create sink(pipeline)
+		pipeline := create stdout(pipeline)
 		@pipeline	# wait for processes to finish and close
 	}
 }
@@ -32,7 +37,7 @@ procedure tee(src, fname) {
 
 #  (terminal) pipeline component to write stream to stdout
 procedure stdout(src) {
-	while write(image(@src))
+	while write(@src)
 }
 
 #  (terminal) pipeline component to toss everything into a black hole
