@@ -128,7 +128,7 @@ procedure stringval(s) {
 	if not (s := quote(unquote(s))) then {
 		lex_error("invalid string literal", s)
 	}
-	return s
+	return s[2:-1]	// remove delimiting quotes
 }
 
 
