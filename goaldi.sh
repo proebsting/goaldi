@@ -89,20 +89,20 @@ for F in $SRCS; do
 	case $WHAT in
 		a)	# -a: produce file.gir and file.gia
 			tran $F >$B.gir && gexec $XOPTS -l -A $B.gir >$B.gia
-			QUIT=exit
+			QUIT="exit $?"
 			;;
 		c)	# -c or nothing: produce file.gir
 			tran $F >$B.gir
-			QUIT=exit
+			QUIT="exit $?"
 			;;
 		d)	# -d: produce file.dot
 			tran $F >$B.dot
-			QUIT=exit
+			QUIT="exit $?"
 			;;
 		x)	# no flag: produce temporary file.gir for later execution
 			O=$SCR/${B##*/}.gir
 			OBJS="$OBJS $O"
-			tran $F >$O || QUIT=exit
+			tran $F >$O || QUIT="exit 1"
 			;;
 	esac
 done
