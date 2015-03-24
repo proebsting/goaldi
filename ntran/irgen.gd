@@ -1830,12 +1830,7 @@ procedure ir_naming(p, suffix) {
 	# kludge
 	/static T := table()
 	/T[p] := *T
-	return "phonylab_" || T[p] || "_" || suffix
-
-	# obsolete stuff follows
-	/static rx := regex("a_[^(]+")
-	local s := rx.FindString(p)
-	return s || "_" || suffix
+	return type(p).name() || "_" || T[p] || "_" || suffix
 }
 
 procedure ir_key(str) {
