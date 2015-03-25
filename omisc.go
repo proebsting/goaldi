@@ -6,15 +6,6 @@ import (
 	"reflect"
 )
 
-//  IIdentical -- interface for a.Identical(b), used by a===b
-//  Must be implemented for types where === is not just a pointer match
-type IIdentical interface {
-	Identical(Value) Value
-}
-
-var _ IIdentical = NewNumber(1)   // confirm implementation by VNumber
-var _ IIdentical = NewString("a") // confirm implementation by VString
-
 //  Identical(a,b) implements the === operator.
 //  NotIdentical(a,b) implements the ~=== operator.
 //  Both call a.Identical(b) if implemented (interface IIdentical).
@@ -49,11 +40,6 @@ func NotIdentical(a, b Value) Value {
 	}
 }
 
-//  ISize -- interface for x.Size(), used by *x
-type ISize interface {
-	Size() Value
-}
-
 //  Size(x) calls x.Size() or falls back to reflection.
 //  It panics on an inappropriate argument type.
 func Size(x Value) Value {
@@ -62,11 +48,6 @@ func Size(x Value) Value {
 	} else {
 		return NewNumber(float64(reflect.ValueOf(x).Len()))
 	}
-}
-
-//  ITake -- interface for x.Take(), used by @x
-type ITake interface { // @x
-	Take() Value
 }
 
 //  Take(x) calls x.Take() or uses reflection for an arbitrary map or channel.

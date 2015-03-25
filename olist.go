@@ -93,7 +93,7 @@ func (v *VList) Slice(lval Value, x Value, y Value) Value {
 //------------------------------------  ListPut: used in [: expr :]
 
 type IListPut interface {
-	ListPut(Value) Value
+	ListPut(Value) Value // [: ...v... :]
 }
 
 func (v *VList) ListPut(x Value) Value {
@@ -104,7 +104,7 @@ func (v *VList) ListPut(x Value) Value {
 //------------------------------------  ListCat:  L1 ||| L2
 
 type IListCat interface {
-	ListCat(Value) Value
+	ListCat(Value) Value // L ||| L
 }
 
 func (v *VList) ListCat(x Value) Value {

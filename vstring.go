@@ -40,7 +40,9 @@ func NewString(s string) *VString {
 	return RuneString([]rune(s))
 }
 
-var _ ICore = NewString("a") // validate implementation
+var _ ICore = NewString("a")      // validate implementation
+var _ Numerable = NewString("a")  // validate implementation
+var _ Stringable = NewString("a") // validate implementation
 
 //  StringType is the string instance of type type.
 var StringType = NewType("string", "s", rString, String, nil,

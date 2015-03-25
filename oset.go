@@ -65,7 +65,7 @@ func (S VSet) Index(lval Value, x Value) Value {
 //------------------------------------  Union: S1 ++ S2
 
 type IUnion interface {
-	Union(Value) Value
+	Union(Value) Value // S ++ S
 }
 
 func (S1 VSet) Union(x Value) Value {
@@ -83,7 +83,7 @@ func (S1 VSet) Union(x Value) Value {
 //------------------------------------  SetDiff: S1 -- S2
 
 type ISetDiff interface {
-	SetDiff(Value) Value
+	SetDiff(Value) Value // S -- S
 }
 
 func (S1 VSet) SetDiff(x Value) Value {
@@ -100,7 +100,7 @@ func (S1 VSet) SetDiff(x Value) Value {
 //------------------------------------  Intersect: S1 ** S2
 
 type IIntersect interface {
-	Intersect(Value) Value
+	Intersect(Value) Value // S ** S
 }
 
 func (S1 VSet) Intersect(x Value) Value {

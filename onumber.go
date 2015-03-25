@@ -38,7 +38,7 @@ func (v1 *VNumber) Dispense(unused Value) (Value, *Closure) {
 //------------------------------------  Numerate:  +e
 
 type INumerate interface {
-	Numerate() Value
+	Numerate() Value // +n
 }
 
 func (v1 *VString) Numerate() Value {
@@ -52,7 +52,7 @@ func (v1 *VNumber) Numerate() Value {
 //------------------------------------  Negate:  -e
 
 type INegate interface {
-	Negate() Value
+	Negate() Value // -n
 }
 
 func (v1 *VString) Negate() Value {
@@ -66,7 +66,7 @@ func (v1 *VNumber) Negate() Value {
 //------------------------------------  Add:  e1 + e2
 
 type IAdd interface {
-	Add(Value) Value
+	Add(Value) Value // n + n
 }
 
 func (v1 *VString) Add(v2 Value) Value {
@@ -80,7 +80,7 @@ func (v1 *VNumber) Add(v2 Value) Value {
 //------------------------------------  Sub:  e1 - e2
 
 type ISub interface {
-	Sub(Value) Value
+	Sub(Value) Value // n - n
 }
 
 func (v1 *VString) Sub(v2 Value) Value {
@@ -94,7 +94,7 @@ func (v1 *VNumber) Sub(v2 Value) Value {
 //------------------------------------  Mul:  e1 * e2
 
 type IMul interface {
-	Mul(Value) Value
+	Mul(Value) Value // n * n
 }
 
 func (v1 *VString) Mul(v2 Value) Value {
@@ -108,7 +108,7 @@ func (v1 *VNumber) Mul(v2 Value) Value {
 //------------------------------------  Div:  e1 / e2
 
 type IDiv interface {
-	Div(Value) Value
+	Div(Value) Value // n / n
 }
 
 func (v1 *VString) Div(v2 Value) Value {
@@ -122,7 +122,7 @@ func (v1 *VNumber) Div(v2 Value) Value {
 //------------------------------------  Divt:  e1 // e2  (divide and truncate)
 
 type IDivt interface {
-	Divt(Value) Value
+	Divt(Value) Value // n // n
 }
 
 func (v1 *VString) Divt(v2 Value) Value {
@@ -136,7 +136,7 @@ func (v1 *VNumber) Divt(v2 Value) Value {
 //------------------------------------  Mod:  e1 % e2  (remainder)
 
 type IMod interface {
-	Mod(Value) Value
+	Mod(Value) Value // n % n
 }
 
 func (v1 *VString) Mod(v2 Value) Value {
@@ -150,7 +150,7 @@ func (v1 *VNumber) Mod(v2 Value) Value {
 //------------------------------------  Power:  e1 ^ e2
 
 type IPower interface {
-	Power(Value) Value
+	Power(Value) Value // n ^ n
 }
 
 func (v1 *VString) Power(v2 Value) Value {
@@ -164,7 +164,7 @@ func (v1 *VNumber) Power(v2 Value) Value {
 //------------------------------------  NumLT:  e1 < e2
 
 type INumLT interface {
-	NumLT(Value) (Value, *Closure)
+	NumLT(Value) (Value, *Closure) // n < n
 }
 
 func (v1 *VString) NumLT(v2 Value) (Value, *Closure) {
@@ -182,7 +182,7 @@ func (v1 *VNumber) NumLT(v2 Value) (Value, *Closure) {
 //------------------------------------  NumLE:  e1 <= e2
 
 type INumLE interface {
-	NumLE(Value) (Value, *Closure)
+	NumLE(Value) (Value, *Closure) // n <= n
 }
 
 func (v1 *VString) NumLE(v2 Value) (Value, *Closure) {
@@ -200,7 +200,7 @@ func (v1 *VNumber) NumLE(v2 Value) (Value, *Closure) {
 //------------------------------------  NumEQ:  e1 = e2
 
 type INumEQ interface {
-	NumEQ(Value) (Value, *Closure)
+	NumEQ(Value) (Value, *Closure) // n = n
 }
 
 func (v1 *VString) NumEQ(v2 Value) (Value, *Closure) {
@@ -218,7 +218,7 @@ func (v1 *VNumber) NumEQ(v2 Value) (Value, *Closure) {
 //------------------------------------  NumNE:  e1 ~= e2
 
 type INumNE interface {
-	NumNE(Value) (Value, *Closure)
+	NumNE(Value) (Value, *Closure) // n ~= n
 }
 
 func (v1 *VString) NumNE(v2 Value) (Value, *Closure) {
@@ -236,7 +236,7 @@ func (v1 *VNumber) NumNE(v2 Value) (Value, *Closure) {
 //------------------------------------  NumGE:  e1 >= e2
 
 type INumGE interface {
-	NumGE(Value) (Value, *Closure)
+	NumGE(Value) (Value, *Closure) // n >= n
 }
 
 func (v1 *VString) NumGE(v2 Value) (Value, *Closure) {
@@ -254,7 +254,7 @@ func (v1 *VNumber) NumGE(v2 Value) (Value, *Closure) {
 //------------------------------------  NumGT:  e1 > e2
 
 type INumGT interface {
-	NumGT(Value) (Value, *Closure)
+	NumGT(Value) (Value, *Closure) // n > n
 }
 
 func (v1 *VString) NumGT(v2 Value) (Value, *Closure) {

@@ -56,7 +56,7 @@ func (s *VString) Dispense(lval Value) (Value, *Closure) {
 //------------------------------------  Concat:  e1 || e2
 
 type IConcat interface {
-	Concat(Value) Value
+	Concat(Value) Value // s || s
 }
 
 func (s *VNumber) Concat(t Value) Value {
@@ -109,7 +109,7 @@ func (s *VString) Slice(lval Value, x Value, y Value) Value {
 //------------------------------------  StrLT:  e1 << e2
 
 type IStrLT interface {
-	StrLT(Value) Value
+	StrLT(Value) Value // s << s
 }
 
 func (s *VNumber) StrLT(x Value) Value {
@@ -127,7 +127,7 @@ func (s *VString) StrLT(x Value) Value {
 //------------------------------------  StrLE:  e1 <<= e2
 
 type IStrLE interface {
-	StrLE(Value) Value
+	StrLE(Value) Value // s <<= s
 }
 
 func (s *VNumber) StrLE(x Value) Value {
@@ -145,7 +145,7 @@ func (s *VString) StrLE(x Value) Value {
 //------------------------------------  StrEQ:  e1 == e2
 
 type IStrEQ interface {
-	StrEQ(Value) Value
+	StrEQ(Value) Value // s == s
 }
 
 func (s *VNumber) StrEQ(x Value) Value {
@@ -167,7 +167,7 @@ func (s *VString) StrEQ(x Value) Value {
 //------------------------------------  StrNE:  e1 ~== e2
 
 type IStrNE interface {
-	StrNE(Value) Value
+	StrNE(Value) Value // s ~== s
 }
 
 func (s *VNumber) StrNE(x Value) Value {
@@ -189,7 +189,7 @@ func (s *VString) StrNE(x Value) Value {
 //------------------------------------  StrGE:  e1 >>= e2
 
 type IStrGE interface {
-	StrGE(Value) Value
+	StrGE(Value) Value // s >>= s
 }
 
 func (s *VNumber) StrGE(x Value) Value {
@@ -207,7 +207,7 @@ func (s *VString) StrGE(x Value) Value {
 //------------------------------------  StrGT:  e1 >> e2
 
 type IStrGT interface {
-	StrGT(Value) Value
+	StrGT(Value) Value // s >> s
 }
 
 func (s *VNumber) StrGT(x Value) Value {

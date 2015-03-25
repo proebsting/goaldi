@@ -7,11 +7,6 @@ import (
 	"reflect"
 )
 
-//  IField -- interface for x.Field(id), used by x.id
-type IField interface {
-	Field(string) Value
-}
-
 //  Field(x,s) calls x.Field(s) or falls back to reflection.
 func Field(x Value, s string) Value {
 	// first check to see if this value implements Field()
