@@ -26,6 +26,8 @@ type VProcedure struct {
 	Descr    string      // optional one-line description (used for stdlib)
 }
 
+var _ ICore = &VProcedure{} // validate implementation
+
 //  DefProc constructs a procedure from a Goaldi function and a description.
 func DefProc(entry Procedure, name string, pspec string, descr string) *VProcedure {
 	pnames, isvar := ParmsFromSpec(pspec)

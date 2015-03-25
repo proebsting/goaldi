@@ -15,6 +15,8 @@ func NewChannel(i int) VChannel {
 	return VChannel(make(chan Value, i))
 }
 
+var _ ICore = NewChannel(0) // validate implementation
+
 //  ChannelType is the channel instance of type type.
 var ChannelType = NewType("channel", "c", rChannel, Channel, ChannelMethods,
 	"channel", "size", "create channel")

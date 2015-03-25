@@ -12,6 +12,8 @@ type VRecord struct {
 	Data []Value // current data values
 }
 
+var _ ICore = &VRecord{} // validate implementation
+
 //  VRecord.String -- conversion to Go string returns "name{}"
 func (v *VRecord) String() string {
 	return v.Ctor.TypeName + "{}"

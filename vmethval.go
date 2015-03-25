@@ -17,6 +17,8 @@ type VMethVal struct {
 	Val  Value
 }
 
+var _ ICore = &VMethVal{} // validate implementation
+
 //  MethodVal(p,v) builds a VMethVal struct representing the expression p.v
 func MethodVal(p *VProcedure, v Value) *VMethVal {
 	return &VMethVal{p, v}

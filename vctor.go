@@ -20,6 +20,8 @@ type VCtor struct {
 	Fmap   map[string]int // map of names to indexes (1-based)
 }
 
+var _ ICore = &VCtor{} // validate implementation
+
 //  NewCtor(name, parent, fields) -- make constructor: name extends parent
 //  Panics if a field name is duplicated.
 func NewCtor(name string, parent *VCtor, newfields []string) *VCtor {

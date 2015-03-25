@@ -19,6 +19,8 @@ func NewNumber(n float64) *VNumber {
 	return &vn
 }
 
+var _ ICore = NewNumber(1) // validate implementation
+
 //  NumberType is the number instance of type type.
 var NumberType = NewType("number", "n", rNumber, Number, nil,
 	"number", "x", "convert to number")

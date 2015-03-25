@@ -20,6 +20,8 @@ type VList struct {
 	rev  bool    // true if list is reversed
 }
 
+var _ ICore = &VList{} // validate implementation
+
 //  ListType is the list instance of type type.
 var ListType = NewType("list", "L", rList, List, ListMethods,
 	"list", "size,x", "create list of copies of x")

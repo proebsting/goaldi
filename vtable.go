@@ -15,6 +15,8 @@ type VTable struct {
 	dfval Value           // default value
 }
 
+var _ ICore = &VTable{} // validate implementation
+
 //  NewTable -- construct a new Goaldi table
 func NewTable(dfval Value) *VTable {
 	return &VTable{make(map[Value]Value), dfval}

@@ -30,21 +30,6 @@ type ICore interface {
 	Before(Value, int) bool // compare value of same type on field i
 }
 
-//  Confirm implementation of core interfaces by all types
-var _ ICore = NilValue.(*vnil)
-var _ ICore = &VType{}
-var _ ICore = NewNumber(1)
-var _ ICore = NewString("a")
-var _ ICore = &VFile{}
-var _ ICore = NewChannel(0)
-var _ ICore = &VCtor{}
-var _ ICore = &VMethVal{}
-var _ ICore = &VProcedure{}
-var _ ICore = &VList{}
-var _ ICore = VSet{}
-var _ ICore = &VTable{}
-var _ ICore = &VRecord{}
-
 //  IRank designates anything usable as a type: VType or VCtor
 type IRank interface {
 	Rank() int                            // return rank for sorting
@@ -52,10 +37,12 @@ type IRank interface {
 	Char(args ...Value) (Value, *Closure) // return type char to Goaldi
 }
 
+//  IType -- return type value for type()
 type IType interface {
 	Type() IRank // return type for type()
 }
 
+//  ICopy -- return copy of value
 type ICopy interface {
 	Copy() Value // return copy of value
 }

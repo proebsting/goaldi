@@ -39,6 +39,8 @@ type VType struct {
 	Methods  map[string]*VProcedure // method table
 }
 
+var _ ICore = &VType{} // validate implementation
+
 //  NewType defines and registers a Goaldi standard (not a record) type.
 //  The constructor procedure is installed in stdlib as libname.
 //  A nil constructor indicates an internal type (i.e. Trapped),

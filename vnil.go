@@ -12,6 +12,8 @@ var NilType = NewType("nil", "z", rNil, Nil, nil,
 type vnil struct {
 }
 
+var _ ICore = NilValue.(*vnil) // validate implementation
+
 //  NilValue is the one and only nil value.
 //  For convenience, its type is Value, not vnil.
 var NilValue Value = &vnil{}
