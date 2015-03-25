@@ -125,10 +125,10 @@ procedure match(line, rx) {
 
 #  stringval(s) -- put a string in canonical form, checking escapes
 procedure stringval(s) {
-	if not (s := quote(unquote(s))) then {
+	if not (s := unquote(s)) then {
 		lex_error("invalid string literal", s)
 	}
-	return s[2:-1]	# remove delimiting quotes
+	return s
 }
 
 
