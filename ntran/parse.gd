@@ -1235,7 +1235,7 @@ procedure parse_do_proc(noident) {
 			accumulate := 1
 		}
 	}
-	if !!contains(ident.id, ".") then {	# if a method
+	if !!contains(\ident.id, ".") then {	# if a method
 		# add an initial "self" parameter; note NOT a reserved word
 		paramList.push(a_Ident("self", nil, idcoord))
 	}
