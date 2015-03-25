@@ -594,7 +594,7 @@ procedure ir_a_Binop(p, st, target, bounded, rval) {
 	suspend ir_chunk(p.left.ir.failure, [ ir_Goto(p.coord, p.ir.failure) ])
 	suspend ir_chunk(p.right.ir.failure, [ ir_Goto(p.coord, p.left.ir.resume) ])
 
-		if *p.op > 2 & !!contains(p.op, ":=") then {
+	if *p.op > 2 & p.op[-2:0] == ":=" then {
 		suspend ir_augmented_assignment(p, target, bounded, rval, lv, rv, tmp)
 	} else {
 		suspend ir_binary(p, target, bounded, rval, lv, rv, clsr, funcs)
