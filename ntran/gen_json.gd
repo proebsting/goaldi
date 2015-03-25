@@ -52,7 +52,7 @@ procedure json_record(p, indent) {
 procedure json(p, indent) {
 	case type(p) of {
 		niltype:		return "null"
-		number:			return image(string(p))
+		number:			return image(image(p))	# all digits, quoted
 		string:			return json_image(string(p))
 		list:			return json_list(p, indent)
 		set:			return json_list(p, indent)
