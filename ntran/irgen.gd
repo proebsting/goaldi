@@ -574,7 +574,7 @@ procedure ir_a_Binop(p, st, target, bounded, rval) {
 
 	if p.op == "&" then {
 		suspend ir_conjunction(p, st, target, bounded, rval)
-		fail
+		return fail
 	}
 
 	ir_init(p)
@@ -639,7 +639,7 @@ procedure ir_a_Unop(p, st, target, bounded, rval) {
 
 	if p.op == "@" then {
 		suspend ir_unary_coexp(p, st, target, bounded, rval)
-		fail
+		return fail
 	}
 
 	ir_init(p)
@@ -658,7 +658,7 @@ procedure ir_a_Unop(p, st, target, bounded, rval) {
 # record a_Package( name )
 procedure ir_a_Package(p, st, target, bounded, rval) {
 	ir_namespace := p.name.id
-	fail						# generate no code
+	return fail						# generate no code
 }
 
 # record a_If( expr thenexpr elseexpr )

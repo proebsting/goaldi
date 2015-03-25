@@ -147,11 +147,11 @@ procedure parse_selectby(sc) {
 		return
 	}
 	e := parse_expr()
-	type(e) === a_Binop | fail
+	type(e) === a_Binop | return fail
 	sc.left := e.left
 	case e.op of {
 		default: {
-			fail
+			return fail
 		}
 		"@:": {
 			sc.kind := "send"
@@ -160,8 +160,8 @@ procedure parse_selectby(sc) {
 		}
 		":=": {
 			r := e.right
-			type(r) === a_Unop | fail
-			r.op === "@" | fail
+			type(r) === a_Unop | return fail
+			r.op === "@" | return fail
 			sc.kind := "receive"
 			sc.right := r.operand
 			return
