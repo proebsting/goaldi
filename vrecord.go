@@ -12,6 +12,7 @@ type VRecord struct {
 	Data []Value // current data values
 }
 
+const rRecord = 80       // declare sort ranking
 var _ ICore = &VRecord{} // validate implementation
 
 //  VRecord.String -- conversion to Go string returns "name{}"

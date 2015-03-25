@@ -10,6 +10,7 @@ type VTrapped struct {
 	Target *Value // pointer to target
 }
 
+const rTrapped = 3            // declare sort ranking
 var _ IVariable = &VTrapped{} // validate implementation
 
 //  Trapped(v) -- create a simple (unindexed) trapped variable

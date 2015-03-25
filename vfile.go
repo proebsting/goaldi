@@ -16,9 +16,9 @@ import (
 	"os"
 )
 
-// confirm implementation of promised interfaces
-var _ ICore = &VFile{}
-var _ io.ReadWriteCloser = &VFile{}
+const rFile = 30                    // declare sort ranking
+var _ ICore = &VFile{}              // validate implementation
+var _ io.ReadWriteCloser = &VFile{} // ensure promise is kept
 
 //  standard files, referenced (and changeable) by keyword / dynamic variables
 var (

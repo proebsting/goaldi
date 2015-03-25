@@ -116,7 +116,9 @@ func LT(x Value, y Value, i int) bool {
 	return false // otherwise no ordering defined
 }
 
-//  rank(x) -- return sort ranking for the type of x
+//  rank(x) -- return sort ranking for the type of x.
+//  Every type declares its own type independently, rather like the
+//  atomic weights of the elements.  There is no central coordinator.
 func rank(x Value) int {
 	if t, ok := x.(IType); ok {
 		return t.Type().Rank()

@@ -17,6 +17,7 @@ type VMethVal struct {
 	Val  Value
 }
 
+const rMethVal = 45       // declare sort ranking
 var _ ICore = &VMethVal{} // validate implementation
 
 //  MethodVal(p,v) builds a VMethVal struct representing the expression p.v

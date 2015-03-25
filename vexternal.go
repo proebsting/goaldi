@@ -11,6 +11,8 @@ import (
 	"reflect"
 )
 
+const rExternal = 99 // declare sort ranking
+
 //  ExternalType defines the type "external", which is mostly just a stub
 var ExternalType = NewType("external", "X", rExternal, External, nil,
 	"external", "x", "export and re-import")

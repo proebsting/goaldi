@@ -15,6 +15,7 @@ func NewChannel(i int) VChannel {
 	return VChannel(make(chan Value, i))
 }
 
+const rChannel = 35         // declare sort ranking
 var _ ICore = NewChannel(0) // validate implementation
 
 //  ChannelType is the channel instance of type type.

@@ -19,6 +19,7 @@ import (
 //  All map values are "true"; deletions remove non-member keys.
 type VSet map[Value]bool
 
+const rSet = 65      // declare sort ranking
 var _ ICore = VSet{} // validate implementation
 
 //  NewSet -- construct a new Goaldi set from a Goaldi list.

@@ -40,6 +40,7 @@ func NewString(s string) *VString {
 	return RuneString([]rune(s))
 }
 
+const rString = 20                // declare sort ranking
 var _ ICore = NewString("a")      // validate implementation
 var _ Numerable = NewString("a")  // validate implementation
 var _ Stringable = NewString("a") // validate implementation

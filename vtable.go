@@ -15,6 +15,7 @@ type VTable struct {
 	dfval Value           // default value
 }
 
+const rTable = 70       // declare sort ranking
 var _ ICore = &VTable{} // validate implementation
 
 //  NewTable -- construct a new Goaldi table

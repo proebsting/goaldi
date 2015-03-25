@@ -12,6 +12,7 @@ var NilType = NewType("nil", "z", rNil, Nil, nil,
 type vnil struct {
 }
 
+const rNil = 1                 // declare sort ranking
 var _ ICore = NilValue.(*vnil) // validate implementation
 
 //  NilValue is the one and only nil value.
