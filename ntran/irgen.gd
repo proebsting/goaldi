@@ -1145,8 +1145,8 @@ procedure ir_a_Local(p, st, target, bounded, rval) {
 
 	s := p.id || ":" || image(st.syms)
 	s := p.id || mkSuffix(st.syms)
-	st.syms.Static[p.id] := s
 
+	st.syms.Static[p.id] := s
 	st.localSet.insert(s)
 	suspend ir_a_Ident(p, st, target, bounded, rval)
 }
@@ -1585,8 +1585,8 @@ procedure ir_a_Compound(p, st, target, bounded, rval) {
 
 	locals := []
 	every i := !\st.syms.Static do {
-		if st.localSet.member(i) then {
-			locals.put(i)
+		if st.localSet.member(i.value) then {
+			locals.put(i.value)
 		}
 	}
 	dynamics := []
