@@ -322,7 +322,7 @@ procedure optim_goto_transitive(t, new, lab) {
 	local sc
 	local i
 
-	\t[lab] | throw("/t[lab]", t, lab)
+	\t[lab] | throw("/t[lab]", lab)
 
 	if \new[lab] then {
 		return

@@ -404,13 +404,24 @@ procedure ir_a_Parallel(p, st, target, bounded, rval) {
 
 	L := p.exprList
 
+	suspend ir(L[1 to *L-1], st, nil,  bounded, "rval")
+	suspend ir(L[-1],        st, target, bounded, rval)
+
+	if \bounded then {
+		# this is so simple that it is special-cased
+		suspend ir_chunk(p.ir.start, [ ir_Goto(p.coord, L[1].ir.start) ])
+		every i := 1 to *L do {
+			suspend ir_chunk(L[i].ir.success,[ir_Goto(p.coord,L[i+1].ir.start)])
+			suspend ir_chunk(L[i].ir.failure,[ir_Goto(p.coord, p.ir.failure)])
+		}
+		suspend ir_chunk(L[-1].ir.success, [ ir_Goto(p.coord, p.ir.success) ])
+		return fail
+	}
+
 	resumeTmps := table()
 	every resumeTmps[L[2 to *L]] := ir_tmploc(st)
 
 	success := ir_label(p, "p_op")
-
-	suspend ir(L[1 to *L-1], st, nil,  bounded, "rval")
-	suspend ir(L[-1],        st, target, bounded, rval)
 
 	t := []
 	every i := (!resumeTmps).key do {
