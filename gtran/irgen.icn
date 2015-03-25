@@ -884,7 +884,7 @@ procedure ir_a_Record(p, st, target, bounded, rval)
     }
     fields := []
     every put(fields, (!p.idlist).id)
-    return ir_Record(ir_coord(p.ident.coord), p.ident.id, (\p.extends).id |&null, (\p.extendspkg).id | &null, fields, ir_namespace)
+    return ir_Record(ir_coord(p.ident.coord), p.ident.id, (\p.extendsRec).id |&null, (\p.extendsPkg).id | &null, fields, ir_namespace)
 end
 
 # record a_Repeat( expr )

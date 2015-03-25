@@ -1,6 +1,6 @@
 #  ir.gd -- data structures for the Goaldi intermediate representation.
 
-record ir_Record(coord, name, extendsrec, extendspkg, fieldList, namespace)
+record ir_Record(coord, name, extendsRec, extendsPkg, fieldList, namespace)
 record ir_Global(coord, name, fn, namespace)
 record ir_Initial(coord, fn, namespace)
 record ir_Function(coord, name, paramList, accumulate,

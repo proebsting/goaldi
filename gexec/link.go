@@ -148,14 +148,14 @@ func registerRecord(re *RecordEntry) {
 		if gv == nil {
 			// this is a new definition
 			var ext *g.VCtor
-			if re.Extends != "" {
-				pt := RecordTable[re.Extends]
+			if re.ExtendsRec != "" {
+				pt := RecordTable[re.ExtendsRec]
 				if pt == nil {
 					fatal("parent type not found: record " +
-						re.Name + " extends " + re.Extends)
+						re.Name + " extends " + re.ExtendsRec)
 				} else if pt.ctor == regMark {
 					fatal("recursive definition: record " +
-						re.Name + " extends " + re.Extends + " extends...")
+						re.Name + " extends " + re.ExtendsRec + " extends...")
 				} else {
 					registerRecord(pt) // ensure parent is done first
 					ext = pt.ctor

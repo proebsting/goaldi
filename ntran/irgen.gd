@@ -933,7 +933,7 @@ procedure ir_a_Record(p, st, target, bounded, rval) {
 	}
 	fields := []
 	every fields.put((!p.idlist).id)
-	return ir_Record(p.ident.coord, p.ident.id, (\p.extendsrec).id |nil, (\p.extendspkg).id | nil, fields, ir_namespace)
+	return ir_Record(p.ident.coord, p.ident.id, (\p.extendsRec).id |nil, (\p.extendsPkg).id | nil, fields, ir_namespace)
 }
 
 # record a_Repeat( expr )

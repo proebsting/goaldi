@@ -60,8 +60,8 @@ func init() {
 type ir_Record struct {
 	Coord      string
 	Name       string
-	Extends    string
-	Extendspkg string
+	ExtendsRec string
+	ExtendsPkg string
 	FieldList  []string
 	Namespace  string
 }
