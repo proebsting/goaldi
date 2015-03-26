@@ -12,26 +12,27 @@ record lex_tkrec (
 
 #  data structures for tokenizing
 
+global lex_fname				# current file name (with ":" appended)
 global lex_lnum					# current line number
 global lex_kwtab := table()		# maps keyword strings to token records
 global lex_optab := table()		# maps operator strings to token records
 global lex_flags := table()		# maps token records flag strings
 
 
-#  report an error (and do nothing else)	#%#%#%
+#  abort due to lexical error
 
 procedure lex_error(problem, input) {
-	%stderr.write("lex error: ", problem, ": ", image(input))
+	stop("lex error at ", lex_fname, lex_lnum, ": ", problem, ": ", input)
 }
 
 
 #  generate a sequence of tokens, with coordinates, from a stream of input lines
 
 procedure lex(src, fname) {
-	fname := fname || ":"
+	lex_fname := fname || ":"
 	lex_lnum := 0
 	every ^tk := lex_gentok(src) do {
-		tk.coord := fname || lex_lnum
+		tk.coord := lex_fname || lex_lnum
 		suspend tk
 	}
 }
