@@ -11,7 +11,7 @@ procedure main() {
 		write(ord(c), " ", image(c))
 
 	# these escapes should have no effect
-	write(image("\a\c\g\h\i\j\k\m\o\p\q\s\u\w\x\y\z"))
+	write(image("\a\c\g\h\i\j\k\m\o\p\q\s\w\y\z"))
 
 	# should not interpret excapes in raw-quoted string
 	s := `\b\d\e\f\l\n\r\t\v\'\"\\\067\130\x58\u0058\^H`

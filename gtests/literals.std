@@ -16,7 +16,7 @@
 88 "X"
 88 "X"
 8 "\b"
-"acghijkmopqs\\uw\\xyz"
+"acghijkmopqswyz"
 45 "\\b\\d\\e\\f\\l\\n\\r\\t\\v\\'\\\"\\\\\\067\\130\\x58\\u0058\\^H"
 45 \b\d\e\f\l\n\r\t\v\'\"\\\067\130\x58\u0058\^H
 line 1
