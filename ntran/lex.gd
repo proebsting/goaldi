@@ -157,7 +157,7 @@ procedure stringval(s) {
 			}
 			"^": {					# \^c: a control character
 				if c := u[i+:=1] then {
-					t ||:= char(iand(ord[c], 1Fx))
+					t ||:= char(iand(ord(c), 1Fx))
 				} else {
 					lex_error(`incomplete \^c in string literal`, s)
 				}
