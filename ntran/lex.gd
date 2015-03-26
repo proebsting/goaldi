@@ -123,12 +123,76 @@ procedure match(line, rx) {
 }
 
 
-#  stringval(s) -- put a string in canonical form, checking escapes
+#  stringval(s) -- put quoted string in canonical form, handling escapes
 procedure stringval(s) {
-	if not (s := unquote(s)) then {
-		lex_error("invalid string literal", s)
+
+	/static lex_escape := table() {
+		"b" : "\b",		"f" : "\f",		"r" : "\r",
+		"d" : "\d",		"n" : "\n",		"t" : "\t",
+		"e" : "\e",		"l" : "\l",		"v" : "\v",
 	}
-	return s
+
+	^u := s[2:-1]					# remove quotes
+	if s[1] == "`" then {
+		return u					# `raw` literal: escapes have no effect
+	}
+
+	^t := ""
+	^i := 0
+	while local c := u[i+:=1] do {
+		if c ~== `\` then {
+			t ||:= c
+			continue
+		}
+		c := u[i+:=1]
+		if t ||:= \lex_escape[c] then {
+			continue
+		}
+		local base
+		local digs
+		case c of {
+			default: {
+				t ||:= c			# unrecognized escape
+				continue
+			}
+			"^": {					# \^c: a control character
+				if c := u[i+:=1] then {
+					t ||:= char(iand(ord[c], 1Fx))
+				} else {
+					lex_error(`incomplete \^c in string literal`, s)
+				}
+				continue
+			}
+			"x" | "X":   {  base := 16;  digs := 2;  i +:= 1  }
+			"u" | "U":   {  base := 16;  digs := 8;  i +:= 1  }
+			!"01234567": {  base :=  8;  digs := 3;  i +:= 0  }
+		}
+		if ^d := getdigits(u[i:0], base, digs) then {
+			i +:= *d - 1
+			t ||:= char(base || "r" || d)
+		} else {
+			lex_error(`invalid \` || c || ` in string literal`, s)
+		}
+	}
+
+	return t
+}
+
+#  getdigits(s,b,n) -- return first n digits of base b from s
+procedure getdigits(s, b, n) {
+
+	/static lex_digits := table() {
+		"0" : 0,	"4" : 4,	"8" : 8,				"C" : 12,	"c" : 12,
+		"1" : 1,	"5" : 5,	"9" : 9,				"D" : 13,	"d" : 13,
+		"2" : 2,	"6" : 6,	"A" : 10,	"a" : 10,	"E" : 14,	"e" : 14,
+		"3" : 3,	"7" : 7,	"B" : 11,	"b" : 11,	"F" : 15,	"f" : 15,
+	}
+	every ^i := 1 to n do {
+		if not (\lex_digits[s[i]] < b) then {
+			return "" ~== s[1:i]
+		}
+	}
+	return s[1+:n]
 }
 
 
