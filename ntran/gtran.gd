@@ -1,5 +1,10 @@
-#  gtran.gd -- main program for Goaldi front-end translator
-#  (quick-and-dirty experimental version)
+#	gtran.gd -- main program for Goaldi front-end translator
+#	(quick-and-dirty experimental version)
+#
+#	usage:  gtran [-N] [-G] file...
+#
+#	-N		inhibit optimization
+#	-G		generate Go code in file.go instead of JSON to stdout
 
 procedure main(args[]) {
 	local opts := options(args, "NG")
@@ -13,12 +18,10 @@ procedure main(args[]) {
 			pipeline := create optim(pipeline, ["-O"])
 		}
 		if \opts["G"] then {
-			pipeline := create go_File(pipeline)
+			go_File(open(fbase || ".go", "w"), pipeline)
 		} else {
-			pipeline := create json_File(pipeline)
+			json_File(%stdout, pipeline)
 		}
-		pipeline := create stdout(pipeline)
-		@pipeline	# wait for processes to finish and close
 	}
 }
 

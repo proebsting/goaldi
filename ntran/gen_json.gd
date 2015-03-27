@@ -1,67 +1,49 @@
 #  gen_json.gd -- create json output from intermediate representation.
 
-procedure json_File(irgen, flagList) {
-	local p
-	local flag
-	local s
-
-	flag := nil
-	s := "[\n"
-	while p := @irgen do {
-		if \flag then s ||:= ",\n"
-		flag := "true"
-		s ||:= json(p, "")
+procedure json_File(f, irgen) {
+	local sep
+	f.write("[")
+	while ^p := @irgen do {
+		f.writes(\sep)
+		json(f, p, "")
+		sep := ","
 	}
-	s ||:= "\n]"
-	return s
+	f.write("\n]")
 }
 
-procedure json_list(p, indent) {
-	local s
-	local flag
-	local i
-
-	s := "["
-	flag := nil
-	every i := !p do {
-		if \flag then {
-			s ||:= ","
-		}
-		flag := "true"
-		s ||:= "\n" || indent || "\t" || json(i, indent || "\t")
-	}
-	s ||:= "\n" || indent || "]"
-	return s
-}
-
-procedure json_record(p, indent) {
-	local s
-	local i
-
-	s := "{\n" || indent || "\t\"tag\" : " || image(type(p).name())
-	every i := 1 to *p do {
-		s ||:= ",\n" || indent || "\t"
-		s ||:= image(p.type()[i])
-		s ||:= " : "
-		s ||:= json(p[i], indent || "\t")
-	}
-	s ||:= "\n" || indent || "}"
-	return s
-}
-
-procedure json(p, indent) {
+procedure json(f, p, indent) {		# write p to f
 	case type(p) of {
-		niltype:		return "null"
-		number:			return image(image(p))	# all digits, quoted
-		string:			return json_image(string(p))
-		list:			return json_list(p, indent)
-		set:			return json_list(p, indent)
-		ir_Label:		return image(p.value)
-		ir_Tmp:			return image(p.name)
-		ir_TmpLabel:	return image(p.name)
-		ir_TmpClosure:	return image(p.name)
-		default:		return json_record(p, indent)
+		niltype:		f.writes("null")
+		number:			f.writes(image(image(p)))	# all digits, quoted
+		string:			f.writes(json_image(string(p)))
+		ir_Label:		f.writes(image(p.value))
+		ir_Tmp:			f.writes(image(p.name))
+		ir_TmpLabel:	f.writes(image(p.name))
+		ir_TmpClosure:	f.writes(image(p.name))
+		set:			json_list(f, p, indent)
+		list:			json_list(f, p, indent)
+		default:		return json_record(f, p, indent)
 	}
+}
+
+procedure json_list(f, p, indent) {
+	local sep
+	f.writes("[")
+	every ^i := !p do {
+		f.writes(\sep | "", "\n", indent, "\t")
+		json(f, i, indent || "\t")
+		sep := ","
+	}
+	f.writes("\n", indent, "]")
+}
+
+procedure json_record(f, p, indent) {
+	f.writes("{\n", indent, "\t\"tag\" : ", image(type(p).name()))
+	every ^i := 1 to *p do {
+		f.writes(",\n", indent, "\t", image(p.type()[i]), " : ")
+		json(f, p[i], indent || "\t")
+	}
+	f.writes("\n", indent, "}")
 }
 
 procedure json_image(s) {
