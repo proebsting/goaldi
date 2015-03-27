@@ -2,7 +2,7 @@
 #  (quick-and-dirty experimental version)
 
 procedure main(args[]) {
-	local opts := options(args, "N")
+	local opts := options(args, "NG")
 	every ^fname := !args do {
 		^fbase := if fname[-3:0]==".gd" then fname[1:-3] else fname
 		^pipeline := create !open(fbase || ".gd")
@@ -12,7 +12,11 @@ procedure main(args[]) {
 		if /opts["N"] then {
 			pipeline := create optim(pipeline, ["-O"])
 		}
-		pipeline := create json_File(pipeline)
+		if \opts["G"] then {
+			pipeline := create go_File(pipeline)
+		} else {
+			pipeline := create json_File(pipeline)
+		}
 		pipeline := create stdout(pipeline)
 		@pipeline	# wait for processes to finish and close
 	}
