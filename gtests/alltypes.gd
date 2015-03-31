@@ -79,15 +79,20 @@ procedure main() {
 	# n.b. stable sort keeps ordering reproducible within type
 	E := E.sort(Example["type"])
 	write()
-	format := "%-4s %-12s %-14s %-12s %-13s %s"
+	format := "%-2s %2s  %-14s %-12s %-13s  %-4s %s"
 	printf(format,
-		"ch", "x.string()", "x.type()", "t.name()", "global", "  instanceof\n")
+		"c", "*t", "x.type()", "t.name()", "global", "t[1]", "  instanceof\n")
 	printf(format,
-		"--", "----------", "--------", "--------", "------", "  ----------\n")
+		"-", "--", "--------", "--------", "------", "----", "  ----------\n")
 	every x := !E do {
 		^v := x.value
 		^t := x.type
-		printf(format, t.char(), v.string(), t, t.name(), t===x.gtype | "", "")
+		^t1 := t[1] | "-"
+		^bt := !t | "-"
+		if t1 ~=== bt then
+			write("MISMATCH: t[1] / !t: ", image(t1), " ~=== ", image(bt))
+		^n := string(*t)
+		printf(format, t.char(), n, t, t.name(), t===x.gtype | "", t1, "")
 		every t := !tlist do
 			if v.instanceof(t) then writes("  ", t)
 		write()

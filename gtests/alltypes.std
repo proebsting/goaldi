@@ -25,25 +25,25 @@ X    1h2m3s          3723000000000                  1h2m3s
 
 Examples sorted by type, showing type information:
 
-ch   x.string()   x.type()       t.name()     global          instanceof
---   ----------   --------       --------     ------          ----------
-z    ~            t:nil          nil          t:nil           t:nil
-t    t:nil        t:type         type         t:type          t:type
-t    t:Point      t:type         type                         t:type
-n    3.142        t:number       number       t:number        t:number
-n    17           t:number       number       t:number        t:number
-n    6.022e+23    t:number       number       t:number        t:number
-s    abcd         t:string       string       t:string        t:string
-f    f:%stdin     t:file         file         t:file          t:file
-c    c:3          t:channel      channel      t:channel       t:channel
-m    m:dist       t:methodvalue  methodvalue  t:methodvalue   t:methodvalue
-p    p:main       t:procedure    procedure    t:procedure     t:procedure
-L    L:5          t:list         list         t:list          t:list
-S    S:3          t:set          set          t:set           t:set
-T    T:2          t:table        table        t:table         t:table
-R    Circle{}     t:Circle       Circle       t:Circle        t:Circle  t:Point
-R    Point{}      t:Point        Point        t:Point         t:Point
-R    elemtype{}   t:elemtype     elemtype                     t:elemtype
-R    tuple{}      t:tuple        tuple                        t:tuple
-X    1h2m3s       t:external     external     t:external      t:external
+c  *t  x.type()       t.name()     global         t[1]   instanceof
+-  --  --------       --------     ------         ----   ----------
+z   0  t:nil          nil          t:nil          -      t:nil
+t   0  t:type         type         t:type         -      t:type
+t   0  t:type         type                        -      t:type
+n   0  t:number       number       t:number       -      t:number
+n   0  t:number       number       t:number       -      t:number
+n   0  t:number       number       t:number       -      t:number
+s   0  t:string       string       t:string       -      t:string
+f   0  t:file         file         t:file         -      t:file
+c   0  t:channel      channel      t:channel      -      t:channel
+m   0  t:methodvalue  methodvalue  t:methodvalue  -      t:methodvalue
+p   0  t:procedure    procedure    t:procedure    -      t:procedure
+L   0  t:list         list         t:list         -      t:list
+S   0  t:set          set          t:set          -      t:set
+T   0  t:table        table        t:table        -      t:table
+R   3  t:Circle       Circle       t:Circle       x      t:Circle  t:Point
+R   2  t:Point        Point        t:Point        x      t:Point
+R   2  t:elemtype     elemtype                    key    t:elemtype
+R   2  t:tuple        tuple                       w      t:tuple
+X   0  t:external     external     t:external     -      t:external
 
