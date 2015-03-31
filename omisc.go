@@ -40,7 +40,7 @@ func NotIdentical(a, b Value) Value {
 	}
 }
 
-//  Size(x) calls x.Size() or falls back to reflection.
+//  Size(x) calls x.Size() or falls back to calling len().
 //  It panics on an inappropriate argument type.
 func Size(x Value) Value {
 	if t, ok := x.(ISize); ok {
