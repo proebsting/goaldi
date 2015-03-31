@@ -11,7 +11,7 @@
 package extensions
 
 import (
-	g "goaldi"
+	g "goaldi/runtime"
 	"io"
 	"net/http"
 	"net/url"

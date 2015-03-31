@@ -6,7 +6,7 @@ import (
 	"bufio"
 	"encoding/json"
 	"fmt"
-	g "goaldi"
+	g "goaldi/runtime"
 	"os"
 	"reflect"
 	"strings"

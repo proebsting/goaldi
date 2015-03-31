@@ -11,7 +11,7 @@ procedure go_File(f, irgen) {
 procedure go_start(f, p) {
 	^namespace := ("" ~== \p.namespace) | "main" 
 	f.write(`package `, namespace)
-	f.write(`import g "goaldi"`)
+	f.write(`import g "goaldi/runtime"`)
 	return namespace
 }
 

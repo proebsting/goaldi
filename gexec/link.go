@@ -4,7 +4,7 @@ package main
 
 import (
 	"fmt"
-	g "goaldi"
+	g "goaldi/runtime"
 	"strings"
 )
 

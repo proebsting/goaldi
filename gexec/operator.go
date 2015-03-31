@@ -3,7 +3,7 @@
 package main
 
 import (
-	g "goaldi"
+	g "goaldi/runtime"
 )
 
 //  operator -- implement IR unary or binary operator

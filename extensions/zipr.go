@@ -4,9 +4,9 @@ package extensions
 
 import (
 	"archive/zip"
-	"goaldi"
+	"goaldi/runtime"
 )
 
 func init() {
-	goaldi.GoLib(zip.OpenReader, "zipreader", "name", "open a Zip file")
+	runtime.GoLib(zip.OpenReader, "zipreader", "name", "open a Zip file")
 }

@@ -12,7 +12,7 @@
 package extensions
 
 import (
-	g "goaldi"
+	g "goaldi/runtime"
 	"hash"
 	"hash/adler32"
 	"hash/crc32"
