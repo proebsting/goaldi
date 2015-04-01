@@ -5,7 +5,7 @@
 #	To see options, run with no arguments.
 #	This script assumes that gtran and gexec are in the search path.
 
-FLAGS=acdNltvADEFJPTX
+FLAGS=acdNltvADEPTX
 
 #  define the usage abort function
 usage() {
@@ -48,7 +48,7 @@ while getopts $FLAGS C; do
 	d)			WHAT=$C; FMT=dot_File;;
 	N)			NFLAG=-$C; OPT="";;
 	X)			XFLAG=-$C;;
-	[ltvADEFJPT])	XOPTS="$XOPTS -$C";;
+	[ltvADEPT])	XOPTS="$XOPTS -$C";;
 	?)			usage;;
 	esac
 done
