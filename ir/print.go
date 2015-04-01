@@ -46,8 +46,8 @@ func subprint(indent string, tree interface{}) {
 		subprint(indent+indentBy, t.InsnList)
 	default:
 		s := fmt.Sprintf("%T %v", tree, tree)
-		if strings.HasPrefix(s, "main.ir_") {
-			s = s[8:]
+		if strings.HasPrefix(s, "ir.Ir_") {
+			s = s[6:]
 		}
 		fmt.Printf("%s%s\n", indent, s)
 	}
