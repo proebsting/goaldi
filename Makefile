@@ -32,7 +32,7 @@ buildx:
 
 #  run Go unit tests; build and link demos; run Goaldi test suite
 test:
-	go test
+	cd runtime; go test
 	cd demo; $(MAKE) link
 	cd gtests; $(MAKE)
 

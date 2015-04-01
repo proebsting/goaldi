@@ -52,7 +52,7 @@ func TestImport(t *testing.T) {
 	testImp(t, &impr{1}, NewNumber(4.713))
 	x := &extl{2}
 	testImp(t, x, x)
-	expect(t, "external", "&goaldi.extl{i:2}", fmt.Sprintf("%#v", Import(x)))
+	expect(t, "external", "&runtime.extl{i:2}", fmt.Sprintf("%#v", Import(x)))
 	m := make(map[int]string)
 	f := Import(&m)
 	expect(t, "external", &m, f)
