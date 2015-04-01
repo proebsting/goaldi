@@ -3,11 +3,12 @@
 package main
 
 import (
+	"goaldi/ir"
 	g "goaldi/runtime"
 )
 
 //  operator -- implement IR unary or binary operator
-func operator(env *g.Env, f *pr_frame, i *ir_OpFunction) (g.Value, *g.Closure) {
+func operator(env *g.Env, f *pr_frame, i *ir.Ir_OpFunction) (g.Value, *g.Closure) {
 	op := string('0'+len(i.ArgList)) + i.Fn
 	a := getArgs(f, nonDeref[op], i.ArgList)
 	f.offv = a[0] // save potential offending value

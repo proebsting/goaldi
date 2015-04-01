@@ -4,6 +4,7 @@ package main
 
 import (
 	"fmt"
+	"goaldi/ir"
 	g "goaldi/runtime"
 	"strings"
 	"unicode"
@@ -14,7 +15,7 @@ type pr_Info struct {
 	space    *g.Namespace             // procedure namespace
 	name     string                   // procedure name
 	qname    string                   // qualified name (namespace::name)
-	ir       *ir_Function             // intermediate code structure
+	ir       *ir.Ir_Function          // intermediate code structure
 	insns    map[string][]interface{} // map from labels to IR code chunks
 	statics  map[string]interface{}   // table of statics (including globals)
 	locals   []string                 // list of local names
@@ -27,20 +28,20 @@ type pr_Info struct {
 var ProcTable = make(map[string]*pr_Info)
 
 //  declareProc initializes and returns a procedure info structure
-func declareProc(ir *ir_Function) *pr_Info {
+func declareProc(irf *ir.Ir_Function) *pr_Info {
 	pr := &pr_Info{}
-	pr.name = ir.Name
-	pr.space = g.GetSpace(ir.Namespace)
+	pr.name = irf.Name
+	pr.space = g.GetSpace(irf.Namespace)
 	if unicode.IsDigit(rune(pr.name[0])) { // if generated procedure
 		pr.qname = pr.name // leave the name alone
 	} else { // if explicit user procedure
 		pr.qname = pr.space.GetQual() + pr.name // add namespace qualifier
 	}
 	if ProcTable[pr.qname] != nil {
-		fatal("duplicate procedure definition: " + ir.Name)
+		fatal("duplicate procedure definition: " + irf.Name)
 	}
-	pr.ir = ir
-	pr.variadic = (ir.Accumulate != "")
+	pr.ir = irf
+	pr.variadic = (irf.Accumulate != "")
 	pr.params = pr.ir.ParamList
 	pr.locals = pr.ir.LocalList
 	ProcTable[pr.qname] = pr

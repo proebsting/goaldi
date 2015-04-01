@@ -1,6 +1,6 @@
 //  load.go -- read intermediate representation from JSON file
 
-package main
+package ir
 
 import (
 	"bufio"
@@ -9,12 +9,13 @@ import (
 	g "goaldi/runtime"
 	"os"
 	"reflect"
-	"strings"
+	"unicode"
+	"unicode/utf8"
 )
 
 var fileNumber = 1
 
-//  load(fname) -- read a JSON-encoded IR file.
+//  Load(fname) -- read a JSON-encoded IR file.
 //
 //  Each section of the input file is a JSON list value corresponding to a
 //  single source file.  (It is typical, then, to find just one section.)
@@ -23,9 +24,7 @@ var fileNumber = 1
 //  A per-section distinguishing integer is prepended to each procedure name
 //  that begins with "$".  No other changes are made during input.
 //
-func load(fname string) [][]interface{} {
-
-	babble("loading file %d: %s", fileNumber, fname)
+func Load(fname string) [][]interface{} {
 
 	//  open the file
 	var gfile *os.File
@@ -34,7 +33,9 @@ func load(fname string) [][]interface{} {
 		gfile = os.Stdin
 	} else {
 		gfile, err = os.Open(fname)
-		checkError(err)
+		if err != nil {
+			panic(err)
+		}
 	}
 	gcode := bufio.NewReader(gfile)
 
@@ -58,112 +59,14 @@ func load(fname string) [][]interface{} {
 			if err.Error() == "EOF" {
 				break
 			} else {
-				abort(err)
+				panic(err)
 			}
 		}
-		if opt_jdump || opt_tally {
-			jwalk(jtree)
-		}
 		jtree = jstructs(jtree).([]interface{})
-		if opt_adump {
-			fmt.Printf("\n========== %d. file %s ==========\n",
-				fileNumber, fname)
-			dumptree("", jtree)
-			fmt.Println()
-		}
 		parts = append(parts, jtree)
 		fileNumber++
 	}
-
 	return parts
-}
-
-//  dumptree -- print a human-readable listing of the IR
-func dumptree(indent string, x interface{}) {
-	switch t := x.(type) {
-	case nil:
-		return
-	case []interface{}:
-		for _, v := range t {
-			dumptree(indent, v)
-		}
-	case []ir_chunk:
-		for _, v := range t {
-			dumptree(indent, v)
-		}
-	case ir_Function:
-		fmt.Printf("\n%sproc %s {%v}  parent:%s  start:%v\n",
-			indent, t.Name, t.Coord, t.Parent, t.CodeStart)
-		fmt.Printf("%s   param %v", indent, t.ParamList)
-		if t.Accumulate != "" {
-			fmt.Printf(" [accumulate]")
-		}
-		fmt.Printf("\n%s   local %v\n", indent, t.LocalList)
-		fmt.Printf("%s   static %v\n", indent, t.StaticList)
-		fmt.Printf("%s   unbound %v\n", indent, t.UnboundList)
-		dumptree(indent, t.CodeList)
-	case ir_chunk:
-		fmt.Printf("%s%s:\n", indent, t.Label)
-		dumptree(indent+"   ", t.InsnList)
-	default:
-		s := fmt.Sprintf("%T %v", x, x)
-		if strings.HasPrefix(s, "main.ir_") {
-			s = s[8:]
-		}
-		fmt.Printf("%s%s\n", indent, s)
-	}
-}
-
-//  jwalk -- walk json tree for printing and/or tallying
-//  (does not recurse into arrays inside typed structs)
-func jwalk(jtree interface{}) {
-	tally := make(map[string]int)
-	if opt_jdump {
-		fmt.Printf("JSON data:")
-	}
-	jwa("", jtree, tally)
-	if opt_jdump {
-		fmt.Println()
-	}
-	if opt_tally {
-		fmt.Printf("\nRecord field types:\n")
-		for k, v := range tally {
-			fmt.Printf("field %-45s %3d\n", k, v)
-		}
-	}
-}
-
-func jwa(indent string, jtree interface{}, tally map[string]int) {
-	switch x := jtree.(type) {
-	case []interface{}:
-		for _, v := range x {
-			if opt_jdump {
-				fmt.Printf("\n%s----------------------------- ",
-					indent)
-			}
-			jwa("   "+indent, v, tally)
-		}
-	case map[string]interface{}:
-		for k, v := range x {
-			if opt_jdump {
-				fmt.Printf("\n%s%v: ", indent, k)
-			}
-			jwa("   "+indent, v, tally)
-			if submap, ok := v.(map[string]interface{}); ok {
-				tx := fmt.Sprintf("%15s.%-12s %s",
-					x["tag"], k, submap["tag"])
-				tally[tx]++
-			} else if k != "tag" {
-				tx := fmt.Sprintf("%15s.%-12s %T",
-					x["tag"], k, v)
-				tally[tx]++
-			}
-		}
-	default:
-		if opt_jdump {
-			fmt.Printf("%v", x)
-		}
-	}
 }
 
 //  jstructs -- replace maps by IR structs in Json tree
@@ -240,4 +143,22 @@ func setField(f reflect.Value, key string, val interface{}) {
 		result = reflect.Append(result, reflect.ValueOf(v))
 	}
 	f.Set(result)
+}
+
+//  Capitalize(s) -- convert first character of string to upper case
+func Capitalize(s string) string {
+	if s == "" {
+		return ""
+	}
+	r, n := utf8.DecodeRuneInString(s)
+	return string(unicode.ToUpper(r)) + s[n:]
+}
+
+//  DeCapit(s) -- convert first character of string to lower case
+func DeCapit(s string) string {
+	if s == "" {
+		return ""
+	}
+	r, n := utf8.DecodeRuneInString(s)
+	return string(unicode.ToLower(r)) + s[n:]
 }

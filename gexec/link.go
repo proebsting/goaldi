@@ -4,14 +4,15 @@ package main
 
 import (
 	"fmt"
+	"goaldi/ir"
 	g "goaldi/runtime"
 	"strings"
 )
 
-//  A RecordEntry adds info to an ir_Record
+//  A RecordEntry adds info to an Ir_Record
 type RecordEntry struct {
-	ir_Record          // ir struct
-	ctor      *g.VCtor // constructor
+	ir.Ir_Record          // ir struct
+	ctor         *g.VCtor // constructor
 }
 
 //  RecordTable registers all the record declarations that have been seen
@@ -65,7 +66,7 @@ func link(parts [][]interface{}) {
 //  Register initial procedures and global initialization procedures.
 func irDecl(decl interface{}) {
 	switch x := decl.(type) {
-	case ir_Global:
+	case ir.Ir_Global:
 		name := x.Name
 		ns := g.GetSpace(x.Namespace)
 		gv := ns.Get(name)
@@ -79,16 +80,16 @@ func irDecl(decl interface{}) {
 		if x.Fn != "" {
 			GlobInit = append(GlobInit, &x)
 		}
-	case ir_Initial:
+	case ir.Ir_Initial:
 		InitList = append(InitList, &x)
-	case ir_Function:
+	case ir.Ir_Function:
 		declareProc(&x)
 		for _, id := range x.UnboundList {
 			if !strings.Contains(id, "::") { // if no explicit namespace
 				Undeclared[id] = true
 			}
 		}
-	case ir_Record:
+	case ir.Ir_Record:
 		ns := g.GetSpace(x.Namespace)
 		qname := ns.GetQual() + x.Name
 		if RecordTable[qname] == nil {

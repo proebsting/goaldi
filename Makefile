@@ -44,7 +44,9 @@ expt:
 #  prepare Go source for check-in by running standard Go reformatter
 format:
 	go fmt *.go
+	go fmt ir/*.go
 	go fmt gexec/*.go
+	go fmt runtime/*.go
 	go fmt extensions/*.go
 
 #  gather together source for single-file editing; requires "bundle" util

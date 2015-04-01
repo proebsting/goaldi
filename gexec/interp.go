@@ -74,7 +74,7 @@ func interp(env *g.Env, pr *pr_Info, outer map[string]interface{},
 	f.vars[""] = env
 
 	// our own locals and scopes are not defined here;
-	// they are later added dynamically by ir_EnterScope instructions
+	// they are later added dynamically by Ir_EnterScope instructions
 
 	// define static variables
 	for k, v := range pr.statics {

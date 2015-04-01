@@ -4,6 +4,7 @@ package main
 
 import (
 	"fmt"
+	"goaldi/ir"
 	g "goaldi/runtime"
 	"reflect"
 )
@@ -75,11 +76,11 @@ func execute(f *pr_frame, label string) (rv g.Value, rc *g.Closure) {
 				default: // incl ScanSwap, Assign, Deref, Unreachable
 					panic(g.Malfunction(fmt.Sprintf(
 						"Unrecognized interpreter instruction: %#v", i)))
-				case ir_NoOp:
+				case ir.Ir_NoOp:
 					// nothing to do
-				case ir_Fail:
+				case ir.Ir_Fail:
 					return nil, nil
-				case ir_Succeed:
+				case ir.Ir_Succeed:
 					v := g.Deref(f.temps[i.Expr].(g.Value))
 					if i.ResumeLabel == "" {
 						return v, nil
@@ -87,7 +88,7 @@ func execute(f *pr_frame, label string) (rv g.Value, rc *g.Closure) {
 						label = i.ResumeLabel
 						return v, self
 					}
-				case ir_Catch:
+				case ir.Ir_Catch:
 					f.offv = g.Deref(f.temps[i.Fn])
 					if f.offv == g.NilValue {
 						f.onerr = nil // clear if nil
@@ -97,7 +98,7 @@ func execute(f *pr_frame, label string) (rv g.Value, rc *g.Closure) {
 					if i.Lhs != "" {
 						f.temps[i.Lhs] = f.onerr
 					}
-				case ir_Create:
+				case ir.Ir_Create:
 					fnew := newframe(f)
 					fnew.cxout = g.NewChannel(0)
 					fnew.env = g.NewEnv(f.env)
@@ -107,20 +108,20 @@ func execute(f *pr_frame, label string) (rv g.Value, rc *g.Closure) {
 						f.temps[i.Lhs] = fnew.cxout
 					}
 					go coexecute(fnew, i.CoexpLabel)
-				case ir_Select:
+				case ir.Ir_Select:
 					label = irSelect(f, i)
 					continue NextChunk
-				case ir_CoRet:
+				case ir.Ir_CoRet:
 					f.coord = i.Coord
 					if g.CoSend(f.cxout, f.temps[i.Value]) == nil {
 						return nil, nil // kill self: channel was closed
 					}
 					label = i.ResumeLabel
 					continue NextChunk
-				case ir_CoFail:
+				case ir.Ir_CoFail:
 					close(f.cxout)
 					return nil, nil // i.e. die
-				case ir_Key: // dynamic variable reference
+				case ir.Ir_Key: // dynamic variable reference
 					f.coord = i.Coord
 					e := f.vars[i.Scope].(*g.Env) // get correct environment
 					v := e.Lookup(i.Name)         // look up name
@@ -131,22 +132,22 @@ func execute(f *pr_frame, label string) (rv g.Value, rc *g.Closure) {
 					if i.Lhs != "" {
 						f.temps[i.Lhs] = v
 					}
-				case ir_NilLit:
+				case ir.Ir_NilLit:
 					f.temps[i.Lhs] = g.NilValue
-				case ir_IntLit:
+				case ir.Ir_IntLit:
 					f.temps[i.Lhs] = g.NewString(i.Val).ToNumber()
-				case ir_RealLit:
+				case ir.Ir_RealLit:
 					f.temps[i.Lhs] = g.NewString(i.Val).ToNumber()
-				case ir_StrLit:
+				case ir.Ir_StrLit:
 					f.temps[i.Lhs] = g.NewString(i.Val)
-				case ir_MakeList:
+				case ir.Ir_MakeList:
 					n := len(i.ValueList)
 					a := make([]g.Value, n)
 					for j, v := range i.ValueList {
 						a[j] = g.Deref(f.temps[v.(string)])
 					}
 					f.temps[i.Lhs] = g.InitList(a)
-				case ir_Var:
+				case ir.Ir_Var:
 					var v g.Value
 					if i.Namespace != "" {
 						v = g.GetSpace(i.Namespace).Get(i.Name)
@@ -164,7 +165,7 @@ func execute(f *pr_frame, label string) (rv g.Value, rc *g.Closure) {
 							i.Namespace + "::" + i.Name))
 					}
 					f.temps[i.Lhs] = v
-				case ir_EnterScope:
+				case ir.Ir_EnterScope:
 					e := f.env                 // environment at procedure entry
 					p := f.vars[i.ParentScope] // look it up
 					if p != nil {              // if known
@@ -180,21 +181,21 @@ func execute(f *pr_frame, label string) (rv g.Value, rc *g.Closure) {
 					for _, name := range i.NameList { // init locals
 						f.vars[name] = g.NewVariable(g.NilValue)
 					}
-				case ir_ExitScope:
+				case ir.Ir_ExitScope:
 					for _, name := range i.NameList {
 						f.vars[name] = nil // allow garbage collection
 					}
 					for _, name := range i.DynamicList {
 						f.env.VarMap[name] = nil
 					}
-				case ir_Move:
+				case ir.Ir_Move:
 					f.temps[i.Lhs] = f.temps[i.Rhs]
-				case ir_MoveLabel:
+				case ir.Ir_MoveLabel:
 					f.temps[i.Lhs] = i.Label
-				case ir_Goto:
+				case ir.Ir_Goto:
 					label = i.TargetLabel
 					continue NextChunk
-				case ir_IndirectGoto:
+				case ir.Ir_IndirectGoto:
 					label = i.TargetTmpLabel
 					label = f.temps[label].(string)
 					for _, s := range i.LabelList {
@@ -203,13 +204,13 @@ func execute(f *pr_frame, label string) (rv g.Value, rc *g.Closure) {
 						}
 					}
 					panic(g.Malfunction(
-						"ir_IndirectGoto: label not in list: " + label))
-				case ir_MakeClosure:
+						"Ir_IndirectGoto: label not in list: " + label))
+				case ir.Ir_MakeClosure:
 					//#%#% potential later optimization:
 					//#%#% only pass in *referenced* variables
 					//#%#% so that the remainder can get garbage collected
 					f.temps[i.Lhs] = irProcedure(ProcTable[i.Name], f.vars)
-				case ir_OpFunction:
+				case ir.Ir_OpFunction:
 					f.coord = i.Coord
 					v, c := operator(f.env, f, &i)
 					if v != nil {
@@ -223,7 +224,7 @@ func execute(f *pr_frame, label string) (rv g.Value, rc *g.Closure) {
 						label = i.FailLabel
 						continue NextChunk
 					}
-				case ir_Field:
+				case ir.Ir_Field:
 					f.coord = i.Coord
 					x := g.Deref(f.temps[i.Expr].(g.Value))
 					v := g.Field(x, i.Field)
@@ -232,7 +233,7 @@ func execute(f *pr_frame, label string) (rv g.Value, rc *g.Closure) {
 							f.temps[i.Lhs] = v
 						}
 					}
-				case ir_Call:
+				case ir.Ir_Call:
 					f.coord = i.Coord
 					proc := g.Deref(f.temps[i.Fn].(g.Value))
 					arglist := getArgs(f, 0, i.ArgList)
@@ -250,7 +251,7 @@ func execute(f *pr_frame, label string) (rv g.Value, rc *g.Closure) {
 						label = i.FailLabel
 						continue NextChunk
 					}
-				case ir_ResumeValue:
+				case ir.Ir_ResumeValue:
 					f.coord = i.Coord
 					var v g.Value
 					c := f.temps[i.Closure].(*g.Closure)
@@ -270,7 +271,7 @@ func execute(f *pr_frame, label string) (rv g.Value, rc *g.Closure) {
 					}
 				}
 			}
-			panic(g.Malfunction("Fell off end of ir_Chunk: " + inchunk))
+			panic(g.Malfunction("Fell off end of Ir_Chunk: " + inchunk))
 		}
 		return nil, nil
 	}}
@@ -306,13 +307,13 @@ func getArgs(f *pr_frame, nd int, arglist []interface{}) []g.Value {
 //  irSelect -- execute select statement, returning label of chosen body
 //  #%#% most of this should be moved to runtime package
 //  #%#% (set up some data structures here and call that)
-func irSelect(f *pr_frame, ir ir_Select) string {
+func irSelect(f *pr_frame, irs ir.Ir_Select) string {
 
 	// set up data structures for reflect.Select
-	n := len(ir.CaseList)
+	n := len(irs.CaseList)
 	cases := make([]reflect.SelectCase, n, n+1)
 	seenDefault := false
-	for i, sc := range ir.CaseList {
+	for i, sc := range irs.CaseList {
 		f.coord = sc.Coord
 		switch sc.Kind {
 		case "send":
@@ -344,15 +345,15 @@ func irSelect(f *pr_frame, ir ir_Select) string {
 	}
 	// repeat until we get anything other than a read on a closed channel
 	for {
-		f.coord = ir.Coord
+		f.coord = irs.Coord
 		// call select through the reflection interface
 		i, v, recvOK := reflect.Select(cases)
 		// select has returned, having chosen case i
 		if i == n {
 			// this is the default case we added, because there was none
-			return ir.FailLabel // so the select expression fails
+			return irs.FailLabel // so the select expression fails
 		}
-		sc := ir.CaseList[i]
+		sc := irs.CaseList[i]
 		f.coord = sc.Coord
 		if sc.Kind == "receive" {
 			if recvOK {

@@ -5,6 +5,7 @@ package main
 import (
 	"fmt"
 	_ "goaldi/extensions"
+	"goaldi/ir"
 	g "goaldi/runtime"
 	"os"
 	"runtime/pprof"
@@ -16,8 +17,8 @@ import (
 var PubSpace = g.GetSpace("")          // the public (unnamed) namespace
 var Undeclared = make(map[string]bool) // is var x undeclared?
 
-var GlobInit = make([]*ir_Global, 0)  // globals with initialization
-var InitList = make([]*ir_Initial, 0) // sequential initialization blocks
+var GlobInit = make([]*ir.Ir_Global, 0)  // globals with initialization
+var InitList = make([]*ir.Ir_Initial, 0) // sequential initialization blocks
 
 var nFatals = 0   // count of fatal errors
 var nWarnings = 0 // count of nonfatal errors
@@ -44,12 +45,13 @@ func main() {
 	}
 
 	// load the IR code
+	babble("loading")
 	parts := make([][]interface{}, 0)
 	if len(files) == 0 {
-		parts = append(parts, load("-")...)
+		parts = append(parts, loadfile("-")...)
 	} else {
 		for _, f := range files {
-			parts = append(parts, load(f)...)
+			parts = append(parts, loadfile(f)...)
 		}
 	}
 	showInterval("loading")
@@ -106,11 +108,11 @@ func main() {
 		}
 	}
 	// enter all globals that initialize
-	for _, ir := range GlobInit {
-		p := ProcTable[ir.Fn].vproc
-		uses := ProcTable[ir.Fn].ir.UnboundList
-		q := g.GetSpace(ir.Namespace).GetQual()
-		dlist.Add(q+ir.Name, p, uses)
+	for _, gi := range GlobInit {
+		p := ProcTable[gi.Fn].vproc
+		uses := ProcTable[gi.Fn].ir.UnboundList
+		q := g.GetSpace(gi.Namespace).GetQual()
+		dlist.Add(q+gi.Name, p, uses)
 	}
 	// reorder the list for dependencies
 	err := dlist.Reorder(opt_trace)
@@ -132,8 +134,8 @@ func main() {
 	// run the sequence of initialization procedures
 	//#%#% each call to Run resets a clean environment. is that valid?
 	dlist.RunAll()                // global initializers as reordered
-	for _, ir := range InitList { // initial{} blocks in lexical order
-		g.Run(ProcTable[ir.Fn].vproc, []g.Value{})
+	for _, ip := range InitList { // initial{} blocks in lexical order
+		g.Run(ProcTable[ip.Fn].vproc, []g.Value{})
 	}
 	showInterval("initialization")
 
@@ -147,6 +149,17 @@ func main() {
 	// exit
 	showInterval("execution")
 	g.Shutdown(0)
+}
+
+//  loadfile(fname) -- load and possibly print one file
+func loadfile(fname string) [][]interface{} {
+	parts := ir.Load(fname)
+	if opt_adump {
+		for _, p := range parts {
+			ir.Print(fname, p)
+		}
+	}
+	return parts
 }
 
 //  warning -- report nonfatal error and continue

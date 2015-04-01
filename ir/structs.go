@@ -1,6 +1,6 @@
-//  ir.go -- intermediate representation structures
+//  structs.go -- intermediate representation structures
 
-package main
+package ir
 
 import (
 	"reflect"
@@ -8,40 +8,40 @@ import (
 
 //  list of IR struct examples for use by JSON input converter
 var irlist = [...]interface{}{
-	&ir_Record{},
-	&ir_Global{},
-	&ir_Initial{},
-	&ir_Function{},
-	&ir_chunk{},
-	&ir_NoOp{}, // not normally seen, but allowed as a comment
-	&ir_Catch{},
-	&ir_EnterScope{},
-	&ir_ExitScope{},
-	&ir_Var{},
-	&ir_Key{},
-	&ir_NilLit{},
-	&ir_IntLit{},
-	&ir_RealLit{},
-	&ir_StrLit{},
-	&ir_MakeClosure{},
-	&ir_Move{},
-	&ir_MoveLabel{},
-	&ir_MakeList{},
-	&ir_Field{},
-	&ir_OpFunction{},
-	&ir_Call{},
-	&ir_ResumeValue{},
-	&ir_Goto{},
-	&ir_IndirectGoto{},
-	&ir_Succeed{},
-	&ir_Fail{},
-	&ir_Create{},
-	&ir_CoRet{},
-	&ir_CoFail{},
-	&ir_Select{},
-	&ir_SelectCase{},
-	&ir_NoValue{},     // seen only if unoptimized; not implemented
-	&ir_Unreachable{}, // seen only if unoptimized; not implemented
+	&Ir_Record{},
+	&Ir_Global{},
+	&Ir_Initial{},
+	&Ir_Function{},
+	&Ir_chunk{},
+	&Ir_NoOp{}, // not normally seen, but allowed as a comment
+	&Ir_Catch{},
+	&Ir_EnterScope{},
+	&Ir_ExitScope{},
+	&Ir_Var{},
+	&Ir_Key{},
+	&Ir_NilLit{},
+	&Ir_IntLit{},
+	&Ir_RealLit{},
+	&Ir_StrLit{},
+	&Ir_MakeClosure{},
+	&Ir_Move{},
+	&Ir_MoveLabel{},
+	&Ir_MakeList{},
+	&Ir_Field{},
+	&Ir_OpFunction{},
+	&Ir_Call{},
+	&Ir_ResumeValue{},
+	&Ir_Goto{},
+	&Ir_IndirectGoto{},
+	&Ir_Succeed{},
+	&Ir_Fail{},
+	&Ir_Create{},
+	&Ir_CoRet{},
+	&Ir_CoFail{},
+	&Ir_Select{},
+	&Ir_SelectCase{},
+	&Ir_NoValue{},     // seen only if unoptimized; not implemented
+	&Ir_Unreachable{}, // seen only if unoptimized; not implemented
 }
 
 //  struct table indexed by type names
@@ -50,14 +50,16 @@ var irtable = make(map[string]reflect.Type)
 func init() {
 	for _, ir := range irlist {
 		t := reflect.TypeOf(ir).Elem()
-		irtable[t.Name()] = t
+		name := t.Name()
+		irtable[Capitalize(name)] = t
+		irtable[DeCapit(name)] = t
 	}
 }
 
 //  intermediate representation struct definitions
 //  all fields must be capitalized for access by the reflection package
 
-type ir_Record struct {
+type Ir_Record struct {
 	Coord      string
 	Name       string
 	ExtendsRec string
@@ -66,20 +68,20 @@ type ir_Record struct {
 	Namespace  string
 }
 
-type ir_Initial struct {
+type Ir_Initial struct {
 	Coord     string
 	Fn        string
 	Namespace string
 }
 
-type ir_Global struct {
+type Ir_Global struct {
 	Coord     string
 	Name      string
 	Namespace string
 	Fn        string
 }
 
-type ir_Function struct {
+type Ir_Function struct {
 	Coord       string
 	Name        string
 	ParamList   []string
@@ -87,29 +89,29 @@ type ir_Function struct {
 	LocalList   []string
 	StaticList  []string
 	UnboundList []string
-	CodeList    []ir_chunk
+	CodeList    []Ir_chunk
 	CodeStart   string
 	Parent      string
 	Namespace   string
 }
 
-type ir_chunk struct {
+type Ir_chunk struct {
 	Label    string
 	InsnList []interface{} // heterogeneous
 }
 
-type ir_NoOp struct {
+type Ir_NoOp struct {
 	Coord   string
 	Comment string
 }
 
-type ir_Catch struct {
+type Ir_Catch struct {
 	Coord string
 	Lhs   string
 	Fn    string
 }
 
-type ir_EnterScope struct {
+type Ir_EnterScope struct {
 	Coord       string
 	NameList    []string
 	DynamicList []string
@@ -117,14 +119,14 @@ type ir_EnterScope struct {
 	ParentScope string
 }
 
-type ir_ExitScope struct {
+type Ir_ExitScope struct {
 	Coord       string
 	NameList    []string
 	DynamicList []string
 	Scope       string
 }
 
-type ir_Var struct {
+type Ir_Var struct {
 	Coord     string
 	Lhs       string
 	Name      string
@@ -132,62 +134,62 @@ type ir_Var struct {
 	Scope     string
 }
 
-type ir_Key struct {
+type Ir_Key struct {
 	Coord string
 	Lhs   string // may be nil
 	Name  string
 	Scope string
 }
 
-type ir_NilLit struct {
+type Ir_NilLit struct {
 	Coord string
 	Lhs   string
 }
 
-type ir_IntLit struct {
-	Coord string
-	Lhs   string
-	Val   string
-}
-
-type ir_RealLit struct {
+type Ir_IntLit struct {
 	Coord string
 	Lhs   string
 	Val   string
 }
 
-type ir_StrLit struct {
+type Ir_RealLit struct {
+	Coord string
+	Lhs   string
+	Val   string
+}
+
+type Ir_StrLit struct {
 	Coord string
 	Lhs   string
 	Len   string // length of the UTF-8 encoding
 	Val   string // individual bytes of the UTF-8 encoding
 }
 
-type ir_MakeClosure struct {
+type Ir_MakeClosure struct {
 	Coord string
 	Lhs   string
 	Name  string
 }
 
-type ir_Move struct {
+type Ir_Move struct {
 	Coord string
 	Lhs   string
 	Rhs   string
 }
 
-type ir_MoveLabel struct {
+type Ir_MoveLabel struct {
 	Coord string
 	Lhs   string
 	Label string
 }
 
-type ir_MakeList struct {
+type Ir_MakeList struct {
 	Coord     string
 	Lhs       string
 	ValueList []interface{} // heterogeneous
 }
 
-type ir_Field struct {
+type Ir_Field struct {
 	Coord string
 	Lhs   string // may be nil
 	Expr  string
@@ -195,7 +197,7 @@ type ir_Field struct {
 	Rval  string // may be nil
 }
 
-type ir_OpFunction struct {
+type Ir_OpFunction struct {
 	Coord      string
 	Lhs        string // may be nil
 	Lhsclosure string // may be nil
@@ -205,7 +207,7 @@ type ir_OpFunction struct {
 	FailLabel  string        // may be nil
 }
 
-type ir_Call struct {
+type Ir_Call struct {
 	Coord      string
 	Lhs        string
 	Lhsclosure string
@@ -216,7 +218,7 @@ type ir_Call struct {
 	Scope      string
 }
 
-type ir_ResumeValue struct {
+type Ir_ResumeValue struct {
 	Coord      string
 	Lhs        string // may be nil
 	Lhsclosure string
@@ -224,50 +226,50 @@ type ir_ResumeValue struct {
 	FailLabel  string // may be nil
 }
 
-type ir_Goto struct {
+type Ir_Goto struct {
 	Coord       string
 	TargetLabel string
 }
 
-type ir_IndirectGoto struct {
+type Ir_IndirectGoto struct {
 	Coord          string
 	TargetTmpLabel string
 	LabelList      []string
 }
 
-type ir_Succeed struct {
+type Ir_Succeed struct {
 	Coord       string
 	Expr        string
 	ResumeLabel string // may be nil
 }
 
-type ir_Fail struct {
+type Ir_Fail struct {
 	Coord string
 }
 
-type ir_Create struct {
+type Ir_Create struct {
 	Coord      string
 	Lhs        string
 	CoexpLabel string
 }
 
-type ir_CoRet struct {
+type Ir_CoRet struct {
 	Coord       string
 	Value       string
 	ResumeLabel string
 }
 
-type ir_CoFail struct {
+type Ir_CoFail struct {
 	Coord string
 }
 
-type ir_Select struct {
+type Ir_Select struct {
 	Coord     string
-	CaseList  []ir_SelectCase
+	CaseList  []Ir_SelectCase
 	FailLabel string
 }
 
-type ir_SelectCase struct {
+type Ir_SelectCase struct {
 	Coord     string
 	Kind      string // "send" | "receive" | "default"
 	Lhs       string
@@ -275,11 +277,11 @@ type ir_SelectCase struct {
 	BodyLabel string
 }
 
-type ir_NoValue struct {
+type Ir_NoValue struct {
 	Coord string
 	Lhs   string
 }
 
-type ir_Unreachable struct {
+type Ir_Unreachable struct {
 	Coord string
 }

@@ -8,8 +8,6 @@ import (
 	"runtime/pprof"
 	"syscall"
 	"time"
-	"unicode"
-	"unicode/utf8"
 )
 
 //  checkError aborts if error value e is not nil.
@@ -60,13 +58,4 @@ func cpuTime() time.Duration {
 	user := time.Duration(syscall.TimevalToNsec(ustruct.Utime))
 	sys := time.Duration(syscall.TimevalToNsec(ustruct.Stime))
 	return user + sys
-}
-
-//  Capitalize -- convert first character of string to upper case
-func Capitalize(s string) string {
-	if s == "" {
-		return ""
-	}
-	r, n := utf8.DecodeRuneInString(s)
-	return string(unicode.ToUpper(r)) + s[n:]
 }
