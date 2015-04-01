@@ -4,9 +4,12 @@ package ir
 
 import (
 	"bufio"
+	"bytes"
+	"compress/bzip2"
 	"encoding/json"
 	"fmt"
 	g "goaldi/runtime"
+	"io"
 	"os"
 	"reflect"
 	"unicode"
@@ -37,15 +40,23 @@ func Load(fname string) [][]interface{} {
 			panic(err)
 		}
 	}
-	gcode := bufio.NewReader(gfile)
+	buffi := bufio.NewReader(gfile)
 
 	//  skip initial comment lines (e.g. #!/usr/bin/env gexec ...)
 	for {
-		b, e := gcode.Peek(1)
+		b, e := buffi.Peek(1)
 		if e != nil || b[0] != '#' {
 			break
 		}
-		gcode.ReadBytes('\n')
+		buffi.ReadBytes('\n')
+	}
+
+	//  check for bzip2-encoded file
+	gcode := io.Reader(buffi)
+	bzheader := []byte("BZh91AY&SY")
+	b, _ := buffi.Peek(10)
+	if len(b) == 10 && bytes.Compare(b, bzheader) == 0 {
+		gcode = bzip2.NewReader(buffi)
 	}
 
 	//  load the JSON-encoded program

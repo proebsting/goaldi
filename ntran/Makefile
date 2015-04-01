@@ -11,7 +11,8 @@ GOBIN = ../../../bin
 .gd.gir:	; goaldi -c $<
 
 ntran:		$(GIR)
-			echo '#!/usr/bin/env gexec' | cat - $(GIR) >ntran
+			echo '#!/usr/bin/env gexec' >ntran
+			cat $(GIR) | bzip2 -9 >>ntran
 			gexec -l ntran			# check for link errors
 			chmod +x ntran
 			cp ntran $(GOBIN)
