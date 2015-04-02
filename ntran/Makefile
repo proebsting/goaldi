@@ -11,10 +11,14 @@ GOBIN = ../../../bin
 .gd.gir:	; goaldi -c $<
 
 ntran:		$(GIR)
-			echo '#!/usr/bin/env gexec' >ntran
-			cat $(GIR) | bzip2 -9 >>ntran
+			echo '#!/usr/bin/env gexec'				>ntran
+			echo "# ntran `git rev-parse head`"		>>ntran
+			echo "# $$USER `date`"					>>ntran
+			echo "# `uname -n -s -m`"				>>ntran
+			cat $(GIR) | bzip2 -9					>>ntran
 			gexec -l ntran			# check for link errors
 			chmod +x ntran
+			head -4 ntran
 			cp ntran $(GOBIN)
 
 $(GIR):		$(GOBIN)/gtran
