@@ -27,7 +27,7 @@ var fileNumber = 1
 //  A per-section distinguishing integer is prepended to each procedure name
 //  that begins with "$".  No other changes are made during input.
 //
-func Load(fname string) [][]interface{} {
+func Load(fname string) (comments []string, ircode [][]interface{}) {
 
 	//  open the file
 	var gfile *os.File
@@ -42,13 +42,15 @@ func Load(fname string) [][]interface{} {
 	}
 	buffi := bufio.NewReader(gfile)
 
-	//  skip initial comment lines (e.g. #!/usr/bin/env gexec ...)
+	//  collect initial comment lines (e.g. #!/usr/bin/env gexec ...)
+	comments = []string{}
 	for {
 		b, e := buffi.Peek(1)
 		if e != nil || b[0] != '#' {
 			break
 		}
-		buffi.ReadBytes('\n')
+		cmt, _ := buffi.ReadBytes('\n')
+		comments = append(comments, string(cmt[:len(cmt)-1]))
 	}
 
 	//  check for bzip2-encoded file
@@ -61,7 +63,7 @@ func Load(fname string) [][]interface{} {
 
 	//  load the JSON-encoded program
 	jd := json.NewDecoder(gcode)
-	parts := make([][]interface{}, 0)
+	ircode = make([][]interface{}, 0)
 
 	for {
 		var jtree []interface{}
@@ -74,10 +76,10 @@ func Load(fname string) [][]interface{} {
 			}
 		}
 		jtree = jstructs(jtree).([]interface{})
-		parts = append(parts, jtree)
+		ircode = append(ircode, jtree)
 		fileNumber++
 	}
-	return parts
+	return comments, ircode
 }
 
 //  jstructs -- replace maps by IR structs in Json tree

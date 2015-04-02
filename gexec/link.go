@@ -21,8 +21,6 @@ var RecordTable = make(map[string]*RecordEntry, 0)
 //  link combines IR files to make a complete program.
 func link(parts [][]interface{}) {
 
-	babble("linking")
-
 	//  process individual declarations (proc, global, etc) from IR
 	for _, file := range parts {
 		for _, decl := range file {

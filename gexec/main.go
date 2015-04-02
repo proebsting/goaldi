@@ -45,42 +45,25 @@ func main() {
 	}
 
 	// load the IR code
-	babble("loading")
 	parts := make([][]interface{}, 0)
 	if len(files) == 0 {
+		babble("loading [stdin]")
 		parts = append(parts, loadfile("-")...)
 	} else {
 		for _, f := range files {
+			babble("loading %s", f)
 			parts = append(parts, loadfile(f)...)
 		}
 	}
 	showInterval("loading")
 
 	// link everything together
+	babble("linking")
 	link(parts)
 	showInterval("linking")
 	if nFatals > 0 {
 		pprof.StopCPUProfile()
 		os.Exit(1)
-	}
-
-	// list the globals
-	if opt_verbose {
-		for nsname := range g.AllSpaces() {
-			ns := g.GetSpace(nsname)
-			if nsname == "" {
-				fmt.Printf("\nGLOBALS:")
-			} else {
-				fmt.Printf("\n%s::", nsname)
-			}
-			for name := range ns.All() {
-				fmt.Printf(" %s", name)
-				if _, ok := ns.Get(name).(*g.VProcedure); ok {
-					fmt.Print("()")
-				}
-			}
-			fmt.Printf("\n")
-		}
 	}
 
 	// quit now if -c was given
@@ -89,12 +72,13 @@ func main() {
 		os.Exit(0)
 	}
 
-	// set execution flag
+	// set environment flag if to dump Go stack on panic
 	if opt_debug {
 		g.EnvInit("gostack", g.ONE)
 	}
 
 	// make a list for dependency-based global initialization
+	babble("computing dependencies")
 	dlist := &g.DependencyList{}
 	// put procedures at the front of the list for proper dependency checking
 	// (excluding procedures associated with global:= and initial{})
@@ -133,6 +117,7 @@ func main() {
 
 	// run the sequence of initialization procedures
 	//#%#% each call to Run resets a clean environment. is that valid?
+	babble("running initializers")
 	dlist.RunAll()                // global initializers as reordered
 	for _, ip := range InitList { // initial{} blocks in lexical order
 		g.Run(ProcTable[ip.Fn].vproc, []g.Value{})
@@ -144,6 +129,7 @@ func main() {
 	for _, s := range args {
 		arglist = append(arglist, g.NewString(s))
 	}
+	babble("beginning execution")
 	g.Run(gmain, arglist)
 
 	// exit
@@ -153,7 +139,10 @@ func main() {
 
 //  loadfile(fname) -- load and possibly print one file
 func loadfile(fname string) [][]interface{} {
-	parts := ir.Load(fname)
+	comments, parts := ir.Load(fname)
+	for _, c := range comments {
+		babble(c)
+	}
 	if opt_adump {
 		for _, p := range parts {
 			ir.Print(fname, p)

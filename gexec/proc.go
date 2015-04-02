@@ -3,7 +3,6 @@
 package main
 
 import (
-	"fmt"
 	"goaldi/ir"
 	g "goaldi/runtime"
 	"strings"
@@ -88,11 +87,6 @@ func setupProc(pr *pr_Info) {
 			panic(g.Malfunction("Duplicate IR label: " + ch.Label))
 		}
 		pr.insns[ch.Label] = ch.InsnList
-	}
-
-	if opt_verbose {
-		fmt.Printf("\n%s()  %d param  %d local  %d static\n",
-			pr.qname, len(pr.params), len(pr.locals), len(pr.statics))
 	}
 }
 
