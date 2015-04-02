@@ -23,15 +23,16 @@ $(HOOKFILE):	$(HOOKMASTER)
 	cp $(HOOKMASTER) $(HOOKFILE)
 
 #  build and install Goaldi
-build: embed
+build: gexec/embed.go
 	go install $(PROGS)
 	cd gtran; $(MAKE)
 	cp goaldi.sh $(GOBIN)/goaldi
 
-#  make a sample embedded app
-embed:
-	goaldi -c embedded.gd
-	bzip2 -9 <embedded.gir | ./gobytes.sh main appcode >gexec/embed.go
+gexec/embed.go: ntran/ntran gobytes.sh
+	./gobytes.sh main appcode <ntran/ntran >gexec/embed.go
+
+ntran/ntran:
+	cp ntran/stable.gix ntran/ntran
 
 #  build and install ntran (experimental translator)
 buildx:
@@ -68,7 +69,7 @@ libdoc.txt:	libdoc.sh libdoc.gd build
 
 #  remove temporary and built files from source tree
 clean:
-	rm -f embedded.gir gexec/embed.go
+	rm -f gexec/embed.go
 	rm -f libdoc.txt
 	go clean $(PKG) $(PROGS)
 	cd gtran; $(MAKE) clean

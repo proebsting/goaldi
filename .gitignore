@@ -8,7 +8,6 @@
 *.dot
 *.u[12]
 PROFILE
-embedded.gir
 libdoc.txt
 gexec/embed.go
 gtran/gtran
