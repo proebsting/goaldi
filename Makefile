@@ -4,6 +4,8 @@
 #	$GOPATH is set per Go documentation
 #	$GOPATH/bin (first GOPATH component) is destination for built programs
 #	go, icon, and $GOPATH/bin are all in search path
+#
+#  Additional temporary assumption:  working goaldi in search path.
 
 PKG = goaldi
 PROGS = $(PKG)/gexec
@@ -21,10 +23,15 @@ $(HOOKFILE):	$(HOOKMASTER)
 	cp $(HOOKMASTER) $(HOOKFILE)
 
 #  build and install Goaldi
-build:
+build: embed
 	go install $(PROGS)
 	cd gtran; $(MAKE)
 	cp goaldi.sh $(GOBIN)/goaldi
+
+#  make a sample embedded app
+embed:
+	goaldi -c embedded.gd
+	bzip2 -9 <embedded.gir | ./gobytes.sh main appcode >gexec/embed.go
 
 #  build and install ntran (experimental translator)
 buildx:
@@ -61,6 +68,7 @@ libdoc.txt:	libdoc.sh libdoc.gd build
 
 #  remove temporary and built files from source tree
 clean:
+	rm -f embedded.gir gexec/embed.go
 	rm -f libdoc.txt
 	go clean $(PKG) $(PROGS)
 	cd gtran; $(MAKE) clean

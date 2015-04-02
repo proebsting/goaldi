@@ -8,6 +8,7 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
 	_ "goaldi/extensions"
 	"goaldi/ir"
@@ -53,7 +54,9 @@ func main() {
 	// load the IR code
 	parts := make([][]interface{}, 0)
 	if files == nil {
-		panic("NO EMBEDDED APP YET")
+		babble("running embedded app") // no way to enable this output, though
+		bbuf := bytes.NewBuffer(appcode)
+		parts = append(parts, loadfile("[embedded]", bbuf)...)
 	} else if len(files) == 0 {
 		babble("loading [stdin]")
 		parts = append(parts, loadfile("[stdin]", os.Stdin)...)
