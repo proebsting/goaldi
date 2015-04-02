@@ -19,7 +19,7 @@ Usage: $0 [-$FLAGS] file.gd... [--] [arg...]
   -d  compile only, producing Dot directives on file.dot
 ==EOF==
 	# add option descriptions from back end (gexec)
-	gexec -? 2>&1 | sed -n 's/=false: /  /p'
+	gexec -.!! -? 2>&1 | sed -n -e '/-.!!/d' -e 's/=false: /  /p'
 	exit 1
 }
 
@@ -88,7 +88,7 @@ for F in $SRCS; do
 	B=${F%.*}
 	case $WHAT in
 		a)	# -a: produce file.gir and file.gia
-			tran $F >$B.gir && gexec $XOPTS -l -A $B.gir >$B.gia
+			tran $F >$B.gir && gexec -.!! $XOPTS -l -A $B.gir >$B.gia
 			QUIT="exit $?"
 			;;
 		c)	# -c or nothing: produce file.gir
@@ -110,4 +110,4 @@ done
 $QUIT	# exit if nothing more to do, or if errors in compilation
 
 # execute compiled files
-gexec $XOPTS $SCR/*.gir -- "$@"
+gexec -.!! $XOPTS $SCR/*.gir -- "$@"

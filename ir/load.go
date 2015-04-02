@@ -10,7 +10,6 @@ import (
 	"fmt"
 	g "goaldi/runtime"
 	"io"
-	"os"
 	"reflect"
 	"unicode"
 	"unicode/utf8"
@@ -18,7 +17,7 @@ import (
 
 var fileNumber = 1
 
-//  Load(fname) -- read a JSON-encoded IR file.
+//  Load(reader) -- read a JSON-encoded IR file.
 //
 //  Each section of the input file is a JSON list value corresponding to a
 //  single source file.  (It is typical, then, to find just one section.)
@@ -27,22 +26,10 @@ var fileNumber = 1
 //  A per-section distinguishing integer is prepended to each procedure name
 //  that begins with "$".  No other changes are made during input.
 //
-func Load(fname string) (comments []string, ircode [][]interface{}) {
-
-	//  open the file
-	var gfile *os.File
-	var err error
-	if fname == "-" {
-		gfile = os.Stdin
-	} else {
-		gfile, err = os.Open(fname)
-		if err != nil {
-			panic(err)
-		}
-	}
-	buffi := bufio.NewReader(gfile)
+func Load(rdr io.Reader) (comments []string, ircode [][]interface{}) {
 
 	//  collect initial comment lines (e.g. #!/usr/bin/env gexec ...)
+	buffi := bufio.NewReader(rdr)
 	comments = []string{}
 	for {
 		b, e := buffi.Peek(1)

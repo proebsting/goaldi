@@ -1,4 +1,9 @@
 //  main.go -- overall control of interpreter
+//
+//  If the first command line argument is "-.!!", then additional arguments
+//  direct the loading and execution of IR code (gcode) from input files.
+//
+//  If not, an embedded gcode app is run, and it receives all arguments.
 
 package main
 
@@ -7,6 +12,7 @@ import (
 	_ "goaldi/extensions"
 	"goaldi/ir"
 	g "goaldi/runtime"
+	"io"
 	"os"
 	"runtime/pprof"
 	"strings"
@@ -46,13 +52,17 @@ func main() {
 
 	// load the IR code
 	parts := make([][]interface{}, 0)
-	if len(files) == 0 {
+	if files == nil {
+		panic("NO EMBEDDED APP YET")
+	} else if len(files) == 0 {
 		babble("loading [stdin]")
-		parts = append(parts, loadfile("-")...)
+		parts = append(parts, loadfile("[stdin]", os.Stdin)...)
 	} else {
-		for _, f := range files {
-			babble("loading %s", f)
-			parts = append(parts, loadfile(f)...)
+		for _, fname := range files {
+			babble("loading %s", fname)
+			f, err := os.Open(fname)
+			checkError(err)
+			parts = append(parts, loadfile(fname, f)...)
 		}
 	}
 	showInterval("loading")
@@ -137,15 +147,15 @@ func main() {
 	g.Shutdown(0)
 }
 
-//  loadfile(fname) -- load and possibly print one file
-func loadfile(fname string) [][]interface{} {
-	comments, parts := ir.Load(fname)
+//  loadfile(label, reader) -- load and possibly print one file
+func loadfile(label string, rdr io.Reader) [][]interface{} {
+	comments, parts := ir.Load(rdr)
 	for _, c := range comments {
 		babble(c)
 	}
 	if opt_adump {
 		for _, p := range parts {
-			ir.Print(fname, p)
+			ir.Print(label, p)
 		}
 	}
 	return parts

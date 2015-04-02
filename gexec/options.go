@@ -1,4 +1,8 @@
 //  options.go -- declaration and processing of command line arguments
+//
+//  NOTE:  If the first command line argument is not "-.!!", then
+//  no argument processing is done under the assumption that all
+//  options and arguments will be passed to the embedded app.
 
 package main
 
@@ -22,7 +26,7 @@ var opt_trace bool   // -T: trace IR instruction execution
 //  usage prints a usage message (with option descriptions) and aborts.
 func usage() {
 	fmt.Fprintf(os.Stderr,
-		"Usage: %s [options] file.gir... [--] [arg...]]\n", os.Args[0])
+		"Usage: %s -.!! [options] file.gir... [--] [arg...]]\n", os.Args[0])
 	flag.PrintDefaults()
 	os.Exit(1)
 }
@@ -30,6 +34,13 @@ func usage() {
 //  options sets global flags and returns file names and execution arguments.
 func options() (files []string, args []string) {
 
+	// check for enabling magic flag
+	// (if not set, return files=nil as an indicator)
+	if len(os.Args) < 2 || os.Args[1] != "-.!!" {
+		return nil, os.Args[1:]
+	}
+
+	flag.Bool(".!!", false, "magic enabler")
 	flag.BoolVar(&opt_noexec, "l", false, "load and link only")
 	flag.BoolVar(&opt_timings, "t", false, "show CPU timings")
 	flag.BoolVar(&opt_verbose, "v", false, "issue verbose commentary")
