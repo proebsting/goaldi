@@ -30,8 +30,14 @@ ntran:		$(GIR)
 			chmod +x ntran
 			head -4 ntran
 
-#  this makes translator files depend on the translator
-$(GIR):		$(GOBIN)/gexec
+#  install the new translator as the stable version for future builds
+accept:		ntran
+			@echo '------'
+			@head -4 stable.gix | sed 's/^#/< /'
+			@echo '------'
+			@head -4 ntran      | sed 's/^#/> /'
+			@echo '------'
+			cp -p ntran stable.gix
 
 #  clean up build products
 clean:

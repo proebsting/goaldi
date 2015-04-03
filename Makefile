@@ -57,6 +57,10 @@ test:
 expt:
 	test -f expt.gd && $(GOBIN)/goaldi $$GXOPTS expt.gd || :
 
+#  install the new translator as the stable version for future builds
+accept:
+	cd ntran; $(MAKE) accept
+
 #  prepare Go source for check-in by running standard Go reformatter
 format:
 	go fmt *.go
