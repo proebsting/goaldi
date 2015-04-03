@@ -25,7 +25,6 @@ $(HOOKFILE):	$(HOOKMASTER)
 #  build and install Goaldi
 build: gexec/embed.go
 	go install $(PROGS)
-	cd gtran; $(MAKE)
 	cp goaldi.sh $(GOBIN)/goaldi
 
 gexec/embed.go: ntran/ntran gobytes.sh
@@ -72,11 +71,10 @@ clean:
 	rm -f gexec/embed.go
 	rm -f libdoc.txt
 	go clean $(PKG) $(PROGS)
-	cd gtran; $(MAKE) clean
 	cd ntran; $(MAKE) clean
 	cd gtests; $(MAKE) clean
 
 #  remove files placed elsewhere in $GOPATH
 uninstall:
-	rm -f $(GOBIN)/gtran $(GOBIN)/gexec $(GOBIN)/goaldi $(GOBIN)/ntran
+	rm -f $(GOBIN)/gexec $(GOBIN)/goaldi $(GOBIN)/ntran
 	go clean -i $(PKG) $(PROGS)

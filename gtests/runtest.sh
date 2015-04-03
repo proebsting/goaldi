@@ -5,9 +5,8 @@
 #	check for necessary binaries
 GOBIN=${GOPATH%%:*}/bin
 GOALDI=$GOBIN/goaldi
-GTRAN=$GOBIN/gtran
 GEXEC=$GOBIN/gexec
-ls -l $GOALDI $GTRAN $GEXEC || exit
+ls -l $GOALDI $GEXEC || exit
 
 #	ensure scipt exits immediately on interrupt (needed on Mac)
 trap 'exit' INT

@@ -12,7 +12,7 @@ GOBIN = ../../../bin
 
 ntran:		$(GIR)
 			echo '#!/usr/bin/env gexec -.!!'		>ntran
-			echo "# ntran `git rev-parse head`"		>>ntran
+			echo "# ntran `git rev-parse HEAD`"		>>ntran
 			echo "# $$USER `date`"					>>ntran
 			echo "# `uname -n -s -m`"				>>ntran
 			cat $(GIR) | bzip2 -9					>>ntran
