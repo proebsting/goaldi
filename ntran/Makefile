@@ -1,4 +1,4 @@
-##	Makefile for new translator written in Goaldi
+##	Makefile for Goaldi translator
 
 GEN=X
 
@@ -7,15 +7,19 @@ SRC = gtran.gd ast.gd ir.gd \
 GIR = $(SRC:.gd=.gir)
 GOBIN = ../../../bin
 
+#  rule for compiling a .gd file to make a .gir file
 .SUFFIXES:	.gd .gir
 .gd.gir:	; goaldi -c $<
 
+#  make Go source file for embedding the translator
 ntran.go:	ntran gobytes.sh
 			./gobytes.sh ntran AppCode <ntran >ntran.go
 
+#  make bootstrap Go file from saved, stable translator version
 oldbed:
 			./gobytes.sh ntran AppCode <stable.gix >ntran.go
 
+#  make translator executable from component .gir files
 ntran:		$(GIR)
 			echo '#!/usr/bin/env gexec -.!!'				>ntran
 			echo "# ntran gen$(GEN) `git rev-parse HEAD`"	>>ntran
@@ -25,9 +29,10 @@ ntran:		$(GIR)
 			gexec -.!! -l ntran			# check for link errors
 			chmod +x ntran
 			head -4 ntran
-			cp ntran $(GOBIN)
 
+#  this makes translator files depend on the translator
 $(GIR):		$(GOBIN)/gexec
 
+#  clean up build products
 clean:
 			rm -f *.gir ntran ntran.go

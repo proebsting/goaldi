@@ -20,7 +20,7 @@ setup:	$(HOOKFILE)
 $(HOOKFILE):	$(HOOKMASTER)
 	cp $(HOOKMASTER) $(HOOKFILE)
 
-#  build and install Goaldi
+#  build and install Goaldi -- the full three-pass bootstrap process
 build:
 	cp goaldi.sh $(GOBIN)/goaldi
 	#
@@ -46,12 +46,6 @@ build:
 	# looks like a keeper.
 	#
 
-gexec/embed.go: ntran/ntran gobytes.sh
-	./gobytes.sh main appcode <ntran/ntran >gexec/embed.go
-
-ntran/ntran:
-	cp ntran/stable.gix ntran/ntran
-
 #  run Go unit tests; build and link demos; run Goaldi test suite
 test:
 	cd runtime; go test
@@ -73,7 +67,7 @@ format:
 
 #  gather together source for single-file editing; requires "bundle" util
 bundle:
-	@bundle *.go */*.go
+	@bundle `find * -name '*.go' ! -name ntran.go`
 
 #  extract stdlib procedure documentation
 libdoc:	libdoc.txt
