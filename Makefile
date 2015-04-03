@@ -3,9 +3,7 @@
 #  Assumptions:
 #	$GOPATH is set per Go documentation
 #	$GOPATH/bin (first GOPATH component) is destination for built programs
-#	go, icon, and $GOPATH/bin are all in search path
-#
-#  Additional temporary assumption:  working goaldi in search path.
+#	$GOPATH/bin are in search path, as is the Go compiler
 
 PKG = goaldi
 PROGS = $(PKG)/gexec
@@ -84,13 +82,15 @@ libdoc.txt:	libdoc.sh libdoc.gd build
 	./libdoc.sh >libdoc.txt
 
 #  remove temporary and built files from source tree
+#  and also subpackages built and saved in $GOPATH
 clean:
 	rm -f libdoc.txt
 	go clean $(PKG) $(PROGS)
 	cd ntran; $(MAKE) clean
 	cd gtests; $(MAKE) clean
+	rm -rf $(GOBIN)/../pkg/*/goaldi
 
 #  remove files placed elsewhere in $GOPATH
 uninstall:
-	rm -f $(GOBIN)/gexec $(GOBIN)/goaldi $(GOBIN)/ntran
+	rm -rf $(GOBIN)/gexec $(GOBIN)/goaldi $(GOBIN)/../pkg/*/goaldi
 	go clean -i $(PKG) $(PROGS)
