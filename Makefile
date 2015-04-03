@@ -20,6 +20,13 @@ setup:	$(HOOKFILE)
 $(HOOKFILE):	$(HOOKMASTER)
 	cp $(HOOKMASTER) $(HOOKFILE)
 
+#  rebuild assuming a working translator
+rebuild:
+	cd ntran; $(MAKE)
+	cd runtime; go test
+	go install $(PROGS)
+	cd gtests; $(MAKE) quick
+
 #  build and install Goaldi -- the full three-pass bootstrap process
 build:
 	cp goaldi.sh $(GOBIN)/goaldi
