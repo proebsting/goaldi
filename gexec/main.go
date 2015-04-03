@@ -16,6 +16,7 @@ import (
 	g "goaldi/runtime"
 	"io"
 	"os"
+	"runtime"
 	"runtime/pprof"
 	"strings"
 )
@@ -33,6 +34,9 @@ var nWarnings = 0 // count of nonfatal errors
 
 //  main is the overall supervisor.
 func main() {
+
+	// use all available processors
+	runtime.GOMAXPROCS(runtime.NumCPU())
 
 	// handle command line
 	files, args := options()
