@@ -11,7 +11,7 @@ PROGS = $(PKG)/gexec
 GOBIN = $${GOPATH%%:*}/bin
 
 #  default action: set up, build all, run test suite, run expt.gd if present
-default:  setup build test expt
+default:  setup quick test expt
 
 #  configure Git pre-commit hook
 HOOKMASTER = ./pre-commit.hook
@@ -20,15 +20,20 @@ setup:	$(HOOKFILE)
 $(HOOKFILE):	$(HOOKMASTER)
 	cp $(HOOKMASTER) $(HOOKFILE)
 
-#  rebuild assuming a working translator
-rebuild:
+#  quick rebuild using available translator
+quick:
+	cp goaldi.sh $(GOBIN)/goaldi
+	gexec -.!! -l /dev/null || $(MAKE) boot
 	cd ntran; $(MAKE)
-	cd runtime; go test
 	go install $(PROGS)
-	cd gtests; $(MAKE) quick
 
-#  build and install Goaldi -- the full three-pass bootstrap process
-build:
+#  bootstrap build gexec using stable translator binary
+boot:
+	cd ntran; $(MAKE) oldbed
+	go install $(PROGS)
+
+#  full three-pass bootstrap process
+full:
 	cp goaldi.sh $(GOBIN)/goaldi
 	#
 	# make an executable that embeds an old version of the front end
