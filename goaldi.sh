@@ -3,7 +3,7 @@
 #	goaldi [options] file.gd... [--] [arg...] -- compile and run Goaldi program
 #
 #	To see options, run with no arguments.
-#	This script assumes that gtran and gexec are in the search path.
+#	This script assumes that gexec is in the search path.
 
 FLAGS=acNltvADEPT
 

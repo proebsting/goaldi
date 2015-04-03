@@ -13,7 +13,7 @@ PROGS = $(PKG)/gexec
 GOBIN = $${GOPATH%%:*}/bin
 
 #  default action: set up, build all, run test suite, run expt.gd if present
-default:  setup build test buildx expt
+default:  setup build test expt
 
 #  configure Git pre-commit hook
 HOOKMASTER = ./pre-commit.hook
@@ -23,19 +23,28 @@ $(HOOKFILE):	$(HOOKMASTER)
 	cp $(HOOKMASTER) $(HOOKFILE)
 
 #  build and install Goaldi
-build: gexec/embed.go
-	go install $(PROGS)
+build:
 	cp goaldi.sh $(GOBIN)/goaldi
+	# make an executable that embeds an old version of the front end
+	cd ntran; cp ntran; $(MAKE) oldbed
+	go install $(PROGS)
+	cd runtime; go test
+	cd gtests; $(MAKE) quick
+	# make an executable embedding the latest front end, built by the old one
+	cd ntran; $(MAKE) clean; $(MAKE) GEN=1 ntran.go
+	go install $(PROGS)
+	cd gtests; $(MAKE) quick
+	# make an executable embedding the latest front end as built by itself
+	cd ntran; $(MAKE) clean; $(MAKE) GEN=2 ntran.go
+	go install $(PROGS)
+	cd gtests; $(MAKE) quick
+	# looks like a keeper.
 
 gexec/embed.go: ntran/ntran gobytes.sh
 	./gobytes.sh main appcode <ntran/ntran >gexec/embed.go
 
 ntran/ntran:
 	cp ntran/stable.gix ntran/ntran
-
-#  build and install ntran (experimental translator)
-buildx:
-	cd ntran; $(MAKE)
 
 #  run Go unit tests; build and link demos; run Goaldi test suite
 test:
@@ -68,7 +77,6 @@ libdoc.txt:	libdoc.sh libdoc.gd build
 
 #  remove temporary and built files from source tree
 clean:
-	rm -f gexec/embed.go
 	rm -f libdoc.txt
 	go clean $(PKG) $(PROGS)
 	cd ntran; $(MAKE) clean

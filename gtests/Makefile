@@ -6,9 +6,13 @@ default:  runall
 runall:
 	./runtest.sh
 
+#  run a quick sanity check:
+quick:
+	./runtest.sh alltypes
+
+
 gir:	; $(MAKE) F=c X=gir derivatives   # make .gir for every .gd file
 gia:	; $(MAKE) F=a X=gia derivatives   # make .gia for every .gd file
-dot:	; $(MAKE) F=d X=dot derivatives   # make .dot for every .gd file
 
 F=c
 X=gir

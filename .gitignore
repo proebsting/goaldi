@@ -9,8 +9,5 @@
 *.u[12]
 PROFILE
 libdoc.txt
-gexec/embed.go
-gtran/gtran
-gtran/oplexgen
-gtran/do_ops.icn
 ntran/ntran
+ntran/ntran.go
