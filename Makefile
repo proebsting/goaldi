@@ -72,7 +72,7 @@ bundle:
 #  extract stdlib procedure documentation
 libdoc:	libdoc.txt
 	@: # don't try to build ./libdoc, it's just an alias
-libdoc.txt:	libdoc.sh libdoc.gd build
+libdoc.txt:	libdoc.sh libdoc.gd
 	./libdoc.sh >libdoc.txt
 
 #  remove temporary and built files from source tree

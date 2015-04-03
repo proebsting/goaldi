@@ -10,15 +10,15 @@ procedure main(args[]) {
 	local opts := options(args, "NG")
 	every ^fname := !args do {
 		^fbase := if fname[-3:0]==".gd" then fname[1:-3] else fname
-		^pipeline := create !open(fbase || ".gd")
-		pipeline := create lex(pipeline, fbase || ".gd")
+		^pipeline := create !file(fname)
+		pipeline := create lex(pipeline, fname)
 		pipeline := create parse(pipeline)
 		pipeline := create ast2ir(pipeline)
 		if /opts["N"] then {
 			pipeline := create optim(pipeline, ["-O"])
 		}
 		if \opts["G"] then {
-			go_File(open(fbase || ".go", "w"), pipeline)
+			go_File(file(fbase || ".go", "w"), pipeline)
 		} else {
 			json_File(%stdout, pipeline)
 		}
@@ -27,7 +27,7 @@ procedure main(args[]) {
 
 #  pipeline component to copy its contents to a file
 procedure tee(src, fname) {
-	^f := open(fname, "w")
+	^f := file(fname, "w")
 	while ^v := @src do {
 		if type(v) === string then {
 			f.write(v)
