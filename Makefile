@@ -23,9 +23,10 @@ $(HOOKFILE):	$(HOOKMASTER)
 #  quick rebuild using available translator
 quick:
 	cp goaldi.sh $(GOBIN)/goaldi
-	gexec -.!! -l /dev/null || $(MAKE) boot
+	gexec -x -l /dev/null || $(MAKE) boot
 	cd ntran; $(MAKE)
 	go install $(PROGS)
+	cd gtests; $(MAKE) quick
 
 #  bootstrap build gexec using stable translator binary
 boot:

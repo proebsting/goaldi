@@ -17,7 +17,7 @@ Usage: $0 [-$FLAGS] file.gd... [--] [arg...]
   -a  compile only, producing IR on file.gir and assembly listing on file.gia
 ==EOF==
 	# add option descriptions from back end (gexec)
-	gexec -.!! -? 2>&1 | sed -n -e '/-.!!/d' -e 's/=false: /  /p'
+	gexec -x -? 2>&1 | sed -n -e '/-x/d' -e 's/=false: /  /p'
 	exit 1
 }
 
@@ -64,7 +64,7 @@ for F in $SRCS; do
 	B=${F%.*}
 	case $WHAT in
 		a)	# -a: produce file.gir and file.gia
-			gexec $NFLAG $F >$B.gir && gexec -.!! $XOPTS -l -A $B.gir >$B.gia
+			gexec $NFLAG $F >$B.gir && gexec -x $XOPTS -l -A $B.gir >$B.gia
 			QUIT="exit $?"
 			;;
 		c)	# -c or nothing: produce file.gir
@@ -82,4 +82,4 @@ done
 $QUIT	# exit if nothing more to do, or if errors in compilation
 
 # execute compiled files
-gexec -.!! $XOPTS $SCR/*.gir -- "$@"
+gexec -x $XOPTS $SCR/*.gir -- "$@"

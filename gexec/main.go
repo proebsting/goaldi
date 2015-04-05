@@ -1,9 +1,9 @@
 //  main.go -- overall control of interpreter
 //
-//  If the first command line argument is "-.!!", then additional arguments
+//  If the first command line argument is "-x", then additional arguments
 //  direct the loading and execution of IR code (gcode) from input files.
 //
-//  If not, an embedded gcode app is run, and it receives all arguments.
+//  If not, the embedded translator app receives all arguments.
 
 package main
 
