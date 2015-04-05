@@ -17,6 +17,7 @@ if [ $# = 0 ]; then
 fi
 
 #	loop through the chosen tests
+NTESTS=$#
 FAILURES=
 for F in $*; do
 	F=`basename $F .std`
@@ -49,12 +50,16 @@ for F in $*; do
 done
 
 echo ""
-if [ "x$FAILURES" = "x" ]; then
-	echo "gtests: all tests passed"
-	echo ""
-	exit 0
-else
+if [ "x$FAILURES" != "x" ]; then
 	echo "gtests failed: $FAILURES"
 	echo ""
 	exit 1
+elif [ "$NTESTS" = "1" ]; then
+	echo "gtests: 1 test passed"
+	echo ""
+	exit 0
+else
+	echo "gtests: all $NTESTS tests passed"
+	echo ""
+	exit 0
 fi
