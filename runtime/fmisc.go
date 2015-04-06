@@ -5,6 +5,7 @@ package runtime
 import (
 	"fmt"
 	"os"
+	"os/exec"
 	"reflect"
 	"syscall"
 	"time"
@@ -34,6 +35,7 @@ func init() {
 	GoLib(os.Hostname, "hostname", "", "get host machine name")
 	GoLib(os.Getpid, "getpid", "", "get process ID")
 	GoLib(os.Getppid, "getppid", "", "get parent process ID")
+	GoLib(exec.Command, "command", "name,args[]", "build struct to run command")
 }
 
 //  copy(x) returns a copy of x if x is a structure,

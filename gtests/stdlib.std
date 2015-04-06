@@ -25,3 +25,9 @@ abc: type()t:string image()"abc" number()-- string()abc
 f:%stdin: type()t:file image()file(%stdin,r) number()-- string()f:%stdin
 f:%stdout: type()t:file image()file(%stdout,w) number()-- string()f:%stdout
 f:%stderr: type()t:file image()file(%stderr,w) number()-- string()f:%stderr
+
+command():
+command: &{/bin/echo [echo hello world] []  <nil> f:%stdout f:%stderr [] <nil> <nil> <nil> <nil> false [] [] [] [] <nil>}
+hello world
+result:  nil
+state:   exit status 0

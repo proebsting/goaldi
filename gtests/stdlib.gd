@@ -8,6 +8,7 @@ procedure main()  {
 	write("\nconversion:")
 	every testcnv(nil | "" | "abc" | "12" | "23.4" | 0 | 1 |
 		%phi | %e | %pi | %stdin | %stdout | %stderr)
+	testcommand()
 	exit()
 }
 
@@ -44,4 +45,15 @@ procedure apply(p, x, y) {
 	local v := (if \y then p(x,y) else p(x)) | "--"
 	writes(" ", string(p)[3:0], "()", v)
 	return
+}
+
+procedure testcommand() {
+	write("\ncommand():")
+	^c := command("echo", "hello", "world")
+	c.Stdout := %stdout
+	c.Stderr := %stderr
+	write("command: ", c)
+	^r := c.Run()
+	write("result:  ", image(r))
+	write("state:   ", c.ProcessState)
 }
