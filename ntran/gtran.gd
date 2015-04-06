@@ -1,5 +1,4 @@
 #	gtran.gd -- main program for Goaldi front-end translator
-#	(quick-and-dirty experimental version)
 #
 #	usage:  gtran [-N] [-G] file...
 #

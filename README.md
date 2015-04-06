@@ -13,8 +13,7 @@ We anticipate eventual release under an open-source license.
 
 ## Requirements
 Goaldi should run on any Unix-based platform that supports
-[Go](http://golang.org/) and
-[Icon](http://www.cs.arizona.edu/icon/).
+[Go](http://golang.org/).
 We develop on Macintosh and Linux.
 
 ## Documentation
