@@ -7,45 +7,7 @@
 
 procedure main(args[]) {
 	local opts := options(args, "NG")
-	every ^fname := !args do {
-		^fbase := if fname[-3:0]==".gd" then fname[1:-3] else fname
-		^pipeline := create !file(fname)
-		pipeline := create lex(pipeline, fname)
-		pipeline := create parse(pipeline)
-		pipeline := create ast2ir(pipeline)
-		if /opts["N"] then {
-			pipeline := create optim(pipeline, ["-O"])
-		}
-		if \opts["G"] then {
-			go_File(file(fbase || ".go", "w"), pipeline)
-		} else {
-			json_File(%stdout, pipeline)
-		}
-	}
-}
-
-#  pipeline component to copy its contents to a file
-procedure tee(src, fname) {
-	^f := file(fname, "w")
-	while ^v := @src do {
-		if type(v) === string then {
-			f.write(v)
-		} else {
-			f.write(v.image())
-		}
-		suspend v
-	}
-	f.close()
-}
-
-#  (terminal) pipeline component to write stream to stdout
-procedure stdout(src) {
-	while write(@src)
-}
-
-#  (terminal) pipeline component to toss everything into a black hole
-procedure sink(src) {
-	while @src
+	every translate(!args, opts)
 }
 
 #  options(args,optstring) -- simplified command option processing
@@ -72,4 +34,22 @@ procedure options(args, optstring) {
 		}
 	}
 	return seen
+}
+
+#  translate(fname, opts) -- translate one file
+
+procedure translate(fname, opts) {
+	^fbase := if fname[-3:0]==".gd" then fname[1:-3] else fname
+	^pipeline := create !file(fname)
+	pipeline := create lex(pipeline, fname)
+	pipeline := create parse(pipeline)
+	pipeline := create ast2ir(pipeline)
+	if /opts["N"] then {
+		pipeline := create optim(pipeline, ["-O"])
+	}
+	if \opts["G"] then {
+		go_File(file(fbase || ".go", "w"), pipeline)
+	} else {
+		json_File(%stdout, pipeline)
+	}
 }
