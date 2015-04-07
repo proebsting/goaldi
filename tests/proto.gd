@@ -42,7 +42,6 @@ procedure expr1(a, b) {
 	-x
 	.x
 	/x
-	=x
 	?x
 	\x
 	@x
@@ -117,7 +116,7 @@ procedure expr2(a, b[]) {
 	x ===:= y
 	x ~===:= y
 	x &:= y
-	x @:= y
+	x @: y
 	x & y
 	create x
 	return

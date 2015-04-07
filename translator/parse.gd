@@ -305,10 +305,10 @@ procedure parse_expr10() {
 		lex_LCOMP,
 		lex_PROCEDURE ])
 	/expr10_set2 := set([lex_AT, lex_NOT, lex_BAR, lex_DOT, lex_BANG,
-		lex_PLUS, lex_STAR, lex_SLASH, lex_CARET,
-		lex_MINUS, lex_NMEQ, lex_NMNE,
-		lex_SEQ, lex_SNE, lex_EQUIV, lex_QMARK,
-		lex_NEQUIV, lex_BACKSLASH])
+		lex_PLUS, lex_STAR, lex_SLASH, 
+		lex_MINUS, 
+		lex_QMARK,
+		lex_BACKSLASH])
 	/expr10_set3 := set([lex_CONCAT, lex_LCONCAT, lex_UNION, lex_INTER,
 		lex_SLASHSLASH,
 		lex_DIFF])
