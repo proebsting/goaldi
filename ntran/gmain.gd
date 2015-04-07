@@ -99,6 +99,7 @@ procedure gexec(arglist) {
 	arglist.push("-x")
 	arglist.push("gexec")
 	^c := command ! arglist
+	c.Stdin := osfile(0)
 	c.Stdout := %stdout
 	c.Stderr := %stderr
 	^r := c.Run()

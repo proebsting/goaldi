@@ -27,6 +27,7 @@ func init() {
 	DefLib(Now, "now", "", "return the current instant as a Go Time struct")
 	DefLib(Duration, "duration", "x", "convert value to a Go Duration struct")
 	DefLib(CPUtime, "cputime", "", "return total processor time used")
+	DefLib(OSFile, "osfile", "fd,name", "get Go os.File for FD")
 	// Go library functions
 	GoLib(os.Getenv, "getenv", "key", "read environment variable")
 	GoLib(os.Setenv, "setenv", "key,value", "set environment variable")
@@ -144,6 +145,23 @@ func CPUtime(env *Env, args ...Value) (Value, *Closure) {
 	sys := time.Duration(syscall.TimevalToNsec(ustruct.Stime))
 	total := user + sys
 	return Return(NewNumber(total.Seconds()))
+}
+
+//  osfile(fd,name) returns the Go os.File struct for a file descriptor.
+func OSFile(env *Env, args ...Value) (Value, *Closure) {
+	defer Traceback("osfile", args)
+	i := int(ProcArg(args, 0, ZERO).(Numerable).ToNumber().Val())
+	s := ProcArg(args, 1, EMPTY).(Stringable).ToString().ToUTF8()
+	switch i {
+	case 0:
+		return Return(os.Stdin)
+	case 1:
+		return Return(os.Stdout)
+	case 2:
+		return Return(os.Stderr)
+	default:
+		return Return(os.NewFile(uintptr(i), s))
+	}
 }
 
 //  exit(i) terminates execution and returns exit status i,
