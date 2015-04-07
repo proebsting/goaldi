@@ -5,8 +5,6 @@
 *.err
 *.gia
 *.gir
-*.dot
-*.u[12]
 PROFILE
 libdoc.txt
 translator/gtran
