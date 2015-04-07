@@ -25,7 +25,7 @@ quick:
 	$(GOBIN)/goaldi -x -l /dev/null || $(MAKE) boot
 	cd translator; $(MAKE)
 	go install $(PROGS)
-	cd test; $(MAKE) quick
+	cd tests; $(MAKE) quick
 
 #  bootstrap build goaldi using stable translator binary
 boot:
@@ -40,19 +40,19 @@ full:
 	cd translator; $(MAKE) boot
 	go install $(PROGS)
 	cd runtime; go test
-	cd test; $(MAKE) quick
+	cd tests; $(MAKE) quick
 	#
 	# make an executable embedding the latest front end, built by the old one
 	#
 	cd translator; $(MAKE) clean; $(MAKE) GEN=1 gtran.go
 	go install $(PROGS)
-	cd test; $(MAKE) quick
+	cd tests; $(MAKE) quick
 	#
 	# make an executable embedding the latest front end as built by itself
 	#
 	cd translator; $(MAKE) clean; $(MAKE) GEN=2 gtran.go
 	go install $(PROGS)
-	cd test; $(MAKE) quick
+	cd tests; $(MAKE) quick
 	#
 	# looks like a keeper.
 	#
@@ -60,8 +60,8 @@ full:
 #  run Go unit tests; build and link demos; run Goaldi test suite
 test:
 	cd runtime; go test
-	cd demo; $(MAKE) link
-	cd test; $(MAKE)
+	cd demos; $(MAKE) link
+	cd tests; $(MAKE)
 
 #  run expt.gd (presumably the test of the moment) if present
 #  passes $GXOPTS to interpreter if set in environment
@@ -96,7 +96,7 @@ clean:
 	rm -f libdoc.txt
 	go clean $(PKG) $(PROGS)
 	cd translator; $(MAKE) clean
-	cd test; $(MAKE) clean
+	cd tests; $(MAKE) clean
 	rm -rf $(GOBIN)/../pkg/*/goaldi
 
 #  remove files placed elsewhere in $GOPATH

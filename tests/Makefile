@@ -1,4 +1,4 @@
-#  test/Makefile -- Goaldi test files
+#  tests/Makefile -- Goaldi test files
 
 default:  runall
 

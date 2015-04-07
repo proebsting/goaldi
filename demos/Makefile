@@ -1,4 +1,4 @@
-#  demo/Makefile -- demo area Makefile
+#  demos/Makefile -- demo area Makefile
 #
 #  The default action runs all the demos,
 #  but inspecting and running them individually may be more useful.
