@@ -100,7 +100,7 @@ procedure translate(iname, oname, opts) {
 
 procedure gexec(arglist) {
 	arglist.push("-x")
-	arglist.push("goaldi")
+	arglist.push(osargs()[1])
 	^c := command ! arglist
 	c.Stdin := osfile(0)
 	c.Stdout := %stdout
