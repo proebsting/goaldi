@@ -22,25 +22,26 @@ $(HOOKFILE):	$(HOOKMASTER)
 
 #  quick rebuild using available translator
 quick:
-	cp goaldi.sh $(GOBIN)/goaldi
-	gexec -x -l /dev/null || $(MAKE) boot
+	goaldi -x -l /dev/null || $(MAKE) boot
 	cd ntran; $(MAKE)
 	go install $(PROGS)
+	cp $(GOBIN)/gexec $(GOBIN)/goaldi
 	cd gtests; $(MAKE) quick
 
 #  bootstrap build gexec using stable translator binary
 boot:
 	cd ntran; $(MAKE) oldbed
 	go install $(PROGS)
+	cp $(GOBIN)/gexec $(GOBIN)/goaldi
 
 #  full three-pass bootstrap process
 full:
-	cp goaldi.sh $(GOBIN)/goaldi
 	#
 	# make an executable that embeds an old version of the front end
 	#
 	cd ntran; $(MAKE) oldbed
 	go install $(PROGS)
+	cp $(GOBIN)/gexec $(GOBIN)/goaldi
 	cd runtime; go test
 	cd gtests; $(MAKE) quick
 	#
@@ -48,12 +49,14 @@ full:
 	#
 	cd ntran; $(MAKE) clean; $(MAKE) GEN=1 ntran.go
 	go install $(PROGS)
+	cp $(GOBIN)/gexec $(GOBIN)/goaldi
 	cd gtests; $(MAKE) quick
 	#
 	# make an executable embedding the latest front end as built by itself
 	#
 	cd ntran; $(MAKE) clean; $(MAKE) GEN=2 ntran.go
 	go install $(PROGS)
+	cp $(GOBIN)/gexec $(GOBIN)/goaldi
 	cd gtests; $(MAKE) quick
 	#
 	# looks like a keeper.
