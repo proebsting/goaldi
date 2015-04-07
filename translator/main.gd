@@ -25,6 +25,7 @@ global gxopts := "ltvDEPT"	# options passed to goaldi interpreter
 #  main program -- see code above for usage 
 
 procedure main(args[]) {
+	randomize()					# for irreproducible temp file names
 
 	#  process options
 	^opts := getopts(args, optlist)
@@ -54,7 +55,6 @@ procedure main(args[]) {
 			oname := ibase || ".go"
 		} else if /opts["a"] & /opts["c"] then {
 			# need a temporary name
-			#%#% need a better way to do this
 			/static ntemps := 0
 			oname := "/tmp/gd-" || getpid() || "-" || ?10000 || "-" ||
 				(ntemps +:= 1) || ".gir"
