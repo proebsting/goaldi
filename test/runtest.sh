@@ -50,15 +50,15 @@ done
 
 echo ""
 if [ "x$FAILURES" != "x" ]; then
-	echo "gtests failed: $FAILURES"
+	echo "Tests failed: $FAILURES"
 	echo ""
 	exit 1
 elif [ "$NTESTS" = "1" ]; then
-	echo "gtests: 1 test passed"
+	echo "1 test passed"
 	echo ""
 	exit 0
 else
-	echo "gtests: all $NTESTS tests passed"
+	echo "All $NTESTS tests passed"
 	echo ""
 	exit 0
 fi
