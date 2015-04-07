@@ -52,7 +52,7 @@ procedure testcommand() {
 	^c := command("echo", "hello", "world")
 	c.Stdout := %stdout
 	c.Stderr := %stderr
-	write("command: ", c)
+	write("command: ", c.Path, " ", c.Args)
 	^r := c.Run()
 	write("result:  ", image(r))
 	write("state:   ", c.ProcessState)

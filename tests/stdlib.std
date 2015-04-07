@@ -27,7 +27,7 @@ f:%stdout: type()t:file image()file(%stdout,w) number()-- string()f:%stdout
 f:%stderr: type()t:file image()file(%stderr,w) number()-- string()f:%stderr
 
 command():
-command: &{/bin/echo [echo hello world] []  <nil> f:%stdout f:%stderr [] <nil> <nil> <nil> <nil> false [] [] [] [] <nil>}
+command: /bin/echo [echo hello world]
 hello world
 result:  nil
 state:   exit status 0
