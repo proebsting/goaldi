@@ -22,7 +22,7 @@ $(HOOKFILE):	$(HOOKMASTER)
 
 #  quick rebuild using available translator
 quick:
-	goaldi -x -l /dev/null || $(MAKE) boot
+	$(GOBIN)/goaldi -x -l /dev/null || $(MAKE) boot
 	cd translator; $(MAKE)
 	go install $(PROGS)
 	cd gtests; $(MAKE) quick
