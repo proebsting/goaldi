@@ -1,4 +1,7 @@
-#	gtran.gd -- main program for Goaldi front-end translator
+#	main.gd -- main program for Goaldi front-end translator
+#
+#   This program is run (interpreted) by the Go main program
+#   if its first argument is not "-x".
 
 global USAGE := "goaldi [options] file.gd... [--] [arg...]"
 
@@ -139,7 +142,7 @@ procedure getopts(args, optlist) {
 
 #  usage() -- write usage message, list legal options, abort
 procedure usage() {
-	%stderr.write("usage: goaldi [options] file.gd... [--] [arg...]")
+	%stderr.write("usage: ", USAGE)
 	every ^o := !optlist do {
 		%stderr.write("  ", o.flag, "  ", o.meaning)
 	}

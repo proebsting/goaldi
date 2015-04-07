@@ -12,8 +12,8 @@ import (
 	"fmt"
 	_ "goaldi/extensions"
 	"goaldi/ir"
-	"goaldi/ntran"
 	g "goaldi/runtime"
+	"goaldi/translator"
 	"io"
 	"os"
 	"runtime"
@@ -60,7 +60,7 @@ func main() {
 	parts := make([][]interface{}, 0)
 	if files == nil {
 		babble("running embedded app") // no way to enable this output, though
-		bbuf := bytes.NewBuffer(ntran.AppCode)
+		bbuf := bytes.NewBuffer(translator.GCode)
 		parts = append(parts, loadfile("[embedded]", bbuf)...)
 	} else if len(files) == 0 {
 		babble("loading [stdin]")

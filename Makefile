@@ -23,13 +23,13 @@ $(HOOKFILE):	$(HOOKMASTER)
 #  quick rebuild using available translator
 quick:
 	goaldi -x -l /dev/null || $(MAKE) boot
-	cd ntran; $(MAKE)
+	cd translator; $(MAKE)
 	go install $(PROGS)
 	cd gtests; $(MAKE) quick
 
 #  bootstrap build goaldi using stable translator binary
 boot:
-	cd ntran; $(MAKE) oldbed
+	cd translator; $(MAKE) boot
 	go install $(PROGS)
 
 #  full three-pass bootstrap process
@@ -37,20 +37,20 @@ full:
 	#
 	# make an executable that embeds an old version of the front end
 	#
-	cd ntran; $(MAKE) oldbed
+	cd translator; $(MAKE) boot
 	go install $(PROGS)
 	cd runtime; go test
 	cd gtests; $(MAKE) quick
 	#
 	# make an executable embedding the latest front end, built by the old one
 	#
-	cd ntran; $(MAKE) clean; $(MAKE) GEN=1 gmain.go
+	cd translator; $(MAKE) clean; $(MAKE) GEN=1 gtran.go
 	go install $(PROGS)
 	cd gtests; $(MAKE) quick
 	#
 	# make an executable embedding the latest front end as built by itself
 	#
-	cd ntran; $(MAKE) clean; $(MAKE) GEN=2 gmain.go
+	cd translator; $(MAKE) clean; $(MAKE) GEN=2 gtran.go
 	go install $(PROGS)
 	cd gtests; $(MAKE) quick
 	#
@@ -70,7 +70,7 @@ expt:
 
 #  install the new translator as the stable version for future builds
 accept:
-	cd ntran; $(MAKE) accept
+	cd translator; $(MAKE) accept
 
 #  prepare Go source for check-in by running standard Go reformatter
 format:
@@ -82,7 +82,7 @@ format:
 
 #  gather together source for single-file editing; requires "bundle" util
 bundle:
-	@bundle `find * -name '*.go' ! -name gmain.go`
+	@bundle `find * -name '*.go' ! -name gtran.go`
 
 #  extract stdlib procedure documentation
 libdoc:	libdoc.txt
@@ -95,7 +95,7 @@ libdoc.txt:	libdoc.sh libdoc.gd
 clean:
 	rm -f libdoc.txt
 	go clean $(PKG) $(PROGS)
-	cd ntran; $(MAKE) clean
+	cd translator; $(MAKE) clean
 	cd gtests; $(MAKE) clean
 	rm -rf $(GOBIN)/../pkg/*/goaldi
 
