@@ -43,10 +43,8 @@ func (v *VList) Dispense(lval Value) (Value, *Closure) {
 			return nil, nil
 		} else if lval != nil {
 			return &vListRef{v, i}, c
-		} else if v.rev {
-			return v.data[len(v.data)-i-1], c
 		} else {
-			return v.data[i], c
+			return v.Elem(i), c
 		}
 	}}
 	return c.Resume()
@@ -62,10 +60,8 @@ func (v *VList) Index(lval Value, x Value) Value {
 		return nil // fail: subscript out of range
 	} else if lval != nil {
 		return &vListRef{v, i}
-	} else if v.rev {
-		return v.data[len(v.data)-i-1]
 	} else {
-		return v.data[i]
+		return v.Elem(i)
 	}
 }
 

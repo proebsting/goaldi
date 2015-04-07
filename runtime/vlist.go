@@ -42,6 +42,18 @@ func InitList(v []Value) *VList {
 	return &VList{v, false}
 }
 
+//  VList.Elem(i) -- return the ith element, allowing for a reversed list
+func (v *VList) Elem(i int) Value {
+	n := len(v.data)
+	if i < 0 || i >= n {
+		return nil
+	} else if v.rev {
+		return v.data[n-i-1]
+	} else {
+		return v.data[i]
+	}
+}
+
 //  VList.String -- default conversion to Go string produces L:size
 func (v *VList) String() string {
 	return fmt.Sprintf("L:%d", len(v.data))
@@ -54,8 +66,8 @@ func (v *VList) GoString() string {
 	}
 	var b bytes.Buffer
 	fmt.Fprintf(&b, "[")
-	for _, x := range v.data {
-		fmt.Fprintf(&b, "%v,", x)
+	for i := 0; i < len(v.data); i++ {
+		fmt.Fprintf(&b, "%v,", v.Elem(i))
 	}
 	s := b.Bytes()
 	s[len(s)-1] = ']'
@@ -115,15 +127,7 @@ func (lr *vListRef) String() string {
 
 //  vListRef.Deref() -- extract value from list
 func (lr *vListRef) Deref() Value {
-	list := lr.list
-	n := len(list.data)
-	if lr.ix >= n {
-		return nil
-	} else if list.rev {
-		return list.data[n-1-lr.ix]
-	} else {
-		return list.data[lr.ix]
-	}
+	return lr.list.Elem(lr.ix)
 }
 
 //  vListRef.Assign -- store value in list

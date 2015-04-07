@@ -20,8 +20,8 @@
  0 e 1 t 2 a 3 o 4 i 5 n 6 s 7 h 8 r 9 d
  2 a 9 d 0 e 7 h 4 i 5 n 3 o 8 r 6 s 1 t
 
- L1: [3,2,1,L:4] 1 2 3 
- L2: [3,2,1,L:4] 1 2 4 
+ L1: [L:4,1,2,3] 1 2 3 
+ L2: [L:4,1,2,3] 1 2 4 
  T1: elemtype{key:2,value:j} elemtype{key:5,value:c} elemtype{key:8,value:n} elemtype{key:15,value:T:4} 
  T2: elemtype{key:2,value:j} elemtype{key:8,value:n} elemtype{key:11,value:t} elemtype{key:15,value:T:4} 
 
