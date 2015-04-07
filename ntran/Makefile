@@ -21,12 +21,12 @@ oldbed:
 
 #  make translator executable from component .gir files
 gmain:	$(GIR)
-			echo '#!/usr/bin/env gexec -x'					>gmain
+			echo '#!/usr/bin/env goaldi -x'					>gmain
 			echo "# gmain gen$(GEN) `git rev-parse HEAD`"	>>gmain
 			echo "# $$USER `date`"							>>gmain
 			echo "# `uname -n -s -m`"						>>gmain
 			cat $(GIR) | bzip2 -9							>>gmain
-			gexec -x -l gmain			# check for link errors
+			goaldi -x -l gmain			# check for link errors
 			chmod +x gmain
 			head -4 gmain
 

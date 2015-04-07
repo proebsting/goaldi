@@ -16,7 +16,7 @@ global optlist := [
 	optf("-P", "produce ./PROFILE file (Linux)"),
 	optf("-T", "trace IR instruction execution"),
 ]
-global gxopts := "ltvDEPT"	# options passed to gexec
+global gxopts := "ltvDEPT"	# options passed to goaldi interpreter
 
 
 #  main program -- see code above for usage 
@@ -93,11 +93,11 @@ procedure translate(iname, oname, opts) {
 }
 
 
-#  gexec(arglist) -- run gexec process with given arglist (preceded by -x)
+#  gexec(arglist) -- run goaldi process with given arglist (preceded by -x)
 
 procedure gexec(arglist) {
 	arglist.push("-x")
-	arglist.push("gexec")
+	arglist.push("goaldi")
 	^c := command ! arglist
 	c.Stdin := osfile(0)
 	c.Stdout := %stdout

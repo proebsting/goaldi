@@ -6,7 +6,7 @@
 #	$GOPATH/bin are in search path, as is the Go compiler
 
 PKG = goaldi
-PROGS = $(PKG)/gexec
+PROGS = $(PKG)/goaldi
 # GOBIN expands in shell to {first component of $GOPATH}/bin
 GOBIN = $${GOPATH%%:*}/bin
 
@@ -25,14 +25,12 @@ quick:
 	goaldi -x -l /dev/null || $(MAKE) boot
 	cd ntran; $(MAKE)
 	go install $(PROGS)
-	cp $(GOBIN)/gexec $(GOBIN)/goaldi
 	cd gtests; $(MAKE) quick
 
-#  bootstrap build gexec using stable translator binary
+#  bootstrap build goaldi using stable translator binary
 boot:
 	cd ntran; $(MAKE) oldbed
 	go install $(PROGS)
-	cp $(GOBIN)/gexec $(GOBIN)/goaldi
 
 #  full three-pass bootstrap process
 full:
@@ -41,22 +39,19 @@ full:
 	#
 	cd ntran; $(MAKE) oldbed
 	go install $(PROGS)
-	cp $(GOBIN)/gexec $(GOBIN)/goaldi
 	cd runtime; go test
 	cd gtests; $(MAKE) quick
 	#
 	# make an executable embedding the latest front end, built by the old one
 	#
-	cd ntran; $(MAKE) clean; $(MAKE) GEN=1 ntran.go
+	cd ntran; $(MAKE) clean; $(MAKE) GEN=1 gmain.go
 	go install $(PROGS)
-	cp $(GOBIN)/gexec $(GOBIN)/goaldi
 	cd gtests; $(MAKE) quick
 	#
 	# make an executable embedding the latest front end as built by itself
 	#
-	cd ntran; $(MAKE) clean; $(MAKE) GEN=2 ntran.go
+	cd ntran; $(MAKE) clean; $(MAKE) GEN=2 gmain.go
 	go install $(PROGS)
-	cp $(GOBIN)/gexec $(GOBIN)/goaldi
 	cd gtests; $(MAKE) quick
 	#
 	# looks like a keeper.
@@ -81,13 +76,13 @@ accept:
 format:
 	go fmt *.go
 	go fmt ir/*.go
-	go fmt gexec/*.go
+	go fmt goaldi/*.go
 	go fmt runtime/*.go
 	go fmt extensions/*.go
 
 #  gather together source for single-file editing; requires "bundle" util
 bundle:
-	@bundle `find * -name '*.go' ! -name ntran.go`
+	@bundle `find * -name '*.go' ! -name gmain.go`
 
 #  extract stdlib procedure documentation
 libdoc:	libdoc.txt
@@ -106,5 +101,5 @@ clean:
 
 #  remove files placed elsewhere in $GOPATH
 uninstall:
-	rm -rf $(GOBIN)/gexec $(GOBIN)/goaldi $(GOBIN)/../pkg/*/goaldi
 	go clean -i $(PKG) $(PROGS)
+	rm -rf $(GOBIN)/goaldi $(GOBIN)/../pkg/*/goaldi

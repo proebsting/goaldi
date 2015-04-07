@@ -9,5 +9,5 @@
 *.u[12]
 PROFILE
 libdoc.txt
-ntran/ntran
-ntran/ntran.go
+ntran/gmain
+ntran/gmain.go

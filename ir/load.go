@@ -28,7 +28,7 @@ var fileNumber = 1
 //
 func Load(rdr io.Reader) (comments []string, ircode [][]interface{}) {
 
-	//  collect initial comment lines (e.g. #!/usr/bin/env gexec ...)
+	//  collect initial comment lines (e.g. #!/usr/bin/env goaldi ...)
 	buffi := bufio.NewReader(rdr)
 	comments = []string{}
 	for {
