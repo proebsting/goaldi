@@ -32,9 +32,12 @@ procedure main(args[]) {
 	every ^c := !gxopts do {
 		if \opts[c] then gxargs.put("-" || c)
 	}
+	if /opts[c] & /opts["a"] & /opts["g"] then {
+		gxargs.put("-#")		# delete temp files after loading
+	}
 
 	#  source files are the first file, always,
-	#  plus any following that end in ".gd"
+	#  plus any following arguments that end in ".gd"
 	^srclist := [@args] | usage()
 	while args[1][-3:0] == ".gd" do {
 		srclist.put(@args)
@@ -51,7 +54,7 @@ procedure main(args[]) {
 			oname := ibase || ".go"
 		} else if /opts["a"] & /opts["c"] then {
 			# need a temporary name
-			#%#% need a better way to do this, and to ensure deletion
+			#%#% need a better way to do this
 			/static ntemps := 0
 			oname := "/tmp/gd-" || getpid() || "-" || ?10000 || "-" ||
 				(ntemps +:= 1) || ".gir"
@@ -70,8 +73,8 @@ procedure main(args[]) {
 	}
 
 	#  execute the translated files (already put on gxargs list)
-	gxargs.put("--")
-	every gxargs.put(!args)
+	gxargs.put("--")		# end of arguments to interpreter
+	every gxargs.put(!args)	# program arguments
 	gexec(gxargs)
 
 }

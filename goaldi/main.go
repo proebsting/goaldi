@@ -71,6 +71,9 @@ func main() {
 			f, err := os.Open(fname)
 			checkError(err)
 			parts = append(parts, loadfile(fname, f)...)
+			if opt_delete {
+				os.Remove(fname)
+			}
 		}
 	}
 	showInterval("loading")

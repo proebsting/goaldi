@@ -22,6 +22,7 @@ var opt_debug bool   // -D: set debug flag (dump Go stack on panic)
 var opt_envmt bool   // -E: show initial environment before loading
 var opt_profile bool // -P: produce CPU profile on ./PROFILE
 var opt_trace bool   // -T: trace IR instruction execution
+var opt_delete bool  // -#: delete IR files after loading
 
 //  usage prints a usage message (with option descriptions) and aborts.
 func usage() {
@@ -49,6 +50,7 @@ func options() (files []string, args []string) {
 	flag.BoolVar(&opt_envmt, "E", false, "show initial environment")
 	flag.BoolVar(&opt_profile, "P", false, "produce ./PROFILE file (Linux)")
 	flag.BoolVar(&opt_trace, "T", false, "trace IR instruction execution")
+	flag.BoolVar(&opt_delete, "#", false, "delete IR files after loading")
 	flag.Usage = usage
 	flag.Parse()
 
