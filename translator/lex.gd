@@ -1,17 +1,23 @@
 #  lex.gd -- Goaldi tokenizer
 
 
-record lex_stream (		# data associated with a particular input stream
-	src,		# input line stream
-	fname,		# input file name
-	lnum,		# line number
-	errcount,	# error count
+record lex_stream (	# data associated with a particular input stream
+	src,			# input line stream
+	fname,			# input file name
+	lnum,			# line number
+	errcount,		# error count
 )
 
 
-record lex_tkrec (	 #  one shared/reused record for each distinct token type
-	str,		# actual or canonicalized form of the source token
-	coord,		# coordinate in source code
+record lex_tok (	# a single token read from input
+	tag,			# token type (a lex_tag record)
+	str,			# actual or canonicalized image of the token
+	coord,			# source location where seen
+)
+
+
+record lex_tag (	# one particular type of source token (e.g. id, plus, ...)
+	str,			# label
 )
 
 
@@ -58,29 +64,28 @@ procedure lex_stream.gentok() {
 				# identifier form: check for possible keyword
 				line := line[1+*s:0]
 				if ^t := \lex_kwtab[s] then {
-					suspend tk := t
+					suspend lex_tok(tk := t, s)
 				} else {
-					lex_IDENT.str := s
-					suspend tk := lex_IDENT
+					suspend lex_tok(tk := lex_IDENT, s)
 				}
 			} else if s := self.match(line, lex_n1_rx | lex_n2_rx | lex_n3_rx) then {
 				# number: test must precede operators to match ".123"
 				line := line[1+*s:0]
 				if ^n := number(s) then {
-					lex_REALLIT.str := image(n)	# put in canonical form
-					suspend tk := lex_REALLIT
+					# put value n in canonical form for IR generation
+					suspend lex_tok(tk := lex_REALLIT, image(n))
 				} else {
 					self.report("malformed number", s)
 				}
 			} else if s := self.match(line, lex_op_rx) then {
 				# operator
 				line := line[1+*s:0]
-				suspend tk := \lex_optab[s] ~| throw("lost operator", s)
+				suspend lex_tok(tk := \lex_optab[s], s) ~|
+					throw("lost operator", s)
 			} else if s := self.match(line, lex_s1_rx | lex_r1_rx) then {
 				# simple string literal
 				line := line[1+*s:0]
-				lex_STRINGLIT.str := self.stringval(s)
-				suspend tk := lex_STRINGLIT
+				suspend lex_tok(tk := lex_STRINGLIT, self.stringval(s))
 			} else if s := self.match(line, lex_s2_rx) then {
 				# unterminated string literal: error
 				line := ""
@@ -95,8 +100,8 @@ procedure lex_stream.gentok() {
 							# found terminator
 							line := line[1+*t:0]
 							s ||:= t
-							lex_STRINGLIT.str := self.stringval(s)
-							suspend tk := lex_STRINGLIT
+							suspend lex_tok(tk := lex_STRINGLIT,
+								self.stringval(s))
 							break
 						} else {
 							s ||:= line
@@ -116,11 +121,11 @@ procedure lex_stream.gentok() {
 			}
 		}
 		if lex_enders[tk] then {
-			suspend lex_SEMICOL				# semicolon insertion
+			suspend lex_tok(lex_SEMICOL, `\n`)		# semicolon insertion
 		}
 	}
 	self.lnum +:= 1
-	suspend lex_EOFX
+	suspend lex_tok(lex_EOFX, lex_EOFX.str)
 }
 
 
@@ -235,6 +240,7 @@ initial {				# builds lex_op_rx
 
 
 #  These globals provide named handles for all the distinct token types.
+#  Each global is initialized to a lex_tag record value.
 
 global lex_IDENT         := lex_lit("identifier",      "be")
 global lex_INTLIT        := lex_lit("integer-literal", "be")	# never produced
@@ -377,7 +383,7 @@ procedure lex_opr(str, flags) {
 #  lex_token defines a token record
 #  and enters it in lex_enders if flags[-1]=="e"
 procedure lex_token(str, flags) {
-	^r := lex_tkrec(str, flags)
+	^r := lex_tag(str)
 	if flags[-1] == "e" then {
 		lex_enders.insert(r)
 	}
