@@ -100,6 +100,9 @@ procedure gendoc(e) {
 				continue
 			}
 
+			if fspec[1+:14] == "goaldi/runtime" then {
+				fspec[1+:14] := "goaldi"	# simplify
+			}
 			if \(local x := prx.FindStringSubmatch(func)) then {
 				# change "goaldi.(*VFile).FRead" to "goaldi.VFile.FRead"
 				func := x[2] || x[3] || x[4]
