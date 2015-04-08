@@ -5,9 +5,15 @@ Todd Proebsting and Gregg Townsend
 Department of Computer Science  
 The University of Arizona  
 
-This initial distribution is intended for a small group
-while we shake out the early problems.
-Please don't pass it along further.
+Goaldi is a new general-purpose programming language that combines
+the goal-directed evaluation model of the
+[Icon](http://www.cs.arizona.edu/icon) language
+with modern features such as concurrency, objects, and closures.
+While Goaldi will look familiar to Icon programmers,
+it is not upwards compatible, and it omits some features of Icon.
+
+This is an initial distribution while we shake out early problems
+in design, implementation, and documentation.
 We anticipate eventual release under an open-source license.
 
 
@@ -31,5 +37,5 @@ Please [subscribe](https://list.arizona.edu/sympa/subscribe/goaldi-language)
 to stay informed of Goaldi developments.
 
 ## Contact Us Directly
-Send problem reports to
+Reach us by e-mail at
 [goaldi@cs.arizona.edu](mailto:goaldi@cs.arizona.edu)
