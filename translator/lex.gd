@@ -1,9 +1,15 @@
 #  lex.gd -- Goaldi tokenizer
 
 
-#  a token record -- one shared/reused instance for each distinct token type
+record lex_stream (		# data associated with a particular input stream
+	src,		# input line stream
+	fname,		# input file name
+	lnum,		# line number
+	errcount,	# error count
+)
 
-record lex_tkrec (
+
+record lex_tkrec (	 #  one shared/reused record for each distinct token type
 	str,		# actual or canonicalized form of the source token
 	flags,		# beginning and/or ending flags
 	coord,		# coordinate in source code (#%#% TO BE DONE)
@@ -12,43 +18,44 @@ record lex_tkrec (
 
 #  data structures for tokenizing
 
-global lex_fname				# current file name (with ":" appended)
-global lex_lnum					# current line number
 global lex_kwtab := table()		# maps keyword strings to token records
 global lex_optab := table()		# maps operator strings to token records
 global lex_flags := table()		# maps token records flag strings
 
 
-#  abort due to lexical error
-
-procedure lex_error(problem, input) {
-	stop("lex error at ", lex_fname, lex_lnum, ": ", problem, ": ", input)
-}
-
-
 #  generate a sequence of tokens, with coordinates, from a stream of input lines
 
 procedure lex(src, fname) {
-	lex_fname := fname || ":"
-	lex_lnum := 0
-	every ^tk := lex_gentok(src) do {
-		tk.coord := lex_fname || lex_lnum
+	^r := lex_stream(src, fname || ":", 0, 0)
+	every ^tk := r.gentok() do {
+		tk.coord := r.fname || r.lnum
 		suspend tk
 	}
+	if r.errcount > 0 then {
+		stop("translation aborted")
+	}
+}
+
+
+#  report a lexical error
+
+procedure lex_stream.report(problem, input) {
+	%stderr.write("lex error at ", self.fname, self.lnum, ": ",
+		problem, ": ", input)
 }
 
 
 #  generate a sequence of tokens from a stream of lines
 
-procedure lex_gentok(src) {
-	while ^line := @src do {
-		lex_lnum +:= 1
+procedure lex_stream.gentok() {
+	while ^line := @self.src do {
+		self.lnum +:= 1
 		^tk := nil
 		while *line > 0 do {
-			if ^s := match(line, lex_ws_rx) then {
+			if ^s := self.match(line, lex_ws_rx) then {
 				# whitespace: ignore
 				line := line[1+*s:0]
-			} else if s := match(line, lex_id_rx) then {
+			} else if s := self.match(line, lex_id_rx) then {
 				# identifier form: check for possible keyword
 				line := line[1+*s:0]
 				if ^t := \lex_kwtab[s] then {
@@ -57,39 +64,39 @@ procedure lex_gentok(src) {
 					lex_IDENT.str := s
 					suspend tk := lex_IDENT
 				}
-			} else if s := match(line, lex_n1_rx | lex_n2_rx | lex_n3_rx) then {
+			} else if s := self.match(line, lex_n1_rx | lex_n2_rx | lex_n3_rx) then {
 				# number: test must precede operators to match ".123"
 				line := line[1+*s:0]
 				if ^n := number(s) then {
 					lex_REALLIT.str := image(n)	# put in canonical form
 					suspend tk := lex_REALLIT
 				} else {
-					lex_error("malformed number", s)
+					self.report("malformed number", s)
 				}
-			} else if s := match(line, lex_op_rx) then {
+			} else if s := self.match(line, lex_op_rx) then {
 				# operator
 				line := line[1+*s:0]
 				suspend tk := \lex_optab[s] ~| throw("lost operator", s)
-			} else if s := match(line, lex_s1_rx | lex_r1_rx) then {
+			} else if s := self.match(line, lex_s1_rx | lex_r1_rx) then {
 				# simple string literal
 				line := line[1+*s:0]
-				lex_STRINGLIT.str := stringval(s)
+				lex_STRINGLIT.str := self.stringval(s)
 				suspend tk := lex_STRINGLIT
-			} else if s := match(line, lex_s2_rx) then {
+			} else if s := self.match(line, lex_s2_rx) then {
 				# unterminated string literal: error
 				line := ""
-				lex_error("unterminated string", s)
-			} else if s := match(line, lex_r2_rx) then {
+				self.report("unterminated string", s)
+			} else if s := self.match(line, lex_r2_rx) then {
 				# unterminated raw literal: may span lines, so keep reading
 				repeat {
 					s ||:= "\n"
-					if line := @src then {
-						lex_lnum +:= 1
-						if ^t := match(line, lex_r3_rx) then {
+					if line := @self.src then {
+						self.lnum +:= 1
+						if ^t := self.match(line, lex_r3_rx) then {
 							# found terminator
 							line := line[1+*t:0]
 							s ||:= t
-							lex_STRINGLIT.str := stringval(s)
+							lex_STRINGLIT.str := self.stringval(s)
 							suspend tk := lex_STRINGLIT
 							break
 						} else {
@@ -97,7 +104,7 @@ procedure lex_gentok(src) {
 						}
 					} else {
 						s := s[1+:40] || "..."	# truncate for sane message
-						lex_error("unterminated raw literal", s)
+						self.report("unterminated raw literal", s)
 						line := ""
 						break
 					}
@@ -106,26 +113,26 @@ procedure lex_gentok(src) {
 				# unrecognized
 				s := line[1]
 				line := line[2:0]
-				lex_error("unrecognized token", s)
+				self.report("unrecognized token", s)
 			}
 		}
 		if (\lex_flags[tk])[-1] == "e" then {
 			suspend lex_SEMICOL				# semicolon insertion
 		}
 	}
-	lex_lnum +:= 1
+	self.lnum +:= 1
 	suspend lex_EOFX
 }
 
 
 #  match(line,rx) -- return matching string if line is matched by rx, else fail
-procedure match(line, rx) {
+procedure lex_stream.match(line, rx) {
 	return "" ~== rx.FindString(line)
 }
 
 
 #  stringval(s) -- put quoted string in canonical form, handling escapes
-procedure stringval(s) {
+procedure lex_stream.stringval(s) {
 
 	/static lex_escape := table() {
 		"b" : "\b",		"f" : "\f",		"r" : "\r",
@@ -160,7 +167,7 @@ procedure stringval(s) {
 				if c := u[i+:=1] then {
 					t ||:= char(iand(ord(c), 1Fx))
 				} else {
-					lex_error(`incomplete \^c in string literal`, s)
+					self.report(`incomplete \^c in string literal`, s)
 				}
 				continue
 			}
@@ -168,11 +175,11 @@ procedure stringval(s) {
 			"u" | "U":   {  base := 16;  digs := 8;  i +:= 1  }
 			!"01234567": {  base :=  8;  digs := 3;  i +:= 0  }
 		}
-		if ^d := getdigits(u[i:0], base, digs) then {
+		if ^d := self.getdigits(u[i:0], base, digs) then {
 			i +:= *d - 1
 			t ||:= char(base || "r" || d)
 		} else {
-			lex_error(`invalid \` || c || ` in string literal`, s)
+			self.report(`invalid \` || c || ` in string literal`, s)
 		}
 	}
 
@@ -180,16 +187,16 @@ procedure stringval(s) {
 }
 
 #  getdigits(s,b,n) -- return first n digits of base b from s
-procedure getdigits(s, b, n) {
+procedure lex_stream.getdigits(s, b, n) {
 
-	/static lex_digits := table() {
+	/static dtable := table() {
 		"0" : 0,	"4" : 4,	"8" : 8,				"C" : 12,	"c" : 12,
 		"1" : 1,	"5" : 5,	"9" : 9,				"D" : 13,	"d" : 13,
 		"2" : 2,	"6" : 6,	"A" : 10,	"a" : 10,	"E" : 14,	"e" : 14,
 		"3" : 3,	"7" : 7,	"B" : 11,	"b" : 11,	"F" : 15,	"f" : 15,
 	}
 	every ^i := 1 to n do {
-		if not (\lex_digits[s[i]] < b) then {
+		if not (\dtable[s[i]] < b) then {
 			return "" ~== s[1:i]
 		}
 	}
