@@ -11,8 +11,7 @@ record lex_stream (		# data associated with a particular input stream
 
 record lex_tkrec (	 #  one shared/reused record for each distinct token type
 	str,		# actual or canonicalized form of the source token
-	flags,		# beginning and/or ending flags
-	coord,		# coordinate in source code (#%#% TO BE DONE)
+	coord,		# coordinate in source code
 )
 
 
@@ -20,7 +19,7 @@ record lex_tkrec (	 #  one shared/reused record for each distinct token type
 
 global lex_kwtab := table()		# maps keyword strings to token records
 global lex_optab := table()		# maps operator strings to token records
-global lex_flags := table()		# maps token records flag strings
+global lex_enders := set()		# registers tokens that can end a line
 
 
 #  generate a sequence of tokens, with coordinates, from a stream of input lines
@@ -116,7 +115,7 @@ procedure lex_stream.gentok() {
 				self.report("unrecognized token", s)
 			}
 		}
-		if (\lex_flags[tk])[-1] == "e" then {
+		if lex_enders[tk] then {
 			suspend lex_SEMICOL				# semicolon insertion
 		}
 	}
@@ -375,9 +374,12 @@ procedure lex_opr(str, flags) {
 	return lex_optab[str] := lex_token(str, flags)
 }
 
-#  lex_token defines a token record and puts its flags in the lex_flags table.
+#  lex_token defines a token record
+#  and enters it in lex_enders if flags[-1]=="e"
 procedure lex_token(str, flags) {
 	^r := lex_tkrec(str, flags)
-	lex_flags[r] := flags
+	if flags[-1] == "e" then {
+		lex_enders.insert(r)
+	}
 	return r
 }
