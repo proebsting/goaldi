@@ -73,6 +73,9 @@ func Traceback(procname string, arglist []Value) {
 //  Catch annotates a caught panic value with traceback information
 func Catch(p interface{}, ev []Value, coord string,
 	procname string, arglist []Value) *CallFrame {
+	if te, ok := p.(*runtime.TypeAssertionError); ok {
+		p = (*TypeError)(te)
+	}
 	return &CallFrame{p, ev, coord, procname, arglist}
 }
 
@@ -108,7 +111,7 @@ func Diagnose(f io.Writer, v interface{}) bool {
 	switch x := v.(type) {
 	case *CallFrame:
 		rv := Diagnose(f, x.cause)
-		if _, ok := x.cause.(*runtime.TypeAssertionError); ok {
+		if _, ok := x.cause.(*TypeError); ok {
 			for _, v := range x.offv {
 				fmt.Fprintf(f, "Offending value: %#v\n", v)
 			}
@@ -132,11 +135,11 @@ func Diagnose(f io.Writer, v interface{}) bool {
 			fmt.Fprintf(f, "Offending value: %#v\n", v)
 		}
 		return true
+	case *TypeError:
+		fmt.Fprintln(f, x.Cleanup())
+		return true
 	case *runtime.TypeAssertionError:
-		s := fmt.Sprintf("%#v", x)
-		conc := extract(s, "concreteString")
-		asst := extract(s, "assertedString")
-		fmt.Fprintf(f, "Type %s does not implement %s\n", conc, asst)
+		fmt.Fprintln(f, (*TypeError)(x).Cleanup())
 		return true
 	case Malfunction:
 		fmt.Fprintf(f, "Goaldi runtime malfunction: %s\n", string(x))
@@ -150,15 +153,56 @@ func Diagnose(f io.Writer, v interface{}) bool {
 	}
 }
 
+//  A TypeError wraps a Go TypeAssertionError so we can change how it prints.
+type TypeError runtime.TypeAssertionError
+
+func (e *TypeError) Error() string {
+	return `TypeError("` + e.Cleanup() + `")`
+}
+
+//  Cleanup() simplifies the underlying Go runtime.TypeAssertionError.
+//  (This would be a lot easier if the error object fields weren't protected.)
+func (e *TypeError) Cleanup() string {
+	details := fmt.Sprintf("%#v", (*runtime.TypeAssertionError)(e))
+	conc := extract(details, "concreteString")
+	asst := extract(details, "assertedString")
+	miss := extract(details, "missingMethod")
+	var msg string
+	switch asst {
+	case "IVariable":
+		msg = "Variable expected"
+	case "Numerable":
+		msg = "Number expected"
+	case "Stringable":
+		msg = "String expected"
+	default:
+		if miss == "" {
+			msg = fmt.Sprintf("%s is not %s", conc, asst)
+		} else {
+			msg = fmt.Sprintf("%s does not implement %s", conc, asst)
+		}
+	}
+	return msg
+}
+
 //  extract finds a field in the %#v image of a struct
+//  and cleans it up, removing [*][runtime.[V]] prefix
 func extract(s string, label string) string {
 	label = label + `:"`
 	i := strings.Index(s, label)
-	if i >= 0 {
-		s = s[i+len(label) : len(s)]
-		j := strings.Index(s, `"`)
-		return s[0:j]
-	} else {
-		return "[?]"
+	if i < 0 {
+		return ""
 	}
+	s = s[i+len(label) : len(s)]
+	j := strings.Index(s, `"`)
+	s = s[0:j]
+	if strings.HasPrefix(s, "*") {
+		s = s[1:]
+	}
+	if strings.HasPrefix(s, "runtime.V") {
+		s = s[9:]
+	} else if strings.HasPrefix(s, "runtime.") {
+		s = s[8:]
+	}
+	return s
 }

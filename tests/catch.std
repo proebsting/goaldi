@@ -22,7 +22,7 @@ expect custom panic:
    caught panic; throwing another
    UNCAUGHT PANIC: Exception("CUSTOM PANIC")
 expect type conversion error:
-   got interface conversion: interface is *runtime.VNumber, not *runtime.VProcedure
+   got TypeError("Number is not Procedure")
 expect 17:
    catch procedure suspender(e)
    got 17
