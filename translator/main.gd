@@ -75,8 +75,7 @@ procedure main(args[]) {
 	#  execute the translated files (already put on gxargs list)
 	gxargs.put("--")		# end of arguments to interpreter
 	every gxargs.put(!args)	# program arguments
-	gexec(gxargs)
-
+	exit(gexec(gxargs))		# run program and exit with its exit code
 }
 
 
@@ -101,6 +100,8 @@ procedure translate(iname, oname, opts) {
 
 
 #  gexec(arglist) -- run goaldi process with given arglist (preceded by -x)
+#
+#  returns the exit status.
 
 procedure gexec(arglist) {
 	arglist.push("-x")
@@ -109,8 +110,8 @@ procedure gexec(arglist) {
 	c.Stdin := osfile(0)
 	c.Stdout := %stdout
 	c.Stderr := %stderr
-	^r := c.Run()
-	if \r then throw(r)		#%#% later make this nicer
+	c.Run()
+	return c.ProcessState.Sys().ExitStatus()
 }
 
 
