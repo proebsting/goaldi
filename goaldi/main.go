@@ -78,19 +78,22 @@ func main() {
 	}
 	showInterval("loading")
 
+	// quit now if this was just a run to get an assembly listing
+	if opt_noexec && opt_adump {
+		quit(0)
+	}
+
 	// link everything together
 	babble("linking")
 	link(parts)
 	showInterval("linking")
 	if nFatals > 0 {
-		pprof.StopCPUProfile()
-		os.Exit(1)
+		quit(1)
 	}
 
 	// quit now if -c was given
 	if opt_noexec {
-		pprof.StopCPUProfile()
-		os.Exit(0)
+		quit(0)
 	}
 
 	// set environment flag if to dump Go stack on panic
@@ -122,9 +125,7 @@ func main() {
 	// reorder the list for dependencies
 	err := dlist.Reorder(opt_trace)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "fatal:   %v\n", err)
-		pprof.StopCPUProfile()
-		os.Exit(1)
+		abort(fmt.Sprintf("fatal   %v\n", err))
 	}
 
 	// before running any initialization code, make sure main() exists

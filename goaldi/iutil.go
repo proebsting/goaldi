@@ -20,8 +20,13 @@ func checkError(e error) {
 //  abort issues an error message and aborts.
 func abort(e interface{}) {
 	fmt.Fprintln(os.Stderr, e)
+	quit(1)
+}
+
+//  quit exits with a given code after stopping profiling.
+func quit(xc int) {
 	pprof.StopCPUProfile()
-	os.Exit(1)
+	os.Exit(xc)
 }
 
 //  babble prints commentary on Stderr if opt_verbose is set.
