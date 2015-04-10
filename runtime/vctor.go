@@ -41,7 +41,7 @@ func NewCtor(name string, parent *VCtor, newfields []string) *VCtor {
 	ctor := &VCtor{ctype, parent, fields, fmap}
 	for i, s := range fields {
 		if ctor.Methods[s] != nil || ctor.Fmap[s] != 0 {
-			panic(NewExn("duplicate field name", s))
+			panic(NewExn("Duplicate field name", s))
 		}
 		ctor.Fmap[s] = i + 1 // enter field-to-index mapping
 	}
@@ -168,7 +168,7 @@ func (a *VCtor) Before(b Value, i int) bool {
 	case *VType:
 		return rRecord < t.SortRank
 	default:
-		panic(Malfunction("unexpected type in VCtor.Before"))
+		panic(Malfunction("Unexpected type in VCtor.Before"))
 	}
 }
 

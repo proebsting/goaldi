@@ -23,7 +23,7 @@ func Tuple(env *Env, args []Value, names []string) (Value, *Closure) {
 	//  Note the special RawCall argument list (and special registration above).
 	defer Traceback("tuple", args)
 	if len(names) < len(args) {
-		panic(NewExn("unnamed tuple arguments not allowed"))
+		panic(NewExn("Unnamed tuple arguments not allowed"))
 	}
 	t := TupleType(names)
 	return Return(t.New(args))

@@ -96,7 +96,7 @@ func irDecl(decl interface{}) {
 			fatal("duplicate record declaration: record " + qname)
 		}
 	default:
-		panic(g.Malfunction(fmt.Sprintf("unrecognized: %#v", x)))
+		panic(g.Malfunction(fmt.Sprintf("Unrecognized: %#v", x)))
 	}
 }
 
@@ -178,7 +178,7 @@ func stdProcs() {
 	for name, p := range g.StdLib {
 		if Undeclared[name] {
 			if PubSpace.Get(name) != nil {
-				panic(g.Malfunction("undeclared but present: " + name))
+				panic(g.Malfunction("Undeclared but present: " + name))
 			}
 			PubSpace.Declare(name, p)
 			delete(Undeclared, name)

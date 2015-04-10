@@ -31,7 +31,7 @@ func GetSpace(name string) *Namespace {
 //  Namespace.Declare(name, contents) -- initialize a namespace entry
 func (ns *Namespace) Declare(name string, contents Value) {
 	if ns.Entries[name] != nil {
-		panic(Malfunction("duplicate entry " + ns.Qname + name))
+		panic(Malfunction("Duplicate entry " + ns.Qname + name))
 	}
 	ns.Entries[name] = contents
 }

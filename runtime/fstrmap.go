@@ -28,7 +28,7 @@ func Map(env *Env, args ...Value) (Value, *Closure) {
 	from := ProcArg(args, 1, UCASE).(Stringable).ToString().ToRunes()
 	into := ProcArg(args, 2, LCASE).(Stringable).ToString().ToRunes()
 	if len(into) > len(from) {
-		panic(NewExn("map: *into > *from", RuneString(into)))
+		panic(NewExn("Map: *into > *from", RuneString(into)))
 	}
 
 	// build a mapping table ctable

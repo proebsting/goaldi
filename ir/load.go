@@ -91,11 +91,11 @@ func jstructs(jtree interface{}) interface{} {
 func structFor(m map[string]interface{}) interface{} {
 	tag := m["tag"].(string)
 	if tag == "" {
-		panic(g.Malfunction(fmt.Sprintf("no tag in %v", m)))
+		panic(g.Malfunction(fmt.Sprintf("No tag in %v", m)))
 	}
 	rtype := irtable[tag]
 	if rtype == nil {
-		panic(g.Malfunction(fmt.Sprintf("unrecognized IR tag %s", tag)))
+		panic(g.Malfunction(fmt.Sprintf("Unrecognized IR tag %s", tag)))
 	}
 	resultp := reflect.New(rtype)
 	result := resultp.Elem()
@@ -113,7 +113,7 @@ func setField(f reflect.Value, key string, val interface{}) {
 		return // nothing to do
 	}
 	if !f.CanSet() {
-		panic(g.Malfunction("cannot set key " + key))
+		panic(g.Malfunction("Cannot set key " + key))
 	}
 
 	// prefix file number "Fn" or "Name" or "Parent" beginning with "$"

@@ -166,9 +166,9 @@ func Throw(env *Env, args ...Value) (Value, *Closure) {
 	x := ProcArg(args, 0, err_fatal)
 	switch v := x.(type) {
 	case *VString:
-		panic(&Exception{v.String(), args[1:]})
+		panic(NewExn(v.String(), args[1:]...))
 	case *VNumber:
-		panic(&Exception{fmt.Sprintf("Fatal error %v", v), args[1:]})
+		panic(NewExn(fmt.Sprintf("Fatal error %v", v), args[1:]...))
 	default:
 		panic(x)
 	}

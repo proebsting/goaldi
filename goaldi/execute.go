@@ -204,7 +204,7 @@ func execute(f *pr_frame, label string) (rv g.Value, rc *g.Closure) {
 						}
 					}
 					panic(g.Malfunction(
-						"Ir_IndirectGoto: label not in list: " + label))
+						"IndirectGoto: unlisted label: " + label))
 				case ir.Ir_MakeClosure:
 					//#%#% potential later optimization:
 					//#%#% only pass in *referenced* variables
@@ -271,7 +271,7 @@ func execute(f *pr_frame, label string) (rv g.Value, rc *g.Closure) {
 					}
 				}
 			}
-			panic(g.Malfunction("Fell off end of Ir_Chunk: " + inchunk))
+			panic(g.Malfunction("Ir_Chunk exhausted: " + inchunk))
 		}
 		return nil, nil
 	}}
@@ -293,7 +293,7 @@ func getArgs(f *pr_frame, nd int, arglist []interface{}) []g.Value {
 			// nothing to do: use entry as is
 		}
 		if a == nil {
-			panic("Go nil in getArgs()")
+			panic(g.Malfunction("Go nil in getArgs()"))
 		}
 		if i < nd {
 			argl[i] = a.(g.Value)
@@ -337,7 +337,7 @@ func irSelect(f *pr_frame, irs ir.Ir_Select) string {
 				Dir: reflect.SelectDefault}
 			seenDefault = true
 		default:
-			panic(g.Malfunction("Bad selectcase kind: " + sc.Kind))
+			panic(g.Malfunction("Bad SelectCase kind: " + sc.Kind))
 		}
 	}
 	if !seenDefault {
