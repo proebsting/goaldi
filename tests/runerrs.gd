@@ -28,8 +28,6 @@ procedure provoke(i) {
 		23: ?(-3)
 		24: select { 666 @: 0 : 0}
 
-		30: char(-1)
-		31: ord("ab")
 		32: ?"abcd" := 5
 
 		40: constructor()
@@ -70,14 +68,30 @@ procedure provoke(i) {
 		84: open("/dev/null").write()
 		85: !open("/dev/null", "w")
 		86: open("/dev/null").close().read()
-		87: remove("/no/such/file")
-		88: regex("(")
+		87: open("/dev/null").close().close()
 
-		95: throw("my double error", 12, 34)
-		96: throw("my own error")
-		97: throw("my nil error", nil)
-		98: throw("my pi error", %pi)
-		99: throw(99, %phi)
+		120: gmean(0,1,2)
+		121: gmean(3,1,-1)
+		122: hmean(-1,3)
+		123: hmean(2,0)
+
+		130: char(-1)
+		131: char(123456x)
+		132: ord("ab")
+		133: left("ab",5,"")
+		134: center("x",7,"")
+		135: right("xyz",26,"")
+		136: map("abc", "123", "3210")
+
+		140: remove("/no/such/file")
+
+		150: regex("(")
+
+		195: throw("my double error", 12, 34)
+		196: throw("my own error")
+		197: throw("my nil error", nil)
+		198: throw("my pi error", %pi)
+		199: throw(99, %phi)
 
 		default: return fail
 	}
