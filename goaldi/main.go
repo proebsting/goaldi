@@ -176,11 +176,11 @@ func loadfile(label string, rdr io.Reader) [][]interface{} {
 //  warning -- report nonfatal error and continue
 func warning(s string) {
 	nWarnings++
-	fmt.Fprintf(os.Stderr, "warning: %s\n", s)
+	fmt.Fprintf(os.Stderr, "Warning: %s\n", s)
 }
 
 //  fatal -- report fatal error (but continue)
 func fatal(s string) {
 	nFatals++
-	fmt.Fprintf(os.Stderr, "fatal:   %s\n", s)
+	fmt.Fprintf(os.Stderr, "Fatal:   %s\n", s)
 }
