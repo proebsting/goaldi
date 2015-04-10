@@ -770,7 +770,7 @@ procedure ir_a_Intlit(p, st, target, bounded, rval) {
 	ir_init(p)
 
 	if not (p.int := integer(p.int)) then {
-		semantic_error(p.int || ": illegal integer literal", p.coord)
+		semantic_error(p.int || ": Illegal integer literal", p.coord)
 	}
 	suspend ir_chunk(p.ir.start, [
 		ir_IntLit(p.coord, target, p.int),
@@ -787,7 +787,7 @@ procedure ir_a_Reallit(p, st, target, bounded, rval) {
 	ir_init(p)
 
 	if not (p.real := number(p.real)) then {
-		semantic_error(p.real || ": illegal real literal", p.coord)
+		semantic_error(p.real || ": Illegal real literal", p.coord)
 	}
 	suspend ir_chunk(p.ir.start, [
 		ir_RealLit(p.coord, target, p.real),
@@ -870,7 +870,7 @@ procedure ir_a_ProcDecl0(p, st) {
 	params := []
 	every i := !p.paramList do {
 		if v.member(i.id) then {
-			semantic_error(image(i.id) || ": redeclared identifier", i.coord)
+			semantic_error(image(i.id) || ": Redeclared identifier", i.coord)
 		}
 		v.insert(i.id)
 		s := i.id || mkSuffix(st.syms)
@@ -878,7 +878,7 @@ procedure ir_a_ProcDecl0(p, st) {
 		params.put(s)
 	}
 	if ir_declare_set.member(p.ident.id) then {
-		semantic_error(image(p.ident.id) || ": inconsistent redeclaration",
+		semantic_error(image(p.ident.id) || ": Inconsistent redeclaration",
 					   p.ident.coord)
 	}
 	ir_declare_set.insert(p.ident.id)
@@ -931,14 +931,14 @@ procedure ir_a_Record(p, st, target, bounded, rval) {
 	local i
 
 	if ir_declare_set.member(p.ident.id) then {
-		semantic_error(image(p.ident.id) || ": inconsistent redeclaration",
+		semantic_error(image(p.ident.id) || ": Inconsistent redeclaration",
 					   p.ident.coord)
 	}
 	ir_declare_set.insert(p.ident.id)
 	v := set([])
 	every i := !p.idlist do {
 		if v.member(i.id) then {
-			semantic_error(image(i.id) || ": redeclared identifier", i.coord)
+			semantic_error(image(i.id) || ": Redeclared identifier", i.coord)
 		}
 		v.insert(i.id)
 	}
@@ -990,7 +990,7 @@ procedure ir_a_Return(p, st, target, bounded, rval) {
 	local t
 	local mk
 
-	/st.createflag |semantic_error("invalid context for return or fail",p.coord)
+	/st.createflag | semantic_error("Invalid context for return", p.coord)
 
 	/p.expr := a_Nil(p.coord)
 
@@ -1020,7 +1020,7 @@ procedure ir_a_Suspend(p, st, target, bounded, rval) {
 	local t
 	local susp
 
-	/st.createflag | semantic_error("invalid context for suspend", p.coord)
+	/st.createflag | semantic_error("Invalid context for suspend", p.coord)
 
 	/p.body := a_Fail(p.coord) & /p.expr := a_Nil(p.coord)
 
@@ -1152,7 +1152,7 @@ procedure ir_a_Local(p, st, target, bounded, rval) {
 
 	/st.syms.Static := table()
 
-	/st.syms.Static[p.id] | semantic_error(image(p.id) || ": redeclared identifier", p.coord)
+	/st.syms.Static[p.id] | semantic_error(image(p.id) || ": Redeclared identifier", p.coord)
 
 	s := p.id || ":" || image(st.syms)
 	s := p.id || mkSuffix(st.syms)
@@ -1168,7 +1168,7 @@ procedure ir_a_Static(p, st, target, bounded, rval) {
 
 	/st.syms.Static := table()
 
-	/st.syms.Static[p.id] | semantic_error(image(p.id) || ": redeclared identifier", p.coord)
+	/st.syms.Static[p.id] | semantic_error(image(p.id) || ": Redeclared identifier", p.coord)
 
 	s := p.id || mkSuffix(st.syms)
 	st.syms.Static[p.id] := s
@@ -1296,14 +1296,14 @@ procedure ir_a_Continue(p, st, target, bounded, rval) {
 
 	ir_init(p)
 	if /p.name then {
-			st.loop_stack[1] | semantic_error("invalid context for next", p.coord)
+			st.loop_stack[1] | semantic_error("Invalid context for continue", p.coord)
 
 			curloop := st.loop_stack[-1]
 	} else {
 		if \(curloop <- st.loop_stack[*st.loop_stack to 1 by -1]).name == p.name then {
 			# set curloop above
 		} else {
-			semantic_error("undeclared next identifier", p.coord)
+			semantic_error("Undeclared continue identifier", p.coord)
 		}
 	}
 	suspend ir_chunk(p.ir.start, [ ir_Goto(p.coord, curloop.ir.x.nextlabel) ])
@@ -1318,14 +1318,14 @@ procedure ir_a_Break(p, st, target, bounded, rval) {
 
 	ir_init(p)
 	if /p.name then {
-			st.loop_stack[1] | semantic_error("invalid context for break", p.coord)
+			st.loop_stack[1] | semantic_error("Invalid context for break", p.coord)
 
 			curloop := st.loop_stack[-1]
 	} else {
 		if \(curloop <- st.loop_stack[*st.loop_stack to 1 by -1]).name == p.name then {
 			# set curloop above
 		} else {
-			semantic_error("undeclared break identifier", p.coord)
+			semantic_error("Undeclared break identifier", p.coord)
 		}
 	}
 	suspend ir_chunk(p.ir.start, [ ir_Goto(p.coord, curloop.ir.failure) ])
@@ -1343,14 +1343,14 @@ procedure ir_a_Yield(p, st, target, bounded, rval) {
 	ir_init(p)
 
 	if /p.name then {
-			st.loop_stack[1] | semantic_error("invalid context for generate", p.coord)
+			st.loop_stack[1] | semantic_error("Invalid context for yield", p.coord)
 
 			curloop := st.loop_stack[-1]
 	} else {
 		if \(curloop <- st.loop_stack[*st.loop_stack to 1 by -1]).name == p.name then {
 			# set curloop above
 		} else {
-			semantic_error("undeclared generate identifier", p.coord)
+			semantic_error("Undeclared yield identifier", p.coord)
 		}
 	}
 	clx := curloop.ir.x
@@ -1379,7 +1379,7 @@ procedure ir_a_BreakX(p, st, target, bounded, rval) {
 	local clx
 	local mk
 
-	st.loop_stack[1] | semantic_error("invalid context for break", p.coord)
+	st.loop_stack[1] | semantic_error("Invalid context for break", p.coord)
 
 	/p.expr := a_Nil(p.coord)
 
@@ -1875,7 +1875,7 @@ procedure ir_make_sentinel(L) {
 }
 
 procedure semantic_error(msg, coord) {
-	writes(%stdout, "At ", \coord, ": ")
+	writes(%stderr, "At ", \coord, ": ")
 	stop(msg)
 }
 

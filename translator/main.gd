@@ -136,7 +136,7 @@ procedure getopts(args, optlist) {
 			if allowed[c] then {
 				seen[c] := c
 			} else {
-				%stderr.write("unrecognized option: -", c)
+				%stderr.write("Unrecognized option: -", c)
 				usage()
 			}
 		}
@@ -147,7 +147,7 @@ procedure getopts(args, optlist) {
 
 #  usage() -- write usage message, list legal options, abort
 procedure usage() {
-	%stderr.write("usage: ", USAGE)
+	%stderr.write("Usage: ", USAGE)
 	every ^o := !optlist do {
 		%stderr.write("  ", o.flag, "  ", o.meaning)
 	}

@@ -37,7 +37,7 @@ func declareProc(irf *ir.Ir_Function) *pr_Info {
 		pr.qname = pr.space.GetQual() + pr.name // add namespace qualifier
 	}
 	if ProcTable[pr.qname] != nil {
-		fatal("duplicate procedure definition: " + irf.Name)
+		fatal("Duplicate procedure definition: " + irf.Name)
 	}
 	pr.ir = irf
 	pr.variadic = (irf.Accumulate != "")
@@ -59,11 +59,11 @@ func setupProc(pr *pr_Info) {
 				// found in current space; make this explicit
 				pr.ir.UnboundList[i] = pr.space.GetQual() + id
 			} else if PubSpace.Get(id) == nil {
-				fatal("in " + pr.qname + "(): undeclared identifier: " + id)
+				fatal("In " + pr.qname + "(): Undeclared identifier: " + id)
 			}
 		} else { // explicitly qualified by namespace
 			if g.GetSpace(nsid[0]).Get(nsid[1]) == nil {
-				fatal("in " + pr.qname + "(): undeclared identifier: " + id)
+				fatal("In " + pr.qname + "(): Undeclared identifier: " + id)
 			}
 		}
 	}

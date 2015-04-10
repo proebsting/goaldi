@@ -73,7 +73,7 @@ func irDecl(decl interface{}) {
 		} else if t, ok := gv.(*g.VTrapped); ok && *t.Target == g.NilValue {
 			// okay, previously declared global, no problem
 		} else {
-			fatal("duplicate global declaration: global " + name)
+			fatal("Duplicate global declaration: global " + name)
 		}
 		if x.Fn != "" {
 			GlobInit = append(GlobInit, &x)
@@ -93,7 +93,7 @@ func irDecl(decl interface{}) {
 		if RecordTable[qname] == nil {
 			RecordTable[qname] = &RecordEntry{x, nil}
 		} else {
-			fatal("duplicate record declaration: record " + qname)
+			fatal("Duplicate record declaration: record " + qname)
 		}
 	default:
 		panic(g.Malfunction(fmt.Sprintf("Unrecognized: %#v", x)))
@@ -126,7 +126,7 @@ func registerProc(pr *pr_Info) {
 		pr.space.Declare(pr.name, pr.vproc)
 	} else {
 		// duplicate global: fatal error
-		fatal("duplicate global declaration: procedure " + pr.name)
+		fatal("Duplicate global declaration: procedure " + pr.name)
 	}
 	delete(Undeclared, pr.name)
 }
@@ -136,7 +136,7 @@ func registerRecord(re *RecordEntry) {
 	defer func() { // catch "duplicate field name" exception
 		if e := recover(); e != nil {
 			x := e.(*g.Exception)
-			fatal(fmt.Sprintf("in record %s: %s: %v",
+			fatal(fmt.Sprintf("In record %s: %s: %v",
 				re.Name, x.Msg, x.Offv[0]))
 		}
 	}()
@@ -150,10 +150,10 @@ func registerRecord(re *RecordEntry) {
 			if re.ExtendsRec != "" {
 				pt := RecordTable[re.ExtendsRec]
 				if pt == nil {
-					fatal("parent type not found: record " +
+					fatal("Parent type not found: record " +
 						re.Name + " extends " + re.ExtendsRec)
 				} else if pt.ctor == regMark {
-					fatal("recursive definition: record " +
+					fatal("Recursive definition: record " +
 						re.Name + " extends " + re.ExtendsRec + " extends...")
 				} else {
 					registerRecord(pt) // ensure parent is done first
@@ -165,7 +165,7 @@ func registerRecord(re *RecordEntry) {
 			ns.Declare(re.Name, re.ctor)
 		} else {
 			// duplicate global: fatal error
-			fatal("duplicate global declaration: record " + re.Name)
+			fatal("Duplicate global declaration: record " + re.Name)
 		}
 		delete(Undeclared, re.Name)
 	}

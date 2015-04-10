@@ -114,7 +114,7 @@ procedure parser.parse_do_case() {
 		}
 		element := self.parse_cclause()
 		if element.expr === lex_DEFAULT then {
-			(/dflt := element.body) | self.abort("multiple default clauses")
+			(/dflt := element.body) | self.abort("Multiple default clauses")
 		} else {
 			body.put(element)
 		}
@@ -165,7 +165,7 @@ procedure parser.parse_cclause() {
 		self.match_token(lex_COLON)
 		body := self.parse_expr()
 	} else {
-		self.abort("\""||self.cur_tok.str||"\": invalid case clause")
+		self.abort("\""||self.cur_tok.str||"\": Invalid case clause")
 	}
 	return a_Cclause(e, body, coord)
 }
@@ -187,7 +187,7 @@ procedure parser.parse_do_select() {
 		}
 		element := self.parse_selcase()
 		if element.kind === "default" then {
-			(/dflt := element) | self.abort("more than one default clause")
+			(/dflt := element) | self.abort("More than one default clause")
 		} else {
 			caseList.put(element)
 		}
@@ -417,7 +417,7 @@ procedure parser.parse_expr10() {
 			default:		throw("unrecognized token", tmp_tok)
 		}
 	} else {
-		self.abort("\""||self.cur_tok.str||"\": expression expected")
+		self.abort("\""||self.cur_tok.str||"\": Expression expected")
 	}
 }
 

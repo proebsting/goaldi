@@ -37,7 +37,7 @@ procedure lex(src, fname) {
 		suspend tk
 	}
 	if r.errcount > 0 then {
-		stop("translation aborted")
+		stop("Translation aborted")
 	}
 }
 
@@ -45,7 +45,7 @@ procedure lex(src, fname) {
 #  report a lexical error
 
 procedure lex_stream.report(problem, input) {
-	%stderr.write("lex error at ", self.fname, self.lnum, ": ",
+	%stderr.write("Lex error at ", self.fname, self.lnum, ": ",
 		problem, ": ", input)
 }
 
@@ -75,7 +75,7 @@ procedure lex_stream.gentok() {
 					# put value n in canonical form for IR generation
 					suspend lex_tok(tk := lex_REALLIT, image(n))
 				} else {
-					self.report("malformed number", s)
+					self.report("Malformed number", s)
 				}
 			} else if s := self.match(line, lex_op_rx) then {
 				# operator
@@ -89,7 +89,7 @@ procedure lex_stream.gentok() {
 			} else if s := self.match(line, lex_s2_rx) then {
 				# unterminated string literal: error
 				line := ""
-				self.report("unterminated string", s)
+				self.report("Unterminated string", s)
 			} else if s := self.match(line, lex_r2_rx) then {
 				# unterminated raw literal: may span lines, so keep reading
 				repeat {
@@ -108,7 +108,7 @@ procedure lex_stream.gentok() {
 						}
 					} else {
 						s := s[1+:40] || "..."	# truncate for sane message
-						self.report("unterminated raw literal", s)
+						self.report("Unterminated raw literal", s)
 						line := ""
 						break
 					}
@@ -117,7 +117,7 @@ procedure lex_stream.gentok() {
 				# unrecognized
 				s := line[1]
 				line := line[2:0]
-				self.report("unrecognized token", s)
+				self.report("Unrecognized token", s)
 			}
 		}
 		if lex_enders[tk] then {
@@ -171,7 +171,7 @@ procedure lex_stream.stringval(s) {
 				if c := u[i+:=1] then {
 					t ||:= char(iand(ord(c), 1Fx))
 				} else {
-					self.report(`incomplete \^c in string literal`, s)
+					self.report(`Incomplete \^c in string literal`, s)
 				}
 				continue
 			}
@@ -183,7 +183,7 @@ procedure lex_stream.stringval(s) {
 			i +:= *d - 1
 			t ||:= char(base || "r" || d)
 		} else {
-			self.report(`invalid \` || c || ` in string literal`, s)
+			self.report(`Invalid \` || c || ` in string literal`, s)
 		}
 	}
 
