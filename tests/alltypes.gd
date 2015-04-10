@@ -13,6 +13,7 @@ record Point(x,y)								# a simple illustrative record
 procedure Point.dist() { return hypot(self.x, self.y) }	# and a method for it
 record Circle extends Point(r)
 
+global allvals	# set of all example values
 global ttable	# table of distinct types
 global tlist	# list of distinct types
 
@@ -20,6 +21,7 @@ procedure main() {
 
 	# make a list of examples with associated global type values
 	^E := []
+	allvals := set()
 	ttable := table()
 	add(E, nil, niltype)
 	add(E, type(), type)
@@ -40,6 +42,7 @@ procedure main() {
 	add(E, !T.sort())	# table element
 	add(E, tuple(w:6,h:4))
 	add(E, duration(3600+120+3), external)
+	write("Example set: ", image(allvals))
 
 	# define alternate acceptable sprintf representations we might see
 	^subst := table() {
@@ -102,8 +105,9 @@ procedure main() {
 
 procedure add(E, v, g) {			#: add global type and sample value
 	^t := type(v)
-	ttable[t] := t
-	return E.put(Example(v, t, g))
+	ttable[t] := t		# register example of this type
+	allvals.insert(v)	# validate usability of v as a set member
+	return E.put(Example(v, t, g))	# return list with new Example{} added
 }
 
 procedure check(p, x, s) {			#: validate p(x) === s

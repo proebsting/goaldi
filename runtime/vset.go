@@ -41,6 +41,8 @@ func GoKey(v Value) interface{} {
 		return t.ToUTF8()
 	case *VNumber:
 		return t.Val()
+	case VSet:
+		return &t
 	default:
 		return v // use key as is
 	}
