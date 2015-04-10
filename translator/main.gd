@@ -104,12 +104,14 @@ procedure translate(iname, oname, opts) {
 #  returns the exit status.
 
 procedure gexec(arglist) {
+	%stdout.flush()
+	%stderr.flush()
 	arglist.push("-x")
 	arglist.push(osargs()[1])
 	^c := command ! arglist
 	c.Stdin := osfile(0)
-	c.Stdout := %stdout
-	c.Stderr := %stderr
+	c.Stdout := osfile(1)
+	c.Stderr := osfile(2)
 	c.Run()
 	return c.ProcessState.Sys().ExitStatus()
 }
