@@ -132,6 +132,7 @@ type Ir_Var struct {
 	Name      string
 	Namespace string
 	Scope     string
+	Rval      string // may be nil
 }
 
 type Ir_Key struct {
