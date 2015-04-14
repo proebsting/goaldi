@@ -26,8 +26,6 @@ procedure main(ename, gname) {
 	local e := open(ename)
 	local g := open(gname)
 	loaddoc(g)
-	write("= Goaldi Standard Library")
-	write("documentation extracted ", now().Format("January 2, 2006"))
 	gendoc(e)
 }
 

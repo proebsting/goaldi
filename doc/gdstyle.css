@@ -31,5 +31,6 @@ A:visited	{ background: white; color: #036; }
 
 DT			{ font-weight:bold; margin-top: 2em; }
 DIV.content	{ font-size: 90%; background: #F2F9FF; padding: 4px 3em; }
+SPAN.small	{ font-size: 80%; }
 
 DIV#footer	{ display: none; }

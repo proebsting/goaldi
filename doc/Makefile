@@ -8,15 +8,13 @@ show:		stdlib.html
 
 #  extract stdlib procedure documentation.
 #  gets data from installed "goaldi" but does not specify explicit dependency.
-stdlib.adoc:	libdoc.sh libdoc.gd 
+stdlib.adoc:	libdoc.sh libdoc.hdr libdoc.gd
 	./libdoc.sh >stdlib.adoc
 
 
-#  make HTML documentation and open in browser.
-#  assumes asciidoctor is installed.
+#  make HTML documentation.
 stdlib.html:	stdlib.adoc gdstyle.css
 	asciidoctor -a stylesheet=gdstyle.css stdlib.adoc
-	open stdlib.html
 
 
 #  clean up

@@ -159,8 +159,8 @@ func Exit(env *Env, args ...Value) (Value, *Closure) {
 //  with error value e and zero or more offending values.
 //  If not caught, the exception terminates execution.
 //
-//  If x is a number or string, a Goaldi exception is created using x.
-//  Otherwise, the value x is thrown directly, without interpretation.
+//  If e is a number or string, a Goaldi exception is created using e.
+//  Otherwise, the value e is thrown directly, without interpretation.
 func Throw(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("throw", args)
 	x := ProcArg(args, 0, err_fatal)
