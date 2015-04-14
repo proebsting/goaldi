@@ -88,11 +88,15 @@ bundle:
 #  gets data from installed "goaldi" but does not specify explicit dependency.
 stdlib.adoc:	libdoc.sh libdoc.gd 
 	./libdoc.sh >stdlib.adoc
-#  show stdlib documentation
+#  make HTML documentation -- assumes asciidoctor is installed
+stdlib.html:	stdlib.adoc
+	asciidoctor stdlib.adoc
+#  show stdlib documentation directly
 #  assumes that .adoc is registered to open Chrome/Firefox/Opera
 #  and that the "asciidoctor" estension is installed...
 showlib:	stdlib.adoc
 	open stdlib.adoc
+
 
 #  remove temporary and built files from source tree
 #  and also subpackages built and saved in $GOPATH
@@ -101,7 +105,7 @@ clean:
 	cd translator; $(MAKE) clean
 	cd tests; $(MAKE) clean
 	rm -rf $(GOBIN)/../pkg/*/goaldi
-	rm -f libdoc.html
+	rm -f stdlib.html
 	@# the build product libdoc.adoc is not removed because it gets checked in,
 	@# but touch libdoc.gd to make libdoc.adoc be rebuilt after "make clean".
 	touch libdoc.gd

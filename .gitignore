@@ -6,5 +6,7 @@
 *.gia
 *.gir
 PROFILE
+stdlib.html
 translator/gtran
 translator/gtran.go
+
