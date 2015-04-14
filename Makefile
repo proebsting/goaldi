@@ -84,20 +84,27 @@ format:
 bundle:
 	@bundle `find * -name '*.go' ! -name gtran.go`
 
-#  extract stdlib procedure documentation
-libdoc:	libdoc.txt
-	@: # don't try to build ./libdoc, it's just an alias
-libdoc.txt:	libdoc.sh libdoc.gd
-	./libdoc.sh >libdoc.txt
+#  extract stdlib procedure documentation.
+#  gets data from installed "goaldi" but does not specify explicit dependency.
+stdlib.adoc:	libdoc.sh libdoc.gd 
+	./libdoc.sh >stdlib.adoc
+#  show stdlib documentation
+#  assumes that .adoc is registered to open Chrome/Firefox/Opera
+#  and that the "asciidoctor" estension is installed...
+showlib:	stdlib.adoc
+	open stdlib.adoc
 
 #  remove temporary and built files from source tree
 #  and also subpackages built and saved in $GOPATH
 clean:
-	rm -f libdoc.txt
 	go clean $(PKG) $(PROGS)
 	cd translator; $(MAKE) clean
 	cd tests; $(MAKE) clean
 	rm -rf $(GOBIN)/../pkg/*/goaldi
+	rm -f libdoc.html
+	@# the build product libdoc.adoc is not removed because it gets checked in,
+	@# but touch libdoc.gd to make libdoc.adoc be rebuilt after "make clean".
+	touch libdoc.gd
 
 #  remove files placed elsewhere in $GOPATH
 uninstall:

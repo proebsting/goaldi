@@ -6,6 +6,5 @@
 *.gia
 *.gir
 PROFILE
-libdoc.txt
 translator/gtran
 translator/gtran.go

@@ -15,7 +15,6 @@ global exclude := [				# funcname patterns to exclude from list
 ]
 
 global funcs := table()			# function documentation indexed by name
-global hrule := repl("_", 72)	# standard output separator
 
 global curpkg := "unknown."		# current package name
 global curlist := []			# current entry being accumulated
@@ -27,6 +26,8 @@ procedure main(ename, gname) {
 	local e := open(ename)
 	local g := open(gname)
 	loaddoc(g)
+	write("= Goaldi Standard Library")
+	write("documentation extracted ", now().Format("January 2, 2006"))
 	gendoc(e)
 }
 
@@ -116,7 +117,6 @@ procedure gendoc(e) {
 			}
 		}
 	}
-	write(hrule)
 }
 
 
@@ -125,12 +125,22 @@ procedure gendoc(e) {
 procedure show(descr, fspec, doc) {
 
 	# write a boilerplate header
-	write(hrule)
 	write()
-	write(descr, "    (", fspec, ")")
-	write()
+	writes(descr)
+	if fspec[1+:6] ~== "goaldi" then {
+		^w := split(fspec, ".")
+		^u := "http://golang.org/pkg/" || w[1] || "#" || w[2]
+		writes(" [silver]_(", u, "[", fspec, "])_")
+	}
+	write("::")
 
 	# skip godoc first line (in favor of descr just written)
 	# and the final blank line
-	every write(doc[2 to *doc - 1])
+	every ^s := doc[2 to *doc - 1] do {
+		if s[1:5] == "    " then {
+			write(s[5:0])
+		} else {
+			write(s)
+		}
+	}
 }
