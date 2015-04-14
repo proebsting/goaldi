@@ -217,6 +217,9 @@ func execute(f *pr_frame, label string) (rv g.Value, rc *g.Closure) {
 					f.coord = i.Coord
 					v, c := operator(f.env, f, &i)
 					if v != nil {
+						if i.Rval != "" { // if an rval is required
+							v = g.Deref(v) // then make sure we have one
+						}
 						if i.Lhs != "" {
 							f.temps[i.Lhs] = v
 						}

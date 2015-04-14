@@ -85,7 +85,7 @@ procedure evaluation(a,b) {
 	y := [1,2,3,4]
 	write(y[1], y[1] := 3)
 	x := 7
-	write(x[2], y[2] := 3)
+	write(x[2], y[2] := 3)	# fails
 	y := table()
 	write(y[3], y[3] := 7)
 	x := y

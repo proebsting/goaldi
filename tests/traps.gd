@@ -9,9 +9,13 @@ local T
 	# Test to make sure that the table trapped variable returns
 	# the correct value.
 	#
-	# Developer's note: The parameters to write are not de-referenced
+	# Old Icon Note: "The parameters to write are not de-referenced
 	# until all of them are evaluated.  Any line produced by this section
-	# that has includes two different values for T [] is therefore incorrect.
+	# that has includes two different values for T [] is therefore incorrect."
+	#
+	# In Goaldi, the rules are different:
+	# Each write() argument is dereferenced as it is produced,
+	# so different values ARE to be expected.
 	#
 	write ( "TVTBL test 1" )
 	T := table()
