@@ -11,7 +11,7 @@ PROGS = $(PKG)/goaldi
 GOBIN = $${GOPATH%%:*}/bin
 
 #  default action: set up, build all, run test suite, run expt.gd if present
-default:  setup quick test expt
+default:  setup quick doc test expt
 
 #  configure Git pre-commit hook
 HOOKMASTER = ./pre-commit.hook
@@ -57,6 +57,10 @@ full:
 	# looks like a keeper.
 	#
 
+#  extract stdlib documentation from the Goaldi binary
+doc:	.FORCE
+	cd doc; $(MAKE)
+
 #  run Go unit tests; build and link demos; run Goaldi test suite
 test:
 	cd runtime; go test
@@ -84,33 +88,19 @@ format:
 bundle:
 	@bundle `find * -name '*.go' ! -name gtran.go`
 
-#  extract stdlib procedure documentation.
-#  gets data from installed "goaldi" but does not specify explicit dependency.
-stdlib.adoc:	libdoc.sh libdoc.gd 
-	./libdoc.sh >stdlib.adoc
-#  make HTML documentation -- assumes asciidoctor is installed
-stdlib.html:	stdlib.adoc libdoc.css
-	asciidoctor -a stylesheet=libdoc.css stdlib.adoc
-#  show stdlib documentation directly
-#  assumes that .adoc is registered to open Chrome/Firefox/Opera
-#  and that the "asciidoctor" estension is installed...
-showlib:	stdlib.adoc
-	open stdlib.adoc
-
-
 #  remove temporary and built files from source tree
 #  and also subpackages built and saved in $GOPATH
 clean:
 	go clean $(PKG) $(PROGS)
 	cd translator; $(MAKE) clean
 	cd tests; $(MAKE) clean
+	cd doc; $(MAKE) clean
 	rm -rf $(GOBIN)/../pkg/*/goaldi
-	rm -f stdlib.html
-	@# the build product libdoc.adoc is not removed because it gets checked in,
-	@# but touch libdoc.gd to make libdoc.adoc be rebuilt after "make clean".
-	touch libdoc.gd
 
 #  remove files placed elsewhere in $GOPATH
 uninstall:
 	go clean -i $(PKG) $(PROGS)
 	rm -rf $(GOBIN)/goaldi $(GOBIN)/../pkg/*/goaldi
+
+
+.FORCE:
