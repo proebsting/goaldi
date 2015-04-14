@@ -3,24 +3,24 @@ documentation extracted April 14, 2015
 
 abs(n) -- compute absolute value [silver]_(http://golang.org/pkg/math#Abs[math.Abs])_::
 Abs returns the absolute value of x.
-
++
 Special cases are:
-
++
 	Abs(±Inf) = +Inf
 	Abs(NaN) = NaN
 
 acos(n) -- compute arccosine [silver]_(http://golang.org/pkg/math#Acos[math.Acos])_::
 Acos returns the arccosine, in radians, of x.
-
++
 Special case is:
-
++
 	Acos(x) = NaN if x < -1 or x > 1
 
 acosh(n) -- compute hyperbolic arccosine [silver]_(http://golang.org/pkg/math#Acosh[math.Acosh])_::
 Acosh returns the inverse hyperbolic cosine of x.
-
++
 Special cases are:
-
++
 	Acosh(+Inf) = +Inf
 	Acosh(x) = NaN if x < 1
 	Acosh(NaN) = NaN
@@ -31,17 +31,17 @@ arguments.
 
 asin(n) -- compute arcsine [silver]_(http://golang.org/pkg/math#Asin[math.Asin])_::
 Asin returns the arcsine, in radians, of x.
-
++
 Special cases are:
-
++
 	Asin(±0) = ±0
 	Asin(x) = NaN if x < -1 or x > 1
 
 asinh(n) -- compute hyperbolic arcsine [silver]_(http://golang.org/pkg/math#Asinh[math.Asinh])_::
 Asinh returns the inverse hyperbolic sine of x.
-
++
 Special cases are:
-
++
 	Asinh(±0) = ±0
 	Asinh(±Inf) = ±Inf
 	Asinh(NaN) = NaN
@@ -53,9 +53,9 @@ handling of special cases see http://golang.org/pkg/math/#Atan2.
 
 atanh(n) -- compute hyperbolic arccosine [silver]_(http://golang.org/pkg/math#Atanh[math.Atanh])_::
 Atanh returns the inverse hyperbolic tangent of x.
-
++
 Special cases are:
-
++
 	Atanh(1) = +Inf
 	Atanh(±0) = ±0
 	Atanh(-1) = -Inf
@@ -70,18 +70,18 @@ an asynchronous thread.
 
 cbrt(n) -- compute cube root [silver]_(http://golang.org/pkg/math#Cbrt[math.Cbrt])_::
 Cbrt returns the cube root of x.
-
++
 Special cases are:
-
++
 	Cbrt(±0) = ±0
 	Cbrt(±Inf) = ±Inf
 	Cbrt(NaN) = NaN
 
 ceil(n) -- round up to integer [silver]_(http://golang.org/pkg/math#Ceil[math.Ceil])_::
 Ceil returns the least integer value greater than or equal to x.
-
++
 Special cases are:
-
++
 	Ceil(±0) = ±0
 	Ceil(±Inf) = ±Inf
 	Ceil(NaN) = NaN
@@ -112,14 +112,14 @@ Clearenv deletes all environment variables.
 command(name,args[]) -- build struct to run command [silver]_(http://golang.org/pkg/os/exec#Command[os/exec.Command])_::
 Command returns the Cmd struct to execute the named program with the
 given arguments.
-
++
 It sets Path and Args in the returned structure and zeroes the other
 fields.
-
++
 If name contains no path separators, Command uses LookPath to resolve
 the path to a complete name if possible. Otherwise it uses name
 directly.
-
++
 The returned Cmd's Args field is constructed from the command name
 followed by the elements of arg, so arg should not include the command
 name itself. For example, Command("echo", "hello")
@@ -143,17 +143,17 @@ duplicated.
 
 cos(n) -- compute cosine [silver]_(http://golang.org/pkg/math#Cos[math.Cos])_::
 Cos returns the cosine of the radian argument x.
-
++
 Special cases are:
-
++
 	Cos(±Inf) = NaN
 	Cos(NaN) = NaN
 
 cosh(n) -- compute hyperbolic cosine [silver]_(http://golang.org/pkg/math#Cosh[math.Cosh])_::
 Cosh returns the hyperbolic cosine of x.
-
++
 Special cases are:
-
++
 	Cosh(±0) = 1
 	Cosh(±Inf) = +Inf
 	Cosh(NaN) = NaN
@@ -192,12 +192,12 @@ integer, to the system. A status of 0 signifies normal termination.
 
 exp(n) -- return e ^ x [silver]_(http://golang.org/pkg/math#Exp[math.Exp])_::
 Exp returns e**x, the base-e exponential of x.
-
++
 Special cases are:
-
++
 	Exp(+Inf) = +Inf
 	Exp(NaN) = NaN
-
++
 Very large values overflow to 0 or +Inf. Very small values underflow to
 1.
 
@@ -212,9 +212,9 @@ only white space.
 
 file(name,flags) -- open a file::
 open(name,flags) opens a file and returns a file value.
-
++
 Each character of the optional flags argument selects an option:
-
++
 	"r"	open for reading
 	"w"	open for writing
 	"a"	open for appending
@@ -222,9 +222,9 @@ Each character of the optional flags argument selects an option:
 
 floor(n) -- round down to integer [silver]_(http://golang.org/pkg/math#Floor[math.Floor])_::
 Floor returns the greatest integer value less than or equal to x.
-
++
 Special cases are:
-
++
 	Floor(±0) = ±0
 	Floor(±Inf) = ±Inf
 	Floor(NaN) = NaN
@@ -268,9 +268,9 @@ Hostname returns the host name reported by the kernel.
 hypot(x,y) -- return sqrt of x^2 + y^2 [silver]_(http://golang.org/pkg/math#Hypot[math.Hypot])_::
 Hypot returns Sqrt(p*p + q*q), taking care to avoid unnecessary overflow
 and underflow.
-
++
 Special cases are:
-
++
 	Hypot(±Inf, q) = +Inf
 	Hypot(p, ±Inf) = +Inf
 	Hypot(NaN, q) = NaN
@@ -294,9 +294,9 @@ than the result of string(x).
 
 integer(n) -- truncate to integer [silver]_(http://golang.org/pkg/math#Trunc[math.Trunc])_::
 Trunc returns the integer value of x.
-
++
 Special cases are:
-
++
 	Trunc(±0) = ±0
 	Trunc(±Inf) = ±Inf
 	Trunc(NaN) = NaN
@@ -377,9 +377,9 @@ radix forms (101010b, 52o, 2Ax, 23r1J).
 
 open(name,flags) -- open a file::
 open(name,flags) opens a file and returns a file value.
-
++
 Each character of the optional flags argument selects an option:
-
++
 	"r"	open for reading
 	"w"	open for writing
 	"a"	open for appending
@@ -430,7 +430,7 @@ when no more data is available.
 regex(expr) -- compile Go regular expression [silver]_(http://golang.org/pkg/regexp#Compile[regexp.Compile])_::
 Compile parses a regular expression and returns, if successful, a Regexp
 object that can be used to match against text.
-
++
 When matching against text, the regexp returns a match that begins as
 early as possible in the input (leftmost), and among those it chooses
 the one that a backtracking search would have found first. This
@@ -443,13 +443,13 @@ regexp(expr) -- compile POSIX regular expression [silver]_(http://golang.org/pkg
 CompilePOSIX is like Compile but restricts the regular expression to
 POSIX ERE (egrep) syntax and changes the match semantics to
 leftmost-longest.
-
++
 That is, when matching against text, the regexp returns a match that
 begins as early as possible in the input (leftmost), and among those it
 chooses a match that is as long as possible. This so-called
 leftmost-longest matching is the same semantics that early regular
 expression implementations used and that POSIX specifies.
-
++
 However, there can be multiple leftmost-longest matches, with different
 submatch choices, and here this package diverges from POSIX. Among the
 possible leftmost-longest matches, this package chooses the one that a
@@ -501,18 +501,18 @@ returns an error, if any.
 
 sin(n) -- compute sine [silver]_(http://golang.org/pkg/math#Sin[math.Sin])_::
 Sin returns the sine of the radian argument x.
-
++
 Special cases are:
-
++
 	Sin(±0) = ±0
 	Sin(±Inf) = NaN
 	Sin(NaN) = NaN
 
 sinh(n) -- compute hyperbolic sine [silver]_(http://golang.org/pkg/math#Sinh[math.Sinh])_::
 Sinh returns the hyperbolic sine of x.
-
++
 Special cases are:
-
++
 	Sinh(±0) = ±0
 	Sinh(±Inf) = ±Inf
 	Sinh(NaN) = NaN
@@ -533,9 +533,9 @@ resulting string.
 
 sqrt(n) -- compute square root [silver]_(http://golang.org/pkg/math#Sqrt[math.Sqrt])_::
 Sqrt returns the square root of x.
-
++
 Special cases are:
-
++
 	Sqrt(+Inf) = +Inf
 	Sqrt(±0) = ±0
 	Sqrt(x < 0) = NaN
@@ -554,18 +554,18 @@ table(x) creates a new, empty table having x as the default value.
 
 tan(n) -- compute tangent [silver]_(http://golang.org/pkg/math#Tan[math.Tan])_::
 Tan returns the tangent of the radian argument x.
-
++
 Special cases are:
-
++
 	Tan(±0) = ±0
 	Tan(±Inf) = NaN
 	Tan(NaN) = NaN
 
 tanh(n) -- compute hyperbolic tangent [silver]_(http://golang.org/pkg/math#Tanh[math.Tanh])_::
 Tanh returns the hyperbolic tangent of x.
-
++
 Special cases are:
-
++
 	Tanh(±0) = ±0
 	Tanh(±Inf) = ±1
 	Tanh(NaN) = NaN
@@ -573,7 +573,7 @@ Special cases are:
 throw(e,x[]) -- terminate with error and offending values::
 throw(e, x...) raises an exception with error value e and zero or more
 offending values. If not caught, the exception terminates execution.
-
++
 If x is a number or string, a Goaldi exception is created using x.
 Otherwise, the value x is thrown directly, without interpretation.
 

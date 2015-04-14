@@ -137,7 +137,9 @@ procedure show(descr, fspec, doc) {
 	# skip godoc first line (in favor of descr just written)
 	# and the final blank line
 	every ^s := doc[2 to *doc - 1] do {
-		if s[1:5] == "    " then {
+		if *s = 0 then {
+			write("+")
+		} else if s[1:5] == "    " then {
 			write(s[5:0])
 		} else {
 			write(s)
