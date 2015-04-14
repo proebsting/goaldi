@@ -25,6 +25,7 @@ global gxopts := "ltvDEPT"	# options passed to goaldi interpreter
 #  main program -- see code above for usage 
 
 procedure main(args[]) {
+	^t0 := cputime()
 	randomize()					# for irreproducible temp file names
 
 	#  process options
@@ -33,8 +34,11 @@ procedure main(args[]) {
 	every ^c := !gxopts do {
 		if \opts[c] then gxargs.put("-" || c)
 	}
-	if /opts[c] & /opts["a"] & /opts["g"] then {
+	if /opts["c"] & /opts["a"] & /opts["g"] then {
 		gxargs.put("-#")		# delete temp files after loading
+	}
+	if \opts["t"] then {
+		fprintf(%stderr, "%7.3f startup\n", t0)
 	}
 
 	#  source files are the first file, always,
@@ -67,6 +71,9 @@ procedure main(args[]) {
 			}
 		}
 		gxargs.put(oname)
+		if \opts["t"] then {
+			fprintf(%stderr, "%7.3f translation (%s)\n", cputime() - t0, iname)
+		}
 	}
 	if \opts["a"] | \opts["c"] | \opts["G"] then {
 		return
