@@ -1873,7 +1873,7 @@ procedure ir_make_sentinel(L) {
 }
 
 procedure semantic_error(msg, coord) {
-	writes(%stderr, "At ", \coord, ": ")
+	%stderr.writes("At ", \coord, ": ")
 	stop(msg)
 }
 
