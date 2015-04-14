@@ -470,9 +470,7 @@ procedure ir_a_Call(p, st, target, bounded, rval) {
 
 	suspend ir(p.fn, st, fn, nil, "rval")
 	every i := 1 to *p.args.exprList do {
-		# the embedded if below seems like an Icon remnant --Todd
-		suspend ir(p.args.exprList[i], st, args[i], nil,
-				   if type(p.args.exprList[i]) === a_Ident then "rval" else nil)
+		suspend ir(p.args.exprList[i], st, args[i], nil, "rval")
 	}
 
 	L := [p.fn] ||| p.args.exprList
@@ -1282,7 +1280,7 @@ procedure ir_a_Ident(p, st, target, bounded, rval) {
 	}
 
 	suspend ir_chunk(p.ir.start, [
-		ir_Var(p.coord, target, s, p.namespace, ir_stname(T)),
+		ir_Var(p.coord, target, s, p.namespace, ir_stname(T), rval),
 		ir_Goto(p.coord, p.ir.success),
 		])
 	/bounded & suspend ir_chunk(p.ir.resume, [ ir_Goto(p.coord, p.ir.failure) ])

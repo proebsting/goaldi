@@ -17,7 +17,7 @@ record ir_TmpLabel(name)
 record ir_TmpClosure(name)
 record ir_Label(value)
 
-record ir_Var(coord, lhs, name, namespace, scope)
+record ir_Var(coord, lhs, name, namespace, scope, rval)
 record ir_Key(coord, lhs, name, scope)
 record ir_IntLit(coord, lhs, val)
 record ir_NilLit(coord, lhs)
