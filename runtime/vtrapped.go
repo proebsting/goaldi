@@ -27,15 +27,15 @@ func NewVariable(x Value) *VTrapped {
 var TrappedType = NewType("trapped", "v", rTrapped, nil, nil,
 	"trapped", "", "")
 
-//  VTrapped.String() -- show string representation: produces (&value)
-//  #%#% should make this smarter
+//  VTrapped.String() -- show string representation: "V(<value>)"
 func (t *VTrapped) String() string {
-	return fmt.Sprintf("(&%v)", t.Deref())
+	return fmt.Sprintf("V(%v)", t.Deref())
 }
 
 //  VTrapped.GoString() -- show string representation for traceback
+//  (This may be visible, for example, as an "offending value".)
 func (t *VTrapped) GoString() string {
-	return t.String()
+	return fmt.Sprintf("Variable(%#v)", t.Deref())
 }
 
 //  VTrapped.Type() -- return the trapped type (shouldn't be used)
