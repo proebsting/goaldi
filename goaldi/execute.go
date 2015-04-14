@@ -164,6 +164,9 @@ func execute(f *pr_frame, label string) (rv g.Value, rc *g.Closure) {
 						panic(g.Malfunction("Unbound identifier: " +
 							i.Namespace + "::" + i.Name))
 					}
+					if i.Rval != "" {
+						v = g.Deref(v)
+					}
 					f.temps[i.Lhs] = v
 				case ir.Ir_EnterScope:
 					e := f.env                 // environment at procedure entry

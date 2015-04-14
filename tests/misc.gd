@@ -69,7 +69,8 @@ procedure fn() {
 	write("Should not get here when called from a 'return'")
 }
 
-# test Icon's (odd) two-pass argument evaluation process.
+# These got different results under
+# Icon's (odd) two-pass argument evaluation process.
 procedure evaluation(a,b) {
 	# local x,y
 	local x
