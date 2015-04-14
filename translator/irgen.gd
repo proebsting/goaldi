@@ -30,7 +30,7 @@ procedure ir_a_Paired(p, st, target, bounded, rval) {
 	Ltmp := ir_tmp(st)
 	tmp := ir_tmp(st)
 
-	suspend ir(p.fn, st, tmp, bounded, "rval")
+	suspend ir(p.fn, st, tmp, bounded, nil)
 
 	suspend ir_chunk(p.ir.start, [ ir_Goto(c, p.fn.ir.start) ])
 	/bounded & suspend ir_chunk(p.ir.resume, [ ir_Goto(c, p.fn.ir.resume) ])
@@ -549,7 +549,9 @@ procedure ir_binary(p, target, bounded, rval, lv, rv, clsr, funcs) {
 }
 
 procedure ir_rval(op, arity, arg, parent) {
-	if !!contains(op, ":=" | "<-") & arg = 1 then {
+	if op == (":=:"|"<->") then {
+		return nil
+	} else if !!contains(op, ":=" | "<-") & arg = 1 then {
 		return nil
 	} else if op == "[]" & arg = 1 then {
 		return parent
