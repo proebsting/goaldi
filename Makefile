@@ -89,8 +89,8 @@ bundle:
 stdlib.adoc:	libdoc.sh libdoc.gd 
 	./libdoc.sh >stdlib.adoc
 #  make HTML documentation -- assumes asciidoctor is installed
-stdlib.html:	stdlib.adoc
-	asciidoctor stdlib.adoc
+stdlib.html:	stdlib.adoc libdoc.css
+	asciidoctor -a stylesheet=libdoc.css stdlib.adoc
 #  show stdlib documentation directly
 #  assumes that .adoc is registered to open Chrome/Firefox/Opera
 #  and that the "asciidoctor" estension is installed...

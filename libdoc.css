@@ -1,0 +1,35 @@
+/*  libdoc.css -- simple style sheet for stdlib documentation  */
+
+BODY		{ color: black; background: white; }
+BODY		{ margin-left: 50px; margin-right: 25px; }
+
+BODY, TH, TD	{ font-family: Helvetica, Arial, sans-serif; }
+EM,VAR,CITE,DFN	{ font-style: italic; }
+STRONG		{ font-weight: bold; }
+CODE		{ font-family: Helvetica, Arial, sans-serif; font-weight: bold;}
+PRE, TT		{ font-family: "Lucida Sans Typewriter", Monaco, monospace; }
+
+H1,H2,H3,H4,H5,H6 { font-family:Helvetica,Arial,sans-serif; font-weight:bold; }
+H1		{ font-size: 150%; margin-top: 2.0em; margin-bottom: 0.4em; }
+H2		{ font-size: 125%; margin-top: 2.0em; margin-bottom: 0.4em; }
+H3, H4, H5, H6	{ font-size: 100%; margin-top: 1.5em; margin-bottom: 0.2em; }
+HR		{ margin-top: 2em; margin-bottom: 1em; }
+
+P		{ margin-top: 0.6em; margin-bottom: 0.0em;
+		  line-height: 120%; max-width: 50em; }
+BLOCKQUOTE	{ margin-top: 0.4em; margin-bottom: 0.4em; }
+UL, OL		{ margin-top: 0.4em; margin-bottom: 0.4em; }
+UL + UL		{ margin-top: 0.8em; }
+LI		{ margin-top: 0.2em; }
+
+TH, TD		{ padding-left: 0.4em; padding-right: 0.4em; }
+TH, TD		{ vertical-align: top; text-align: left; }
+TH		{ font-weight: normal; font-style: italic; }
+
+A:link		{ background: white; color: #06C; }
+A:visited	{ background: white; color: #036; }
+
+DT			{ font-weight:bold; margin-top: 2em; }
+DIV.content	{ font-size: 90%; background: #F2F9FF; padding: 4px 3em; }
+
+DIV#footer	{ display: none; }
