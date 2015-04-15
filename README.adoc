@@ -1,0 +1,41 @@
+= Goaldi: A Goal-Directed Programming Language 
+
+Todd Proebsting and Gregg Townsend +
+Department of Computer Science +
+The University of Arizona  
+
+Goaldi is a new general-purpose programming language that combines
+the goal-directed evaluation model of the
+http://www.cs.arizona.edu/icon[Icon] language
+with modern features such as concurrency, objects, and closures.
+While Goaldi will look familiar to Icon programmers,
+it is not upwards compatible, and it omits some features of Icon.
+
+This is an initial distribution while we shake out early problems
+in design, implementation, and documentation.
+We anticipate eventual release under an open-source license.
+
+
+== Requirements
+Goaldi should run on any Unix-based platform that supports
+http://golang.org/[Go].
+We develop on Macintosh and Linux.
+
+== Documentation
+The initial documentation assumes a working knowledge of the Icon language.
+
+* https://docs.google.com/document/d/1TazaoECAzgqt0o-bdfvBL5nhMxA_w7KuJN65Cr5ov4M/edit?usp=sharing[Introduction]
+* https://docs.google.com/document/d/1UCjBKAKH3wqefpKUKAMYlnaMtiodLcZKWiI1pN-Gc_s/edit?usp=sharing[Icon Comparison]
+* https://docs.google.com/document/d/1e21EacNqFg0eHtYowntbg1lKUpawl0busA375qnsqfY/edit?usp=sharing[Language Reference]
+* https://github.com/proebsting/goaldi/blob/master/doc/stdlib.adoc[Standard Library Reference]
+* https://docs.google.com/document/d/1VRyDtFVXbmamBkFJgsSGYPhqxLrPIaaokC3pNOC7e1k/edit?usp=sharing[Installation and Internals]
+
+
+== Discussion List
+A https://list.arizona.edu/sympa/info/goaldi-language[mailing list]
+has been established for announcements and discussions.
+Please https://list.arizona.edu/sympa/subscribe/goaldi-language[subscribe]
+to stay informed of Goaldi developments.
+
+== Contact Us Directly
+Reach us by e-mail at goaldi@cs.arizona.edu.
