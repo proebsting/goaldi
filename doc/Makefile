@@ -8,7 +8,7 @@ show:		stdlib.html
 
 #  extract stdlib procedure documentation.
 #  gets data from installed "goaldi" but does not specify explicit dependency.
-stdlib.adoc:	libdoc.sh libdoc.hdr libdoc.gd
+stdlib.adoc:	libdoc.sh libdoc.hdr libdoc.gd .FORCE
 	./libdoc.sh >stdlib.adoc
 
 
@@ -19,8 +19,9 @@ stdlib.html:	stdlib.adoc gdstyle.css
 
 #  clean up
 #
-#  The build product libdoc.adoc is not removed because it gets checked in,
-#  but libdoc.gd is touched to force a rebuild of stdlib.adoc next time.
+#  The build product libdoc.adoc is not removed because it gets checked in.
 clean:
 	rm -f stdlib.html
-	touch libdoc.gd
+
+
+.FORCE:

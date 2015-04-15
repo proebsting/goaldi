@@ -1,16 +1,15 @@
 = Goaldi Standard Library
 
-This listing of standard procedures and methods was auto-extracted
+This alphabetical listing of standard procedures and methods was auto-extracted
 from source code comments.
-Procedures appear first, followed by methods associated with standard types.
-The first set of methods, with a type code of *x*,
-may be used with values of any type.
+Methods are distinguished by a preceding type character, as in *L.put*(...);
+a type character of *x* indicates a method usable with values of all types.
 
-For each procedure, the header line gives the procedure and argument names
+For each entry, the header line gives the procedure and argument names
 followed by a one-line synopsis.
-A suffix of *[]* in the argument list means that the procedure
-accepts an arbitrary number of arguments.
-The header line is followed by a more detailed description.
+A suffix of *[]* in an argument list indicates
+an arbitrary number of arguments.
+A more detailed description follows the header line.
 
 Some library procedures such as *printf*, *remove*, and *regex*
 are just springboards to underlying Go functions.
@@ -18,13 +17,13 @@ These are indicated by a link on the header line to the Go function.
 Extracted descriptions may refer to the Go function and parameter names
 rather than those of the intermediate Goaldi procedure.
 
-Further descriptions of types and methods associated with the associated
-Go package can be found by following the link.
+For Go runctions, additional documentation including descriptions
+of associated types and methods can be found by following the link.
 In general, if any of these Go functions returns an error,
 an exception is thrown.
 
  
-[small]#(extracted April 14, 2015)#
+[small]#(extracted April 15, 2015)#
  
 
 abs(n) -- compute absolute value [silver]_(http://golang.org/pkg/math#Abs[math.Abs])_::
@@ -94,6 +93,10 @@ size before the channel c. This is useful in the Goaldi form
 buffer(size, create e) to provide buffering of the results produced by
 an asynchronous thread.
 
+c.buffer(size) -- interpose buffer::
+c.buffer(size) returns a channel that interposes a buffer of the given
+size before the channel c.
+
 cbrt(n) -- compute cube root [silver]_(http://golang.org/pkg/math#Cbrt[math.Cbrt])_::
 Cbrt returns the cube root of x.
 +
@@ -123,6 +126,9 @@ char(n) -- return single character for Unicode value::
 char(n) returns the one-character string corresponding to the Unicode
 value of n truncated to integer.
 
+t.char() -- get abbreviation character::
+t.char() returns single character used to abbreviate type t.
+
 chdir(dir) -- change working directory [silver]_(http://golang.org/pkg/os#Chdir[os.Chdir])_::
 Chdir changes the current working directory to the named directory. If
 there is an error, it will be of type *PathError.
@@ -134,6 +140,12 @@ error, it will be of type *PathError.
 
 clearenv() -- delete all environment variables [silver]_(http://golang.org/pkg/os#Clearenv[os.Clearenv])_::
 Clearenv deletes all environment variables.
+
+f.close() -- close file::
+f.close() closes file f.
+
+c.close() -- close channel::
+c.close() closes the channel c.
 
 command(name,args[]) -- build struct to run command [silver]_(http://golang.org/pkg/os/exec#Command[os/exec.Command])_::
 Command returns the Cmd struct to execute the named program with the
@@ -167,6 +179,11 @@ copy(x) returns a copy of x if x is a structure, or just x itself if x
 is a simple value. This is a shallow copy; nested structures are not
 duplicated.
 
+x.copy() -- copy value::
+copy(x) returns a copy of x if x is a structure, or just x itself if x
+is a simple value. This is a shallow copy; nested structures are not
+duplicated.
+
 cos(n) -- compute cosine [silver]_(http://golang.org/pkg/math#Cos[math.Cos])_::
 Cos returns the cosine of the radian argument x.
 +
@@ -190,6 +207,13 @@ The result includes both "user" and "system" time.
 
 date() -- return the current date::
 date() returns the current date in the form "yyyy/mm/dd".
+
+S.delete(x[]) -- remove members::
+S.delete(x...) removes all of its arguments from set S. It returns S.
+
+T.delete(x[]) -- remove entries::
+T.delete(k...) deletes the entries with the given keys from the table T.
+It returns T.
 
 dtor(d) -- convert degrees to radians::
 dtor(d) returns the radian equivalent of the angle d given in degrees.
@@ -230,6 +254,9 @@ Very large values overflow to 0 or +Inf. Very small values underflow to
 external(x) -- export and re-import::
 external(x) exports and then re-imports the value x.
 
+x.external() -- export and re-import::
+external(x) exports and then re-imports the value x.
+
 fields(s) -- return fields of s delimited by whitespace [silver]_(http://golang.org/pkg/strings#Fields[strings.Fields])_::
 Fields splits the string s around each instance of one or more
 consecutive white space characters, as defined by unicode.IsSpace,
@@ -255,6 +282,9 @@ Special cases are:
 	Floor(±Inf) = ±Inf
 	Floor(NaN) = NaN
 
+f.flush() -- flush file::
+f.flush() flushes output on file f.
+
 fprintf(f,fmt,x[]) -- write to file with formatting [silver]_(http://golang.org/pkg/fmt#Fprintf[fmt.Fprintf])_::
 Fprintf formats according to a format specifier and writes to w. It
 returns the number of bytes written and any write error encountered.
@@ -263,6 +293,13 @@ gcd(i[]) -- find greatest common divisor::
 gcd(i,...) truncates its arguments to integer and returns their greatest
 common divisor. Negative values are allowed. gcd() returns zero if all
 values are zero.
+
+c.get() -- read from channel::
+c.get() reads the next value from channel c.
+
+L.get() -- remove from front::
+L.get() removes the first element from list L and returns the element's
+value.
 
 getenv(key) -- read environment variable [silver]_(http://golang.org/pkg/os#Getenv[os.Getenv])_::
 Getenv retrieves the value of the environment variable named by the key.
@@ -318,6 +355,18 @@ image(x) returns a string image of x. This is the same conversion
 applied by sprintf("%#v",x) and is typically more verbose and detailed
 than the result of string(x).
 
+x.image() -- return detailed string image::
+image(x) returns a string image of x. This is the same conversion
+applied by sprintf("%#v",x) and is typically more verbose and detailed
+than the result of string(x).
+
+S.insert(x[]) -- add members::
+S.insert(x...) adds all its arguments to set S. It returns S.
+
+x.instanceof(t) -- check type relationship::
+x.instanceof(t) returns x if x is an instance of type t; otherwise the
+call fails.
+
 integer(n) -- truncate to integer [silver]_(http://golang.org/pkg/math#Trunc[math.Trunc])_::
 Trunc returns the integer value of x.
 +
@@ -362,6 +411,13 @@ of the "into" string. If there is no corresponding character, because
 max(n[]) -- find maximum value::
 max(n, ...) returns the largest of its arguments.
 
+S.member(x) -- test membership::
+S.member(x) returns x if x is a member of set S; otherwise it fails.
+
+T.member(x) -- test membership::
+T.member(k) returns k if k is an existing key in table T; otherwise it
+fails.
+
 methodvalue(x) -- succeed if methodvalue::
 methodvalue(x) returns x if x is a method value, and fails otherwise.
 
@@ -377,6 +433,9 @@ MkdirAll creates a directory named path, along with any necessary
 parents, and returns nil, or else returns an error. The permission bits
 perm are used for all directories that MkdirAll creates. If path is
 already a directory, MkdirAll does nothing and returns nil.
+
+t.name() -- get type name::
+t.name() returns the name of type t.
 
 nilresult(e) -- return nil::
 nilresult(e) returns nil, ignoring e. It is suitable for use as a catch
@@ -415,8 +474,15 @@ ord(s) -- return Unicode ordinal of single character::
 ord(s) returns the Unicode value corresponding to the one-character
 string s.
 
+L.pop() -- remove from front::
+L.pop() removes the first element from list L and returns the element's
+value.
+
 print(x[]) -- write values with spacing::
 print(x,...) writes its arguments to %stdout, separated by spaces.
+
+f.print(x[]) -- write values with spacing::
+f.print(x,...) writes its arguments to file f, separated by spaces.
 
 printf(fmt,x[]) -- write with formatting [silver]_(http://golang.org/pkg/fmt#Printf[fmt.Printf])_::
 Printf formats according to a format specifier and writes to standard
@@ -427,8 +493,27 @@ println(x[]) -- write line of values::
 println(x,...) writes its arguments to %stdout, separated by spaces and
 terminated by a newline character.
 
+f.println(x[]) -- write line of values::
+f.println(x,...) writes its arguments to file f, separated by spaces and
+terminated by a newline character.
+
 proctype(x) -- succeed if procedure::
 proctype(x) return x if x is a procedure, and fails otherwise.
+
+L.pull() -- remove from end::
+L.pull() removes the final element from list L and returns the element's
+value.
+
+L.push(x[]) -- add to front::
+L.push(x...) adds its arguments, in order, to the beginning of list L.
+The last argument thus ends up as the first element of L.
+
+c.put(x) -- send to channel::
+c.put(e...) writes its argument values, in order, to channel c.
+
+L.put(x[]) -- add to end::
+L.put(x...) adds its arguments, in order, to the end of list L. The last
+argument becomes the final element of L.
 
 qmean(n[]) -- compute quadratic mean::
 qmean(n,...) returns the quadratic mean, or root mean square, of its
@@ -452,6 +537,16 @@ read(f) -- read one line from a file::
 read(f) consumes and returns next line of text from file f. The trailing
 linefeed or CRLF is removed from the returned value. read() fails at EOF
 when no more data is available.
+
+f.read() -- read one line::
+f.read() consumes and returns next line of text from file f. The
+trailing linefeed or CRLF is removed from the returned value. read()
+fails at EOF when no more data is available.
+
+f.readb(size) -- read binary bytes::
+f.readb(n) reads up to n bytes into individual characters without
+attempting any UTF-8 decoding. This is useful for reading binary files.
+f.readb() fails at EOF when no more data is available.
 
 regex(expr) -- compile Go regular expression [silver]_(http://golang.org/pkg/regexp#Compile[regexp.Compile])_::
 Compile parses a regular expression and returns, if successful, a Regexp
@@ -525,6 +620,10 @@ setenv(key,value) -- set environment variable [silver]_(http://golang.org/pkg/os
 Setenv sets the value of the environment variable named by the key. It
 returns an error, if any.
 
+L.shuffle() -- return randomized copy::
+L.shuffle() returns a copy of list L in which the elements have been
+randomly reordered.
+
 sin(n) -- compute sine [silver]_(http://golang.org/pkg/math#Sin[math.Sin])_::
 Sin returns the sine of the radian argument x.
 +
@@ -546,6 +645,22 @@ Special cases are:
 sleep(n) -- pause execution momentarily::
 sleep(n) delays execution for n seconds, which may be a fractional
 value.
+
+L.sort(i) -- return sorted copy::
+L.sort(i) returns a copy of list L in which the elements have been
+sorted. Values are ordered first by type, then within types by their
+values. Among lists and among records of the same type, ordering is
+based on field i. Lists with no element i are sorted ahead of lists that
+have one. The value i defaults to 1 and must be strictly positive.
+
+S.sort(i) -- produce sorted list::
+S.sort(i) returns a sorted list of the members of set S. This is
+equivalent to [:!S:].sort(i).
+
+T.sort(i) -- produce sorted list::
+T.sort(i) returns a sorted list of elemtype(key,value) records holding
+the contents of table T. Sorting is by key if i=1 and by value if i=2.
+T.sort(i) is equivalent to [:!T:].sort(i).
 
 split(s,sep) -- return fields delimited by sep [silver]_(http://golang.org/pkg/strings#Split[strings.Split])_::
 Split slices s into all substrings separated by sep and returns a slice
@@ -572,6 +687,10 @@ stop(x,...) writes its arguments to %stderr and terminates execution
 with an exit code of 1 (indicating an error).
 
 string(x) -- render as string::
+string(x) returns a string representation of x. The result is identical
+to the value used by write(x) or sprintf("%v",x).
+
+x.string() -- render value as string::
 string(x) returns a string representation of x. The result is identical
 to the value used by write(x) or sprintf("%v",x).
 
@@ -631,6 +750,9 @@ have the name "tuple".
 type(x) -- return type of value::
 type(x) returns the value of type "type" that represents the type of x.
 
+x.type() -- return type of value::
+type(x) returns the value of type "type" that represents the type of x.
+
 unquote(s) -- remove delimiters and escapes from s::
 unquote(s) removes delimiters and escapes from a quoted string. The
 argument s must begin and end with explicit "double quotes" or
@@ -640,69 +762,6 @@ contains an invalid (by Go rules) escape sequence.
 write(x[]) -- write values and newline::
 write(x,...) writes its arguments to %stdout followed by a newline.
 
-writes(x[]) -- write values::
-writes(x,...) write its arguments to %stdout with no following newline.
-
-x.copy() -- copy value::
-copy(x) returns a copy of x if x is a structure, or just x itself if x
-is a simple value. This is a shallow copy; nested structures are not
-duplicated.
-
-x.external() -- export and re-import::
-external(x) exports and then re-imports the value x.
-
-x.image() -- return detailed string image::
-image(x) returns a string image of x. This is the same conversion
-applied by sprintf("%#v",x) and is typically more verbose and detailed
-than the result of string(x).
-
-x.instanceof(t) -- check type relationship::
-x.instanceof(t) returns x if x is an instance of type t; otherwise the
-call fails.
-
-x.string() -- render value as string::
-string(x) returns a string representation of x. The result is identical
-to the value used by write(x) or sprintf("%v",x).
-
-x.type() -- return type of value::
-type(x) returns the value of type "type" that represents the type of x.
-
-c.buffer(size) -- interpose buffer::
-c.buffer(size) returns a channel that interposes a buffer of the given
-size before the channel c.
-
-c.close() -- close channel::
-c.close() closes the channel c.
-
-c.get() -- read from channel::
-c.get() reads the next value from channel c.
-
-c.put(x) -- send to channel::
-c.put(e...) writes its argument values, in order, to channel c.
-
-f.close() -- close file::
-f.close() closes file f.
-
-f.flush() -- flush file::
-f.flush() flushes output on file f.
-
-f.print(x[]) -- write values with spacing::
-f.print(x,...) writes its arguments to file f, separated by spaces.
-
-f.println(x[]) -- write line of values::
-f.println(x,...) writes its arguments to file f, separated by spaces and
-terminated by a newline character.
-
-f.read() -- read one line::
-f.read() consumes and returns next line of text from file f. The
-trailing linefeed or CRLF is removed from the returned value. read()
-fails at EOF when no more data is available.
-
-f.readb(size) -- read binary bytes::
-f.readb(n) reads up to n bytes into individual characters without
-attempting any UTF-8 decoding. This is useful for reading binary files.
-f.readb() fails at EOF when no more data is available.
-
 f.write(x[]) -- write values and newline::
 f.write(x,...) writes its arguments to file f followed by a newline.
 
@@ -711,68 +770,8 @@ f.writeb(s) writes the string s to file f without any UTF-8 encoding.
 Instead, the low 8 bits of each character are written as a single byte,
 ignoring all other bits. This is useful for writing binary files.
 
+writes(x[]) -- write values::
+writes(x,...) write its arguments to %stdout with no following newline.
+
 f.writes(x[]) -- write values::
 f.writes(x,...) write its arguments to file f with no following newline.
-
-L.get() -- remove from front::
-L.get() removes the first element from list L and returns the element's
-value.
-
-L.pop() -- remove from front::
-L.pop() removes the first element from list L and returns the element's
-value.
-
-L.pull() -- remove from end::
-L.pull() removes the final element from list L and returns the element's
-value.
-
-L.push(x[]) -- add to front::
-L.push(x...) adds its arguments, in order, to the beginning of list L.
-The last argument thus ends up as the first element of L.
-
-L.put(x[]) -- add to end::
-L.put(x...) adds its arguments, in order, to the end of list L. The last
-argument becomes the final element of L.
-
-L.shuffle() -- return randomized copy::
-L.shuffle() returns a copy of list L in which the elements have been
-randomly reordered.
-
-L.sort(i) -- return sorted copy::
-L.sort(i) returns a copy of list L in which the elements have been
-sorted. Values are ordered first by type, then within types by their
-values. Among lists and among records of the same type, ordering is
-based on field i. Lists with no element i are sorted ahead of lists that
-have one. The value i defaults to 1 and must be strictly positive.
-
-S.delete(x[]) -- remove members::
-S.delete(x...) removes all of its arguments from set S. It returns S.
-
-S.insert(x[]) -- add members::
-S.insert(x...) adds all its arguments to set S. It returns S.
-
-S.member(x) -- test membership::
-S.member(x) returns x if x is a member of set S; otherwise it fails.
-
-S.sort(i) -- produce sorted list::
-S.sort(i) returns a sorted list of the members of set S. This is
-equivalent to [:!S:].sort(i).
-
-T.delete(x[]) -- remove entries::
-T.delete(k...) deletes the entries with the given keys from the table T.
-It returns T.
-
-T.member(x) -- test membership::
-T.member(k) returns k if k is an existing key in table T; otherwise it
-fails.
-
-T.sort(i) -- produce sorted list::
-T.sort(i) returns a sorted list of elemtype(key,value) records holding
-the contents of table T. Sorting is by key if i=1 and by value if i=2.
-T.sort(i) is equivalent to [:!T:].sort(i).
-
-t.char() -- get abbreviation character::
-t.char() returns single character used to abbreviate type t.
-
-t.name() -- get type name::
-t.name() returns the name of type t.

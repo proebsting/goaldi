@@ -95,8 +95,12 @@ procedure gendoc(e) {
 			local descr := trim(line[1:-*fspec], " ")
 			local func := split(fspec, "/")[-1]
 
-			if contains(fspec, !exclude) == 1 then {
+			if !!contains(fspec, !exclude) then {
 				continue
+			}
+
+			if descr[2] == " " then {
+				descr := descr[3:0]			# remove constructor result char
 			}
 
 			if fspec[1+:14] == "goaldi/runtime" then {

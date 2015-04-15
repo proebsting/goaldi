@@ -1,16 +1,15 @@
 = Goaldi Standard Library
 
-This listing of standard procedures and methods was auto-extracted
+This alphabetical listing of standard procedures and methods was auto-extracted
 from source code comments.
-Procedures appear first, followed by methods associated with standard types.
-The first set of methods, with a type code of *x*,
-may be used with values of any type.
+Methods are distinguished by a preceding type character, as in *L.put*(...);
+a type character of *x* indicates a method usable with values of all types.
 
-For each procedure, the header line gives the procedure and argument names
+For each entry, the header line gives the procedure and argument names
 followed by a one-line synopsis.
-A suffix of *[]* in the argument list means that the procedure
-accepts an arbitrary number of arguments.
-The header line is followed by a more detailed description.
+A suffix of *[]* in an argument list indicates
+an arbitrary number of arguments.
+A more detailed description follows the header line.
 
 Some library procedures such as *printf*, *remove*, and *regex*
 are just springboards to underlying Go functions.
@@ -18,8 +17,8 @@ These are indicated by a link on the header line to the Go function.
 Extracted descriptions may refer to the Go function and parameter names
 rather than those of the intermediate Goaldi procedure.
 
-Further descriptions of types and methods associated with the associated
-Go package can be found by following the link.
+For Go runctions, additional documentation including descriptions
+of associated types and methods can be found by following the link.
 In general, if any of these Go functions returns an error,
 an exception is thrown.
 
