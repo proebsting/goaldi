@@ -123,10 +123,17 @@ procedure gendoc(e) {
 
 
 #  show(descr, fspec, doc) -- generate documentation for one function
+#
+#  Each call produces one entry in an ASCIIdoc "labeled list"
 
 procedure show(descr, fspec, doc) {
 
-	# write a boilerplate header
+	# trim trailing blank lines from godoc output
+	while doc[-1] == "" do {
+		doc.pull()
+	}
+
+	# build a boilerplate header from available parts
 	write()
 	writes(descr)
 	if fspec[1+:6] ~== "goaldi" then {
@@ -136,9 +143,8 @@ procedure show(descr, fspec, doc) {
 	}
 	write("::")
 
-	# skip godoc first line (in favor of descr just written)
-	# and the final blank line
-	every ^s := doc[2 to *doc - 1] do {
+	# skip godoc first line (in favor of descr just written) and copy the rest
+	every ^s := doc[2 to *doc] do {
 		if *s = 0 then {
 			write("+")
 		} else if s[1:5] == "    " then {
