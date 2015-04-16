@@ -91,7 +91,8 @@ func Log(env *Env, args ...Value) (Value, *Closure) {
 
 //  atan(y, x) returns the arctangent, in radians, of (y/x).
 //  The default value of x is 1, so atan(y) returns the arctangent of y.
-//  For the handling of special cases see http://golang.org/pkg/math/#Atan2.
+//  For the handling of special cases see
+//  http://golang.org/pkg/math/#Atan2[math.Atan2].
 func Atan(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("atan", args)
 	r1 := ProcArg(args, 0, NilValue).(Numerable).ToNumber().Val()

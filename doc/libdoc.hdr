@@ -1,5 +1,15 @@
 = Goaldi Standard Library
 
+
+Gregg Townsend and Todd Proebsting +
+Department of Computer Science +
+The University of Arizona +
+
+Part of the documentation for
+https://docs.google.com/document/d/1TazaoECAzgqt0o-bdfvBL5nhMxA_w7KuJN65Cr5ov4M/edit?usp=sharing[The Goaldi Programming Language]
+
+'''
+
 This document lists the procedures and methods present in the
 Goaldi standard library.
 It was produced mechanically by extracting source code comments.
@@ -21,18 +31,17 @@ rather than those of the intermediate Goaldi procedure.
 In general, if any of these Go functions returns an error,
 an exception is thrown.
 
-Methods are distinguished from procedures by an inital type character and dot,
-as in *L.put*(...), indicating the type of value
-to which the method applies.  Types are encoded this way:
-[width="25%",frame=none,grid=none,cols=">s,<4"]
-|====
-|x |any value
-|t |type value
-|f |file value
-|c |channel value
-|L |list value
-|S |set value
-|T |table value
-|====
-
+Methods are distinguished from procedures by an inital character and period,
+as in *L.put*(...).
+The initial character indicates the type of value 
+to which the method applies according to this table:
+====
+*x* {nbsp} any value +
+*t* {nbsp} type value +
+*f* {nbsp} file value +
+*c* {nbsp} channel value +
+*L* {nbsp} list value +
+*S* {nbsp} set value +
+*T* {nbsp} table value +
+====
 
