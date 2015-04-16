@@ -11,7 +11,10 @@ PROGS = $(PKG)/goaldi
 GOBIN = $${GOPATH%%:*}/bin
 
 #  default action: set up, build all, run test suite, run expt.gd if present
-default:  setup quick doc test expt
+default:	setup build doc test expt
+
+#  quick rebuild and test
+quick:		build qktest expt
 
 #  configure Git pre-commit hook
 HOOKMASTER = ./pre-commit.hook
@@ -20,12 +23,11 @@ setup:	$(HOOKFILE)
 $(HOOKFILE):	$(HOOKMASTER)
 	cp $(HOOKMASTER) $(HOOKFILE)
 
-#  quick rebuild using available translator
-quick:
+#  build using existing translator if available
+build:
 	$(GOBIN)/goaldi -x -l /dev/null || $(MAKE) boot
 	cd translator; $(MAKE)
 	go install $(PROGS)
-	cd tests; $(MAKE) quick
 
 #  bootstrap build goaldi using stable translator binary
 boot:
@@ -66,6 +68,10 @@ test:
 	cd runtime; go test
 	cd demos; $(MAKE) link
 	cd tests; $(MAKE)
+
+#  run a single quick test
+qktest:
+	cd tests; $(MAKE) quick
 
 #  run expt.gd (presumably the test of the moment) if present
 #  passes $GXOPTS to interpreter if set in environment
