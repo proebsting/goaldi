@@ -22,6 +22,7 @@ of associated types and methods can be found by following the link.
 In general, if any of these Go functions returns an error,
 an exception is thrown.
 
+'''
 
 abs(n) -- compute absolute value [silver]_(http://golang.org/pkg/math#Abs[math.Abs])_::
 Abs returns the absolute value of x.
@@ -772,3 +773,5 @@ writes(x,...) write its arguments to %stdout with no following newline.
 
 f.writes(x[]) -- write values::
 f.writes(x,...) write its arguments to file f with no following newline.
+
+'''

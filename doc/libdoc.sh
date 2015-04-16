@@ -29,4 +29,7 @@ done
 
 #  now process everything
 cat libdoc.hdr
+echo "'''"	# hrule
 ./libdoc.gd $TMP1 $TMP2
+echo ""
+echo "'''"	# hrule
