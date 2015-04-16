@@ -19,16 +19,16 @@ import (
 //  All map values are "true"; deletions remove non-member keys.
 type VSet map[Value]bool
 
-const rSet = 65      // declare sort ranking
-var _ ICore = VSet{} // validate implementation
+const rSet = 65       // declare sort ranking
+var _ ICore = &VSet{} // validate implementation
 
 //  NewSet -- construct a new Goaldi set from a Goaldi list.
-func NewSet(L *VList) VSet {
+func NewSet(L *VList) *VSet {
 	S := VSet(make(map[Value]bool))
 	for _, v := range L.data {
 		S[GoKey(v)] = true
 	}
-	return S
+	return &S
 }
 
 //  GoKey(v) turns a Goaldi value into something usable as a Go map key.
@@ -41,10 +41,8 @@ func GoKey(v Value) interface{} {
 		return t.ToUTF8()
 	case *VNumber:
 		return t.Val()
-	case VSet:
-		return &t
 	default:
-		return v // use key as is
+		return v
 	}
 }
 
@@ -53,15 +51,15 @@ var SetType = NewType("set", "S", rSet, Set, SetMethods,
 	"set", "L", "create a new set from list L")
 
 //  VSet.String -- default conversion to Go string returns "S:size"
-func (S VSet) String() string {
-	return fmt.Sprintf("S:%d", len(S))
+func (S *VSet) String() string {
+	return fmt.Sprintf("S:%d", len(*S))
 }
 
 //  VSet.GoString -- convert to Go string for image() and printf("%#v")
 //
 //  For utility and reproducibility, we accept the cost of sorting the set.
-func (S VSet) GoString() string {
-	if len(S) == 0 {
+func (S *VSet) GoString() string {
+	if len(*S) == 0 {
 		return "set{}"
 	}
 	l, _ := S.Sort(ONE) // sort on key values
@@ -76,31 +74,31 @@ func (S VSet) GoString() string {
 }
 
 //  VSet.Type -- return the set type
-func (S VSet) Type() IRank {
+func (S *VSet) Type() IRank {
 	return SetType
 }
 
 //  VSet.Copy returns a duplicate of itself
-func (S VSet) Copy() Value {
+func (S *VSet) Copy() Value {
 	r := NewSet(EMPTYLIST)
-	for k := range S {
-		r[k] = true
+	for k := range *S {
+		(*r)[k] = true
 	}
 	return r
 }
 
 //  VSet.Before compares two sets for sorting
-func (a VSet) Before(b Value, i int) bool {
+func (a *VSet) Before(b Value, i int) bool {
 	return false // no ordering defined
 }
 
 //  VSet.Import returns itself
-func (S VSet) Import() Value {
+func (S *VSet) Import() Value {
 	return S
 }
 
 //  VSet.Export returns its underlying map[Value]bool.
 //  Go extensions may wish to use GoKey() for proper conversion of keys.
-func (S VSet) Export() interface{} {
-	return map[Value]bool(S)
+func (S *VSet) Export() interface{} {
+	return map[Value]bool(*S)
 }
