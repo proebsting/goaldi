@@ -22,9 +22,6 @@ of associated types and methods can be found by following the link.
 In general, if any of these Go functions returns an error,
 an exception is thrown.
 
- 
-[small]#(extracted April 15, 2015)#
- 
 
 abs(n) -- compute absolute value [silver]_(http://golang.org/pkg/math#Abs[math.Abs])_::
 Abs returns the absolute value of x.

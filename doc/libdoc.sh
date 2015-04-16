@@ -29,7 +29,4 @@ done
 
 #  now process everything
 cat libdoc.hdr
-echo " "
-date '+[small]#(extracted %B %e, %Y)#'
-echo " "
 ./libdoc.gd $TMP1 $TMP2
