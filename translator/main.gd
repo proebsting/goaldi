@@ -65,10 +65,9 @@ procedure main(args[]) {
 		}
 		translate(iname, oname, opts)
 		if \opts["a"] then {
-			with %stdout := file(ibase || ".gia", "w") do {
-				gexec(["-l", "-A", oname])
-				%stdout.close()
-			}
+			^out := file(ibase || ".gia", "w")
+			gexec(["-l", "-A", oname], out)
+			out.close()
 		}
 		gxargs.put(oname)
 		if \opts["t"] then {
@@ -106,18 +105,18 @@ procedure translate(iname, oname, opts) {
 }
 
 
-#  gexec(arglist) -- run goaldi process with given arglist (preceded by -x)
+#  gexec(arglist,stdout) -- run goaldi process (with args preceded by -x)
 #
 #  returns the exit status.
 
-procedure gexec(arglist) {
+procedure gexec(arglist, stdout) {
 	%stdout.flush()
 	%stderr.flush()
 	arglist.push("-x")
 	arglist.push(osargs()[1])
 	^c := command ! arglist
 	c.Stdin := osfile(0)
-	c.Stdout := osfile(1)
+	c.Stdout := \stdout | osfile(1)
 	c.Stderr := osfile(2)
 	c.Run()
 	return c.ProcessState.Sys().ExitStatus()
