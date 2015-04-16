@@ -754,7 +754,7 @@ type(x) returns the value of type "type" that represents the type of x.
 unquote(s) -- remove delimiters and escapes from s::
 unquote(s) removes delimiters and escapes from a quoted string. The
 argument s must begin and end with explicit "double quotes" or
-`backticks`. unquote() fails if s is not properly quoted or if it
+\`backticks`. unquote() fails if s is not properly quoted or if it
 contains an invalid (by Go rules) escape sequence.
 
 write(x[]) -- write values and newline::

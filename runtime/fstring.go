@@ -152,7 +152,7 @@ func Reverse(env *Env, args ...Value) (Value, *Closure) {
 
 //  unquote(s) removes delimiters and escapes from a quoted string.
 //  The argument s must begin and end with explicit "double quotes" or
-//  `backticks`.  unquote() fails if s is not properly quoted or if it
+//  \`backticks`.  unquote() fails if s is not properly quoted or if it
 //  contains an invalid (by Go rules) escape sequence.
 func Unquote(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("unquote", args)
