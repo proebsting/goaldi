@@ -1,26 +1,40 @@
 = Goaldi Standard Library
 
-This alphabetical listing of standard procedures and methods was auto-extracted
-from source code comments.
-Methods are distinguished by a preceding type character, as in *L.put*(...);
-a type character of *x* indicates a method usable with values of all types.
+This document lists the procedures and methods present in the
+Goaldi standard library.
+It was produced mechanically by extracting source code comments.
 
 For each entry, the header line gives the procedure and argument names
 followed by a one-line synopsis.
 A suffix of *[]* in an argument list indicates
 an arbitrary number of arguments.
-A more detailed description follows the header line.
+A more detailed procedure description follows the header line.
 
 Some library procedures such as *printf*, *remove*, and *regex*
 are just springboards to underlying Go functions.
 These are indicated by a link on the header line to the Go function.
+Additional documentation of associated types and methods
+can be found by following the link.
+
 Extracted descriptions may refer to the Go function and parameter names
 rather than those of the intermediate Goaldi procedure.
-
-For Go runctions, additional documentation including descriptions
-of associated types and methods can be found by following the link.
 In general, if any of these Go functions returns an error,
 an exception is thrown.
+
+Methods are distinguished from procedures by an inital type character and dot,
+as in *L.put*(...), indicating the type of value
+to which the method applies.  Types are encoded this way:
+[width="25%",frame=none,grid=none,cols=">s,<4"]
+|====
+|x |any value
+|t |type value
+|f |file value
+|c |channel value
+|L |list value
+|S |set value
+|T |table value
+|====
+
 
 '''
 
@@ -217,10 +231,12 @@ dtor(d) -- convert degrees to radians::
 dtor(d) returns the radian equivalent of the angle d given in degrees.
 
 duration(x) -- convert value to a Go Duration struct::
-duration(x) converts x to an external Go time.Duration value. If x is a
-string, it is passed directly to time.ParseDuration. If x is a number,
-"s" is appended to interpret it as an interval in seconds. If the
-conversion is unsuccessful, duration() fails.
+duration(x) converts x to an external Go
+http://golang.org/pkg/time#Duration[time.Duration] value. If x is a
+string, it is passed directly to
+http://golang.org/pkg/time#ParseDuration[time.ParseDuration()]. If x is
+a number, "s" is appended to interpret it as an interval in seconds. If
+the conversion is unsuccessful, duration() fails.
 
 environ() -- get list of environment variables [silver]_(http://golang.org/pkg/os#Environ[os.Environ])_::
 Environ returns a copy of strings representing the environment, in the
@@ -440,16 +456,19 @@ nilresult(e) returns nil, ignoring e. It is suitable for use as a catch
 handler.
 
 niltype() -- return nil value::
-niltype() always returns the sole instance of the nil value.
+niltype() always returns the sole instance of the nil value. niltype is
+the name of the result of nil.type().
 
 noresult(e) -- fail immediately::
 noresult(e) fails immediately, ignoring e. It is suitable for use as a
 catch handler.
 
 now() -- return the current instant as a Go Time struct::
-now() returns the current time as an external Go time.Time value, which
-can then be formatted or otherwise manipulated by calling its associated
-methods.
+now() returns the current time as an external Go
+http://golang.org/pkg/time#Time[time.Time] value, which can then be
+formatted or otherwise manipulated by calling
+http://golang.org/pkg/time/#Time.Format[tval.Format()] or other
+associated methods.
 
 number(x) -- convert to number::
 number(x) returns its argument converted to number, or fails if it
@@ -496,7 +515,8 @@ f.println(x,...) writes its arguments to file f, separated by spaces and
 terminated by a newline character.
 
 proctype(x) -- succeed if procedure::
-proctype(x) return x if x is a procedure, and fails otherwise.
+proctype(x) return x if x is a procedure, and fails otherwise. proctype
+is the name of the result of main.type().
 
 L.pull() -- remove from end::
 L.pull() removes the final element from list L and returns the element's
@@ -524,8 +544,9 @@ control characters and non-printable characters as defined by IsPrint.
 
 randgen(seed) -- create independent random sequence::
 randgen(i) returns a new random generator seeded by i. The returned
-external value is a Go math.rand/Rand object whose methods may be called
-from Goaldi to produce random values.
+external value is a Go
+http://golang.org/pkg/math/rand/#Rand[math.rand/Rand] object whose
+methods may be called from Goaldi to produce random values.
 
 randomize() -- irreproducibly seed random generation::
 randomize() seeds the random number generator with an irreproducible

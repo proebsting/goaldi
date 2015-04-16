@@ -20,6 +20,7 @@ var _ ICore = NilValue.(*vnil) // validate implementation
 var NilValue Value = &vnil{}
 
 //  niltype() always returns the sole instance of the nil value.
+//  niltype is the name of the result of nil.type().
 func Nil(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("nil", args)
 	return Return(NilValue)

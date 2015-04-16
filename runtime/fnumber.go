@@ -123,7 +123,8 @@ func Randomize(env *Env, args ...Value) (Value, *Closure) {
 }
 
 //  randgen(i) returns a new random generator seeded by i.
-//  The returned external value is a Go math.rand/Rand object
+//  The returned external value is a Go
+//  http://golang.org/pkg/math/rand/#Rand[math.rand/Rand] object
 //  whose methods may be called from Goaldi to produce random values.
 func RandGen(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("randgen", args)

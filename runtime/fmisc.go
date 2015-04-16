@@ -102,16 +102,20 @@ func Time(env *Env, args ...Value) (Value, *Closure) {
 	return Return(NewString(time.Now().Format("15:04:05")))
 }
 
-//  now() returns the current time as an external Go time.Time value,
-//  which can then be formatted or otherwise manipulated
-//  by calling its associated methods.
+//  now() returns the current time as an external Go
+//  http://golang.org/pkg/time#Time[time.Time] value,
+//  which can then be formatted or otherwise manipulated by calling
+//  http://golang.org/pkg/time/#Time.Format[tval.Format()]
+//  or other associated methods.
 func Now(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("now", args)
 	return Return(time.Now())
 }
 
-//  duration(x) converts x to an external Go time.Duration value.
-//  If x is a string, it is passed directly to time.ParseDuration.
+//  duration(x) converts x to an external Go
+//  http://golang.org/pkg/time#Duration[time.Duration] value.
+//  If x is a string, it is passed directly to
+//  http://golang.org/pkg/time#ParseDuration[time.ParseDuration()].
 //  If x is a number, "s" is appended to interpret it as an interval in seconds.
 //  If the conversion is unsuccessful, duration() fails.
 func Duration(env *Env, args ...Value) (Value, *Closure) {

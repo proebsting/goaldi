@@ -1,24 +1,38 @@
 = Goaldi Standard Library
 
-This alphabetical listing of standard procedures and methods was auto-extracted
-from source code comments.
-Methods are distinguished by a preceding type character, as in *L.put*(...);
-a type character of *x* indicates a method usable with values of all types.
+This document lists the procedures and methods present in the
+Goaldi standard library.
+It was produced mechanically by extracting source code comments.
 
 For each entry, the header line gives the procedure and argument names
 followed by a one-line synopsis.
 A suffix of *[]* in an argument list indicates
 an arbitrary number of arguments.
-A more detailed description follows the header line.
+A more detailed procedure description follows the header line.
 
 Some library procedures such as *printf*, *remove*, and *regex*
 are just springboards to underlying Go functions.
 These are indicated by a link on the header line to the Go function.
+Additional documentation of associated types and methods
+can be found by following the link.
+
 Extracted descriptions may refer to the Go function and parameter names
 rather than those of the intermediate Goaldi procedure.
-
-For Go runctions, additional documentation including descriptions
-of associated types and methods can be found by following the link.
 In general, if any of these Go functions returns an error,
 an exception is thrown.
+
+Methods are distinguished from procedures by an inital type character and dot,
+as in *L.put*(...), indicating the type of value
+to which the method applies.  Types are encoded this way:
+[width="25%",frame=none,grid=none,cols=">s,<4"]
+|====
+|x |any value
+|t |type value
+|f |file value
+|c |channel value
+|L |list value
+|S |set value
+|T |table value
+|====
+
 
