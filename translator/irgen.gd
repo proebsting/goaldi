@@ -1204,7 +1204,7 @@ procedure ir_a_With(p, st, target, bounded, rval) {
 		suspend ir(p.init, st, tmp, "bounded", "rval")
 		suspend ir_chunk(p.init.ir.success, [
 			ir_EnterScope(p.coord, [], [p.id], ir_stname(newscope), parent),
-			ir_Key(p.coord, tmpkey, p.id, ir_stname(newscope)),
+			ir_Key(p.coord, tmpkey, p.id, ir_stname(newscope), nil),
 			ir_opfn(p.coord, nil, nil, ir_operator(":=", 2, "rval"), [ tmpkey, tmp ], nil),
 			ir_Goto(p.coord, p.expr.ir.start),
 			])
@@ -1646,7 +1646,7 @@ procedure ir_a_Key(p, st, target, bounded, rval) {
 	\p.coord | throw("/p.coord", p)
 
 	suspend ir_chunk(p.ir.start, [
-		ir_Key(p.coord, target, p.id, ir_stname(ir_lookupD(st,p.id))),
+		ir_Key(p.coord, target, p.id, ir_stname(ir_lookupD(st,p.id)), rval),
 		ir_Goto(p.coord, p.ir.success),
 		])
 	suspend ir_chunk(p.ir.resume, [ ir_Goto(p.coord, p.ir.failure) ])

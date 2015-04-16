@@ -140,6 +140,7 @@ type Ir_Key struct {
 	Lhs   string // may be nil
 	Name  string
 	Scope string
+	Rval  string // may be nil
 }
 
 type Ir_NilLit struct {

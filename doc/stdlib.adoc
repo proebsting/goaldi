@@ -173,8 +173,7 @@ command(name,args[]) -- build struct to run command [silver]_(http://golang.org/
 Command returns the Cmd struct to execute the named program with the
 given arguments.
 +
-It sets Path and Args in the returned structure and zeroes the other
-fields.
+It sets only the Path and Args in the returned structure.
 +
 If name contains no path separators, Command uses LookPath to resolve
 the path to a complete name if possible. Otherwise it uses name
@@ -458,6 +457,8 @@ parents, and returns nil, or else returns an error. The permission bits
 perm are used for all directories that MkdirAll creates. If path is
 already a directory, MkdirAll does nothing and returns nil.
 
+money(dollars,cents) -- create money::
+
 t.name() -- get type name::
 t.name() returns the name of type t.
 
@@ -614,7 +615,7 @@ Remove removes the named file or directory. If there is an error, it
 will be of type *PathError.
 
 rename(old,new) -- change file name [silver]_(http://golang.org/pkg/os#Rename[os.Rename])_::
-Rename renames a file.
+Rename renames (moves) a file. OS-specific restrictions might apply.
 
 repl(s,count) -- concatenate copies of s [silver]_(http://golang.org/pkg/strings#Repeat[strings.Repeat])_::
 Repeat returns a new string consisting of count copies of the string s.
