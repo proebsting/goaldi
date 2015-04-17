@@ -50,20 +50,6 @@ func Size(x Value) Value {
 	}
 }
 
-//  Take(x) calls x.Take() or uses reflection for an arbitrary map or channel.
-//  It panics on an inappropriate argument type.
-func Take(x Value) Value {
-	if t, ok := x.(ITake); ok {
-		return t.Take()
-	}
-	k := reflect.ValueOf(x).Kind()
-	if k == reflect.Chan {
-		return TakeChan(x)
-	} else {
-		return x.(ITake).Take() // provoke panic
-	}
-}
-
 //  VNumber.Call -- implement i(e1, e2, e3...)
 func (v *VNumber) Call(env *Env, args []Value, names []string) (Value, *Closure) {
 	if len(names) > 0 {

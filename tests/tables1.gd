@@ -71,6 +71,16 @@ procedure main() {
 	#  every !12 do
 	#     kv := ?t & writes(" ", kv.key, ":", kv.value)
 	#  write()
+
+	#  test @T
+	write()
+	^elems := table(){"Au":"Gold", "Fe":"Iron", "Pb":"Lead", "Al":"Aluminium"}
+	write(image(elems))
+	^elist := []
+	while elist.put(@elems) do writes("@")
+	write(image(elist))
+	every write(image(!elist.sort()))
+	write(image(elems))
 }
 
 procedure ck(t) {		#: show table indexed by 1..4 and "E".."H"

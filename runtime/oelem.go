@@ -118,6 +118,22 @@ func Dispense(lval Value, x Value) (Value, *Closure) {
 	return c.Resume()
 }
 
+//  Take(x) calls x.Take() or uses reflection for an arbitrary map or channel.
+//  It panics on an inappropriate argument type.
+func Take(x Value) Value {
+	if t, ok := x.(ITake); ok {
+		return t.Take()
+	}
+	k := reflect.ValueOf(x).Kind()
+	if k == reflect.Chan {
+		return TakeChan(x)
+	} else if k == reflect.Map {
+		return TakeMap(x)
+	} else {
+		return x.(ITake).Take() // provoke panic
+	}
+}
+
 //  GoIndex(i, n) -- return Go index for i into length n, or n+1 if out of range
 //  i is a 1-based index and may be nonpositive.  i==n or i==0 is in range.
 //  The caller may want to check for result<n or result<=n depending on context.

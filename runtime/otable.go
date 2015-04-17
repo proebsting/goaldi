@@ -17,6 +17,11 @@ func (T *VTable) Choose(lval Value) Value {
 	return ChooseMap(T.data)
 }
 
+//  VTable.Take -- return random element as (key,value) pair
+func (T *VTable) Take() Value {
+	return TakeMap(T.data)
+}
+
 //  VTable.Dispense -- generate table contents as (key,value) pairs
 func (T *VTable) Dispense(lval Value) (Value, *Closure) {
 	return DispenseMap(T.data)
@@ -39,6 +44,16 @@ func ChooseMap(T interface{} /*anymap*/) Value {
 	k := Import(klist[i].Interface())
 	v := Import(mv.MapIndex(klist[i]).Interface())
 	return ElemType.New([]Value{k, v})
+}
+
+//  TakeMap returns a key/value pair after removal from the underlying map.
+func TakeMap(T interface{} /*anymap*/) Value {
+	kv := ChooseMap(T)
+	if kv != nil {
+		key := kv.(*VRecord).Data[0]
+		GoMapDelete(T, key)
+	}
+	return kv
 }
 
 //  DispenseMap generates key/value pairs for any Goaldi table or Go map

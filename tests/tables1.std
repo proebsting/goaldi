@@ -34,3 +34,11 @@
 5 -----234EF-- #llama##  2:l 3:l 4:a E:m F:a
 
 0 ------------ ~~~~~~~~ 
+
+table{Al:Aluminium,Au:Gold,Fe:Iron,Pb:Lead}
+@@@@[elemtype{},elemtype{},elemtype{},elemtype{}]
+elemtype{key:Al,value:Aluminium}
+elemtype{key:Au,value:Gold}
+elemtype{key:Fe,value:Iron}
+elemtype{key:Pb,value:Lead}
+table{}
