@@ -25,9 +25,9 @@ We develop on Macintosh and Linux.
 The initial documentation assumes a working knowledge of the Icon language.
 
 * https://docs.google.com/document/d/1TazaoECAzgqt0o-bdfvBL5nhMxA_w7KuJN65Cr5ov4M/edit?usp=sharing[Introduction]
-* https://docs.google.com/document/d/1UCjBKAKH3wqefpKUKAMYlnaMtiodLcZKWiI1pN-Gc_s/edit?usp=sharing[Icon Comparison]
+* https://docs.google.com/document/d/1UCjBKAKH3wqefpKUKAMYlnaMtiodLcZKWiI1pN-Gc_s/edit?usp=sharing[Goaldi for Icon Programmers]
 * https://docs.google.com/document/d/1e21EacNqFg0eHtYowntbg1lKUpawl0busA375qnsqfY/edit?usp=sharing[Language Reference]
-* https://github.com/proebsting/goaldi/blob/master/doc/stdlib.adoc[Standard Library Reference]
+* https://github.com/proebsting/goaldi/blob/master/doc/stdlib.adoc[Library Reference]
 * https://docs.google.com/document/d/1VRyDtFVXbmamBkFJgsSGYPhqxLrPIaaokC3pNOC7e1k/edit?usp=sharing[Installation and Internals]
 
 
