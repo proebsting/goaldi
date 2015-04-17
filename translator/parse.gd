@@ -108,7 +108,7 @@ procedure parser.parse_decl() {
 		lex_PROCEDURE : return self.parse_do_proc()
 		lex_GLOBAL    : return self.parse_do_global()
 		lex_INITIAL   : return self.parse_do_initial()
-		default   : self.abort("Expecting self.parse_declaration")
+		default       : self.abort("Expecting declaration")
 	}
 }
 
@@ -621,7 +621,7 @@ procedure parser.parse_expr10() {
 			default:		throw("unrecognized token", tmp_tok)
 		}
 	} else {
-		self.abort("\""||self.cur_tok.str||"\": Expression expected")
+		self.abort("\""||self.cur_tok.str||"\": Expecting expression")
 	}
 }
 
@@ -787,7 +787,7 @@ procedure parser.parse_expr11() {
 				return self.parse_do_with()
 			}
 		default : {
-			self.abort("Expecting self.parse_expression")
+			self.abort("Expecting expression")
 		}
 	}
 }
@@ -1042,7 +1042,7 @@ procedure parser.parse_literal() {
 		lex_STRINGLIT   :   # STRINGLIT
 			return a_Stringlit(self.eat_token(), coord)
 		default :
-			self.abort("Expecting self.parse_literal")
+			self.abort("Expecting literal")
 	}
 }
 
@@ -1237,7 +1237,7 @@ procedure parser.parse_do_return() {
 			return a_Suspend(e, do_expr, id, coord)
 			}
 		default :
-			self.abort("Expecting lex_FAIL, lex_RETURN, or SUSPEND")
+			self.abort("Expecting RETURN or SUSPEND")
 	}
 }
 
