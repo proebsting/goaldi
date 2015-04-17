@@ -522,11 +522,7 @@ procedure ir_augmented_assignment(p, target, bounded, rval, lv, rv, tmp) {
 procedure ir_binary(p, target, bounded, rval, lv, rv, clsr, funcs) {
 	local args
 
-	if p.op == "@" then {
-		args := [ rv, lv ]
-	} else {
-		args := [ lv, rv ]
-	}
+	args := [ lv, rv ]
 	if funcs.member(p.op) then {
 		/bounded & suspend ir_chunk(p.ir.resume, [ ir_Goto(p.coord, p.right.ir.resume) ])
 		suspend ir_chunk(p.right.ir.success, [
@@ -579,7 +575,7 @@ procedure ir_a_Binop(p, st, target, bounded, rval) {
 	/funcs := set([ ":=", ":=:", "&", ".", "[]", "+", "-", "/",
 			"*", "%", "^", "**", "++", "--", "<", "<=", "=", "~=",
 			">=", ">", "<<", "<<=", "==", "~==", ">>=", ">=", ">>",
-			"===", "~===", "|||", "||", "@" ])
+			"===", "~===", "|||", "||" ])
 
 	/p.right := a_Nil(p.coord)
 
@@ -612,14 +608,6 @@ procedure ir_a_Binop(p, st, target, bounded, rval) {
 	}
 }
 
-procedure ir_unary_coexp(p, st, target, bounded, rval) {
-	local t
-
-	t := a_Binop("@", a_Nil(p.coord), p.operand, p.coord)
-	suspend ir(t, st, target, bounded, rval)
-	p.ir := t.ir
-}
-
 procedure ir_unary(p, target, bounded, rval, v, clsr, funcs) {
 	if funcs.member(p.op) then {
 		/bounded & suspend ir_chunk(p.ir.resume, [ir_Goto(p.coord, p.operand.ir.resume)])
@@ -646,12 +634,7 @@ procedure ir_a_Unop(p, st, target, bounded, rval) {
 	local v
 	local t
 	static funcs	# functions for which resumption fails immediately.
-	/funcs := set([ ".", "/", "\\", "*", "?", "+", "-", "~", "^" ])
-
-	if p.op == "@" then {
-		suspend ir_unary_coexp(p, st, target, bounded, rval)
-		return fail
-	}
+	/funcs := set([ "/", "\\", "*", "?", "+", "-", "~", "^", "@" ])
 
 	ir_init(p)
 	if not funcs.member(p.op) then {
