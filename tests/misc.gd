@@ -27,7 +27,7 @@ procedure main() {
 	write(/nil & "h")
 	write("i" || "jk")
 	write(23 || "skidoo")
-	write(x, .x, x := "b")
+	write(x, x, x := "b")	# was: .x test
 
 	every write( (1|2)("hello", "mom"), "!")
 	every write ! [ (1|2) ! ["hello", "mom"], "!"]

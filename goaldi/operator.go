@@ -22,8 +22,6 @@ func operator(env *g.Env, f *pr_frame, i *ir.Ir_OpFunction) (g.Value, *g.Closure
 		panic(g.Malfunction("Unimplemented operator: " + op))
 
 	// fundamental operations
-	case "1.":
-		return g.Return(a[0]) // was dereferenced by getArgs
 	case "1#":
 		// means e > 0, used with x \ e
 		return g.ZERO.NumLT(a[0])

@@ -40,7 +40,6 @@ procedure expr1(a, b) {
 	*x
 	+x
 	-x
-	.x
 	/x
 	?x
 	\x

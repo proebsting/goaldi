@@ -382,7 +382,7 @@ procedure parser.parse_expr10() {
 		lex_STATIC,
 		lex_LCOMP,
 		lex_PROCEDURE ])
-	/expr10_set2 := set([lex_AT, lex_NOT, lex_BAR, lex_DOT, lex_BANG,
+	/expr10_set2 := set([lex_AT, lex_NOT, lex_BAR, lex_BANG,
 		lex_PLUS, lex_STAR, lex_SLASH, 
 		lex_MINUS, 
 		lex_QMARK,
