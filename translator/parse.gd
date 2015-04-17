@@ -546,7 +546,7 @@ procedure parser.parse_expr9() {
 	local coord
 
 	ret := self.parse_expr10()
-	while self.peek_token( lex_AT | lex_BACKSLASH | lex_BANG ) do {
+	while self.peek_token( lex_BACKSLASH | lex_BANG ) do {
 		coord := self.cur_tok.coord
 		op := self.eat_token()
 		right := self.parse_expr10()

@@ -57,7 +57,6 @@ procedure expr2(a, b[]) {
 	local s1
 	local s2
 	x \ i
-	x @ y
 	i ^ j
 	i * j
 	i / j
