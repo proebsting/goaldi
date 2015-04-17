@@ -129,6 +129,9 @@ func execute(f *pr_frame, label string) (rv g.Value, rc *g.Closure) {
 						panic(g.NewExn("Unrecognized dynamic variable",
 							"%"+i.Name))
 					}
+					if i.Rval != "" { // if an rval is required
+						v = g.Deref(v) // then make sure we have one
+					}
 					if i.Lhs != "" {
 						f.temps[i.Lhs] = v
 					}
@@ -235,6 +238,9 @@ func execute(f *pr_frame, label string) (rv g.Value, rc *g.Closure) {
 					x := g.Deref(f.temps[i.Expr].(g.Value))
 					v := g.Field(x, i.Field)
 					if v != nil {
+						if i.Rval != "" { // if an rval is required
+							v = g.Deref(v) // then make sure we have one
+						}
 						if i.Lhs != "" {
 							f.temps[i.Lhs] = v
 						}

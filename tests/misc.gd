@@ -77,19 +77,22 @@ procedure evaluation(a,b) {
 	local y
 
 	write("argument evaluation test")
-	write(x, x:=1)
-	write(x:=2, x:=3)
-	write(a, a := 3)
-	write(b[2], b[2] := "q")
-	write(b[2:3], b[1:4] := "qwerty")
+	write("a. ", x, x:=1)
+	write("b. ", x:=2, x:=3)
+	write("c. ", a, a := 3)
+	write("d. ", b[2], b[2] := "q")
+	write("e. ", b[2:3], b[1:4] := "qwerty")
 	y := [1,2,3,4]
-	write(y[1], y[1] := 3)
+	write("f. ", y[1], y[1] := 3)
 	x := 7
-	write(x[2], y[2] := 3)	# fails
+	write("g. ", x[2], y[2] := 3)	# fails
 	y := table()
-	write(y[3], y[3] := 7)
+	write("h. ", y[3], y[3] := 7)
 	x := y
-	write(x[5], y[5] := 8)
+	write("i. ", x[5], y[5] := 8)
+	local m := message("Horton")
+	write("j. ", m.who, m.who := "Stanley")
+	write("k. ", %stdin, %stdin := nil)
 }
 
 procedure dummy() {

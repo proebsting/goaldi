@@ -38,14 +38,16 @@ repl: xxxxyzxyzxyzxyz
 reverse: xba54321
 char: @ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~
 argument evaluation test
-~1
-23
-12345678903
-bq
-qqwerty
-13
-~7
-~8
+a. ~1
+b. 23
+c. 12345678903
+d. bq
+e. qqwerty
+f. 13
+h. ~7
+i. ~8
+j. HortonStanley
+k. f:%stdin~
 nil
 nil
 OK to get here
