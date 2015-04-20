@@ -72,4 +72,16 @@ procedure main() {
 	s := "fghij"
 	every s[2:4] := !"456" do { write("Q ", s); s := "klmno" }
 
+	s := "3♠4♥2♦4♣"
+	write("R1: ", image(s))				# ascii and non-ascii
+	write("R2: ", image(s[2+:4]))		# both, in substring
+	write("R3: ", image(s[1]))			# ascii only ("3")
+	write("R4: ", image(number(s[1])))	# so this should work
+	write("R5: ", s[1] + s[3] + s[5] + s[7])	# and this too
+	t := s[1:3] || " " || s[3:5] || " " || s[5:7] || " " || s[7:9]
+	write("R6: ", image(t))
+	t := s[1] || t[4] || t[7] || t[10]
+	write("R7: ", image(t))
+	write("R8: ", image(number(t)))
+
 }

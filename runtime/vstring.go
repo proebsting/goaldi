@@ -128,7 +128,7 @@ func (v *VString) ToString() *VString {
 
 //  VString.TryNumber -- return conversion to VNumber or nil
 func (v *VString) TryNumber() *VNumber {
-	if v.high != nil { // if has exotic characters //#%#% bogus test?
+	if v.high != nil { // if has exotic characters
 		return nil // it can't be valid
 	}
 	f, e := ParseNumber(string(v.low))
@@ -236,8 +236,13 @@ func (s *VString) slice(lval Value, i int, j int) Value {
 	// produce value
 	r := &VString{s.low[i:j], nil}
 	if s.high != nil && j > i {
-		r.high = s.high[i:j]
-		//#%#% remove if nothing there (all zeroes) ?
+		for k := i; k < j; k++ {
+			if s.high[k] != 0 {
+				// need high array in new slice, too
+				r.high = s.high[i:j]
+				break
+			}
+		}
 	}
 	return r
 }
@@ -299,6 +304,12 @@ func scat(s1 *VString, i1, j1 int, s2 *VString, i2, j2 int,
 	if s3.high != nil {
 		copy(high[n1+n2:], s3.high[i3:j3])
 	}
-	//#%#% could check here if "high" is really needed
-	return &VString{low, high}
+	for k := 0; k < nt; k++ {
+		if high[k] != 0 {
+			// yes, needed high array
+			return &VString{low, high}
+		}
+	}
+	// no high array needed
+	return &VString{low, nil}
 }
