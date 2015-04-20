@@ -53,4 +53,8 @@ procedure main() {
 	write("c4: ", image("cd" || "ef"))
 	write("c5: ", image(3.14 || 159))
 	#write("c6: ", image('abc' || 'def'))
+
+	write("@1: ", s := "wxyz")
+	while ^c := @s do write("@2: ", c, " + ", s)
+	write("@3: ", s)
 }

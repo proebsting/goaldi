@@ -36,7 +36,7 @@ func Channel(env *Env, args ...Value) (Value, *Closure) {
 //  c.get() reads the next value from channel c.
 func (c VChannel) Get(args ...Value) (Value, *Closure) {
 	defer Traceback("c.get", args)
-	return c.Take(), nil
+	return c.Take(nil), nil
 }
 
 //  GoChanGet(c) returns the next value from a Go channel
@@ -45,8 +45,8 @@ func GoChanGet(c Value, args ...Value) (Value, *Closure) {
 	return TakeChan(c), nil
 }
 
-//  VChannel.Take() implements the unary '@' operator for a Goaldi channel
-func (c VChannel) Take() Value {
+//  VChannel.Take(lval) implements the unary '@' operator for a Goaldi channel.
+func (c VChannel) Take(lval Value) Value {
 	v, ok := <-c
 	if ok {
 		return v // got a value

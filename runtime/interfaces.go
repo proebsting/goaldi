@@ -56,10 +56,6 @@ type ISize interface {
 	Size() Value // *x
 }
 
-type ITake interface {
-	Take() Value // @x
-}
-
 type IField interface {
 	Field(string) Value // x.id
 }
@@ -69,8 +65,8 @@ type IIdentical interface {
 	Identical(Value) Value // === and ~===
 }
 
-//  Interfaces for operations that can produce lvalues, and can
-//  produce substring variables when applied to strings.
+//  Interfaces for operations that can use or produce lvalues,
+//  and may produce substring variables when applied to strings.
 //  If the lval argument is nil, an rvalue is wanted.
 //  If not, it is just an lvalue flag for most operations, but for
 //  substring assignment it is the actual underlying string to replace.
@@ -81,6 +77,10 @@ type IChoose interface {
 
 type IDispense interface {
 	Dispense(lval Value) (Value, *Closure) // !x
+}
+
+type ITake interface {
+	Take(lval Value) Value // @x
 }
 
 type IIndex interface {

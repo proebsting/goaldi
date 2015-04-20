@@ -14,7 +14,7 @@ func (v *VList) Size() Value {
 
 //------------------------------------  Take:  @L
 
-func (v *VList) Take() Value {
+func (v *VList) Take(lval Value) Value {
 	r, _ := v.Snip(true, "@L", nil)
 	return r
 }

@@ -5,6 +5,7 @@
 23. Exception("?n < 0",-3)
 24. Exception("Not a channel",666)
 32. TypeError("Variable expected")
+33. TypeError("Variable expected")
 40. TypeError("String expected")
 41. Exception("Not an identifier","3.142")
 42. Exception("Not an identifier","2")

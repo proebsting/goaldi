@@ -18,7 +18,7 @@ func (T *VTable) Choose(lval Value) Value {
 }
 
 //  VTable.Take -- return random element as (key,value) pair
-func (T *VTable) Take() Value {
+func (T *VTable) Take(lval Value) Value {
 	return TakeMap(T.data)
 }
 

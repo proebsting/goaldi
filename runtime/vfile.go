@@ -113,8 +113,8 @@ func (f *VFile) Dispense(unused Value) (Value, *Closure) {
 	return c.Resume()
 }
 
-//  VFile.Take() implements the @f operator
-func (f *VFile) Take() Value {
+//  VFile.Take(lval) implements the @f operator
+func (f *VFile) Take(lval Value) Value {
 	s := f.ReadLine()
 	if s != nil {
 		return s

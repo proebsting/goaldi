@@ -3,8 +3,11 @@
 package runtime
 
 import (
+	"fmt"
 	"math/rand"
 )
+
+var _ = fmt.Printf // enable debugging
 
 //  sval -- extract VString value from arbitrary Value, or panic
 func sval(v Value) *VString {
@@ -51,6 +54,18 @@ func (s *VString) Dispense(lval Value) (Value, *Closure) {
 		}
 	}}
 	return f.Resume()
+}
+
+//------------------------------------  Take:  @e
+
+func (s *VString) Take(lval Value) Value {
+	if s.length() == 0 {
+		return nil // fail
+	}
+	v := s.slice(lval, 0, 1).(*vSubStr)
+	c := v.Deref()
+	v.Assign(EMPTY)
+	return c
 }
 
 //------------------------------------  Concat:  e1 || e2

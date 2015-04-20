@@ -29,6 +29,7 @@ procedure provoke(i) {
 		24: select { 666 @: 0 : 0}
 
 		32: ?"abcd" := 5
+		33: @"efgh"
 
 		40: constructor()
 		41: constructor(%pi)

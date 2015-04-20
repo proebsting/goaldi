@@ -118,11 +118,11 @@ func Dispense(lval Value, x Value) (Value, *Closure) {
 	return c.Resume()
 }
 
-//  Take(x) calls x.Take() or uses reflection for an arbitrary map or channel.
+//  Take(lval, x) calls x.Take(lval), TakeChan(), or TakeMap().
 //  It panics on an inappropriate argument type.
-func Take(x Value) Value {
+func Take(lval Value, x Value) Value {
 	if t, ok := x.(ITake); ok {
-		return t.Take()
+		return t.Take(lval)
 	}
 	k := reflect.ValueOf(x).Kind()
 	if k == reflect.Chan {
@@ -130,7 +130,7 @@ func Take(x Value) Value {
 	} else if k == reflect.Map {
 		return TakeMap(x)
 	} else {
-		return x.(ITake).Take() // provoke panic
+		return x.(ITake).Take(lval) // provoke panic
 	}
 }
 

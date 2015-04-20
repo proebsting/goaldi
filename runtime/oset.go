@@ -27,7 +27,7 @@ func (S *VSet) Choose(lval Value) Value {
 
 //------------------------------------  Take:  @S
 
-func (S *VSet) Take() Value {
+func (S *VSet) Take(lval Value) Value {
 	for v := range *S { // for just one
 		delete(*S, v)
 		return Import(v) // convert back from GoKey
