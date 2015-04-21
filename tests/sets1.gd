@@ -9,6 +9,8 @@ procedure main() {
 	testset("delete",   S.delete(3,7,5))
 	testset("noinsert", S.insert())
 	testset("insert",   S.insert(4, 7,9))
+	testset("delete",   S.delete(9, 1))
+	testset("put",		S.put(2,4,6,8))
 	testset("strings",	set(["three","one","four","one","five"]))
 	testset("mixed",	set([,1,"two",channel(3),%stdin,type,main]))
 	every ^S2 := set([] | [0,2,4,6,8]) do {

@@ -107,8 +107,8 @@ procedure add(E, v, g) {			#: add global type and sample value
 	^t := type(v)
 	ttable[t] := t		# register example of this type
 	^n := *allvals
-	allvals.insert(v)	# validate usability of v as a set member
-	allvals.insert(v)	# make sure it only gets added once
+	allvals.put(v)		# validate usability of v as a set member
+	allvals.put(v)		# make sure it only gets added once
 	^i := *allvals - n
 	if i ~= 1 then {
 		write("ERROR: *S increased by ", i, " after twice adding ", image(v))

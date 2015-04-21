@@ -542,6 +542,9 @@ L.put(x[]) -- add to end::
 L.put(x...) adds its arguments, in order, to the end of list L. The last
 argument becomes the final element of L.
 
+S.put(x[]) -- add members::
+S.put(x...) adds all its arguments to set S. It returns S.
+
 qmean(n[]) -- compute quadratic mean::
 qmean(n,...) returns the quadratic mean, or root mean square, of its
 arguments.

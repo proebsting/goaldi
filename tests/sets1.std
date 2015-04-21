@@ -4,6 +4,8 @@ nodelete: S:4 (4) set{1,3,4,5} : 1 3 4 5 : 1 3 4 5
 delete:   S:2 (2) set{1,4} : 1 4 : 1 4
 noinsert: S:2 (2) set{1,4} : 1 4 : 1 4
 insert:   S:4 (4) set{1,4,7,9} : 1 4 7 9 : 1 4 7 9
+delete:   S:2 (2) set{4,7} : 4 7 : 4 7
+put:      S:5 (5) set{2,4,6,7,8} : 2 4 6 7 8 : 2 4 6 7 8
 strings:  S:4 (4) set{five,four,one,three} : :
 mixed:    S:7 (7) set{~,t:type,1,two,f:%stdin,c:3,p:main} : 1 : 1
 S2 = set{}  S3 = set{}

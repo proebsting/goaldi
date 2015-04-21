@@ -10,6 +10,7 @@ var _ = fmt.Printf // enable debugging
 
 //  Declare methods
 var SetMethods = MethodTable([]*VProcedure{
+	DefMeth((*VSet).Put, "put", "x[]", "add members"),
 	DefMeth((*VSet).Insert, "insert", "x[]", "add members"),
 	DefMeth((*VSet).Delete, "delete", "x[]", "remove members"),
 	DefMeth((*VSet).Member, "member", "x", "test membership"),
@@ -35,6 +36,16 @@ func (S *VSet) Member(args ...Value) (Value, *Closure) {
 	} else {
 		return Fail()
 	}
+}
+
+//  S.put(x...) adds all its arguments to set S.
+//  It returns S.
+func (S *VSet) Put(args ...Value) (Value, *Closure) {
+	defer Traceback("S.put", args)
+	for _, x := range args {
+		(*S)[GoKey(x)] = true
+	}
+	return Return(S)
 }
 
 //  S.insert(x...) adds all its arguments to set S.
