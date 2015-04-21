@@ -97,13 +97,15 @@ func GoChanPut(c Value, args ...Value) (Value, *Closure) {
 	return Return(c)
 }
 
-//  Send(x,v) sends value v to the Goaldi or external channel x.
+//  VChannel.Send(v) implements the '@:' operator for a Goaldi channel.
+func (c VChannel) Send(v Value) Value {
+	c <- v
+	return v
+}
+
+//  GoChanSend(x,v) sends value v to the Goaldi channel x.
 //  It panics on an inappropriate argument type.
-func Send(x Value, v Value) Value {
-	if c, ok := x.(VChannel); ok { // if a Goaldi channel
-		c <- v // no conversion or reflection needed
-		return v
-	}
+func GoChanSend(x Value, v Value) Value {
 	cv := reflect.ValueOf(x)
 	if cv.Kind() != reflect.Chan {
 		panic(NewExn("Not a channel", x))

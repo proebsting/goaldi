@@ -23,6 +23,9 @@ procedure main() {
 	write("k. ", image(f.readb(5)))
 	write("l. ", image(f.get()))
 	%stdout.put(f.get(), f.get(), f.get(), f.get())
+	write("m.")
+	every 1 to 3 do
+		%stdout @: @f
 	f.close()
 
 	# open and write, including binary writes to make CRLF and raw CR

@@ -83,6 +83,10 @@ type ITake interface {
 	Take(lval Value) Value // @x
 }
 
+type ISend interface {
+	Send(v Value) Value // x @: v
+}
+
 type IIndex interface {
 	Index(lval Value, y Value) Value // x[y]
 }

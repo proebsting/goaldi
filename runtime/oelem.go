@@ -134,6 +134,15 @@ func Take(lval Value, x Value) Value {
 	}
 }
 
+//  Send(x,v) calls x.Send(v) or GoChanSend(x,v).
+//  It panics on an inappropriate argument type.
+func Send(x Value, v Value) Value {
+	if c, ok := x.(ISend); ok { // if implements @:
+		return c.Send(v)
+	}
+	return GoChanSend(x, v)
+}
+
 //  GoIndex(i, n) -- return Go index for i into length n, or n+1 if out of range
 //  i is a 1-based index and may be nonpositive.  i==n or i==0 is in range.
 //  The caller may want to check for result<n or result<=n depending on context.
