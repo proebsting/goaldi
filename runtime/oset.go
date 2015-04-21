@@ -52,6 +52,13 @@ func (S *VSet) Dispense(lval Value) (Value, *Closure) {
 	return c.Resume()
 }
 
+//------------------------------------  Send:  S @: x
+
+func (S *VSet) Send(x Value) Value {
+	(*S)[GoKey(x)] = true
+	return x
+}
+
 //------------------------------------  Index:  S[x]
 
 func (S *VSet) Index(lval Value, x Value) Value {
