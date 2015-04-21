@@ -2,6 +2,10 @@
 
 package runtime
 
+import (
+	"fmt"
+)
+
 //  VFile.Dispense() implements the !f operator
 func (f *VFile) Dispense(unused Value) (Value, *Closure) {
 	var c *Closure
@@ -28,6 +32,7 @@ func (f *VFile) Take(lval Value) Value {
 
 //  VFile.Send(lval, x) implements f @: x
 func (f *VFile) Send(lval Value, x Value) Value {
-	Wrt(f, nil, nlByte, []Value{x})
-	return x
+	s := fmt.Sprint(x)
+	Wrt(f, nil, nlByte, []Value{s})
+	return s
 }
