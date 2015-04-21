@@ -540,6 +540,11 @@ L.push(x[]) -- add to front::
 L.push(x...) adds its arguments, in order, to the beginning of list L.
 The last argument thus ends up as the first element of L.
 
+f.put(x[]) -- write values as lines::
+f.put(x,...) writes its arguments to file f, each followed by a newline.
+This treats a file as as a container of text values separated by
+newlines, which is consistent with the interpretation used by f.get().
+
 c.put(x) -- send to channel::
 c.put(e...) writes its argument values, in order, to channel c.
 
@@ -801,7 +806,8 @@ write(x[]) -- write values and newline::
 write(x,...) writes its arguments to %stdout followed by a newline.
 
 f.write(x[]) -- write values and newline::
-f.write(x,...) writes its arguments to file f followed by a newline.
+f.write(x,...) writes its arguments to file f followed by a single
+newline.
 
 f.writeb(s) -- write binary bytes::
 f.writeb(s) writes the string s to file f without any UTF-8 encoding.

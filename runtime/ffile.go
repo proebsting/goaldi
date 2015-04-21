@@ -33,6 +33,7 @@ var FileMethods = MethodTable([]*VProcedure{
 	DefMeth((*VFile).FRead, "read", "", "read one line"),
 	DefMeth((*VFile).FReadb, "readb", "size", "read binary bytes"),
 	DefMeth((*VFile).FWriteb, "writeb", "s", "write binary bytes"),
+	DefMeth((*VFile).FPut, "put", "x[]", "write values as lines"),
 	DefMeth((*VFile).FWrite, "write", "x[]", "write values and newline"),
 	DefMeth((*VFile).FWrites, "writes", "x[]", "write values"),
 	DefMeth((*VFile).FPrint, "print", "x[]", "write values with spacing"),
@@ -229,7 +230,15 @@ func Write(env *Env, args ...Value) (Value, *Closure) {
 	return Wrt(STDOUT, noBytes, nlByte, args)
 }
 
-//  f.write(x,...) writes its arguments to file f followed by a newline.
+//  f.put(x,...) writes its arguments to file f, each followed by a newline.
+//  This treats a file as as a container of text values separated by newlines,
+//  which is consistent with the interpretation used by f.get().
+func (f *VFile) FPut(args ...Value) (Value, *Closure) {
+	defer Traceback("f.put", args)
+	return Wrt(f, nlByte, nlByte, args)
+}
+
+//  f.write(x,...) writes its arguments to file f followed by a single newline.
 func (f *VFile) FWrite(args ...Value) (Value, *Closure) {
 	defer Traceback("f.write", args)
 	return Wrt(f, noBytes, nlByte, args)

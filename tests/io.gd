@@ -21,6 +21,8 @@ procedure main() {
 	write("i. ", image(f.readb(3)))
 	write("j. ", image(f.readb(4)))
 	write("k. ", image(f.readb(5)))
+	write("l. ", image(f.get()))
+	%stdout.put(f.get(), f.get(), f.get(), f.get())
 	f.close()
 
 	# open and write, including binary writes to make CRLF and raw CR
