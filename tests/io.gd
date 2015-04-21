@@ -17,9 +17,10 @@ procedure main() {
 	write("e. ", @f)
 	write("f. ", !f)
 	write("g. ", f.read())
-	write("h. ", image(f.readb(3)))
-	write("i. ", image(f.readb(4)))
-	write("j. ", image(f.readb(5)))
+	write("h. ", f.get())
+	write("i. ", image(f.readb(3)))
+	write("j. ", image(f.readb(4)))
+	write("k. ", image(f.readb(5)))
 	f.close()
 
 	# open and write, including binary writes to make CRLF and raw CR

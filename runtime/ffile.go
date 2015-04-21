@@ -29,6 +29,7 @@ import (
 var FileMethods = MethodTable([]*VProcedure{
 	DefMeth((*VFile).FFlush, "flush", "", "flush file"),
 	DefMeth((*VFile).FClose, "close", "", "close file"),
+	DefMeth((*VFile).FGet, "get", "", "read one line"),
 	DefMeth((*VFile).FRead, "read", "", "read one line"),
 	DefMeth((*VFile).FReadb, "readb", "size", "read binary bytes"),
 	DefMeth((*VFile).FWriteb, "writeb", "s", "write binary bytes"),
@@ -161,9 +162,22 @@ func Read(env *Env, args ...Value) (Value, *Closure) {
 	return ProcArg(args, 0, STDIN).(*VFile).FRead(args)
 }
 
+//  f.get() consumes and returns next line of text from file f.
+//  The trailing linefeed or CRLF is removed from the returned value.
+//  f.get() fails at EOF when no more data is available.
+func (f *VFile) FGet(args ...Value) (Value, *Closure) {
+	defer Traceback("f.get", args)
+	s := f.ReadLine()
+	if s == nil {
+		return Fail()
+	} else {
+		return Return(s)
+	}
+}
+
 //  f.read() consumes and returns next line of text from file f.
 //  The trailing linefeed or CRLF is removed from the returned value.
-//  read() fails at EOF when no more data is available.
+//  f.read() fails at EOF when no more data is available.
 func (f *VFile) FRead(args ...Value) (Value, *Closure) {
 	defer Traceback("f.read", args)
 	s := f.ReadLine()

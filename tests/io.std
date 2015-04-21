@@ -7,9 +7,10 @@ d. line 6
 e. line 1
 f. line 2
 g. line 3
-h. "lin"
-i. "e 4\n"
-j. "line "
+h. line 4
+i. "lin"
+j. "e 5\n"
+k. "line "
 
 17: "first line normal"
 32: "raw\r    CR embedded in this line"

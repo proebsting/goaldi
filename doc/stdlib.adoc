@@ -317,6 +317,11 @@ gcd(i,...) truncates its arguments to integer and returns their greatest
 common divisor. Negative values are allowed. gcd() returns zero if all
 values are zero.
 
+f.get() -- read one line::
+f.get() consumes and returns next line of text from file f. The trailing
+linefeed or CRLF is removed from the returned value. f.get() fails at
+EOF when no more data is available.
+
 c.get() -- read from channel::
 c.get() reads the next value from channel c.
 
@@ -571,7 +576,7 @@ when no more data is available.
 
 f.read() -- read one line::
 f.read() consumes and returns next line of text from file f. The
-trailing linefeed or CRLF is removed from the returned value. read()
+trailing linefeed or CRLF is removed from the returned value. f.read()
 fails at EOF when no more data is available.
 
 f.readb(size) -- read binary bytes::
