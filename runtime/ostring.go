@@ -68,6 +68,15 @@ func (s *VString) Take(lval Value) Value {
 	return c
 }
 
+//------------------------------------  Send:  e1 @: e2
+
+func (s *VString) Send(lval Value, v Value) Value {
+	n := s.length()
+	e := s.slice(lval, n, n).(*vSubStr)
+	e.Assign(v.(Stringable).ToString())
+	return v
+}
+
 //------------------------------------  Concat:  e1 || e2
 
 type IConcat interface {

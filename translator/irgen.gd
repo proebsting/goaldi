@@ -549,8 +549,8 @@ procedure ir_rval(op, arity, arg, parent) {
 		return nil
 	} else if !!contains(op, ":=" | "<-") & arg = 1 then {
 		return nil
-	} else if op == "@" & arity = 1 then {
-		return nil	# always need lvalue because @s has a side effect
+	} else if op[1] == "@" then {
+		return nil	# need lvalue for @s or s@:x
 	} else if op == "[]" & arg = 1 then {
 		return parent
 	} else if op == "!" & arity = 1 then {

@@ -57,4 +57,6 @@ procedure main() {
 	write("@1: ", s := "wxyz")
 	while ^c := @s do write("@2: ", c, " + ", s)
 	write("@3: ", s)
+	every write("\t", image(s @: "" | "a" | "bc" | !"def" | 47)) do
+		write("@4:", s)
 }
