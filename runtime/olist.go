@@ -50,6 +50,13 @@ func (v *VList) Dispense(lval Value) (Value, *Closure) {
 	return c.Resume()
 }
 
+//------------------------------------  Send:  L @: x
+
+func (v *VList) Send(x Value) Value {
+	v.Grow(false, "L@:x", x)
+	return x
+}
+
 //------------------------------------  Index:  L[i]
 
 func (v *VList) Index(lval Value, x Value) Value {

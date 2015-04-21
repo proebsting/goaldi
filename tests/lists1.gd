@@ -100,6 +100,13 @@ procedure main() {
 	write(?[2,3,4] := 8)
 	write(![5,6,7] := 9)
 
+	write("N:")
+	a := [5,3,0,9]
+	a @: "E"
+	a @: "A"
+	a @: "9"
+	write(image(a))
+
 	write ! ["all ", "done", "!"]
 }
 
