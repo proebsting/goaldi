@@ -84,7 +84,7 @@ type ITake interface {
 }
 
 type ISend interface {
-	Send(v Value) Value // x @: v
+	Send(lval Value, v Value) Value // x @: v
 }
 
 type IIndex interface {

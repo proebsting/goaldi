@@ -75,7 +75,7 @@ func operator(env *g.Env, f *pr_frame, i *ir.Ir_OpFunction) (g.Value, *g.Closure
 
 	// miscellaneous operations
 	case "2@:":
-		return g.Send(a[0], a[1]), nil
+		return g.Send(a[0], g.Deref(a[0]), a[1]), nil // lval for s@:x
 	case "2!":
 		arglist := a[1].(*g.VList).Export().([]g.Value)
 		return a[0].(g.ICall).Call(env, arglist, []string{})
@@ -154,6 +154,7 @@ func init() {
 	nonDeref["1@"] = 1
 	nonDeref["1?"] = 1
 	nonDeref["1!"] = 1
+	nonDeref["2@:"] = 1
 	nonDeref["2:="] = 1
 	nonDeref["2<-"] = 1
 	nonDeref["2:=:"] = 2

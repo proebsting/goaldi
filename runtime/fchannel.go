@@ -92,13 +92,13 @@ func (c VChannel) Put(args ...Value) (Value, *Closure) {
 func GoChanPut(c Value, args ...Value) (Value, *Closure) {
 	defer Traceback("c.put", args)
 	for _, v := range args {
-		Send(c, v)
+		GoChanSend(c, v)
 	}
 	return Return(c)
 }
 
 //  VChannel.Send(v) implements the '@:' operator for a Goaldi channel.
-func (c VChannel) Send(v Value) Value {
+func (c VChannel) Send(lval Value, v Value) Value {
 	c <- v
 	return v
 }

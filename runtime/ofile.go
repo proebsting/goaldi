@@ -26,8 +26,8 @@ func (f *VFile) Take(lval Value) Value {
 	}
 }
 
-//  VFile.Send(x) implements f @: x
-func (f *VFile) Send(x Value) Value {
+//  VFile.Send(lval, x) implements f @: x
+func (f *VFile) Send(lval Value, x Value) Value {
 	Wrt(f, nil, nlByte, []Value{x})
 	return x
 }

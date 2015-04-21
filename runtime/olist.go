@@ -52,7 +52,7 @@ func (v *VList) Dispense(lval Value) (Value, *Closure) {
 
 //------------------------------------  Send:  L @: x
 
-func (v *VList) Send(x Value) Value {
+func (v *VList) Send(lval Value, x Value) Value {
 	v.Grow(false, "L@:x", x)
 	return x
 }

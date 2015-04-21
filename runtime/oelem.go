@@ -134,11 +134,11 @@ func Take(lval Value, x Value) Value {
 	}
 }
 
-//  Send(x,v) calls x.Send(v) or GoChanSend(x,v).
+//  Send(lval, x, v) calls x.Send(lval, x, v) or GoChanSend(x, v).
 //  It panics on an inappropriate argument type.
-func Send(x Value, v Value) Value {
+func Send(lval Value, x Value, v Value) Value {
 	if c, ok := x.(ISend); ok { // if implements @:
-		return c.Send(v)
+		return c.Send(lval, v)
 	}
 	return GoChanSend(x, v)
 }

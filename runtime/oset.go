@@ -54,7 +54,7 @@ func (S *VSet) Dispense(lval Value) (Value, *Closure) {
 
 //------------------------------------  Send:  S @: x
 
-func (S *VSet) Send(x Value) Value {
+func (S *VSet) Send(lval Value, x Value) Value {
 	(*S)[GoKey(x)] = true
 	return x
 }
