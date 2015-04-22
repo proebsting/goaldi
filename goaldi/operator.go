@@ -57,7 +57,7 @@ func operator(env *g.Env, f *pr_frame, i *ir.Ir_OpFunction) (g.Value, *g.Closure
 	// multi-type operations
 	case "1*":
 		return g.Size(a[0]), nil
-	case "1@", "2@": //#%#% 1@(x) was once passed as 2@(x,nil)
+	case "1@":
 		// always pass lval; ignored by all except @s (take from string)
 		return g.Take(a[0], g.Deref(a[0])), nil
 	case "1?":
