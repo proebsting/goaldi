@@ -67,7 +67,7 @@ func execute(f *pr_frame, label string) (rv g.Value, rc *g.Closure) {
 			label = "UNSET"              // should never see this
 			for _, insn := range ilist { // execute insns in chunk
 				if opt_trace {
-					t := fmt.Sprintf("%T", insn)[8:]
+					t := fmt.Sprintf("%T", insn)[6:]
 					fmt.Printf("[%d]    %s %v\n", f.env.ThreadID, t, insn)
 				}
 				f.coord = "" //#%#% prudent, but s/n/b needed
