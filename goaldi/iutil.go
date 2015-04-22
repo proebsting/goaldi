@@ -29,15 +29,6 @@ func quit(xc int) {
 	os.Exit(xc)
 }
 
-//  babble prints commentary on Stderr if opt_verbose is set.
-//  The first argument is a printf format.  A newline is added automatically.
-func babble(format string, values ...interface{}) {
-	if opt_verbose {
-		fmt.Fprintf(os.Stderr, format, values...)
-		fmt.Fprintln(os.Stderr)
-	}
-}
-
 //  showInterval prints timing for the latest interval if opt_timings is set.
 func showInterval(label string) {
 	dt := cpuInterval().Seconds()

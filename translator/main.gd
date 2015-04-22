@@ -11,7 +11,6 @@ global optlist := [
 	optf("-a", "compile only, IR code to file.gir, assembly to file.gia"),
 	optf("-l", "load and link but do not execute"),
 	optf("-t", "show CPU timings"),
-	optf("-v", "issue verbose commentary"),
 	optf("-A", "dump assembly listing to stdout before execution"),
 	optf("-D", "dump Go stack on panic"),
 	optf("-E", "show initial environment"),
@@ -20,7 +19,7 @@ global optlist := [
 	optf("-P", "produce ./PROFILE file (Linux)"),
 	optf("-T", "trace IR instruction execution"),
 ]
-global gxopts := "ltvADEPT"	# options passed to goaldi interpreter
+global gxopts := "ltADEPT"	# options passed to goaldi interpreter
 
 
 #  main program -- see code above for usage 

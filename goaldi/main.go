@@ -59,15 +59,12 @@ func main() {
 	// load the IR code
 	parts := make([][]interface{}, 0)
 	if files == nil {
-		babble("running embedded app") // no way to enable this output, though
 		bbuf := bytes.NewBuffer(translator.GCode)
 		parts = append(parts, loadfile("[embedded]", bbuf)...)
 	} else if len(files) == 0 {
-		babble("loading [stdin]")
 		parts = append(parts, loadfile("[stdin]", os.Stdin)...)
 	} else {
 		for _, fname := range files {
-			babble("loading %s", fname)
 			f, err := os.Open(fname)
 			checkError(err)
 			parts = append(parts, loadfile(fname, f)...)
@@ -84,7 +81,6 @@ func main() {
 	}
 
 	// link everything together
-	babble("linking")
 	link(parts)
 	showInterval("linking")
 	if nFatals > 0 {
@@ -102,7 +98,6 @@ func main() {
 	}
 
 	// make a list for dependency-based global initialization
-	babble("computing dependencies")
 	dlist := &g.DependencyList{}
 	// put procedures at the front of the list for proper dependency checking
 	// (excluding procedures associated with global:= and initial{})
@@ -138,7 +133,6 @@ func main() {
 	}
 
 	// run the sequence of initialization procedures
-	babble("running initializers")
 	dlist.RunAll()                // global initializers as reordered
 	for _, ip := range InitList { // initial{} blocks in lexical order
 		g.Run(ProcTable[ip.Fn].vproc, []g.Value{})
@@ -150,7 +144,6 @@ func main() {
 	for _, s := range args {
 		arglist = append(arglist, g.NewString(s))
 	}
-	babble("beginning execution")
 	g.Run(gmain, arglist)
 
 	// exit
@@ -160,10 +153,7 @@ func main() {
 
 //  loadfile(label, reader) -- load and possibly print one file
 func loadfile(label string, rdr io.Reader) [][]interface{} {
-	comments, parts := ir.Load(rdr)
-	for _, c := range comments {
-		babble(c)
-	}
+	_, parts := ir.Load(rdr)
 	if opt_adump {
 		for _, p := range parts {
 			ir.Print(label, p)

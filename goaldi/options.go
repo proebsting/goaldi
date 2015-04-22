@@ -16,7 +16,6 @@ import (
 //  command-line options
 var opt_noexec bool  // -l: load and link only; don't execute
 var opt_timings bool // -t: show CPU timings
-var opt_verbose bool // -v: issue verbose commentary
 var opt_adump bool   // -A: dump assembly-style IR code
 var opt_debug bool   // -D: set debug flag (dump Go stack on panic)
 var opt_envmt bool   // -E: show initial environment before loading
@@ -44,7 +43,6 @@ func options() (files []string, args []string) {
 	flag.Bool("x", false, "process command line as described here")
 	flag.BoolVar(&opt_noexec, "l", false, "load and link only")
 	flag.BoolVar(&opt_timings, "t", false, "show CPU timings")
-	flag.BoolVar(&opt_verbose, "v", false, "issue verbose commentary")
 	flag.BoolVar(&opt_adump, "A", false, "dump assembly-style IR code")
 	flag.BoolVar(&opt_debug, "D", false, "dump Go stack on panic")
 	flag.BoolVar(&opt_envmt, "E", false, "show initial environment")
