@@ -487,7 +487,6 @@ procedure ir_a_Call(p, st, target, bounded, rval) {
 	}
 	suspend ir_chunk(L[ 1].ir.failure, [ ir_Goto(p.coord, p.ir.failure) ])
 	suspend ir_chunk(L[-1].ir.success, [
-		# ir_Deref(p.coord, fn, fn),	#%#%# is this necessary?
 		ir_Call(p.coord, value, clsr, fn, args, p.args.nameList, L[-1].ir.resume, ir_stname(st.syms)),
 		ir_Move(p.coord, target, value),
 		ir_Goto(p.coord, p.ir.success),
@@ -806,9 +805,6 @@ procedure ir_a_ProcDeclNested(p, st, target, bounded, rval) {
 	counter +:= 1
 
 	ir_init(p)
-
-	#%#% DISABLED (there is no such type):
-	#%#% if type(target) === ir_ProcDecl then target := nil
 
 	p.ident.id := "$" || st.current_proc || "$nested$" || counter
 

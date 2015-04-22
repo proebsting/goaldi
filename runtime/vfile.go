@@ -3,8 +3,6 @@
 //  A Goaldi file is produced by file(), which replaces open().
 //  A file implements io.ReadWriteCloser so that it can be passed to Go funcs.
 
-//  #%#% Do we need to register all files in order to flush them on exit?
-
 package runtime
 
 import (

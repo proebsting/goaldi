@@ -213,7 +213,9 @@ func (ss *vSubStr) Assign(v Value) IVariable {
 	tgt := ss.target.(IVariable)
 	src := Deref(tgt).(*VString)
 	ins := v.(Stringable).ToString()
-	//#%#% check that i & j are still valid?
+	if ss.j > src.length() {
+		panic(NewExn("String shrunk before assignment complete", ss))
+	}
 	snew := scat(src, 0, ss.i, ins, 0, ins.length(), src, ss.j, src.length())
 	ss.target = tgt.Assign(snew)
 	ss.j = ss.i + ins.length()

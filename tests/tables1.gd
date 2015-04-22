@@ -64,7 +64,7 @@ procedure main() {
 		t.delete(k)
 	ck(t)
 
-	#%#% random portion disabled
+	#  (random portion disabled)
 	#  every t[!4 | !"EFGH"] := ?"abcdefghijklmnopqrstuvwxyz"
 	#  ck(t)
 	#  writes("\t\t\t")

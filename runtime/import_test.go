@@ -25,7 +25,6 @@ func TestImport(t *testing.T) {
 	testImp(t, EMPTY, EMPTY)
 	testImp(t, "abc", NewString("abc"))
 	testImp(t, STDIN, STDIN)
-	//#%#% add other Goaldi types (map, list, ...)
 
 	// test nil flavors
 	testImp(t, nil, NilValue)

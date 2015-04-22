@@ -66,7 +66,7 @@ func Import(x interface{}) Value {
 	case float64:
 		return NewNumber(float64(v))
 	case int:
-		return NewNumber(float64(v)) //#%#% check vs MAX_EXACT?
+		return NewNumber(float64(v))
 	case int8:
 		return NewNumber(float64(v))
 	case int16:
@@ -74,9 +74,9 @@ func Import(x interface{}) Value {
 	case int32:
 		return NewNumber(float64(v))
 	case int64:
-		return NewNumber(float64(v)) //#%#% check vs MAX_EXACT?
+		return NewNumber(float64(v))
 	case uint:
-		return NewNumber(float64(v)) //#%#% check vs MAX_EXACT?
+		return NewNumber(float64(v))
 	case uint8:
 		return NewNumber(float64(v))
 	case uint16:
@@ -84,9 +84,9 @@ func Import(x interface{}) Value {
 	case uint32:
 		return NewNumber(float64(v))
 	case uint64:
-		return NewNumber(float64(v)) //#%#% check vs MAX_EXACT?
+		return NewNumber(float64(v))
 	case uintptr:
-		return NewNumber(float64(v)) //#%#% check vs MAX_EXACT?
+		return NewNumber(float64(v))
 
 	case io.Reader, io.Writer: // either reader or writer makes a file
 		r, _ := x.(io.Reader)
@@ -94,8 +94,6 @@ func Import(x interface{}) Value {
 		c, _ := x.(io.Closer)
 		name := fmt.Sprintf("%T", x) // use type for name
 		return NewFile(name, r, w, c)
-
-	//#%#% add other cases?
 
 	default:
 		return x // external

@@ -66,6 +66,8 @@ constructor r5(a,b,c,d,e)
 4.4
 5
 5
+5.5
+5.5
 7
 7
 3.725290298461914e+19
@@ -106,6 +108,12 @@ file(%stdin,r)
 file(%stdin,r)
 file(%stdout,w)
 file(%stdout,w)
+channel(0)
+channel(0)
+channel(0)
+channel(0)
+channel(0)
+channel(0)
 methodvalue (L:0).get
 methodvalue (L:0).get
 methodvalue (L:0).pop
@@ -144,8 +152,8 @@ procedure write(x[])
 [1,2,3]
 [3,4]
 [3,4]
-[,0cs,4.4,2.2,a,~,t:number,p:wlist,epsilons,m:put,t:r0,delta,p:image,beta,T:0,L:0,p:write,123cs,L:2,-3.647e+19,p:image,7,f:%stdin,3.3,p:reverse,r1{},L:0,T:0,t:r5,r5{},~,,r2{},-2.737e+19,m:get,epsilon,L:3,r5{},t:r2,f:%stdout,4,~,1,r5{},t:r1,p:check,XYZcs,1.1,r1{},3.725e+19,m:push,1234cs,5,r0{},p:read,gamma,r5{},2,t:table,r2{},p:toupper,r0{},alpha,p:messtest,f:%stderr,6.116e+19,p:listtest,gamma,p:main,3,m:pop,L:144,,0cs,4.4,2.2,a,~,t:number,p:wlist,epsilons,m:put,t:r0,delta,p:image,beta,T:0,L:0,p:write,123cs,L:2,-3.647e+19,p:image,7,f:%stdin,3.3,p:reverse,r1{},L:0,T:0,t:r5,r5{},~,,r2{},-2.737e+19,m:get,epsilon,L:3,r5{},t:r2,f:%stdout,4,~,1,r5{},t:r1,p:check,XYZcs,1.1,r1{},3.725e+19,m:push,1234cs,5,r0{},p:read,gamma,r5{},2,t:table,r2{},p:toupper,r0{},alpha,p:messtest,f:%stderr,6.116e+19,p:listtest,gamma,p:main,3,m:pop,L:143]
-[,0cs,4.4,2.2,a,~,t:number,p:wlist,epsilons,m:put,t:r0,delta,p:image,beta,T:0,L:0,p:write,123cs,L:2,-3.647e+19,p:image,7,f:%stdin,3.3,p:reverse,r1{},L:0,T:0,t:r5,r5{},~,,r2{},-2.737e+19,m:get,epsilon,L:3,r5{},t:r2,f:%stdout,4,~,1,r5{},t:r1,p:check,XYZcs,1.1,r1{},3.725e+19,m:push,1234cs,5,r0{},p:read,gamma,r5{},2,t:table,r2{},p:toupper,r0{},alpha,p:messtest,f:%stderr,6.116e+19,p:listtest,gamma,p:main,3,m:pop,L:144,,0cs,4.4,2.2,a,~,t:number,p:wlist,epsilons,m:put,t:r0,delta,p:image,beta,T:0,L:0,p:write,123cs,L:2,-3.647e+19,p:image,7,f:%stdin,3.3,p:reverse,r1{},L:0,T:0,t:r5,r5{},~,,r2{},-2.737e+19,m:get,epsilon,L:3,r5{},t:r2,f:%stdout,4,~,1,r5{},t:r1,p:check,XYZcs,1.1,r1{},3.725e+19,m:push,1234cs,5,r0{},p:read,gamma,r5{},2,t:table,r2{},p:toupper,r0{},alpha,p:messtest,f:%stderr,6.116e+19,p:listtest,gamma,p:main,3,m:pop]
+[,0cs,4.4,2.2,a,~,t:number,p:wlist,epsilons,m:put,t:r0,delta,p:image,beta,T:0,L:0,p:write,123cs,L:2,-3.647e+19,p:image,7,f:%stdin,3.3,p:reverse,r1{},L:0,T:0,t:r5,r5{},~,c:0,5.5,,r2{},-2.737e+19,m:get,epsilon,L:3,r5{},t:r2,f:%stdout,4,~,1,r5{},t:r1,p:check,c:0,XYZcs,1.1,r1{},3.725e+19,m:push,1234cs,5,r0{},p:read,gamma,r5{},2,c:0,t:table,r2{},p:toupper,r0{},alpha,p:messtest,f:%stderr,6.116e+19,p:listtest,gamma,p:main,3,m:pop,L:152,,0cs,4.4,2.2,a,~,t:number,p:wlist,epsilons,m:put,t:r0,delta,p:image,beta,T:0,L:0,p:write,123cs,L:2,-3.647e+19,p:image,7,f:%stdin,3.3,p:reverse,r1{},L:0,T:0,t:r5,r5{},~,c:0,5.5,,r2{},-2.737e+19,m:get,epsilon,L:3,r5{},t:r2,f:%stdout,4,~,1,r5{},t:r1,p:check,c:0,XYZcs,1.1,r1{},3.725e+19,m:push,1234cs,5,r0{},p:read,gamma,r5{},2,c:0,t:table,r2{},p:toupper,r0{},alpha,p:messtest,f:%stderr,6.116e+19,p:listtest,gamma,p:main,3,m:pop,L:151]
+[,0cs,4.4,2.2,a,~,t:number,p:wlist,epsilons,m:put,t:r0,delta,p:image,beta,T:0,L:0,p:write,123cs,L:2,-3.647e+19,p:image,7,f:%stdin,3.3,p:reverse,r1{},L:0,T:0,t:r5,r5{},~,c:0,5.5,,r2{},-2.737e+19,m:get,epsilon,L:3,r5{},t:r2,f:%stdout,4,~,1,r5{},t:r1,p:check,c:0,XYZcs,1.1,r1{},3.725e+19,m:push,1234cs,5,r0{},p:read,gamma,r5{},2,c:0,t:table,r2{},p:toupper,r0{},alpha,p:messtest,f:%stderr,6.116e+19,p:listtest,gamma,p:main,3,m:pop,L:152,,0cs,4.4,2.2,a,~,t:number,p:wlist,epsilons,m:put,t:r0,delta,p:image,beta,T:0,L:0,p:write,123cs,L:2,-3.647e+19,p:image,7,f:%stdin,3.3,p:reverse,r1{},L:0,T:0,t:r5,r5{},~,c:0,5.5,,r2{},-2.737e+19,m:get,epsilon,L:3,r5{},t:r2,f:%stdout,4,~,1,r5{},t:r1,p:check,c:0,XYZcs,1.1,r1{},3.725e+19,m:push,1234cs,5,r0{},p:read,gamma,r5{},2,c:0,t:table,r2{},p:toupper,r0{},alpha,p:messtest,f:%stderr,6.116e+19,p:listtest,gamma,p:main,3,m:pop]
 table{}
 table{}
 table{}
@@ -185,10 +193,10 @@ constructor r0()
 constructor r0()
 constructor r1(a)
 constructor r1(a)
-constructor r2(a,b)
-constructor r2(a,b)
-constructor r5(a,b,c,d,e)
-constructor r5(a,b,c,d,e)
+key="b" constructor r2(a,b)
+key="b" constructor r2(a,b)
+key="b" constructor r5(a,b,c,d,e)
+key="b" constructor r5(a,b,c,d,e)
 -3.647299637717079e+19
 -3.647299637717079e+19
 -2.7368747340080914e+19
@@ -211,6 +219,8 @@ constructor r5(a,b,c,d,e)
 4.4
 5
 5
+5.5
+5.5
 7
 7
 3.725290298461914e+19
@@ -251,6 +261,12 @@ file(%stdin,r)
 file(%stdin,r)
 file(%stdout,w)
 file(%stdout,w)
+channel(0)
+channel(0)
+channel(0)
+channel(0)
+channel(0)
+channel(0)
 methodvalue (L:0).get
 methodvalue (L:0).get
 methodvalue (L:0).pop
@@ -285,12 +301,12 @@ procedure write(x[])
 []
 []
 []
-[1,2,3]
-[1,2,3]
-[3,4]
-[3,4]
-[,0cs,4.4,2.2,a,~,t:number,p:wlist,epsilons,m:put,t:r0,delta,p:image,beta,T:0,L:0,p:write,123cs,L:2,-3.647e+19,p:image,7,f:%stdin,3.3,p:reverse,r1{},L:0,T:0,t:r5,r5{},~,,r2{},-2.737e+19,m:get,epsilon,L:3,r5{},t:r2,f:%stdout,4,~,1,r5{},t:r1,p:check,XYZcs,1.1,r1{},3.725e+19,m:push,1234cs,5,r0{},p:read,gamma,r5{},2,t:table,r2{},p:toupper,r0{},alpha,p:messtest,f:%stderr,6.116e+19,p:listtest,gamma,p:main,3,m:pop,L:144,,0cs,4.4,2.2,a,~,t:number,p:wlist,epsilons,m:put,t:r0,delta,p:image,beta,T:0,L:0,p:write,123cs,L:2,-3.647e+19,p:image,7,f:%stdin,3.3,p:reverse,r1{},L:0,T:0,t:r5,r5{},~,,r2{},-2.737e+19,m:get,epsilon,L:3,r5{},t:r2,f:%stdout,4,~,1,r5{},t:r1,p:check,XYZcs,1.1,r1{},3.725e+19,m:push,1234cs,5,r0{},p:read,gamma,r5{},2,t:table,r2{},p:toupper,r0{},alpha,p:messtest,f:%stderr,6.116e+19,p:listtest,gamma,p:main,3,m:pop,L:143]
-[,0cs,4.4,2.2,a,~,t:number,p:wlist,epsilons,m:put,t:r0,delta,p:image,beta,T:0,L:0,p:write,123cs,L:2,-3.647e+19,p:image,7,f:%stdin,3.3,p:reverse,r1{},L:0,T:0,t:r5,r5{},~,,r2{},-2.737e+19,m:get,epsilon,L:3,r5{},t:r2,f:%stdout,4,~,1,r5{},t:r1,p:check,XYZcs,1.1,r1{},3.725e+19,m:push,1234cs,5,r0{},p:read,gamma,r5{},2,t:table,r2{},p:toupper,r0{},alpha,p:messtest,f:%stderr,6.116e+19,p:listtest,gamma,p:main,3,m:pop,L:144,,0cs,4.4,2.2,a,~,t:number,p:wlist,epsilons,m:put,t:r0,delta,p:image,beta,T:0,L:0,p:write,123cs,L:2,-3.647e+19,p:image,7,f:%stdin,3.3,p:reverse,r1{},L:0,T:0,t:r5,r5{},~,,r2{},-2.737e+19,m:get,epsilon,L:3,r5{},t:r2,f:%stdout,4,~,1,r5{},t:r1,p:check,XYZcs,1.1,r1{},3.725e+19,m:push,1234cs,5,r0{},p:read,gamma,r5{},2,t:table,r2{},p:toupper,r0{},alpha,p:messtest,f:%stderr,6.116e+19,p:listtest,gamma,p:main,3,m:pop]
+key=2 [1,2,3]
+key=2 [1,2,3]
+key=4 [3,4]
+key=4 [3,4]
+key="0cs" [,0cs,4.4,2.2,a,~,t:number,p:wlist,epsilons,m:put,t:r0,delta,p:image,beta,T:0,L:0,p:write,123cs,L:2,-3.647e+19,p:image,7,f:%stdin,3.3,p:reverse,r1{},L:0,T:0,t:r5,r5{},~,c:0,5.5,,r2{},-2.737e+19,m:get,epsilon,L:3,r5{},t:r2,f:%stdout,4,~,1,r5{},t:r1,p:check,c:0,XYZcs,1.1,r1{},3.725e+19,m:push,1234cs,5,r0{},p:read,gamma,r5{},2,c:0,t:table,r2{},p:toupper,r0{},alpha,p:messtest,f:%stderr,6.116e+19,p:listtest,gamma,p:main,3,m:pop,L:152,,0cs,4.4,2.2,a,~,t:number,p:wlist,epsilons,m:put,t:r0,delta,p:image,beta,T:0,L:0,p:write,123cs,L:2,-3.647e+19,p:image,7,f:%stdin,3.3,p:reverse,r1{},L:0,T:0,t:r5,r5{},~,c:0,5.5,,r2{},-2.737e+19,m:get,epsilon,L:3,r5{},t:r2,f:%stdout,4,~,1,r5{},t:r1,p:check,c:0,XYZcs,1.1,r1{},3.725e+19,m:push,1234cs,5,r0{},p:read,gamma,r5{},2,c:0,t:table,r2{},p:toupper,r0{},alpha,p:messtest,f:%stderr,6.116e+19,p:listtest,gamma,p:main,3,m:pop,L:151]
+key="0cs" [,0cs,4.4,2.2,a,~,t:number,p:wlist,epsilons,m:put,t:r0,delta,p:image,beta,T:0,L:0,p:write,123cs,L:2,-3.647e+19,p:image,7,f:%stdin,3.3,p:reverse,r1{},L:0,T:0,t:r5,r5{},~,c:0,5.5,,r2{},-2.737e+19,m:get,epsilon,L:3,r5{},t:r2,f:%stdout,4,~,1,r5{},t:r1,p:check,c:0,XYZcs,1.1,r1{},3.725e+19,m:push,1234cs,5,r0{},p:read,gamma,r5{},2,c:0,t:table,r2{},p:toupper,r0{},alpha,p:messtest,f:%stderr,6.116e+19,p:listtest,gamma,p:main,3,m:pop,L:152,,0cs,4.4,2.2,a,~,t:number,p:wlist,epsilons,m:put,t:r0,delta,p:image,beta,T:0,L:0,p:write,123cs,L:2,-3.647e+19,p:image,7,f:%stdin,3.3,p:reverse,r1{},L:0,T:0,t:r5,r5{},~,c:0,5.5,,r2{},-2.737e+19,m:get,epsilon,L:3,r5{},t:r2,f:%stdout,4,~,1,r5{},t:r1,p:check,c:0,XYZcs,1.1,r1{},3.725e+19,m:push,1234cs,5,r0{},p:read,gamma,r5{},2,c:0,t:table,r2{},p:toupper,r0{},alpha,p:messtest,f:%stderr,6.116e+19,p:listtest,gamma,p:main,3,m:pop]
 table{}
 table{}
 table{}

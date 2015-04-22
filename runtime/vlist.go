@@ -92,7 +92,7 @@ func (a *VList) Before(x Value, i int) bool {
 		bref := &vListRef{b, i}
 		return LT(aref.Deref(), bref.Deref(), -1)
 	} else {
-		// put missing one first; otherwise #%#% we don't care
+		// put missing one first; otherwise we don't care (order is undefined)
 		return len(a.data) < len(b.data)
 	}
 }

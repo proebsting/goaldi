@@ -1,7 +1,6 @@
 //  fstrmap.go -- string mapping function
 
-//#%#% initially naive.  no caching.  many opportunities for optimization here.
-//#%#% might want to have a separate proc for creating a mapping table.
+//  This is naive, with no caching and many opportunities for optimization.
 
 package runtime
 

@@ -58,7 +58,7 @@ func (a *VRecord) Before(x Value, i int) bool {
 		// both sides have an item i
 		return LT(a.Data[i], b.Data[i], -1)
 	} else {
-		// put missing one first; otherwise #%#% we don't care
+		// put missing one first; otherwise we don't care (order is undefined)
 		return len(a.Data) < len(b.Data)
 	}
 }

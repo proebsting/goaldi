@@ -138,7 +138,6 @@ func main() {
 	}
 
 	// run the sequence of initialization procedures
-	//#%#% each call to Run resets a clean environment. is that valid?
 	babble("running initializers")
 	dlist.RunAll()                // global initializers as reordered
 	for _, ip := range InitList { // initial{} blocks in lexical order

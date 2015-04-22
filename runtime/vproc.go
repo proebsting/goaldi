@@ -100,7 +100,6 @@ func (v *VProcedure) Import() Value {
 }
 
 //  VProcedure.Export returns the underlying function
-//  (#%#% at least for now. should we wrap it somehow?)
 func (v *VProcedure) Export() interface{} {
 	return v.GdProc
 }
@@ -274,7 +273,7 @@ func passfunc(t reflect.Type) func(Value) reflect.Value {
 			}
 			return reflect.ValueOf(b)
 		}
-	case reflect.Interface: // #%#% this assumes interface{}; should check
+	case reflect.Interface:
 		// use default conversion
 		break
 	default:

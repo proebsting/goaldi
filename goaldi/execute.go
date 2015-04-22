@@ -70,8 +70,8 @@ func execute(f *pr_frame, label string) (rv g.Value, rc *g.Closure) {
 					t := fmt.Sprintf("%T", insn)[6:]
 					fmt.Printf("[%d]    %s %v\n", f.env.ThreadID, t, insn)
 				}
-				f.coord = "" //#%#% prudent, but s/n/b needed
-				f.offv = nil //#%#% prudent, but s/n/b needed
+				f.coord = "" // unnecessary but prudent
+				f.offv = nil // unnecessary but prudent
 				switch i := insn.(type) {
 				default: // incl ScanSwap, Assign, Deref, Unreachable
 					panic(g.Malfunction(fmt.Sprintf(
@@ -212,9 +212,9 @@ func execute(f *pr_frame, label string) (rv g.Value, rc *g.Closure) {
 					panic(g.Malfunction(
 						"IndirectGoto: unlisted label: " + label))
 				case ir.Ir_MakeClosure:
-					//#%#% potential later optimization:
-					//#%#% only pass in *referenced* variables
-					//#%#% so that the remainder can get garbage collected
+					// potential future optimization:
+					// only pass in *referenced* variables
+					// so that the remainder can get garbage collected
 					f.temps[i.Lhs] = irProcedure(ProcTable[i.Name], f.vars)
 				case ir.Ir_OpFunction:
 					f.coord = i.Coord
@@ -319,8 +319,6 @@ func getArgs(f *pr_frame, nd int, arglist []interface{}) []g.Value {
 }
 
 //  irSelect -- execute select statement, returning label of chosen body
-//  #%#% most of this should be moved to runtime package
-//  #%#% (set up some data structures here and call that)
 func irSelect(f *pr_frame, irs ir.Ir_Select) string {
 
 	// set up data structures for reflect.Select

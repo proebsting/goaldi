@@ -224,7 +224,7 @@ procedure optim_rewrite(p, rename) {
 			}
 			p.failLabel := optim_rename(\p.failLabel, rename);
 			}
-		ir_Select :  {	#%#% untested
+		ir_Select :  {
 			p.failLabel := optim_rename(\p.failLabel, rename);
 			every sc := !p.caseList do {
 				sc.lhs := optim_rename(\sc.lhs, rename);

@@ -8,7 +8,7 @@
 record lex_tkrec (
 	text,		# actual or canonicalized form of the source token
 	flags,		# beginning and/or ending flags
-	coord,		# coordinate in source code (#%#% TO BE DONE)
+	coord,		# coordinate in source code (future)
 )
 
 

@@ -2,17 +2,6 @@
 //
 //  In general:  Files can be passed to Go I/O functions.
 //  Goaldi I/O functions panic on error; Go functions return a status code.
-//
-//  #%#% TO DO:
-//
-//  add random I/O  (same as Icon? including seek/where offsets?)
-//  add directory reading?
-//
-//  implement flags for file(), including new ones:
-//		m	memory file, implies r/w, buffer in memory (not on disk)
-//		s	scratch file, implies r/w, alter name randomly, delete after open
-//
-//  add methods???
 
 package runtime
 
@@ -307,7 +296,7 @@ func Wrt(v Value, between []byte, atEnd []byte, args []Value) (Value, *Closure) 
 		Ock(fmt.Fprint(f, v))
 	}
 	Ock(f.Write(atEnd))
-	Ock(0, f.Flush()) // #%#% seems necessary; should it be?
+	Ock(0, f.Flush()) // seems to be necessary
 	return Return(f)
 }
 
