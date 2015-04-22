@@ -15,11 +15,12 @@ global optlist := [
 	optf("-D", "dump Go stack on panic"),
 	optf("-E", "show initial environment"),
 	optf("-G", "compile to file.go (SECRET)"),
+	optf("-I", "trace initialization ordering"),
 	optf("-N", "inhibit optimization"),
 	optf("-P", "produce ./PROFILE file (Linux)"),
 	optf("-T", "trace IR instruction execution"),
 ]
-global gxopts := "ltADEPT"	# options passed to goaldi interpreter
+global gxopts := "ltADEIPT"	# options passed to goaldi interpreter
 
 
 #  main program -- see code above for usage 

@@ -118,7 +118,7 @@ func main() {
 		dlist.Add(q+gi.Name, p, uses)
 	}
 	// reorder the list for dependencies
-	err := dlist.Reorder(opt_trace)
+	err := dlist.Reorder(opt_init)
 	if err != nil {
 		abort(fmt.Sprintf("fatal   %v\n", err))
 	}
