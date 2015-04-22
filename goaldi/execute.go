@@ -219,10 +219,11 @@ func execute(f *pr_frame, label string) (rv g.Value, rc *g.Closure) {
 				case ir.Ir_OpFunction:
 					f.coord = i.Coord
 					v, c := operator(f.env, f, &i)
+					if i.Rval != "" && v != nil { // if an rval is required
+						v = g.Deref(v) // then make sure we have one
+						// note v can be set nil by failing Deref
+					}
 					if v != nil {
-						if i.Rval != "" { // if an rval is required
-							v = g.Deref(v) // then make sure we have one
-						}
 						if i.Lhs != "" {
 							f.temps[i.Lhs] = v
 						}
@@ -305,7 +306,8 @@ func getArgs(f *pr_frame, nd int, arglist []interface{}) []g.Value {
 			// nothing to do: use entry as is
 		}
 		if a == nil {
-			panic(g.Malfunction("Go nil in getArgs()"))
+			panic(g.Malfunction(
+				fmt.Sprintf("Go nil in getArgs(): i=%d %#v", i, arglist[i])))
 		}
 		if i < nd {
 			argl[i] = a.(g.Value)

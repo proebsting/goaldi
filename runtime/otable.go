@@ -113,8 +113,10 @@ func (t *vMapTrap) Deref() Value {
 	v := t.mapv.MapIndex(t.keyv)
 	if v.IsValid() {
 		return Import(v.Interface()) // identity function for VTable values
-	} else {
+	} else if t.dfval != nil {
 		return t.dfval // not found in map
+	} else {
+		return nil // fail: no default value for Go Maps
 	}
 }
 
