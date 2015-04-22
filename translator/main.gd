@@ -12,6 +12,7 @@ global optlist := [
 	optf("-l", "load and link but do not execute"),
 	optf("-t", "show CPU timings"),
 	optf("-v", "issue verbose commentary"),
+	optf("-A", "dump assembly listing to stdout before execution"),
 	optf("-D", "dump Go stack on panic"),
 	optf("-E", "show initial environment"),
 	optf("-G", "compile to file.go (EXPERIMENTAL)"),
@@ -19,7 +20,7 @@ global optlist := [
 	optf("-P", "produce ./PROFILE file (Linux)"),
 	optf("-T", "trace IR instruction execution"),
 ]
-global gxopts := "ltvDEPT"	# options passed to goaldi interpreter
+global gxopts := "ltvADEPT"	# options passed to goaldi interpreter
 
 
 #  main program -- see code above for usage 
@@ -34,7 +35,7 @@ procedure main(args[]) {
 	every ^c := !gxopts do {
 		if \opts[c] then gxargs.put("-" || c)
 	}
-	if /opts["c"] & /opts["a"] & /opts["g"] then {
+	if /opts["c"] & /opts["a"] & /opts["G"] then {
 		gxargs.put("-#")		# delete temp files after loading
 	}
 	if \opts["t"] then {
