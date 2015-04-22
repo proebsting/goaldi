@@ -50,7 +50,7 @@ procedure testset(label, S) {
 	L := []
 	S2 := set()
 	while *S2 < *S do
-		S2.insert(?S)
+		S2.put(?S)
 	cksame("?S", S, S2)
 }
 

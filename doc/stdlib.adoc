@@ -388,8 +388,9 @@ image(x) returns a string image of x. This is the same conversion
 applied by sprintf("%#v",x) and is typically more verbose and detailed
 than the result of string(x).
 
-S.insert(x[]) -- add members::
-S.insert(x...) adds all its arguments to set S. It returns S.
+S.insert(x[]) -- add members [DEPRECATED]::
+S.insert(x...) [DEPRECATED] adds all its arguments to set S. It returns
+the set S. The preferred form is now S.put(x...) or S @: x.
 
 x.instanceof(t) -- check type relationship::
 x.instanceof(t) returns x if x is an instance of type t; otherwise the
@@ -546,7 +547,7 @@ L.put(x...) adds its arguments, in order, to the end of list L. The last
 argument becomes the final element of L.
 
 S.put(x[]) -- add members::
-S.put(x...) adds all its arguments to set S. It returns S.
+S.put(x...) adds all its arguments to set S. It returns the set S.
 
 qmean(n[]) -- compute quadratic mean::
 qmean(n,...) returns the quadratic mean, or root mean square, of its

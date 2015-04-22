@@ -857,7 +857,7 @@ procedure ir_a_ProcDecl0(p, st) {
 		if v.member(i.id) then {
 			semantic_error(image(i.id) || ": Redeclared identifier", i.coord)
 		}
-		v.insert(i.id)
+		v.put(i.id)
 		s := i.id || mkSuffix(st.syms)
 		st.syms.Static[i.id] := s
 		params.put(s)
@@ -866,7 +866,7 @@ procedure ir_a_ProcDecl0(p, st) {
 		semantic_error(image(p.ident.id) || ": Inconsistent redeclaration",
 					   p.ident.coord)
 	}
-	ir_declare_set.insert(p.ident.id)
+	ir_declare_set.put(p.ident.id)
 
 	f := ir_a_ProcDecl1(st, p.code, params, p.accumulate, p.ident.coord)
 	st.syms := st.syms.parent	# this is very odd, why is it here?
@@ -919,13 +919,13 @@ procedure ir_a_Record(p, st, target, bounded, rval) {
 		semantic_error(image(p.ident.id) || ": Inconsistent redeclaration",
 					   p.ident.coord)
 	}
-	ir_declare_set.insert(p.ident.id)
+	ir_declare_set.put(p.ident.id)
 	v := set([])
 	every i := !p.idlist do {
 		if v.member(i.id) then {
 			semantic_error(image(i.id) || ": Redeclared identifier", i.coord)
 		}
-		v.insert(i.id)
+		v.put(i.id)
 	}
 	fields := []
 	every fields.put((!p.idlist).id)
@@ -1143,7 +1143,7 @@ procedure ir_a_Local(p, st, target, bounded, rval) {
 	s := p.id || mkSuffix(st.syms)
 
 	st.syms.Static[p.id] := s
-	st.localSet.insert(s)
+	st.localSet.put(s)
 	suspend ir_a_Ident(p, st, target, bounded, rval)
 }
 
@@ -1158,7 +1158,7 @@ procedure ir_a_Static(p, st, target, bounded, rval) {
 	s := p.id || mkSuffix(st.syms)
 	st.syms.Static[p.id] := s
 
-	st.staticSet.insert(s)
+	st.staticSet.put(s)
 	suspend ir_a_Ident(p, st, target, bounded, rval)
 }
 
@@ -1240,7 +1240,7 @@ procedure ir_lookupS(st, name) {
 		if s := \(\syms.Static)[name] then return syms
 		syms := syms.parent
 	}
-	st.globalSet.insert(name)
+	st.globalSet.put(name)
 	return nil
 }
 
@@ -1263,7 +1263,7 @@ procedure ir_a_Ident(p, st, target, bounded, rval) {
 	} else {
 		type(p.namespace) === string | throw("namespace not string", p)
 		s := p.id
-		st.globalSet.insert(p.namespace || "::" || p.id)
+		st.globalSet.put(p.namespace || "::" || p.id)
 	}
 
 	suspend ir_chunk(p.ir.start, [

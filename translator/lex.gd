@@ -385,7 +385,7 @@ procedure lex_opr(str, flags) {
 procedure lex_token(str, flags) {
 	^r := lex_tag(str)
 	if flags[-1] == "e" then {
-		lex_enders.insert(r)
+		lex_enders.put(r)
 	}
 	return r
 }

@@ -11,11 +11,11 @@ procedure main() {
 	write(type(x))
 	write(image(?x))			# should fail
 	write(image(x.member()))	# should fail
-	wset("insert", x.insert(nil))
+	wset("put", x.put(nil))
 	write(image(?x))			# should write nil
 	write(image(x.member()))	# should write nil
 	write(image(x.member(3)))	# should write nil
-	wset("insert", x.insert())
+	wset("put", x.put())
 	wset("delete", x.delete())
 	wset("delete", x.delete())
 	write()
@@ -31,18 +31,18 @@ procedure main() {
 	write()
 
 	wset("empty", x := set(nil))
-	wset("+ 1", x.insert(1))	# only inserts 1
-	wset("+ 2", x.insert(2))
-	wset("+ c", x.insert("c"))
+	wset("+ 1", x.put(1))	# only inserts 1
+	wset("+ 2", x.put(2))
+	wset("+ c", x.put("c"))
 	wset("- 3", x.delete(3))		# deletes nothing
 	wset("- 1", x.delete(1))		# only deletes 1
 	wset("- 1", x.delete(1))
-	wset("+ 2", x.insert(2))
-	wset("+ 1", x.insert(1))
-	wset("+ 7.0", x.insert(7.0))
-	wset("+ 7.0", x.insert(7.0))
-	wset(`+ "cs"`, x.insert("cs"))
-	wset(`+ "cs"`, x.insert("cs"))
+	wset("+ 2", x.put(2))
+	wset("+ 1", x.put(1))
+	wset("+ 7.0", x.put(7.0))
+	wset("+ 7.0", x.put(7.0))
+	wset(`+ "cs"`, x.put("cs"))
+	wset(`+ "cs"`, x.put("cs"))
 	wset("x =", x)
 	write()
 
@@ -53,15 +53,15 @@ procedure main() {
 	wset("x -- y", x -- y)
 	write()
 
-	every (z := set()).insert(!y)
+	every (z := set()).put(!y)
 	wset("z from !y", z)
 
 	write()
 	x := set([3,1,4,1,5,9,2,6,5,3,5])
 	y := copy(x)
 	x.delete(4)
-	x.insert(7)
-	y.insert(0)
+	x.put(7)
+	y.put(0)
 	y.delete(1)
 	wset("x", x)
 	wset("y", y)

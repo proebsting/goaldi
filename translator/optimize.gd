@@ -312,7 +312,7 @@ procedure optim_goto_chain(lab, t) {
 			type(chunk[1]) === ir_Goto &
 			not seen.member(chunk[1].targetLabel) do {
 		lab := chunk[1].targetLabel
-		seen.insert(lab)
+		seen.put(lab)
 	}
 	return lab
 }

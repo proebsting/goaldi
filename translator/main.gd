@@ -132,7 +132,7 @@ procedure gexec(arglist, stdout) {
 procedure getopts(args, optlist) {
 	^allowed := set()
 	every ^o := !optlist do {
-		allowed.insert(o.flag[2])
+		allowed.put(o.flag[2])
 	}
 	^seen := table()
 	while args[1][1] == "-" do {

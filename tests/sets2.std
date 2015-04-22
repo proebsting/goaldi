@@ -1,9 +1,9 @@
      empty : 0 :
 t:set
-    insert : 1 : nil
+       put : 1 : nil
 nil
 nil
-    insert : 1 : nil
+       put : 1 : nil
     delete : 1 : nil
     delete : 1 : nil
 
