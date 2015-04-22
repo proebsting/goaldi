@@ -23,8 +23,8 @@ global curlist := []			# current entry being accumulated
 #  main logic
 
 procedure main(ename, gname) {
-	local e := open(ename)
-	local g := open(gname)
+	local e := file(ename)
+	local g := file(gname)
 	loaddoc(g)
 	gendoc(e)
 }

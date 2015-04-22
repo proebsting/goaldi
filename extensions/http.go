@@ -3,7 +3,7 @@
 //  This extension adds a few random operations for dealing with HTTP files.
 //  It is illustrative but incomplete.
 //
-//  htopen() opens a URL for reading as a file.
+//  htfile() opens a URL for reading as a file.
 //  htget() is similar but returns a pointer to an http.Response struct.
 //  This can be queried to read the headers as well as the body.
 //  htpost() posts a form and returns the response struct for inspection.
@@ -19,14 +19,14 @@ import (
 
 //  declare new procedures for use from Goaldi
 func init() {
-	g.GoLib(htopen, "htopen", "url", "open URL and return file")
+	g.GoLib(htfile, "htfile", "url", "open URL and return file")
 	g.GoLib(htget, "htget", "url", "get URL and return response")
 	g.GoLib(htpost, "htpost", "url,name,kv[]", "post form and return response")
 }
 
-//  htopen(url) returns a file for reading the body of a web file.
+//  htfile(url) returns a file for reading the body of a web file.
 //  It returns nil if the URL cannot be opened.
-func htopen(u string) io.Reader {
+func htfile(u string) io.Reader {
 	resp, err := http.Get(u)
 	if err != nil {
 		return nil

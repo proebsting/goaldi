@@ -287,7 +287,7 @@ returning an array of substrings of s or an empty list if s contains
 only white space.
 
 file(name,flags) -- open a file::
-open(name,flags) opens a file and returns a file value.
+file(name,flags) opens a file and returns a file value.
 +
 Each character of the optional flags argument selects an option:
 +
@@ -491,15 +491,8 @@ stringable) arguments, number() trims leading and trailing spaces and
 then accepts standard Go decimal forms (fixed and floating) or Goaldi
 radix forms (101010b, 52o, 2Ax, 23r1J).
 
-open(name,flags) -- open a file::
-open(name,flags) opens a file and returns a file value.
-+
-Each character of the optional flags argument selects an option:
-+
-	"r"	open for reading
-	"w"	open for writing
-	"a"	open for appending
-	"f"	fail on error (instead of panicking)
+open(name,flags) -- open a file [DEPRECATED]::
+open(name,flags) [DEPRECATED] calls file(name,flags).
 
 ord(s) -- return Unicode ordinal of single character::
 ord(s) returns the Unicode value corresponding to the one-character

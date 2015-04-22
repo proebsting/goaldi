@@ -8,7 +8,7 @@
 //  add random I/O  (same as Icon? including seek/where offsets?)
 //  add directory reading?
 //
-//  implement flags for open(), including new ones:
+//  implement flags for file(), including new ones:
 //		m	memory file, implies r/w, buffer in memory (not on disk)
 //		s	scratch file, implies r/w, alter name randomly, delete after open
 //
@@ -43,7 +43,7 @@ var FileMethods = MethodTable([]*VProcedure{
 //  Declare procedures
 func init() {
 	// Goaldi procedures
-	DefLib(Open, "open", "name,flags", "open a file")
+	DefLib(Open, "open", "name,flags", "open a file [DEPRECATED]")
 	DefLib(Read, "read", "f", "read one line from a file")
 	DefLib(Write, "write", "x[]", "write values and newline")
 	DefLib(Writes, "writes", "x[]", "write values")
@@ -69,15 +69,15 @@ var spByte = []byte(" ")
 var nlByte = []byte("\n")
 var dflt_open = NewString("r")
 
-//	open(name,flags) opens a file and returns a file value.
+//	file(name,flags) opens a file and returns a file value.
 //
 //	Each character of the optional flags argument selects an option:
 //		"r"	open for reading
 //		"w"	open for writing
 //		"a"	open for appending
 //		"f"	fail on error (instead of panicking)
-func Open(env *Env, args ...Value) (Value, *Closure) {
-	defer Traceback("open", args)
+func File(env *Env, args ...Value) (Value, *Closure) {
+	defer Traceback("file", args)
 
 	name := ProcArg(args, 0, NilValue).(Stringable).ToString().String()
 	flags := ProcArg(args, 1, dflt_open).(Stringable).ToString().String()
@@ -139,6 +139,12 @@ func Open(env *Env, args ...Value) (Value, *Closure) {
 		writer = nil
 	}
 	return Return(NewFile(name, reader, writer, f))
+}
+
+//  open(name,flags) [DEPRECATED] calls file(name,flags).
+func Open(env *Env, args ...Value) (Value, *Closure) {
+	defer Traceback("open", args)
+	return File(env, args...)
 }
 
 //  f.flush() flushes output on file f.

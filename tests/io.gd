@@ -13,7 +13,7 @@ procedure main() {
 	every write("d. ", !%stdin \ 3)
 
 	# open and read, including binary
-	f := open("io.dat")
+	f := file("io.dat")
 	write("e. ", @f)
 	write("f. ", !f)
 	write("g. ", f.read())
@@ -30,7 +30,7 @@ procedure main() {
 
 	# open and write, including binary writes to make CRLF and raw CR
 	write()
-	f := open("io1.tmp", "w")
+	f := file("io1.tmp", "w")
 	f.write("first line normal")
 	f.write("raw\r    CR embedded in this line")
 	f.writes("line ending in CRLF\r\n")
@@ -51,30 +51,30 @@ procedure main() {
 	f.close()
 
 	# read back that file as normal text
-	f := open("io1.tmp")
+	f := file("io1.tmp")
 	while show(@f)
 	f.close()
 
 	# read back that file in binary
 	# (non-ASCII chars look strange because UTF-8 is not decoded)
 	write()
-	f := open("io1.tmp")
+	f := file("io1.tmp")
 	show(f.readb(1000))
 	f.close()
 
 	# test failure to open
-	open("/no/such/file/exists", "f") | write("[open failed as expected]")
+	file("/no/such/file/exists", "f") | write("[open failed as expected]")
 
 	# test bidirectional appending I/O
 	write()
-	open("io2.tmp", "w").write("abcde\nfghij").close()
-	f := open("io2.tmp", "rwa")
+	file("io2.tmp", "w").write("abcde\nfghij").close()
+	f := file("io2.tmp", "rwa")
 	write("skip: ", @f)
 	f.write("klmno")
 	write("skip: ", @f)
 	f.write("pqrst")
 	f.close()
-	f := open("io2.tmp")
+	f := file("io2.tmp")
 	every write("reread: ", !f)
 	f.close()
 

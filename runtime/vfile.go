@@ -1,9 +1,7 @@
 //  vfile.go -- VFile, the Goaldi type "file"
 //
-//  A Goaldi file is produced by open().
-//  It implements io.ReadWriteCloser so that it can be passed to Go funcs.
-//
-//  NOTE:  Read and Write in here are Go methods, not Goaldi procedures.
+//  A Goaldi file is produced by file(), which replaces open().
+//  A file implements io.ReadWriteCloser so that it can be passed to Go funcs.
 
 //  #%#% Do we need to register all files in order to flush them on exit?
 
@@ -34,8 +32,7 @@ type VFile struct {
 	Closer io.Closer     // closer
 }
 
-//  The global named "file" uses "open" as its constructor	#%#%#%
-var FileType = NewType("file", "f", rFile, Open, FileMethods,
+var FileType = NewType("file", "f", rFile, File, FileMethods,
 	"file", "name,flags", "open a file")
 
 //  NewFile(name, reader, writer, closer) -- construct new Goaldi file

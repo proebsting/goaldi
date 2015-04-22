@@ -4,8 +4,8 @@ procedure main(url1, url2) {
 	/url1 := "http://www.cs.arizona.edu"
 	/url2 := "http://httpbin.org/post"
 
-	# url1 using htopen
-	showfile(url1, htopen(url1))
+	# url1 using htfile
+	showfile(url1, htfile(url1))
 
 	# url1 using htget
 	local r := htget(url1)
