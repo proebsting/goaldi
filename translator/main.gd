@@ -15,7 +15,7 @@ global optlist := [
 	optf("-A", "dump assembly listing to stdout before execution"),
 	optf("-D", "dump Go stack on panic"),
 	optf("-E", "show initial environment"),
-	optf("-G", "compile to file.go (EXPERIMENTAL)"),
+	optf("-G", "compile to file.go (SECRET)"),
 	optf("-N", "inhibit optimization"),
 	optf("-P", "produce ./PROFILE file (Linux)"),
 	optf("-T", "trace IR instruction execution"),
@@ -158,7 +158,9 @@ procedure getopts(args, optlist) {
 procedure usage() {
 	%stderr.write("Usage: ", USAGE)
 	every ^o := !optlist do {
-		%stderr.write("  ", o.flag, "  ", o.meaning)
+		if not !!contains(o.meaning, "SECRET") then {
+			%stderr.write("  ", o.flag, "  ", o.meaning)
+		}
 	}
 	exit(1)
 }
