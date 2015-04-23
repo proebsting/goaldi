@@ -34,14 +34,14 @@ boot:
 	cd translator; $(MAKE) boot
 	go install $(PROGS)
 
-#  full three-pass bootstrap process
+#  full three-pass rebuild using bootstrapping from old stable front end
 full:
 	#
 	# make an executable that embeds an old version of the front end
 	#
 	cd translator; $(MAKE) boot
-	go install $(PROGS)
 	cd runtime; go test
+	go install $(PROGS)
 	cd tests; $(MAKE) quick
 	#
 	# make an executable embedding the latest front end, built by the old one
@@ -54,10 +54,12 @@ full:
 	#
 	cd translator; $(MAKE) clean; $(MAKE) GEN=2 gtran.go
 	go install $(PROGS)
+	$(MAKE) doc
 	cd tests; $(MAKE) quick
 	#
-	# looks like a keeper.
+	# looks good in quick tests; now run full suite
 	#
+	$(MAKE) test
 
 #  extract stdlib documentation from the Goaldi binary
 doc:	.FORCE
