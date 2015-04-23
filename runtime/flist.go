@@ -25,7 +25,7 @@ var ListMethods = MethodTable([]*VProcedure{
 //  with each element initialized to a copy of x.
 func List(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("list", args)
-	n := int(ProcArg(args, 0, ZERO).(Numerable).ToNumber().Val())
+	n := int(FloatVal(ProcArg(args, 0, ZERO)))
 	x := ProcArg(args, 1, NilValue)
 	return Return(NewList(n, x))
 }
@@ -82,7 +82,7 @@ func (v *VList) Shuffle(args ...Value) (Value, *Closure) {
 //  The value i defaults to 1 and must be strictly positive.
 func (v *VList) Sort(args ...Value) (Value, *Closure) {
 	defer Traceback("sort", args)
-	i := int(ProcArg(args, 0, ONE).(Numerable).ToNumber().Val()) - 1
+	i := int(FloatVal(ProcArg(args, 0, ONE))) - 1
 	if i < 0 {
 		panic(NewExn("Nonpositive field index", args[0]))
 	}

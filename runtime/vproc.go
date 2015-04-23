@@ -283,8 +283,7 @@ func passfunc(t reflect.Type) func(Value) reflect.Value {
 				if reflect.TypeOf(v).ConvertibleTo(t) {
 					return reflect.ValueOf(v).Convert(t)
 				} else {
-					return reflect.ValueOf(
-						v.(Numerable).ToNumber().Val()).Convert(t)
+					return reflect.ValueOf(FloatVal(v)).Convert(t)
 				}
 			}
 		}

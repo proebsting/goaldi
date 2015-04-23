@@ -83,11 +83,10 @@ func ErrResult(env *Env, args ...Value) (Value, *Closure) {
 //  sleep(n) delays execution for n seconds, which may be a fractional value.
 func Sleep(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("sleep", args)
-	v := ProcArg(args, 0, ONE).(Numerable).ToNumber()
-	n := v.Val()
+	n := FloatVal(ProcArg(args, 0, ONE))
 	d := time.Duration(n * float64(time.Second))
 	time.Sleep(d)
-	return Return(v)
+	return Return(d)
 }
 
 //  date() returns the current date in the form "yyyy/mm/dd".
@@ -155,7 +154,7 @@ func CPUtime(env *Env, args ...Value) (Value, *Closure) {
 //  A status of 0 signifies normal termination.
 func Exit(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("exit", args)
-	Shutdown(int(ProcArg(args, 0, ZERO).(Numerable).ToNumber().Val()))
+	Shutdown(int(FloatVal(ProcArg(args, 0, ZERO))))
 	return Fail() // NOTREACHED
 }
 

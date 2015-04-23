@@ -79,6 +79,17 @@ var (
 	PHI  = NewNumber(math.Phi)
 )
 
+//  FloatVal(x) -- return float64 value after converting x.
+//  Equivalent to x.(Numerable).ToNumber().Val() but with better error report.
+func FloatVal(x Value) float64 {
+	defer func() {
+		if recover() != nil {
+			panic(NewExn("Number expected", x))
+		}
+	}()
+	return x.(Numerable).ToNumber().Val()
+}
+
 //  VNumber.Val -- return underlying float64 value
 func (v *VNumber) Val() float64 {
 	return float64(*v)

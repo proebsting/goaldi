@@ -81,7 +81,7 @@ func (T *VTable) Sort(args ...Value) (Value, *Closure) {
 //  GoMapSort(T, i) produces [:!T:].sort(i)
 func GoMapSort(T Value, args ...Value) (Value, *Closure) {
 	defer Traceback("T.sort", args)
-	i := ProcArg(args, 0, ONE).(Numerable).ToNumber()
+	p := ProcArg(args, 0, ONE)
 	mv := reflect.ValueOf(T)
 	klist := mv.MapKeys()
 	vlist := make([]Value, mv.Len())
@@ -90,5 +90,5 @@ func GoMapSort(T Value, args ...Value) (Value, *Closure) {
 		v := Import(mv.MapIndex(kv).Interface())
 		vlist[i] = ElemType.New([]Value{k, v})
 	}
-	return InitList(vlist).Sort(i)
+	return InitList(vlist).Sort(p)
 }

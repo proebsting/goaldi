@@ -65,15 +65,12 @@ func (v *VNumber) Call(env *Env, args []Value, names []string) (Value, *Closure)
 
 //  ToBy -- implement "e1 to e2 by e3"
 func ToBy(e1 Value, e2 Value, e3 Value) (Value, *Closure) {
-	n1 := e1.(Numerable).ToNumber()
-	n2 := e2.(Numerable).ToNumber()
-	n3 := e3.(Numerable).ToNumber()
-	if *n3 == 0 {
+	v1 := FloatVal(e1)
+	v2 := FloatVal(e2)
+	v3 := FloatVal(e3)
+	if v3 == 0 {
 		panic(NewExn("ToBy: bad increment", e3))
 	}
-	v1 := *n1
-	v2 := *n2
-	v3 := *n3
 	v1 -= v3
 	var f *Closure
 	f = &Closure{func() (Value, *Closure) {

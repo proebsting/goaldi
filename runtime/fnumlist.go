@@ -20,9 +20,9 @@ func init() {
 //  min(n, ...) returns the smallest of its arguments.
 func Min(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("min", args)
-	v := ProcArg(args, 0, NilValue).(Numerable).ToNumber().Val()
+	v := FloatVal(ProcArg(args, 0, NilValue))
 	for i := 1; i < len(args); i++ {
-		vi := args[i].(Numerable).ToNumber().Val()
+		vi := FloatVal(args[i])
 		if vi < v {
 			v = vi
 		}
@@ -33,9 +33,9 @@ func Min(env *Env, args ...Value) (Value, *Closure) {
 //  max(n, ...) returns the largest of its arguments.
 func Max(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("max", args)
-	v := ProcArg(args, 0, NilValue).(Numerable).ToNumber().Val()
+	v := FloatVal(ProcArg(args, 0, NilValue))
 	for i := 1; i < len(args); i++ {
-		vi := args[i].(Numerable).ToNumber().Val()
+		vi := FloatVal(args[i])
 		if vi > v {
 			v = vi
 		}
@@ -49,12 +49,12 @@ func Max(env *Env, args ...Value) (Value, *Closure) {
 //  gcd() returns zero if all values are zero.
 func GCD(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("gcd", args)
-	a := int(ProcArg(args, 0, NilValue).(Numerable).ToNumber().Val())
+	a := int(FloatVal(ProcArg(args, 0, NilValue)))
 	if a < 0 {
 		a = -a
 	}
 	for i := 1; i < len(args); i++ {
-		b := int(args[i].(Numerable).ToNumber().Val())
+		b := int(FloatVal(args[i]))
 		if b < 0 {
 			b = -b
 		}
@@ -69,9 +69,9 @@ func GCD(env *Env, args ...Value) (Value, *Closure) {
 //  of its arguments.
 func Amean(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("amean", args)
-	t := ProcArg(args, 0, NilValue).(Numerable).ToNumber().Val()
+	t := FloatVal(ProcArg(args, 0, NilValue))
 	for i := 1; i < len(args); i++ {
-		t += ProcArg(args, i, NilValue).(Numerable).ToNumber().Val()
+		t += FloatVal(ProcArg(args, i, NilValue))
 	}
 	return Return(NewNumber(float64(t) / float64(len(args))))
 }
@@ -80,12 +80,12 @@ func Amean(env *Env, args ...Value) (Value, *Closure) {
 //  which must all be strictly positive.
 func Gmean(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("gmean", args)
-	p := ProcArg(args, 0, NilValue).(Numerable).ToNumber().Val()
+	p := FloatVal(ProcArg(args, 0, NilValue))
 	if p <= 0 {
 		panic(NewExn("Nonpositive argument", p))
 	}
 	for i := 1; i < len(args); i++ {
-		v := ProcArg(args, i, NilValue).(Numerable).ToNumber().Val()
+		v := FloatVal(ProcArg(args, i, NilValue))
 		if v <= 0 {
 			panic(NewExn("Nonpositive argument", v))
 		}
@@ -98,13 +98,13 @@ func Gmean(env *Env, args ...Value) (Value, *Closure) {
 //  which must all be strictly positive.
 func Hmean(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("hmean", args)
-	v := ProcArg(args, 0, NilValue).(Numerable).ToNumber().Val()
+	v := FloatVal(ProcArg(args, 0, NilValue))
 	if v <= 0 {
 		panic(NewExn("Nonpositive argument", v))
 	}
 	t := 1 / v
 	for i := 1; i < len(args); i++ {
-		v = ProcArg(args, i, NilValue).(Numerable).ToNumber().Val()
+		v = FloatVal(ProcArg(args, i, NilValue))
 		if v <= 0 {
 			panic(NewExn("Nonpositive argument", v))
 		}
@@ -117,10 +117,10 @@ func Hmean(env *Env, args ...Value) (Value, *Closure) {
 //  of its arguments.
 func Qmean(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("qmean", args)
-	v := ProcArg(args, 0, NilValue).(Numerable).ToNumber().Val()
+	v := FloatVal(ProcArg(args, 0, NilValue))
 	t := v * v
 	for i := 1; i < len(args); i++ {
-		v = ProcArg(args, i, NilValue).(Numerable).ToNumber().Val()
+		v = FloatVal(ProcArg(args, i, NilValue))
 		t += v * v
 	}
 	return Return(NewNumber(math.Sqrt(float64(t) / float64(len(args)))))

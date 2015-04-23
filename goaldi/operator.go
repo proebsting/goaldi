@@ -168,8 +168,8 @@ func init() {
 //  deltaSlice handles x[i+:k] or x[i-:k] by calling x[i:j]
 func deltaSlice(lval g.Value, a []g.Value, sign int) (g.Value, *g.Closure) {
 	x := g.Deref(a[0]).(g.ISlice)
-	i := int(a[1].(g.Numerable).ToNumber().Val())
-	j := i + sign*int(a[2].(g.Numerable).ToNumber().Val())
+	i := int(g.FloatVal(a[1]))
+	j := i + sign*int(g.FloatVal(a[2]))
 	if (i > 0 && j <= 0) || (i <= 0 && j > 0) { // if wraparound
 		return nil, nil // fail
 	}

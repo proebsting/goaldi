@@ -135,7 +135,7 @@ func (c *VCtor) Lookup(x Value) (index int, isNumber bool) {
 		x = k
 	}
 	// not a string; must be a number, else throw error
-	i := int(x.(Numerable).ToNumber().Val())
+	i := int(FloatVal(x))
 	i = GoIndex(i, n)
 	if i < n {
 		return i, true // in range

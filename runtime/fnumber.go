@@ -70,9 +70,9 @@ func Number(env *Env, args ...Value) (Value, *Closure) {
 //  with increments of incr.
 func Seq(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("seq", args)
-	n1 := ProcArg(args, 0, ONE).(Numerable).ToNumber()
-	n2 := ProcArg(args, 1, ONE).(Numerable).ToNumber()
-	return ToBy(n1, INF, n2)
+	p1 := ProcArg(args, 0, ONE)
+	p2 := ProcArg(args, 1, ONE)
+	return ToBy(p1, INF, p2)
 }
 
 //  log(n, b) returns the logarithm of n to base b.
@@ -80,8 +80,8 @@ func Seq(env *Env, args ...Value) (Value, *Closure) {
 //  so log(n) returns the natural logarithm of n.
 func Log(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("log", args)
-	r1 := ProcArg(args, 0, NilValue).(Numerable).ToNumber().Val()
-	r2 := ProcArg(args, 1, E).(Numerable).ToNumber().Val()
+	r1 := FloatVal(ProcArg(args, 0, NilValue))
+	r2 := FloatVal(ProcArg(args, 1, E))
 	if r2 == math.E {
 		return Return(NewNumber(math.Log(r1)))
 	} else {
@@ -95,8 +95,8 @@ func Log(env *Env, args ...Value) (Value, *Closure) {
 //  http://golang.org/pkg/math/#Atan2[math.Atan2].
 func Atan(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("atan", args)
-	r1 := ProcArg(args, 0, NilValue).(Numerable).ToNumber().Val()
-	r2 := ProcArg(args, 1, ONE).(Numerable).ToNumber().Val()
+	r1 := FloatVal(ProcArg(args, 0, NilValue))
+	r2 := FloatVal(ProcArg(args, 1, ONE))
 	if r2 == 1.0 {
 		return Return(NewNumber(math.Atan(r1)))
 	} else {
@@ -129,37 +129,37 @@ func Randomize(env *Env, args ...Value) (Value, *Closure) {
 //  whose methods may be called from Goaldi to produce random values.
 func RandGen(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("randgen", args)
-	i := int64(ProcArg(args, 0, ZERO).(Numerable).ToNumber().Val())
+	i := int64(FloatVal(ProcArg(args, 0, ZERO)))
 	return Return(rand.New(rand.NewSource(i)))
 }
 
 //  dtor(d) returns the radian equivalent of the angle d given in degrees.
 func DtoR(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("dtor", args)
-	r := ProcArg(args, 0, NilValue).(Numerable).ToNumber().Val()
+	r := FloatVal(ProcArg(args, 0, NilValue))
 	return Return(NewNumber(r * math.Pi / 180.0))
 }
 
 //  rtod(r) returns the degree equivalent of the angle r given in radians.
 func RtoD(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("rtod", args)
-	r := ProcArg(args, 0, NilValue).(Numerable).ToNumber().Val()
+	r := FloatVal(ProcArg(args, 0, NilValue))
 	return Return(NewNumber(r * 180.0 / math.Pi))
 }
 
 //  iand(i, j) returns the bitwise AND of the values i and j truncated to integer.
 func IAnd(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("iand", args)
-	i := int64(ProcArg(args, 0, NilValue).(Numerable).ToNumber().Val())
-	j := int64(ProcArg(args, 1, NilValue).(Numerable).ToNumber().Val())
+	i := int64(FloatVal(ProcArg(args, 0, NilValue)))
+	j := int64(FloatVal(ProcArg(args, 1, NilValue)))
 	return Return(NewNumber(float64(i & j)))
 }
 
 //  ior(i, j) returns the bitwise OR of the values i and j truncated to integer.
 func IOr(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("ior", args)
-	i := int64(ProcArg(args, 0, NilValue).(Numerable).ToNumber().Val())
-	j := int64(ProcArg(args, 1, NilValue).(Numerable).ToNumber().Val())
+	i := int64(FloatVal(ProcArg(args, 0, NilValue)))
+	j := int64(FloatVal(ProcArg(args, 1, NilValue)))
 	return Return(NewNumber(float64(i | j)))
 }
 
@@ -167,8 +167,8 @@ func IOr(env *Env, args ...Value) (Value, *Closure) {
 //  of the values i and j truncated to integer.
 func IXor(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("ixor", args)
-	i := int64(ProcArg(args, 0, NilValue).(Numerable).ToNumber().Val())
-	j := int64(ProcArg(args, 1, NilValue).(Numerable).ToNumber().Val())
+	i := int64(FloatVal(ProcArg(args, 0, NilValue)))
+	j := int64(FloatVal(ProcArg(args, 1, NilValue)))
 	return Return(NewNumber(float64(i ^ j)))
 }
 
@@ -176,8 +176,8 @@ func IXor(env *Env, args ...Value) (Value, *Closure) {
 //  after truncating both arguments to integer.
 func IClear(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("iclear", args)
-	i := int64(ProcArg(args, 0, NilValue).(Numerable).ToNumber().Val())
-	j := int64(ProcArg(args, 1, NilValue).(Numerable).ToNumber().Val())
+	i := int64(FloatVal(ProcArg(args, 0, NilValue)))
+	j := int64(FloatVal(ProcArg(args, 1, NilValue)))
 	return Return(NewNumber(float64(i &^ j)))
 }
 
@@ -187,8 +187,8 @@ func IClear(env *Env, args ...Value) (Value, *Closure) {
 //  The arguments are both truncated to integer before operating.
 func IShift(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("ishift", args)
-	i := int64(ProcArg(args, 0, NilValue).(Numerable).ToNumber().Val())
-	j := int64(ProcArg(args, 1, NilValue).(Numerable).ToNumber().Val())
+	i := int64(FloatVal(ProcArg(args, 0, NilValue)))
+	j := int64(FloatVal(ProcArg(args, 1, NilValue)))
 	if j > 0 {
 		return Return(NewNumber(float64(i << uint(j))))
 	} else {
@@ -199,6 +199,6 @@ func IShift(env *Env, args ...Value) (Value, *Closure) {
 //  icom(i) truncates i to integer and returns its bitwise complement.
 func ICom(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("icom", args)
-	i := int64(ProcArg(args, 0, NilValue).(Numerable).ToNumber().Val())
+	i := int64(FloatVal(ProcArg(args, 0, NilValue)))
 	return Return(NewNumber(float64(^i)))
 }

@@ -29,7 +29,7 @@ var GoChanMethods = MethodTable([]*VProcedure{
 //  channel(size) creates and returns a new channel with the given buffer size.
 func Channel(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("channel", args)
-	i := int(ProcArg(args, 0, ZERO).(Numerable).ToNumber().Val())
+	i := int(FloatVal(ProcArg(args, 0, ZERO)))
 	return Return(NewChannel(i))
 }
 
@@ -132,7 +132,7 @@ func GoChanClose(c Value, args ...Value) (Value, *Closure) {
 //  before the channel c.
 func (c VChannel) Buffer(args ...Value) (Value, *Closure) {
 	defer Traceback("c.buffer", args)
-	i := int(ProcArg(args, 0, ONE).(Numerable).ToNumber().Val())
+	i := int(FloatVal(ProcArg(args, 0, ONE)))
 	r := NewChannel(i)
 	go func() {
 		for {

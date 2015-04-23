@@ -27,7 +27,7 @@ func OSArgs() []string {
 //  This bypasses the normal import mechanism that would make a Goaldi file.
 func OSFile(env *g.Env, args ...g.Value) (g.Value, *g.Closure) {
 	defer g.Traceback("osfile", args)
-	i := int(g.ProcArg(args, 0, g.ZERO).(g.Numerable).ToNumber().Val())
+	i := int(g.FloatVal(g.ProcArg(args, 0, g.ZERO)))
 	s := g.ProcArg(args, 1, g.EMPTY).(g.Stringable).ToString().ToUTF8()
 	switch i {
 	case 0:
