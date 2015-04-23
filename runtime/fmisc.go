@@ -154,7 +154,7 @@ func CPUtime(env *Env, args ...Value) (Value, *Closure) {
 //  A status of 0 signifies normal termination.
 func Exit(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("exit", args)
-	Shutdown(int(FloatVal(ProcArg(args, 0, ZERO))))
+	Shutdown(IntVal(ProcArg(args, 0, ZERO)))
 	return Fail() // NOTREACHED
 }
 

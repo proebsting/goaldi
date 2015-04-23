@@ -49,7 +49,7 @@ func String(env *Env, args ...Value) (Value, *Closure) {
 func Char(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("char", args)
 	var r [1]rune
-	i := int(FloatVal(ProcArg(args, 0, NilValue)))
+	i := IntVal(ProcArg(args, 0, NilValue))
 	if i < 0 || i > int(unicode.MaxRune) {
 		panic(NewExn("Character code out of range", args[0]))
 	}
@@ -71,7 +71,7 @@ func Ord(env *Env, args ...Value) (Value, *Closure) {
 func Left(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("left", args)
 	s := ProcArg(args, 0, NilValue).(Stringable).ToString().ToRunes()
-	w := int(FloatVal(ProcArg(args, 1, ONE)))
+	w := IntVal(ProcArg(args, 1, ONE))
 	p := ProcArg(args, 2, SPACE).(Stringable).ToString().ToRunes()
 	if len(p) == 0 {
 		panic(NewExn("Empty padding string", args[2]))
@@ -90,7 +90,7 @@ func Left(env *Env, args ...Value) (Value, *Closure) {
 func Right(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("right", args)
 	s := ProcArg(args, 0, NilValue).(Stringable).ToString().ToRunes()
-	w := int(FloatVal(ProcArg(args, 1, ONE)))
+	w := IntVal(ProcArg(args, 1, ONE))
 	p := ProcArg(args, 2, SPACE).(Stringable).ToString().ToRunes()
 	if len(p) == 0 {
 		panic(NewExn("Empty padding string", args[2]))
@@ -113,7 +113,7 @@ func Right(env *Env, args ...Value) (Value, *Closure) {
 func Center(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("center", args)
 	s := ProcArg(args, 0, NilValue).(Stringable).ToString().ToRunes()
-	w := int(FloatVal(ProcArg(args, 1, ONE)))
+	w := IntVal(ProcArg(args, 1, ONE))
 	p := ProcArg(args, 2, SPACE).(Stringable).ToString().ToRunes()
 	if len(p) == 0 {
 		panic(NewExn("Empty padding string", args[2]))

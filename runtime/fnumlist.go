@@ -49,12 +49,12 @@ func Max(env *Env, args ...Value) (Value, *Closure) {
 //  gcd() returns zero if all values are zero.
 func GCD(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("gcd", args)
-	a := int(FloatVal(ProcArg(args, 0, NilValue)))
+	a := IntVal(ProcArg(args, 0, NilValue))
 	if a < 0 {
 		a = -a
 	}
 	for i := 1; i < len(args); i++ {
-		b := int(FloatVal(args[i]))
+		b := IntVal(args[i])
 		if b < 0 {
 			b = -b
 		}

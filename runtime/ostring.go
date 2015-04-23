@@ -100,7 +100,7 @@ func (s *VNumber) Index(lval Value, x Value) Value {
 }
 
 func (s *VString) Index(lval Value, x Value) Value {
-	i := int(FloatVal(x))
+	i := IntVal(x)
 	n := s.length()
 	i = GoIndex(i, n)
 	if i < n {
@@ -117,8 +117,8 @@ func (s *VNumber) Slice(lval Value, x Value, y Value) Value {
 }
 
 func (s *VString) Slice(lval Value, x Value, y Value) Value {
-	i := int(FloatVal(x))
-	j := int(FloatVal(y))
+	i := IntVal(x)
+	j := IntVal(y)
 	n := s.length()
 	i = GoIndex(i, n)
 	j = GoIndex(j, n)

@@ -61,7 +61,7 @@ func (v *VList) Send(lval Value, x Value) Value {
 
 func (v *VList) Index(lval Value, x Value) Value {
 	n := len(v.data)
-	i := int(FloatVal(x))
+	i := IntVal(x)
 	i = GoIndex(i, n)
 	if i >= n {
 		return nil // fail: subscript out of range
@@ -75,8 +75,8 @@ func (v *VList) Index(lval Value, x Value) Value {
 //------------------------------------  Slice:  L[i:j]
 
 func (v *VList) Slice(lval Value, x Value, y Value) Value {
-	i := int(FloatVal(x))
-	j := int(FloatVal(y))
+	i := IntVal(x)
+	j := IntVal(y)
 	n := len(v.data)
 	i = GoIndex(i, n)
 	j = GoIndex(j, n)

@@ -74,7 +74,7 @@ func Index(lval Value, x Value, y Value) Value {
 		panic(NewExn("Wrong type for indexing", x))
 	}
 	n := xv.Len()
-	i := GoIndex(int(FloatVal(y)), n)
+	i := GoIndex(IntVal(y), n)
 	if i >= n {
 		return nil // out of bounds
 	}

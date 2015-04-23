@@ -186,7 +186,7 @@ func (f *VFile) FReadb(args ...Value) (Value, *Closure) {
 	if f.Reader == nil {
 		panic(NewExn("Not open for reading", f))
 	}
-	n := int(FloatVal(ProcArg(args, 0, ONE)))
+	n := IntVal(ProcArg(args, 0, ONE))
 	b := make([]byte, n)
 	n, err := f.Reader.Read(b)
 	if err == io.EOF {

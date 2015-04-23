@@ -90,6 +90,11 @@ func FloatVal(x Value) float64 {
 	return x.(Numerable).ToNumber().Val()
 }
 
+//  IntVal(x) -- return int value after converting x.
+func IntVal(x Value) int {
+	return int(FloatVal(x))
+}
+
 //  VNumber.Val -- return underlying float64 value
 func (v *VNumber) Val() float64 {
 	return float64(*v)
