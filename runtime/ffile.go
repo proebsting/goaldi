@@ -32,7 +32,6 @@ var FileMethods = MethodTable([]*VProcedure{
 //  Declare procedures
 func init() {
 	// Goaldi procedures
-	DefLib(Open, "open", "name,flags", "open a file [DEPRECATED]")
 	DefLib(Read, "read", "f", "read one line from a file")
 	DefLib(Write, "write", "x[]", "write values and newline")
 	DefLib(Writes, "writes", "x[]", "write values")
@@ -128,12 +127,6 @@ func File(env *Env, args ...Value) (Value, *Closure) {
 		writer = nil
 	}
 	return Return(NewFile(name, reader, writer, f))
-}
-
-//  open(name,flags) [DEPRECATED] calls file(name,flags).
-func Open(env *Env, args ...Value) (Value, *Closure) {
-	defer Traceback("open", args)
-	return File(env, args...)
 }
 
 //  f.flush() flushes output on file f.

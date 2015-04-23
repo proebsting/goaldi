@@ -2,8 +2,8 @@ empty:    S:0 (0) set{} : :
 pidigits: S:4 (4) set{1,3,4,5} : 1 3 4 5 : 1 3 4 5
 nodelete: S:4 (4) set{1,3,4,5} : 1 3 4 5 : 1 3 4 5
 delete:   S:2 (2) set{1,4} : 1 4 : 1 4
-noinsert: S:2 (2) set{1,4} : 1 4 : 1 4
-insert:   S:4 (4) set{1,4,7,9} : 1 4 7 9 : 1 4 7 9
+noput:    S:2 (2) set{1,4} : 1 4 : 1 4
+put:      S:4 (4) set{1,4,7,9} : 1 4 7 9 : 1 4 7 9
 delete:   S:2 (2) set{4,7} : 4 7 : 4 7
 put:      S:5 (5) set{2,4,6,7,8} : 2 4 6 7 8 : 2 4 6 7 8
 delete:   S:3 (3) set{4,6,8} : 4 6 8 : 4 6 8

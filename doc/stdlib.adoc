@@ -388,10 +388,6 @@ image(x) returns a string image of x. This is the same conversion
 applied by sprintf("%#v",x) and is typically more verbose and detailed
 than the result of string(x).
 
-S.insert(x[]) -- add members [DEPRECATED]::
-S.insert(x...) [DEPRECATED] adds all its arguments to set S. It returns
-the set S. The preferred form is now S.put(x...) or S @: x.
-
 x.instanceof(t) -- check type relationship::
 x.instanceof(t) returns x if x is an instance of type t; otherwise the
 call fails.
@@ -491,9 +487,6 @@ cannot be converted due to its form or dataype. For string (or
 stringable) arguments, number() trims leading and trailing spaces and
 then accepts standard Go decimal forms (fixed and floating) or Goaldi
 radix forms (101010b, 52o, 2Ax, 23r1J).
-
-open(name,flags) -- open a file [DEPRECATED]::
-open(name,flags) [DEPRECATED] calls file(name,flags).
 
 ord(s) -- return Unicode ordinal of single character::
 ord(s) returns the Unicode value corresponding to the one-character

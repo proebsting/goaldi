@@ -2,7 +2,7 @@ record lex_tkrec ( text , flags , coord , ) ;
 global lex_kwtab := table ( ) ; 
 global lex_optab := table ( ) ; 
 global lex_flags := table ( ) ; 
-procedure main ( fname ) { ^ f := open ( \ fname ) | % stdin ; 
+procedure main ( fname ) { ^ f := file ( \ fname ) | % stdin ; 
 every ^ t := lex_gentok ( f ) do { writes ( t . text , " " ) ; 
 if t === lex_SEMICOL then write ( ) ; 
 } ; 

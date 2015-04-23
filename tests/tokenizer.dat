@@ -1,6 +1,6 @@
 #SRC: Goaldi original
 #
-#  A prototype Goaldi tokenizer written in Goaldi.
+#  An early Goaldi tokenizer.  This is NOT the production version.
 
 
 #  a token record -- one shared/reused instance for each distinct token type
@@ -22,7 +22,7 @@ global lex_flags := table()		# maps token records flag strings
 #  a simple test driver
 
 procedure main(fname) {
-	^f := open(\fname) | %stdin
+	^f := file(\fname) | %stdin
 	every ^t := lex_gentok(f) do {
 		writes(t.text, " ")
 		if t === lex_SEMICOL then write()
