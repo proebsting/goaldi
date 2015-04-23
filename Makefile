@@ -4,6 +4,12 @@
 #	$GOPATH is set per Go documentation
 #	$GOPATH/bin (first GOPATH component) is destination for built programs
 #	$GOPATH/bin are in search path, as is the Go compiler
+#
+#	Goaldi builds itself by a bootstrapping process.
+#	If you break it so badly that this doesn't work:
+#		run "make clean uninstall"  (probably optional, but a good idea)
+#		restore the original source code
+#		run "make full"
 
 PKG = goaldi
 PROGS = $(PKG)/goaldi
@@ -26,12 +32,12 @@ $(HOOKFILE):	$(HOOKMASTER)
 #  build using existing translator if available
 build:
 	$(GOBIN)/goaldi -x -l /dev/null || $(MAKE) boot
-	cd translator; $(MAKE)
+	cd tran; $(MAKE)
 	go install $(PROGS)
 
 #  bootstrap build goaldi using stable translator binary
 boot:
-	cd translator; $(MAKE) boot
+	cd tran; $(MAKE) boot
 	go install $(PROGS)
 
 #  full three-pass rebuild using bootstrapping from old stable front end
@@ -39,20 +45,20 @@ full:
 	#
 	# make an executable that embeds an old version of the front end
 	#
-	cd translator; $(MAKE) boot
+	cd tran; $(MAKE) boot
 	cd runtime; go test
 	go install $(PROGS)
 	cd tests; $(MAKE) quick
 	#
 	# make an executable embedding the latest front end, built by the old one
 	#
-	cd translator; $(MAKE) clean; $(MAKE) GEN=1 gtran.go
+	cd tran; $(MAKE) clean; $(MAKE) GEN=1 gtran.go
 	go install $(PROGS)
 	cd tests; $(MAKE) quick
 	#
 	# make an executable embedding the latest front end as built by itself
 	#
-	cd translator; $(MAKE) clean; $(MAKE) GEN=2 gtran.go
+	cd tran; $(MAKE) clean; $(MAKE) GEN=2 gtran.go
 	go install $(PROGS)
 	$(MAKE) doc
 	cd tests; $(MAKE) quick
@@ -80,9 +86,10 @@ qktest:
 expt:
 	test -f expt.gd && $(GOBIN)/goaldi $$GXOPTS expt.gd || :
 
-#  install the new translator as the stable version for future builds
+#  install the newly built translator as the stable version for future builds
+#  (be sure this is a good one or you'll lose the ability to bootstrap)
 accept:
-	cd translator; $(MAKE) accept
+	cd tran; $(MAKE) accept
 
 #  prepare Go source for check-in by running standard Go reformatter
 format:
@@ -100,7 +107,7 @@ bundle:
 #  and also subpackages built and saved in $GOPATH
 clean:
 	go clean $(PKG) $(PROGS)
-	cd translator; $(MAKE) clean
+	cd tran; $(MAKE) clean
 	cd tests; $(MAKE) clean
 	cd doc; $(MAKE) clean
 	rm -rf $(GOBIN)/../pkg/*/goaldi

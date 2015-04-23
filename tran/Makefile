@@ -12,11 +12,11 @@ GEN = X
 
 #  make Go source file for embedding the translator
 gtran.go:	gtran gobytes.sh
-			./gobytes.sh translator GCode <gtran >gtran.go
+			./gobytes.sh tran GCode <gtran >gtran.go
 
 #  make bootstrap Go file from saved, stable translator version
 boot:
-			./gobytes.sh translator GCode <stable-gtran >gtran.go
+			./gobytes.sh tran GCode <stable-gtran >gtran.go
 
 #  make translator executable from component .gir files
 gtran:	$(GIR)

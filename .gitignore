@@ -7,6 +7,6 @@
 *.gir
 PROFILE
 README.html
-translator/gtran
-translator/gtran.go
+tran/gtran
+tran/gtran.go
 doc/stdlib.html

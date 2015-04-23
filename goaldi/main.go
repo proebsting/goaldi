@@ -13,7 +13,7 @@ import (
 	_ "goaldi/extensions"
 	"goaldi/ir"
 	g "goaldi/runtime"
-	"goaldi/translator"
+	"goaldi/tran"
 	"io"
 	"os"
 	"runtime"
@@ -59,7 +59,7 @@ func main() {
 	// load the IR code
 	parts := make([][]interface{}, 0)
 	if files == nil {
-		bbuf := bytes.NewBuffer(translator.GCode)
+		bbuf := bytes.NewBuffer(tran.GCode)
 		parts = append(parts, loadfile("[embedded]", bbuf)...)
 	} else if len(files) == 0 {
 		parts = append(parts, loadfile("[stdin]", os.Stdin)...)
