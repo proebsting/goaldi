@@ -30,6 +30,7 @@ procedure provoke(i) {
 
 		32: ?"abcd" := 5
 		33: @"efgh"
+		34: (^s := "lmno") @: [666]
 
 		40: constructor()
 		41: constructor(%pi)
@@ -37,6 +38,7 @@ procedure provoke(i) {
 		43: tuple(1,2,3)
 		44: tuple(a:1,b:2,a:3)
 
+		49: 10 to []
 		50: nil to 10
 		51: "x" to 10
 		52: 1 to nil

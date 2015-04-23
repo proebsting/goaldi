@@ -73,7 +73,7 @@ func (s *VString) Take(lval Value) Value {
 func (s *VString) Send(lval Value, v Value) Value {
 	n := s.length()
 	e := s.slice(lval, n, n).(*vSubStr)
-	t := v.(Stringable).ToString()
+	t := ToString(v)
 	e.Assign(t)
 	return t
 }

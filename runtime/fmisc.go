@@ -124,7 +124,7 @@ func Duration(env *Env, args ...Value) (Value, *Closure) {
 	if n, ok := v.(*VNumber); ok {
 		s = n.String() + "s"
 	} else {
-		s = v.(Stringable).ToString().String()
+		s = ToString(v).ToUTF8()
 	}
 	d, err := time.ParseDuration(s)
 	if err == nil {

@@ -218,7 +218,7 @@ func Constructor(env *Env, args ...Value) (Value, *Closure) {
 
 //  Identifier converts its argument to a Go string and validates its form
 func Identifier(x Value) string {
-	s := x.(Stringable).ToString().ToUTF8()
+	s := ToString(x).ToUTF8()
 	if !idPattern.MatchString(s) {
 		panic(NewExn("Not an identifier", s))
 	}

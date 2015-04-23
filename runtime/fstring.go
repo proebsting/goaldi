@@ -60,7 +60,7 @@ func Char(env *Env, args ...Value) (Value, *Closure) {
 //  ord(s) returns the Unicode value corresponding to the one-character string s.
 func Ord(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("ord", args)
-	r := ProcArg(args, 0, NilValue).(Stringable).ToString().ToRunes()
+	r := ToString(ProcArg(args, 0, NilValue)).ToRunes()
 	if len(r) != 1 {
 		panic(NewExn("String length not 1", args[0]))
 	}
@@ -70,9 +70,9 @@ func Ord(env *Env, args ...Value) (Value, *Closure) {
 //  left(s,w,p) left-justifies s in a string of width w, padding with p.
 func Left(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("left", args)
-	s := ProcArg(args, 0, NilValue).(Stringable).ToString().ToRunes()
+	s := ToString(ProcArg(args, 0, NilValue)).ToRunes()
 	w := IntVal(ProcArg(args, 1, ONE))
-	p := ProcArg(args, 2, SPACE).(Stringable).ToString().ToRunes()
+	p := ToString(ProcArg(args, 2, SPACE)).ToRunes()
 	if len(p) == 0 {
 		panic(NewExn("Empty padding string", args[2]))
 	}
@@ -89,9 +89,9 @@ func Left(env *Env, args ...Value) (Value, *Closure) {
 //  right(s,w,p) right-justifies s in a string of width w, padding with p.
 func Right(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("right", args)
-	s := ProcArg(args, 0, NilValue).(Stringable).ToString().ToRunes()
+	s := ToString(ProcArg(args, 0, NilValue)).ToRunes()
 	w := IntVal(ProcArg(args, 1, ONE))
-	p := ProcArg(args, 2, SPACE).(Stringable).ToString().ToRunes()
+	p := ToString(ProcArg(args, 2, SPACE)).ToRunes()
 	if len(p) == 0 {
 		panic(NewExn("Empty padding string", args[2]))
 	}
@@ -112,9 +112,9 @@ func Right(env *Env, args ...Value) (Value, *Closure) {
 //  center(s,w,p) centers s in a string of width w, padding with p.
 func Center(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("center", args)
-	s := ProcArg(args, 0, NilValue).(Stringable).ToString().ToRunes()
+	s := ToString(ProcArg(args, 0, NilValue)).ToRunes()
 	w := IntVal(ProcArg(args, 1, ONE))
-	p := ProcArg(args, 2, SPACE).(Stringable).ToString().ToRunes()
+	p := ToString(ProcArg(args, 2, SPACE)).ToRunes()
 	if len(p) == 0 {
 		panic(NewExn("Empty padding string", args[2]))
 	}
@@ -142,7 +142,7 @@ func Center(env *Env, args ...Value) (Value, *Closure) {
 //  reverse(s) returns the end-for-end reversal of the string s.
 func Reverse(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("reverse", args)
-	r := ProcArg(args, 0, NilValue).(Stringable).ToString().ToRunes()
+	r := ToString(ProcArg(args, 0, NilValue)).ToRunes()
 	n := len(r)
 	for i := 0; i < n/2; i++ {
 		r[i], r[n-1-i] = r[n-1-i], r[i]
@@ -156,7 +156,7 @@ func Reverse(env *Env, args ...Value) (Value, *Closure) {
 //  contains an invalid (by Go rules) escape sequence.
 func Unquote(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("unquote", args)
-	s := ProcArg(args, 0, NilValue).(Stringable).ToString().ToUTF8()
+	s := ToString(ProcArg(args, 0, NilValue)).ToUTF8()
 	s, err := strconv.Unquote(s)
 	if err != nil {
 		return Fail()

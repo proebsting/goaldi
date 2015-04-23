@@ -293,8 +293,7 @@ func passfunc(t reflect.Type) func(Value) reflect.Value {
 				if reflect.TypeOf(v).ConvertibleTo(t) {
 					return reflect.ValueOf(v).Convert(t)
 				} else {
-					return reflect.ValueOf(
-						v.(Stringable).ToString().ToUTF8()).Convert(t)
+					return reflect.ValueOf(ToString(v).ToUTF8()).Convert(t)
 				}
 			}
 		}

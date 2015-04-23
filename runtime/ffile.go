@@ -67,8 +67,8 @@ var dflt_open = NewString("r")
 func File(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("file", args)
 
-	name := ProcArg(args, 0, NilValue).(Stringable).ToString().String()
-	flags := ProcArg(args, 1, dflt_open).(Stringable).ToString().String()
+	name := ToString(ProcArg(args, 0, NilValue)).ToUTF8()
+	flags := ToString(ProcArg(args, 1, dflt_open)).ToUTF8()
 	fail := false
 	read := false
 	write := false
@@ -207,7 +207,7 @@ func (f *VFile) FWriteb(args ...Value) (Value, *Closure) {
 	if f.Writer == nil {
 		panic(NewExn("Not open for writing", f))
 	}
-	s := ProcArg(args, 0, NilValue).(Stringable).ToString()
+	s := ToString(ProcArg(args, 0, NilValue))
 	Ock(f.Writer.Write(s.ToBinary()))
 	return Return(f)
 }

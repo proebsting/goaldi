@@ -75,6 +75,17 @@ func BinaryString(s []byte) *VString {
 	return &VString{low, nil}
 }
 
+//  ToString(x) -- convert arbitrary value to String.
+//  Equivalent to x.(Stringable).ToString() but with better error reporting.
+func ToString(x Value) *VString {
+	defer func() {
+		if recover() != nil {
+			panic(NewExn("String expected", x))
+		}
+	}()
+	return x.(Stringable).ToString()
+}
+
 //  VString.ToUTF8 -- convert Goaldi Unicode string to Go UTF8 string
 func (v *VString) ToUTF8() string {
 	b := make([]byte, 0, len(v.low))
@@ -212,7 +223,7 @@ func (ss *vSubStr) GoString() string {
 func (ss *vSubStr) Assign(v Value) IVariable {
 	tgt := ss.target.(IVariable)
 	src := Deref(tgt).(*VString)
-	ins := v.(Stringable).ToString()
+	ins := ToString(v)
 	if ss.j > src.length() {
 		panic(NewExn("String shrunk before assignment complete", ss))
 	}

@@ -23,9 +23,9 @@ func Map(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("map", args)
 
 	// get arguments as rune arrays
-	s := ProcArg(args, 0, NilValue).(Stringable).ToString().ToRunes()
-	from := ProcArg(args, 1, UCASE).(Stringable).ToString().ToRunes()
-	into := ProcArg(args, 2, LCASE).(Stringable).ToString().ToRunes()
+	s := ToString(ProcArg(args, 0, NilValue)).ToRunes()
+	from := ToString(ProcArg(args, 1, UCASE)).ToRunes()
+	into := ToString(ProcArg(args, 2, LCASE)).ToRunes()
 	if len(into) > len(from) {
 		panic(NewExn("Map: *into > *from", RuneString(into)))
 	}
