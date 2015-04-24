@@ -9,7 +9,6 @@ import (
 	"fmt"
 	"io"
 	"os"
-	"strings"
 )
 
 //  Declare methods
@@ -55,7 +54,6 @@ func init() {
 var noBytes = []byte("")
 var spByte = []byte(" ")
 var nlByte = []byte("\n")
-var dflt_open = NewString("r")
 
 //	file(name,flags) opens a file and returns a file value.
 //
@@ -68,7 +66,7 @@ func File(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("file", args)
 
 	name := ToString(ProcArg(args, 0, NilValue)).ToUTF8()
-	flags := ToString(ProcArg(args, 1, dflt_open)).ToUTF8()
+	flags := ToString(ProcArg(args, 1, EMPTY)).ToUTF8()
 	fail := false
 	read := false
 	write := false
@@ -90,11 +88,11 @@ func File(env *Env, args ...Value) (Value, *Closure) {
 			panic(NewExn("Unrecognized flag", string([]rune{f})))
 		}
 	}
-	flags = strings.Replace(flags, "f", "", -1) // remove "f" from flags
 
-	// deduce access mode and flags
-	amode := 0
+	// deduce access mode
+	var amode int
 	if !write {
+		read = true
 		amode = os.O_RDONLY // "r" or unspecified
 	} else if read {
 		amode = os.O_CREATE | os.O_RDWR // "rw"
