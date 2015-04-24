@@ -10,8 +10,8 @@ import (
 //  NotIdentical(a,b) implements the ~=== operator.
 //  Both call a.Identical(b) if implemented (interface IIdentical).
 func Identical(a, b Value) Value {
-	if _, ok := a.(IIdentical); ok {
-		return a.(IIdentical).Identical(b)
+	if aa, ok := a.(IIdentical); ok {
+		return aa.Identical(b)
 	}
 	av := reflect.ValueOf(a)
 	bv := reflect.ValueOf(b)
