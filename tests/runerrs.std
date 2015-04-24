@@ -18,6 +18,8 @@
 52. Exception("Number expected",nil)
 53. Exception("Number expected",[])
 54. Exception("ToBy: bad increment",0)
+57. TypeError("Number does not implement IListCat")
+58. Exception("Not a list",58)
 60. Exception("Wrong type for indexing",channel(0))
 61. Exception("Not a channel",3)
 62. Exception("Nonpositive field index",-1)

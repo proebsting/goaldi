@@ -115,5 +115,9 @@ type IListCat interface {
 }
 
 func (v *VList) ListCat(x Value) Value {
-	return InitList(append(v.Export().([]Value), x.(*VList).Export().([]Value)...))
+	if w, ok := x.(*VList); ok {
+		return InitList(append(v.Export().([]Value), w.Export().([]Value)...))
+	} else {
+		panic(NewExn("Not a list", x))
+	}
 }

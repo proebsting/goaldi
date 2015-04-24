@@ -45,6 +45,9 @@ procedure provoke(i) {
 		53: 1 to []
 		54: 1 to 10 by 0
 
+		57: 57 ||| []
+		58: [] ||| 58
+
 		60: channel()[3]
 		61: 3 @: 7
 		62: [].sort(-1)
