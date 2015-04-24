@@ -90,7 +90,8 @@ procedure main(args[]) {
 
 procedure translate(iname, oname, opts) {
 	^ofile := file(oname, "w")
-	^pipeline := create !file(iname)
+	^ifile := file(iname, "f") | stop(osargs()[1], ": Cannot open: ", iname)
+	^pipeline := create !ifile
 	pipeline := (create lex(pipeline, iname)).buffer(1000)
 		# buffer size 1000 gives perhaps 1% speedup. bufsize 100 doesn't help.
 	pipeline := create parse(pipeline)
