@@ -76,7 +76,7 @@ type IUnion interface {
 }
 
 func (S1 *VSet) Union(x Value) Value {
-	S2 := x.(*VSet)
+	S2 := SetVal(x)
 	S3 := NewSet(EMPTYLIST)
 	for k := range *S1 {
 		(*S3)[k] = true
@@ -94,7 +94,7 @@ type ISetDiff interface {
 }
 
 func (S1 *VSet) SetDiff(x Value) Value {
-	S2 := x.(*VSet)
+	S2 := SetVal(x)
 	S3 := NewSet(EMPTYLIST)
 	for k := range *S1 {
 		if !(*S2)[k] {
@@ -111,7 +111,7 @@ type IIntersect interface {
 }
 
 func (S1 *VSet) Intersect(x Value) Value {
-	S2 := x.(*VSet)
+	S2 := SetVal(x)
 	S3 := NewSet(EMPTYLIST)
 	for k := range *S1 {
 		if (*S2)[k] {

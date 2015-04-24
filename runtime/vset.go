@@ -50,6 +50,15 @@ func GoKey(v Value) interface{} {
 var SetType = NewType("set", "S", rSet, Set, SetMethods,
 	"set", "L", "create a new set from list L")
 
+//  SetVal(x) return x as a Set, or throws an exception.
+func SetVal(x Value) *VSet {
+	if S, ok := x.(*VSet); ok {
+		return S
+	} else {
+		panic(NewExn("Not a set", x))
+	}
+}
+
 //  VSet.String -- default conversion to Go string returns "S:size"
 func (S *VSet) String() string {
 	return fmt.Sprintf("S:%d", len(*S))
