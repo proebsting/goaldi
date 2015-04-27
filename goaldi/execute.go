@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"goaldi/ir"
 	g "goaldi/runtime"
-	"reflect"
 )
 
 //  coexecute wraps an execute call to catch a panic in a co-expression
@@ -318,77 +317,37 @@ func getArgs(f *pr_frame, nd int, arglist []interface{}) []g.Value {
 	return argl
 }
 
-//  irSelect -- execute select statement, returning label of chosen body
+//  irSelect -- execute select statement, returning label of chosen case body
 func irSelect(f *pr_frame, irs ir.Ir_Select) string {
 
-	// set up data structures for reflect.Select
-	n := len(irs.CaseList)
-	cases := make([]reflect.SelectCase, n, n+1)
-	seenDefault := false
-	for i, sc := range irs.CaseList {
+	// set up data structures for selection
+	s := g.NewSelector(len(irs.CaseList))
+	for _, sc := range irs.CaseList {
 		f.coord = sc.Coord
 		switch sc.Kind {
 		case "send":
-			ch := g.Deref(f.temps[sc.Lhs])
-			v := g.Deref(f.temps[sc.Rhs])
-			if _, ok := ch.(g.VChannel); !ok {
-				// not a Goaldi channel; convert data value to best Go type
-				v = g.Export(v)
-			}
-			cases[i] = reflect.SelectCase{
-				Dir:  reflect.SelectSend,
-				Chan: channelValue(ch),
-				Send: reflect.ValueOf(v)}
+			s.SendCase(g.Deref(f.temps[sc.Lhs]), g.Deref(f.temps[sc.Rhs]))
 		case "receive":
-			ch := g.Deref(f.temps[sc.Rhs])
-			cases[i] = reflect.SelectCase{
-				Dir:  reflect.SelectRecv,
-				Chan: channelValue(ch)}
+			s.RecvCase(g.Deref(f.temps[sc.Rhs]))
 		case "default":
-			cases[i] = reflect.SelectCase{
-				Dir: reflect.SelectDefault}
-			seenDefault = true
+			s.DfltCase()
 		default:
 			panic(g.Malfunction("Bad SelectCase kind: " + sc.Kind))
 		}
 	}
-	if !seenDefault {
-		cases = append(cases, reflect.SelectCase{Dir: reflect.SelectDefault})
-	}
-	// repeat until we get anything other than a read on a closed channel
-	for {
-		f.coord = irs.Coord
-		// call select through the reflection interface
-		i, v, recvOK := reflect.Select(cases)
-		// select has returned, having chosen case i
-		if i == n {
-			// this is the default case we added, because there was none
-			return irs.FailLabel // so the select expression fails
-		}
-		sc := irs.CaseList[i]
-		f.coord = sc.Coord
-		if sc.Kind == "receive" {
-			if recvOK {
-				// assign received value before executing body
-				f.temps[sc.Lhs].(g.IVariable).Assign(g.Import(v.Interface()))
-			} else {
-				// a closed channel was selected
-				cases[i].Chan = hungChannel // disable this case
-				continue                    // and retry
-			}
-		}
-		return sc.BodyLabel // all scenarios except receive from closed channel
-	}
-}
 
-//  get channel value and validate
-func channelValue(ch g.Value) reflect.Value {
-	cv := reflect.ValueOf(ch)
-	if cv.Kind() != reflect.Chan {
-		panic(g.NewExn("Not a channel", ch))
-	}
-	return cv
-}
+	// do the selection
+	f.coord = irs.Coord
+	i, v := s.Execute()
 
-//  used for disabling one branch of a select
-var hungChannel = reflect.ValueOf(make(chan interface{}))
+	if i < 0 {
+		return irs.FailLabel // select failed, no default case supplied
+	}
+	sc := irs.CaseList[i]
+	f.coord = sc.Coord
+	if sc.Kind == "receive" {
+		// assign received value before executing body
+		f.temps[sc.Lhs].(g.IVariable).Assign(v)
+	}
+	return sc.BodyLabel
+}
