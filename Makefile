@@ -111,6 +111,7 @@ clean:
 	cd tests; $(MAKE) clean
 	cd doc; $(MAKE) clean
 	rm -rf $(GOBIN)/../pkg/*/goaldi
+	rm -rf Goaldi-*-*
 
 #  remove files placed elsewhere in $GOPATH
 uninstall:
