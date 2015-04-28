@@ -6,7 +6,7 @@ or copy it to your own bin directory;
 or copy it somewhere else such as /usr/local.
 
 To install Goaldi from source, see
-https://docs.google.com/document/d/1VRyDtFVXbmamBkFJgsSGYPhqxLrPIaaokC3pNOC7e1k/edit?usp=sharing[Installation and Internals]
+https://docs.google.com/document/d/1VRyDtFVXbmamBkFJgsSGYPhqxLrPIaaokC3pNOC7e1k/edit?usp=sharing[Installation and Internals].
 
 For more information, see the README file and the
 https://docs.google.com/document/d/1TazaoECAzgqt0o-bdfvBL5nhMxA_w7KuJN65Cr5ov4M/edit?usp=sharing[documentation].
