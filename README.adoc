@@ -11,9 +11,8 @@ with modern features such as concurrency, objects, and closures.
 While Goaldi will look familiar to Icon programmers,
 it is not upwards compatible, and it omits some features of Icon.
 
-This is an initial distribution while we shake out early problems
-in design, implementation, and documentation.
-We anticipate eventual release under an open-source license.
+This is an early distribution and many things are still in flux.
+Design and implementation details are likely to change.
 
 
 == Requirements
