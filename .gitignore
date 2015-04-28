@@ -7,6 +7,9 @@
 *.gir
 PROFILE
 README.html
+LICENSE.html
+INSTALL.html
+Goaldi-*-*.tgz
 tran/gtran
 tran/gtran.go
 doc/stdlib.html
