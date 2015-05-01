@@ -73,12 +73,14 @@ func (s *VString) Take(lval Value) Value {
 
 //------------------------------------  Send:  e1 @: e2
 
-func (s *VString) Send(lval Value, v Value) Value {
-	n := s.length()
-	e := s.slice(lval, n, n).(*vSubStr)
-	t := ToString(v)
-	e.Assign(t)
-	return t
+func (s *VString) Send(lval Value, x Value) Value {
+	if v, ok := lval.(IVariable); ok {
+		t := ToString(x)
+		v.Assign(scat(s, 0, s.length(), t, 0, t.length(), EMPTY, 0, 0))
+		return t
+	} else {
+		panic(NewExn("Not a variable", s))
+	}
 }
 
 //------------------------------------  Concat:  e1 || e2

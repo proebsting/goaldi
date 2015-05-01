@@ -57,7 +57,8 @@ procedure provoke(i) {
 		201: "x" || main
 		210: ?"abcd" := 5
 		221: @"efgh"
-		222: (^s := "lmno") @: [666]
+		222: "efgh" @: "ijkl"
+		223: (^s := "lmno") @: [666]
 
 		240: char(-1)
 		241: char(123456x)
