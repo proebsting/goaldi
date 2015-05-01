@@ -104,6 +104,7 @@ procedure provoke(i) {
 		447: 447 ++ set([1,2])
 		448: 448 -- set([1,2])
 		449: 449 ** set([1,2])
+		451: set().put(external([1,2,3]))
 
 		# T : table
 

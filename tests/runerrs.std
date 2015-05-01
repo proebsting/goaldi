@@ -56,6 +56,7 @@
 447. TypeError("Number does not implement IUnion")
 448. TypeError("Number does not implement ISetDiff")
 449. TypeError("Number does not implement IIntersect")
+451. runtime error: hash of unhashable type []runtime.Value
 501. Exception("Unrecognized field or method: d",type r)
 502. Exception("Field not found: huh",r{a:~,b:~,c:~})
 503. Exception("Field not found: huh",[])
