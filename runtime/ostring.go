@@ -59,13 +59,16 @@ func (s *VString) Dispense(lval Value) (Value, *Closure) {
 //------------------------------------  Take:  @e
 
 func (s *VString) Take(lval Value) Value {
-	if s.length() == 0 {
-		return nil // fail
+	if v, ok := lval.(IVariable); ok {
+		if n := s.length(); n > 0 {
+			v.Assign(s.slice(nil, 1, n))
+			return s.slice(nil, 0, 1)
+		} else {
+			return nil // fail
+		}
+	} else {
+		panic(NewExn("Not a variable", s))
 	}
-	v := s.slice(lval, 0, 1).(*vSubStr)
-	c := v.Deref()
-	v.Assign(EMPTY)
-	return c
 }
 
 //------------------------------------  Send:  e1 @: e2

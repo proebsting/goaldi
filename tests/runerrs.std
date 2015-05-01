@@ -21,7 +21,7 @@
 143. Exception("Nonpositive argument",0)
 201. Exception("Not a string",procedure main())
 210. TypeError("Variable expected")
-221. TypeError("Variable expected")
+221. Exception("Not a variable","efgh")
 222. Exception("String expected",[666])
 240. Exception("Character code out of range",-1)
 241. Exception("Character code out of range",1193046)
