@@ -1,4 +1,4 @@
-10. Exception("Unrecognized dynamic variable","%huh")
+10. Exception("Undefined dynamic variable","%huh")
 21. Exception("my double error",12,34)
 22. Exception("my own error")
 23. Exception("my nil error",nil)

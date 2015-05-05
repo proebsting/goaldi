@@ -125,7 +125,7 @@ func execute(f *pr_frame, label string) (rv g.Value, rc *g.Closure) {
 					e := f.vars[i.Scope].(*g.Env) // get correct environment
 					v := e.Lookup(i.Name)         // look up name
 					if v == nil {
-						panic(g.NewExn("Unrecognized dynamic variable",
+						panic(g.NewExn("Undefined dynamic variable",
 							"%"+i.Name))
 					}
 					if i.Rval != "" { // if an rval is required
