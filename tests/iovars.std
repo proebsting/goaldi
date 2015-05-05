@@ -1,0 +1,40 @@
+g0: 
+g0: genout:
+g0: %stdout = file(%stdout,w)
+g0: part of line ... and the rest
+g0:  print a b c 
+g0:  println a b c
+g0: explicit %stdout write
+g0: 
+g3: 
+g3: genout:
+g3: %stdout = file(%stdout,w)
+g3: part of line ... and the rest
+g3:  print a b c 
+g3:  println a b c
+g3: explicit %stdout write
+g3: 
+
+%stdin = file(iovars1.tmp,r)
+> writing iovars1.tmp
+> g1: 
+> g1: genout:
+> g1: %stdout = file(iovars1.tmp,w)
+> g1: part of line ... and the rest
+> g1:  print a b c 
+> g1:  println a b c
+> g1: explicit %stdout write
+> g1: 
+
+
+%stdin = file(iovars2.tmp,r)
+> writing iovars2.tmp
+> g2: 
+> g2: genout:
+> g2: %stdout = file(iovars2.tmp,w)
+> g2: part of line ... and the rest
+> g2:  print a b c 
+> g2:  println a b c
+> g2: explicit %stdout write
+> g2: 
+

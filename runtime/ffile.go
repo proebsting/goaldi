@@ -146,7 +146,11 @@ func (f *VFile) FClose(args ...Value) (Value, *Closure) {
 //  The trailing linefeed or CRLF is removed from the returned value.
 //  read() fails at EOF when no more data is available.
 func Read(env *Env, args ...Value) (Value, *Closure) {
-	return ProcArg(args, 0, STDIN).(*VFile).FRead(args)
+	if len(args) > 0 {
+		return ProcArg(args, 0, NilValue).(*VFile).FRead(args)
+	} else {
+		return env.Lookup("stdin", true).(*VFile).FRead(args)
+	}
 }
 
 //  f.get() consumes and returns next line of text from file f.
@@ -213,7 +217,7 @@ func (f *VFile) FWriteb(args ...Value) (Value, *Closure) {
 //  write(x,...) writes its arguments to %stdout followed by a newline.
 func Write(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("write", args)
-	return Wrt(STDOUT, noBytes, nlByte, args)
+	return Wrt(env.Lookup("stdout", true), noBytes, nlByte, args)
 }
 
 //  f.put(x,...) writes its arguments to file f, each followed by a newline.
@@ -233,7 +237,7 @@ func (f *VFile) FWrite(args ...Value) (Value, *Closure) {
 //  writes(x,...) write its arguments to %stdout with no following newline.
 func Writes(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("writes", args)
-	return Wrt(STDOUT, noBytes, noBytes, args)
+	return Wrt(env.Lookup("stdout", true), noBytes, noBytes, args)
 }
 
 //  f.writes(x,...) write its arguments to file f with no following newline.
@@ -245,7 +249,7 @@ func (f *VFile) FWrites(args ...Value) (Value, *Closure) {
 //  print(x,...) writes its arguments to %stdout, separated by spaces.
 func Print(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("print", args)
-	return Wrt(STDOUT, spByte, noBytes, args)
+	return Wrt(env.Lookup("stdout", true), spByte, noBytes, args)
 }
 
 //  f.print(x,...) writes its arguments to file f, separated by spaces.
@@ -258,7 +262,7 @@ func (f *VFile) FPrint(args ...Value) (Value, *Closure) {
 //  separated by spaces and terminated by a newline character.
 func Println(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("println", args)
-	return Wrt(STDOUT, spByte, nlByte, args)
+	return Wrt(env.Lookup("stdout", true), spByte, nlByte, args)
 }
 
 //  f.println(x,...) writes its arguments to file f,
@@ -272,7 +276,7 @@ func (f *VFile) FPrintln(args ...Value) (Value, *Closure) {
 //  with an exit code of 1 (indicating an error).
 func Stop(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("stop", args)
-	Wrt(STDERR, noBytes, nlByte, args)
+	Wrt(env.Lookup("stderr", true), noBytes, nlByte, args)
 	Shutdown(1) // does not return
 	return Fail()
 }
