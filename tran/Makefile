@@ -3,12 +3,14 @@
 SRC = main.gd ast.gd ir.gd \
 	lex.gd parse.gd irgen.gd optimize.gd gen_json.gd gengo.gd
 GIR = $(SRC:.gd=.gir)
-GOBIN = ../../../bin
 GEN = X
+# GOBIN expands in the shell to {first component of $GOPATH}/bin
+GOBIN = $${GOPATH%%:*}/bin
+
 
 #  rule for compiling a .gd file to make a .gir file
 .SUFFIXES:	.gd .gir
-.gd.gir:	; goaldi -c $<
+.gd.gir:	; $(GOBIN)/goaldi -c $<
 
 #  make Go source file for embedding the translator
 gtran.go:	gtran gobytes.sh
@@ -25,7 +27,7 @@ gtran:	$(GIR)
 			echo "# $$USER `date`"							>>gtran
 			echo "# `uname -n -s -m`"						>>gtran
 			cat $(GIR) | bzip2 -9							>>gtran
-			goaldi -x -l gtran			# check for link errors
+			$(GOBIN)/goaldi -x -l gtran		# check for link errors
 			chmod +x gtran
 			head -4 gtran
 

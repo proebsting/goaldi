@@ -1,9 +1,10 @@
 #  Goaldi Makefile
 #
 #  Assumptions:
-#	$GOPATH is set per Go documentation
+#	The "go" command is in the search path
+#	$GOPATH specifies a workspace as per the Go documentation
 #	$GOPATH/bin (first GOPATH component) is destination for built programs
-#	$GOPATH/bin are in search path, as is the Go compiler
+#	$GOPATH/bin is part of search path
 #
 #	Goaldi builds itself by a bootstrapping process.
 #	If you break it so badly that this doesn't work:
@@ -13,7 +14,7 @@
 
 PKG = goaldi
 PROGS = $(PKG)/goaldi
-# GOBIN expands in shell to {first component of $GOPATH}/bin
+# GOBIN expands in the shell to {first component of $GOPATH}/bin
 GOBIN = $${GOPATH%%:*}/bin
 
 #  default action: set up, build all, run test suite, run expt.gd if present
@@ -31,7 +32,7 @@ $(HOOKFILE):	$(HOOKMASTER)
 
 #  build using existing translator if available
 build:
-	$(GOBIN)/goaldi -x -l /dev/null || $(MAKE) boot
+	+$(GOBIN)/goaldi -x -l /dev/null || $(MAKE) boot
 	cd tran; $(MAKE)
 	go install $(PROGS)
 
