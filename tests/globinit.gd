@@ -6,8 +6,6 @@
 
 initial { printall("init1") }
 
-initial { %stdin := %stdout }
-
 global d := b + c
 global j := h + i
 global t := a + d + g + j + l + m
@@ -39,7 +37,7 @@ procedure main() {
 	printall("main")
 	write("aa=", aa, " bb=", bb, " cc=", cc, " dd=", dd)
 	write("xx=", xx, " yy=", yy)
-	%stdin.println("done")	# appears on stdout due to initial{} reassignment
+	println("done")
 }
 
 initial { x := 407; y := reverse(y); printall("init4") }

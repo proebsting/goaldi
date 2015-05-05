@@ -22,6 +22,8 @@ procedure provoke(i) {
 
 		# variables
 		10: %huh
+		11: %pi := 22 / 7
+		12: %stdin := nil
 
 		# exceptions
 		21: throw("my double error", 12, 34)

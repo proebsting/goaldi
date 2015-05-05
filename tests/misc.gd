@@ -92,7 +92,7 @@ procedure evaluation(a,b) {
 	write("i. ", x[5], y[5] := 8)
 	local m := message("Horton")
 	write("j. ", m.who, m.who := "Stanley")
-	write("k. ", %stdin, %stdin := nil)
+	write("k. ", %stdin)
 }
 
 procedure dummy() {

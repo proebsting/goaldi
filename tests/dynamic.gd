@@ -2,35 +2,28 @@
 #
 #  test dynamic variables
 
-global i
-global j
-
 procedure main() {
 	show("a")
-	with %x := 100 do {
+	with %x := 12 do {
 		show("b")
-		every i := !2 do {
-			show("   c");  %x +:= 1
-			show("   d")
-			with %y := 200 do {
-				show("   e");  %y +:= 2
-				show("   f")
-				showxyz("   g", %x, %y, "--")
-				every j := !3 do {
-					show("      h")
-					with %x := 300 do {
-						show("      i");  %x +:= 3
-						show("      j");  %y +:= 4
-						show("      k")
-						with %z := 400 do {
-							show("      l")
-							showxyz("      m", %x, %y, %z)
-						}
-					}
+		with %y := 23 do {
+			show("c")
+			showxyz("C", %x, %y, "--")
+			with %x := 15 do {
+				show("d")
+				with %z := 35 do {
+					show("e")
+					showxyz("E", %x, %y, %z)
 				}
-				with %z := 500 do {
-					show("   u")
+				with %z := 37 do {
+					show("f")
 				}
+			}
+			with %x := 17, %y := 25 do {
+				show("g")
+			}
+			with %x := 19, %z := 39 do {
+				show("h")
 			}
 		}
 		show("v")
@@ -38,7 +31,7 @@ procedure main() {
 	show("w")
 	with %x := 555, %y := 666, %z := 777 do {
 		show ("x")
-		showxyz("y", %x, %y, %z)
+		showxyz("X", %x, %y, %z)
 	}
 	show("z")
 }
@@ -48,7 +41,7 @@ procedure show(label) {
 }
 
 procedure showxyz(label, x, y, z) {
-	write(label, ":  i=", i, "  j=", j, "  %x=", x, "  %y=", y, "  %z=", z)
+	write(label, ":  %x=", x, "  %y=", y, "  %z=", z)
 }
 
 procedure xval() {

@@ -1,4 +1,6 @@
 10. Exception("Undefined dynamic variable","%huh")
+11. TypeError("Variable expected")
+12. TypeError("Variable expected")
 21. Exception("my double error",12,34)
 22. Exception("my own error")
 23. Exception("my nil error",nil)

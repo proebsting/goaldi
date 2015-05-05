@@ -95,8 +95,8 @@ func Cause(x interface{}) interface{} {
 //  This is the recovery procedure at the top of the main (or coexpr) stack.
 func Catcher(env *Env) {
 	if x := recover(); x != nil {
-		Diagnose(os.Stderr, x)            // write Goaldi stack trace
-		if env.Lookup("gostack") != nil { // if interpreter set %gostack
+		Diagnose(os.Stderr, x)                       // write Goaldi stack trace
+		if env.Lookup("gostack", true) != NilValue { // if interpr set %gostack
 			fmt.Fprintf(os.Stderr, "Go stack:\n%s\n",
 				debug.Stack()) // write Go stack trace
 		}

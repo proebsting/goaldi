@@ -123,14 +123,7 @@ func execute(f *pr_frame, label string) (rv g.Value, rc *g.Closure) {
 				case ir.Ir_Key: // dynamic variable reference
 					f.coord = i.Coord
 					e := f.vars[i.Scope].(*g.Env) // get correct environment
-					v := e.Lookup(i.Name)         // look up name
-					if v == nil {
-						panic(g.NewExn("Undefined dynamic variable",
-							"%"+i.Name))
-					}
-					if i.Rval != "" { // if an rval is required
-						v = g.Deref(v) // then make sure we have one
-					}
+					v := e.Lookup(i.Name, i.Rval != "")
 					if i.Lhs != "" {
 						f.temps[i.Lhs] = v
 					}
@@ -178,8 +171,8 @@ func execute(f *pr_frame, label string) (rv g.Value, rc *g.Closure) {
 					}
 					if len(i.DynamicList) > 0 { // if any dynamic vars declared
 						e = g.NewEnv(e)                      // make new env
-						for _, name := range i.DynamicList { // init dynamics
-							e.VarMap[name] = g.NewVariable(g.NilValue)
+						for _, name := range i.DynamicList { // install dynamics
+							e.VarMap[name] = g.NewVariable(nil) // uninitialized
 						}
 					}
 					f.vars[i.Scope] = e               // save envmt of scope

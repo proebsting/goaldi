@@ -28,14 +28,22 @@ func NewEnv(e *Env) *Env {
 	return enew
 }
 
-//  Env.Lookup(s) -- look up dynamic variable s in environment tree
-func (e *Env) Lookup(s string) Value {
+//  Env.Lookup(s, rval) -- look up dynamic variable s in environment tree
+func (e *Env) Lookup(s string, rval bool) Value {
 	for ; e != nil; e = e.Parent {
 		if v := e.VarMap[s]; v != nil {
-			return v
+			d := Deref(v) // get underlying value
+			if d == nil { // if not yet initialized
+				if rval {
+					panic(Malfunction("Uninitialized: %" + s))
+				} else {
+					return v // return trapped variable for initial assignment
+				}
+			}
+			return d // return value -- cannot be used as variable
 		}
 	}
-	return nil
+	panic(NewExn("Undefined dynamic variable", "%"+s))
 }
 
 //  ThreadID production
@@ -62,6 +70,9 @@ func EnvInit(name string, v Value) {
 
 //  Initial dynamic variables
 func init() {
+
+	// internal flag
+	EnvInit("gostack", NilValue)
 
 	// math constants
 	EnvInit("e", E)
