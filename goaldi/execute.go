@@ -130,9 +130,11 @@ func execute(f *pr_frame, label string) (rv g.Value, rc *g.Closure) {
 				case ir.Ir_NilLit:
 					f.temps[i.Lhs] = g.NilValue
 				case ir.Ir_IntLit:
-					f.temps[i.Lhs] = g.NewString(i.Val).ToNumber()
+					n, _ := g.ParseNumber(i.Val)
+					f.temps[i.Lhs] = g.NewNumber(n)
 				case ir.Ir_RealLit:
-					f.temps[i.Lhs] = g.NewString(i.Val).ToNumber()
+					n, _ := g.ParseNumber(i.Val)
+					f.temps[i.Lhs] = g.NewNumber(n)
 				case ir.Ir_StrLit:
 					f.temps[i.Lhs] = g.NewString(i.Val)
 				case ir.Ir_MakeList:
