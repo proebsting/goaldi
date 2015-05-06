@@ -72,7 +72,9 @@ procedure main(args[]) {
 		}
 		gxargs.put(oname)
 		if \opts["t"] then {
-			fprintf(%stderr, "%7.3f translation (%s)\n", cputime() - t0, iname)
+			^t := cputime()
+			fprintf(%stderr, "%7.3f translation (%s)\n", t - t0, iname)
+			t0 := t
 		}
 	}
 	if \opts["a"] | \opts["c"] | \opts["G"] then {
