@@ -1,8 +1,8 @@
-= Goaldi: A Goal-Directed Programming Language 
+= Goaldi: A Goal-Directed Programming Language
 
 Todd Proebsting and Gregg Townsend +
 Department of Computer Science +
-The University of Arizona  
+The University of Arizona
 
 Goaldi is a new general-purpose programming language that combines
 the goal-directed evaluation model of the
@@ -15,10 +15,16 @@ This is an early distribution and many things are still in flux.
 Design and implementation details are likely to change.
 
 
-== Requirements
+== Download
+The source code for Goaldi is maintained in a public repository on
+https://github.com/proebsting/goaldi[GitHub].
 Goaldi should run on any Unix-based platform that supports
 http://golang.org/[Go].
-We develop on Macintosh and Linux.
+
+We develop on Macintosh and Linux; pre-built binaries can be downloaded from the
+https://github.com/proebsting/goaldi/releases[releases page].
+Just unpack the appropriate *.tgz* file and run the *goaldi* executable.
+
 
 == Documentation
 The initial documentation assumes a working knowledge of the Icon language.
