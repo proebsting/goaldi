@@ -8,7 +8,7 @@ just leave it in place and add its directory to your search path;
 or copy it to your own bin directory;
 or copy it somewhere else such as /usr/local.
 
-Run Goaldi with the command *goaldi sourcefile.gd*, 
+Run Goaldi with the command *goaldi sourcefile.gd*,
 optionally appending any arguments to be passed to the Goaldi program.
 
 To install Goaldi from source, see
