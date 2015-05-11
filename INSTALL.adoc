@@ -1,12 +1,19 @@
 = Installing Goaldi
 
-To use a pre-built binary of Goaldi, just leave it in place and
-add the directory to your search path;
+A binary distribution of Goaldi consists of a single self-contained
+executable file named *goaldi* accompanied by a small number of text files.
+
+To use the *goaldi* executable,
+just leave it in place and add its directory to your search path;
 or copy it to your own bin directory;
 or copy it somewhere else such as /usr/local.
+
+Run Goaldi with the command *goaldi sourcefile.gd*, 
+optionally appending any arguments to be passed to the Goaldi program.
 
 To install Goaldi from source, see
 https://docs.google.com/document/d/1VRyDtFVXbmamBkFJgsSGYPhqxLrPIaaokC3pNOC7e1k/edit?usp=sharing[Installation and Internals].
 
-For more information, see the README file and the
+For more information, see the
+link:./README.adoc#[README] file and the
 https://docs.google.com/document/d/1TazaoECAzgqt0o-bdfvBL5nhMxA_w7KuJN65Cr5ov4M/edit?usp=sharing[documentation].
