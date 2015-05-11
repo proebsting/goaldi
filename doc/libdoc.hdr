@@ -5,8 +5,8 @@ Gregg Townsend and Todd Proebsting +
 Department of Computer Science +
 The University of Arizona +
 
-Part of the documentation for
-https://docs.google.com/document/d/1TazaoECAzgqt0o-bdfvBL5nhMxA_w7KuJN65Cr5ov4M/edit?usp=sharing[The Goaldi Programming Language]
+This is part of the documentation for
+https://docs.google.com/document/d/1TazaoECAzgqt0o-bdfvBL5nhMxA_w7KuJN65Cr5ov4M/edit?usp=sharing[The Goaldi Programming Language].
 
 '''
 
@@ -16,7 +16,7 @@ It was produced mechanically by extracting source code comments.
 
 For each entry, the header line gives the procedure and argument names
 followed by a one-line synopsis.
-A suffix of *[]* in an argument list indicates
+A procedure with a suffix of *[]* in its argument list accepts
 an arbitrary number of arguments.
 A more detailed procedure description follows the header line.
 
@@ -34,7 +34,7 @@ an exception is thrown.
 Methods are distinguished from procedures by an inital character and period,
 as in *L.put*(...).
 The initial character indicates the type of value 
-to which the method applies according to this table:
+to which the method applies:
 ====
 *x* {nbsp} any value +
 *t* {nbsp} type value +
