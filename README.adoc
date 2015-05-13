@@ -7,12 +7,13 @@ The University of Arizona
 Goaldi is a new general-purpose programming language that combines
 the goal-directed evaluation model of the
 http://www.cs.arizona.edu/icon[Icon] language
-with modern features such as concurrency, objects, and closures.
+with modern features such as concurrency, objects, closures,
+and Unicode support.
 While Goaldi will look familiar to Icon programmers,
-it is not upwards compatible, and it omits some features of Icon.
+it is not upwards compatible.
 
-This is an early distribution and many things are still in flux.
-Design and implementation details are likely to change.
+This is an early distribution;
+some design and implementation details are likely to change.
 
 
 == Download
@@ -27,12 +28,11 @@ Just unpack the appropriate *.tgz* file and run the *goaldi* executable.
 
 
 == Documentation
-The initial documentation assumes a working knowledge of the Icon language.
 
 * https://docs.google.com/document/d/1TazaoECAzgqt0o-bdfvBL5nhMxA_w7KuJN65Cr5ov4M/edit?usp=sharing[Introduction]
-* https://docs.google.com/document/d/1UCjBKAKH3wqefpKUKAMYlnaMtiodLcZKWiI1pN-Gc_s/edit?usp=sharing[Goaldi for Icon Programmers]
 * https://docs.google.com/document/d/1e21EacNqFg0eHtYowntbg1lKUpawl0busA375qnsqfY/edit?usp=sharing[Language Reference]
 * https://github.com/proebsting/goaldi/blob/master/doc/stdlib.adoc#goaldi-standard-library[Library Reference]
+* https://docs.google.com/document/d/1UCjBKAKH3wqefpKUKAMYlnaMtiodLcZKWiI1pN-Gc_s/edit?usp=sharing[Goaldi for Icon Programmers]
 * https://docs.google.com/document/d/1VRyDtFVXbmamBkFJgsSGYPhqxLrPIaaokC3pNOC7e1k/edit?usp=sharing[Installation and Internals]
 
 
