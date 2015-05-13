@@ -1,26 +1,21 @@
-#SRC: icon/wordcnt.icn
-#     (extensively rewritten)
+#SRC: icon/wordcnt.icn (extensively rewritten)
 #
-#	W O R D   C O U N T I N G
+#	Word Counter
 #
-#	This program tabulates the words in standard input and writes the results.
-#	The definition of a "word" is naive.
+#	A word is a string of one or more Unicode "letters".
 
-procedure main() {
-	# local line, words, rx, w, kv
-	local line
-	local words
-	local rx
-	local w
-	local kv
+procedure main(filename) {
 
-	words := table(0)
-	rx := regex(`[\W]+`)
-	while line := read() do {
-		line := rx.ReplaceAllString(line, " ")
-		every w := !fields(line) do
-			words[w] +:= 1
+	local f := file(\filename) | %stdin		# input file
+	local words := table(0)					# table for talling counts
+	local rx := regex(`\pL+`)				# expr to match words
+
+	while local line := f.read() do {		# read line
+		local matches := rx.FindAllString(line, -1)		# find words
+		every local w := !\matches do {					# for each (if any)
+			words[w] +:= 1								# bump the tally
+		}
 	}
-	every kv := !words.sort() do
-	printf("%6.0f  %s\n", kv.value, kv.key)
+	every local kv := !words.sort() do				# for each key/value pair
+		printf("%6.0f  %s\n", kv.value, kv.key)		# print count and word
 }

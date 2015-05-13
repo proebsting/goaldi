@@ -1,23 +1,16 @@
-#
-#	W O R D   T A B U L A T I O N
-#
+Camille Saint-Saëns
+(from Wikipedia)
 
-#  This main procedure processes standard input and writes the results
-#  with the words in a column 20 characters wide.
-
-procedure main()
-   wordcount(20)
-end
-
-procedure wordcount(n)
-   local t, line, x, y
-   static letters
-   initial letters := &lcase ++ &ucase
-   t := table(,0)
-   every line := !&input do
-      scan line using
-         while tab(upto(letters)) do
-            t[tab(many(letters))] +:= 1
-   x := sort(t)
-   every y := !x do write(left(y[1],n),y[2])
-end
+Saint-Saëns was born in Paris, the only child of Jacques-Joseph-Victor
+Saint-Saëns (1798–1835), an official in the French Ministry of the Interior,
+and his wife, Françoise-Clémence, née Collin.
+Victor Saint-Saëns was of Norman ancestry,
+and his wife was from a Haute-Marne family;
+their son, born in the Rue du Jardinet in the 6th arrondissement of Paris,
+and baptised at the nearby church of Saint-Sulpice,
+always considered himself a true Parisian.
+Less than two months after the christening,
+Victor Saint-Saëns died of consumption on the first anniversary of his marriage.
+The young Camille was taken to the country for the sake of his health,
+and for two years lived with a nurse at Corbeil,
+29 kilometres (18 mi) to the south of Paris.
