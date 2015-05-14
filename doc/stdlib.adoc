@@ -291,10 +291,16 @@ file(name,flags) opens a file and returns a file value.
 +
 Each character of the optional flags argument selects an option:
 +
-	"r"	open for reading
-	"w"	open for writing
-	"a"	open for appending
-	"f"	fail on error (instead of panicking)
+	"r"   open for reading
+	"w"   open for writing
+	"a"   open for appending
+	"n"   no buffering
+	"f"   fail on error (instead of panicking)
++
+Buffering is used if "n" is absent and the file is opened exclusively
+for reading or writing (not both).
++
+In the absence of "f", any error throws an exception.
 
 floor(n) -- round down to integer [silver]_(http://golang.org/pkg/math#Floor[math.Floor])_::
 Floor returns the greatest integer value less than or equal to x.

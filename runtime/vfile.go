@@ -7,6 +7,7 @@ package runtime
 
 import (
 	"bufio"
+	"bytes"
 	"io"
 	"io/ioutil"
 	"os"
@@ -24,10 +25,10 @@ var (
 )
 
 type VFile struct {
-	Name   string        // name when opened
-	Reader *bufio.Reader // reader, if open for read
-	Writer io.Writer     // writer, if open for write
-	Closer io.Closer     // closer
+	Name   string    // name when opened
+	Reader io.Reader // reader, if open for read
+	Writer io.Writer // writer, if open for write
+	Closer io.Closer // closer
 }
 
 var FileType = NewType("file", "f", rFile, File, FileMethods,
@@ -36,20 +37,10 @@ var FileType = NewType("file", "f", rFile, File, FileMethods,
 //  NewFile(name, reader, writer, closer) -- construct new Goaldi file
 func NewFile(name string,
 	reader io.Reader, writer io.Writer, closer io.Closer) *VFile {
-	// if no closer, add one, because nil means file is already closed
-	if closer == nil {
+	if closer == nil { // need a closer; nil means already closed
 		closer = ioutil.NopCloser(reader)
 	}
-	// if file is not for reading, nothing much to do
-	if reader == nil {
-		return &VFile{name, nil, writer, closer}
-	}
-	// if reader is not bufio.Reader, wrap it (needed for readline)
-	if _, ok := reader.(*bufio.Reader); !ok {
-		reader = bufio.NewReader(reader)
-	}
-	// create file with correctly typed buffered reader
-	return &VFile{name, reader.(*bufio.Reader), writer, closer}
+	return &VFile{name, reader, writer, closer}
 }
 
 //  VFile.String -- conversion to Go string returns "f:name"
@@ -108,14 +99,39 @@ func (v *VFile) ReadLine() *VString {
 	if v.Reader == nil {
 		panic(NewExn("Not open for reading", v))
 	}
-	s, e := v.Reader.ReadString('\n')
-	if e == nil {
-		n := len(s) - 1              // position of trailing \n
-		if n > 0 && s[n-1] == '\r' { // if preceded by \r
-			return NewString(s[:n-1]) // trim CRLF and return
-		} else {
-			return NewString(s[:n]) // trim \n and return
+	var s string
+	var e error
+	if r, ok := v.Reader.(*bufio.Reader); ok {
+		// use library func to read a line
+		s, e = r.ReadString('\n')
+	} else {
+		// not bufferred; read a char at a time up through newline
+		var b bytes.Buffer
+		p := make([]byte, 1)
+		for p[0] != '\n' {
+			n, e := v.Reader.Read(p)
+			if n > 0 {
+				b.Write(p)
+			}
+			if e != nil {
+				break
+			}
 		}
+		s = b.String()
+	}
+	// interpret and return results of reading
+	if e == nil {
+		n := len(s)
+		if n == 0 {
+			return nil // EOF
+		}
+		if s[n-1] == '\n' { // if ends with \n, remove it
+			n--
+			if n > 0 && s[n-1] == '\r' { // if preceded by \r, remove that
+				n--
+			}
+		}
+		return NewString(s[:n])
 	} else if e != io.EOF {
 		panic(e) // actual error
 	} else if s != "" {

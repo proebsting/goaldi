@@ -6,6 +6,7 @@
 package runtime
 
 import (
+	"bufio"
 	"fmt"
 	"io"
 	"os"
@@ -58,10 +59,16 @@ var nlByte = []byte("\n")
 //	file(name,flags) opens a file and returns a file value.
 //
 //	Each character of the optional flags argument selects an option:
-//		"r"	open for reading
-//		"w"	open for writing
-//		"a"	open for appending
-//		"f"	fail on error (instead of panicking)
+//		"r"   open for reading
+//		"w"   open for writing
+//		"a"   open for appending
+//		"n"   no buffering
+//		"f"   fail on error (instead of panicking)
+//
+//	Buffering is used if "n" is absent and the file is opened
+//	exclusively for reading or writing (not both).
+//
+//	In the absence of "f", any error throws an exception.
 func File(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("file", args)
 
@@ -71,6 +78,7 @@ func File(env *Env, args ...Value) (Value, *Closure) {
 	read := false
 	write := false
 	append := false
+	buffer := true
 
 	// scan flags
 	for _, f := range flags {
@@ -82,6 +90,8 @@ func File(env *Env, args ...Value) (Value, *Closure) {
 		case 'a':
 			write = true
 			append = true
+		case 'n':
+			buffer = false
 		case 'f':
 			fail = true
 		default:
@@ -118,11 +128,16 @@ func File(env *Env, args ...Value) (Value, *Closure) {
 	// construct Goaldi file value
 	reader := io.Reader(f)
 	writer := io.Writer(f)
-	if !read {
-		reader = nil
-	}
-	if !write {
+	if read && !write { // if read only
 		writer = nil
+		if buffer {
+			reader = bufio.NewReader(reader)
+		}
+	} else if write && !read { // if write only
+		reader = nil
+		if buffer {
+			writer = bufio.NewWriter(writer)
+		}
 	}
 	return Return(NewFile(name, reader, writer, f))
 }
