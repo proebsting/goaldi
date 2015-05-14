@@ -106,6 +106,7 @@ procedure translate(iname, oname, opts) {
 	} else {
 		json_File(ofile, pipeline)
 	}
+	ofile.close()
 }
 
 

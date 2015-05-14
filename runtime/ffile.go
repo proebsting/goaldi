@@ -306,7 +306,7 @@ func Wrt(v Value, between []byte, atEnd []byte, args []Value) (Value, *Closure) 
 		Ock(fmt.Fprint(f, v))
 	}
 	Ock(f.Write(atEnd))
-	Ock(0, f.Flush()) // seems to be necessary
+	Ock(0, f.Flush()) // flush at end of operation -- file may be buffered
 	return Return(f)
 }
 

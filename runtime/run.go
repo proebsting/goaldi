@@ -18,12 +18,8 @@ func Run(p Value, arglist []Value) {
 
 //  Shutdown terminates execution with the given exit code.
 func Shutdown(e int) {
-	if f, ok := STDOUT.(*VFile); ok {
-		f.Flush()
-	}
-	if f, ok := STDERR.(*VFile); ok {
-		f.Flush()
-	}
+	STDOUT.(*VFile).Flush()
+	STDERR.(*VFile).Flush()
 	pprof.StopCPUProfile()
 	os.Exit(e)
 }
