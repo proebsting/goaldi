@@ -294,11 +294,14 @@ Each character of the optional flags argument selects an option:
 	"r"   open for reading
 	"w"   open for writing
 	"a"   open for appending
+	"c"   create and open for writing
 	"n"   no buffering
 	"f"   fail on error (instead of panicking)
 +
-Buffering is used if "n" is absent and the file is opened exclusively
-for reading or writing (not both).
+If none of "w", "a", and "c" are specified, then "r" is implied. "w"
+implies "c" unless "r" is also specififed. Buffering is used if "n" is
+absent and the file is opened exclusively for reading or writing but not
+both.
 +
 In the absence of "f", any error throws an exception.
 

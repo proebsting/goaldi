@@ -62,11 +62,14 @@ var nlByte = []byte("\n")
 //		"r"   open for reading
 //		"w"   open for writing
 //		"a"   open for appending
+//		"c"   create and open for writing
 //		"n"   no buffering
 //		"f"   fail on error (instead of panicking)
 //
+//	If none of "w", "a", or "c" are specified, then "r" is implied.
+//	"w" implies "c" unless "r" is also specififed.
 //	Buffering is used if "n" is absent and the file is opened
-//	exclusively for reading or writing (not both).
+//	exclusively for reading or writing but not both.
 //
 //	In the absence of "f", any error throws an exception.
 func File(env *Env, args ...Value) (Value, *Closure) {
@@ -78,6 +81,7 @@ func File(env *Env, args ...Value) (Value, *Closure) {
 	read := false
 	write := false
 	append := false
+	create := false
 	buffer := true
 
 	// scan flags
@@ -90,6 +94,9 @@ func File(env *Env, args ...Value) (Value, *Closure) {
 		case 'a':
 			write = true
 			append = true
+		case 'c':
+			write = true
+			create = true
 		case 'n':
 			buffer = false
 		case 'f':
@@ -105,9 +112,12 @@ func File(env *Env, args ...Value) (Value, *Closure) {
 		read = true
 		amode = os.O_RDONLY // "r" or unspecified
 	} else if read {
-		amode = os.O_CREATE | os.O_RDWR // "rw"
+		amode = os.O_RDWR // "rw"
 	} else {
-		amode = os.O_CREATE | os.O_WRONLY // "w" or "a"
+		amode = os.O_CREATE | os.O_WRONLY // "w" or "a" or "c"
+	}
+	if create {
+		amode |= os.O_CREATE
 	}
 	if append {
 		amode |= os.O_APPEND
