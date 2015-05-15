@@ -159,6 +159,22 @@ func (v *VFile) Flush() error {
 	}
 }
 
+//  VFile.Seek(offset, whence) implements the Go io.Seeker interface.
+func (v *VFile) Seek(offset int64, whence int) (int64, error) {
+	var f io.Seeker
+	var ok bool
+	// Either the Reader or Writer must be seekable.
+	// (If both are non-nil then they are identical and either will do.)
+	f, ok = v.Reader.(io.Seeker)
+	if !ok {
+		f, ok = v.Writer.(io.Seeker)
+	}
+	if !ok {
+		panic(NewExn("Not seekable", v))
+	}
+	return f.Seek(offset, whence)
+}
+
 //  VFile.Close() closes a file.  This implements the Go io.Closer interface.
 //  It marks the file as closed and calls io.Close() on the underlying Closer.
 func (v *VFile) Close() error {

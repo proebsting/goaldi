@@ -298,7 +298,7 @@ Each character of the optional flags argument selects an option:
 	"n"   no buffering
 	"f"   fail on error (instead of panicking)
 +
-If none of "w", "a", and "c" are specified, then "r" is implied. "w"
+If none of "w", "a", or "c" are specified, then "r" is implied. "w"
 implies "c" unless "r" is also specififed. Buffering is used if "n" is
 absent and the file is opened exclusively for reading or writing but not
 both.
@@ -648,6 +648,12 @@ Seed uses the provided seed value to initialize the default Source to a
 deterministic state. If Seed is not called, the generator behaves as if
 seeded by Seed(1).
 
+f.seek(n) -- set file position::
+f.seek(n) sets the position for the next read or write on file f. File
+positions are measured in bytes, not characters, counting the first byte
+as 1. A value of 0 seeks to end of file, and a negative value is an
+offset from the end.
+
 seq(n,incr) -- produce n to infinity::
 seq(n,incr) generates an endless sequence of values beginning at n with
 increments of incr.
@@ -797,6 +803,10 @@ unquote(s) removes delimiters and escapes from a quoted string. The
 argument s must begin and end with explicit "double quotes" or
 \`backticks`. unquote() fails if s is not properly quoted or if it
 contains an invalid (by Go rules) escape sequence.
+
+f.where() -- report current file position::
+f.where() reports the current position of file f. File positions are
+measured in bytes, counting the first byte as 1.
 
 write(x[]) -- write values and newline::
 write(x,...) writes its arguments to %stdout followed by a newline.

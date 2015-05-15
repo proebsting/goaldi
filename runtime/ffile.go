@@ -27,6 +27,8 @@ var FileMethods = MethodTable([]*VProcedure{
 	DefMeth((*VFile).FWrites, "writes", "x[]", "write values"),
 	DefMeth((*VFile).FPrint, "print", "x[]", "write values with spacing"),
 	DefMeth((*VFile).FPrintln, "println", "x[]", "write line of values"),
+	DefMeth((*VFile).FSeek, "seek", "n", "set file position"),
+	DefMeth((*VFile).FWhere, "where", "", "report current file position"),
 })
 
 //  Declare procedures
@@ -165,6 +167,37 @@ func (f *VFile) FClose(args ...Value) (Value, *Closure) {
 	f.Flush()
 	f.Close()
 	return Return(f)
+}
+
+//  f.seek(n) sets the position for the next read or write on file f.
+//  File positions are measured in bytes, not characters, counting the
+//  first byte as 1.  A value of 0 seeks to end of file, and a negative
+//  value is an offset from the end.
+func (f *VFile) FSeek(args ...Value) (Value, *Closure) {
+	defer Traceback("f.seek", args)
+	posn := int64(FloatVal(ProcArg(args, 0, ONE)))
+	whence := os.SEEK_SET
+	if posn > 0 {
+		posn = posn - 1
+	} else {
+		whence = os.SEEK_END
+	}
+	_, err := f.Seek(posn, whence)
+	if err != nil {
+		panic(err)
+	}
+	return Return(f)
+}
+
+//  f.where() reports the current position of file f.
+//  File positions are measured in bytes, counting the first byte as 1.
+func (f *VFile) FWhere(args ...Value) (Value, *Closure) {
+	defer Traceback("f.where", args)
+	offset, err := f.Seek(0, os.SEEK_CUR)
+	if err != nil {
+		panic(err)
+	}
+	return Return(NewNumber(float64(offset + 1)))
 }
 
 //  read(f) consumes and returns next line of text from file f.
