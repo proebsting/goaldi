@@ -5,6 +5,7 @@ package runtime
 import (
 	"fmt"
 	"io"
+	"os"
 )
 
 //  execution environment
@@ -74,15 +75,18 @@ func init() {
 	// internal flag
 	EnvInit("gostack", NilValue)
 
+	// %gpath = argv[0]
+	EnvInit("gpath", NewString(os.Args[0]))
+
 	// math constants
 	EnvInit("e", E)
 	EnvInit("phi", PHI)
 	EnvInit("pi", PI)
 
-	// standard files (mutable)
-	EnvInit("stdin", Trapped(&STDIN))
-	EnvInit("stdout", Trapped(&STDOUT))
-	EnvInit("stderr", Trapped(&STDERR))
+	// standard files
+	EnvInit("stdin", STDIN)
+	EnvInit("stdout", STDOUT)
+	EnvInit("stderr", STDERR)
 }
 
 //	ShowEnvironment(f) -- list standard environment on file f

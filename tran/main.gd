@@ -92,7 +92,7 @@ procedure main(args[]) {
 
 procedure translate(iname, oname, opts) {
 	^ofile := file(oname, "w")
-	^ifile := file(iname, "f") | stop(osargs()[1], ": Cannot open: ", iname)
+	^ifile := file(iname, "f") | stop(%gpath, ": Cannot open: ", iname)
 	^pipeline := create !ifile
 	pipeline := (create lex(pipeline, iname)).buffer(1000)
 		# buffer size 1000 gives perhaps 1% speedup. bufsize 100 doesn't help.
@@ -118,7 +118,7 @@ procedure gexec(arglist, stdout) {
 	%stdout.flush()
 	%stderr.flush()
 	arglist.push("-x")
-	arglist.push(osargs()[1])
+	arglist.push(%gpath)
 	^c := command ! arglist
 	c.Stdin := %stdin.unbuffer()
 	c.Stdout := (\stdout | %stdout).unbuffer()
