@@ -115,7 +115,7 @@ size before the channel c. This is useful in the Goaldi form
 buffer(size, create e) to provide buffering of the results produced by
 an asynchronous thread.
 
-c.buffer(size) -- interpose buffer::
+c.buffer(size) -- interpose channel buffer::
 c.buffer(size) returns a channel that interposes a buffer of the given
 size before the channel c.
 
@@ -798,9 +798,9 @@ type(x) returns the value of type "type" that represents the type of x.
 x.type() -- return type of value::
 type(x) returns the value of type "type" that represents the type of x.
 
-f.unbuffer() -- stop buffering::
+f.unbuffer() -- stop file buffering::
 f.unbuffer() removes any buffering from file f. Any buffered output is
-flushed; any bufferered input is lost.
+flushed; any buffered input is lost.
 
 unquote(s) -- remove delimiters and escapes from s::
 unquote(s) removes delimiters and escapes from a quoted string. The

@@ -16,7 +16,7 @@ import (
 //  Method names begin with an extra F to distinguish from those in vfile.go
 //  (whose names are fixed by the need to implement io.ReadWriteCloser).
 var FileMethods = MethodTable([]*VProcedure{
-	DefMeth((*VFile).FUnbuffer, "unbuffer", "", "stop buffering"),
+	DefMeth((*VFile).FUnbuffer, "unbuffer", "", "stop file buffering"),
 	DefMeth((*VFile).FFlush, "flush", "", "flush file"),
 	DefMeth((*VFile).FClose, "close", "", "close file"),
 	DefMeth((*VFile).FGet, "get", "", "read one line"),
@@ -156,7 +156,7 @@ func File(env *Env, args ...Value) (Value, *Closure) {
 }
 
 //  f.unbuffer() removes any buffering from file f.
-//  Any buffered output is flushed; any bufferered input is lost.
+//  Any buffered output is flushed; any buffered input is lost.
 func (f *VFile) FUnbuffer(args ...Value) (Value, *Closure) {
 	defer Traceback("f.unbuffer", args)
 	if _, ok := f.Reader.(*bufio.Reader); ok {

@@ -11,7 +11,7 @@ var ChannelMethods = MethodTable([]*VProcedure{
 	DefMeth(VChannel.Get, "get", "", "read from channel"),
 	DefMeth(VChannel.Put, "put", "x", "send to channel"),
 	DefMeth(VChannel.Close, "close", "", "close channel"),
-	DefMeth(VChannel.Buffer, "buffer", "size", "interpose buffer"),
+	DefMeth(VChannel.Buffer, "buffer", "size", "interpose channel buffer"),
 })
 
 //  Declare static functions
