@@ -225,4 +225,4 @@ func Identifier(x Value) string {
 	return s
 }
 
-var idPattern = regexp.MustCompile("^[A-Za-z_][[0-9A-Za-z_]*$")
+var idPattern = regexp.MustCompile(`^[_\p{L}][_\p{L}\p{Nd}]*$`)

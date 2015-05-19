@@ -1,0 +1,7 @@
+1841 1825 3.142 1.618
+rtype{Σ:123,Ω:456} 123 456
+rtype{Σ:888,Ω:999} 888 999
+constructor greeks(α,β,γ)
+greeks{α:1,β:2,γ:3}
+tuple{Ψ:saguaro,Ξ:gate,Π:wicket}
+1017 1023 6

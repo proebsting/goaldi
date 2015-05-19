@@ -211,7 +211,7 @@ procedure lex_stream.getdigits(s, b, n) {
 #  These globals define regular expressions for tokenizing
 
 global lex_ws_rx := regex(`^([ \t]+|\#.*)`)					# whitespace
-global lex_id_rx := regex(`^[a-zA-Z_][a-zA-Z_0-9]*`)		# identifier / kwd
+global lex_id_rx := regex(`^[_\p{L}][_\p{L}\p{Nd}]*`)		# identifier / kwd
 global lex_n1_rx := regex(`^[0-9]+r[0-9a-zA-Z]+`)			# radix prefix int
 global lex_n2_rx := regex(`^[0-9][0-9a-fA-F]*[box]`)		# radix suffix int
 global lex_n3_rx := regex(`^(\.[0-9]+|[0-9]+\.?[0-9]*)([eE][+-]?[0-9]+)?`) # dec
