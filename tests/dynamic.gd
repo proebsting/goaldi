@@ -34,6 +34,10 @@ procedure main() {
 		showxyz("X", %x, %y, %z)
 	}
 	show("z")
+
+	write(with %foo := 1 do { 2 })
+	# what should the following do?
+	# every write(with %foo := 3 | 4  do { 5 | 6 })
 }
 
 procedure show(label) {
