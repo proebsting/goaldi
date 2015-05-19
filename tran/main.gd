@@ -120,9 +120,9 @@ procedure gexec(arglist, stdout) {
 	arglist.push("-x")
 	arglist.push(osargs()[1])
 	^c := command ! arglist
-	c.Stdin := osfile(0)
-	c.Stdout := \stdout | osfile(1)
-	c.Stderr := osfile(2)
+	c.Stdin := %stdin.unbuffer()
+	c.Stdout := (\stdout | %stdout).unbuffer()
+	c.Stderr := %stderr.unbuffer()
 	c.Run()
 	return c.ProcessState.Sys().ExitStatus()
 }
