@@ -1205,6 +1205,7 @@ procedure ir_a_With(p, st, target, bounded, rval) {
 			ir_ExitScope(p.coord, [], [p.id], ir_stname(newscope)),
 			ir_Goto(p.coord, p.ir.success),
 			])
+		suspend ir_chunk(p.ir.resume, [ ir_Goto(p.coord, p.expr.ir.resume) ])
 	} else {
 		suspend ir_chunk(p.expr.ir.success, [ ir_Goto(p.coord, p.ir.success) ])
 	}
