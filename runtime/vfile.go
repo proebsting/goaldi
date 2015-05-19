@@ -52,7 +52,7 @@ func (v *VFile) String() string {
 	return "f:" + v.Name
 }
 
-//  VFile.GoString -- image returns "file(name,[r][w])"
+//  VFile.GoString -- image returns "file(name,[r][w][n])"
 func (v *VFile) GoString() string {
 	s := "file(" + v.Name + ","
 	if v.Reader != nil {
@@ -60,6 +60,9 @@ func (v *VFile) GoString() string {
 	}
 	if v.Writer != nil {
 		s = s + "w"
+	}
+	if v.Closer != nil && !v.IsBuffered() {
+		s = s + "n"
 	}
 	return s + ")"
 }

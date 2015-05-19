@@ -102,8 +102,8 @@ constructor r5(a,b,c,d,e)
 "gamma"
 "gamma"
 "gamma"
-file(%stderr,w)
-file(%stderr,w)
+file(%stderr,wn)
+file(%stderr,wn)
 file(%stdin,r)
 file(%stdin,r)
 file(%stdout,w)
@@ -255,8 +255,8 @@ key="b" constructor r5(a,b,c,d,e)
 "gamma"
 "gamma"
 "gamma"
-file(%stderr,w)
-file(%stderr,w)
+file(%stderr,wn)
+file(%stderr,wn)
 file(%stdin,r)
 file(%stdin,r)
 file(%stdout,w)

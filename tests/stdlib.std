@@ -24,7 +24,7 @@ abc: type()t:string image()"abc" number()-- string()abc
 3.142: type()t:number image()3.141592653589793 number()3.142 string()3.142
 f:%stdin: type()t:file image()file(%stdin,r) number()-- string()f:%stdin
 f:%stdout: type()t:file image()file(%stdout,w) number()-- string()f:%stdout
-f:%stderr: type()t:file image()file(%stderr,w) number()-- string()f:%stderr
+f:%stderr: type()t:file image()file(%stderr,wn) number()-- string()f:%stderr
 
 command():
 command: /bin/echo [echo hello world]
