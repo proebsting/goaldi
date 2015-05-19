@@ -29,6 +29,6 @@ func init() {
 }
 
 //  hashvalue(f) returns the current value of the hash engine f.
-func hashvalue(f *g.VFile) uint32 {
-	return f.Writer.(hash.Hash32).Sum32()
+func hashvalue(f hash.Hash32) uint32 {
+	return f.Sum32()
 }

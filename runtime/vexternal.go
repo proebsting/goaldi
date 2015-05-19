@@ -93,7 +93,7 @@ func Import(x interface{}) Value {
 		w, _ := x.(io.Writer)
 		c, _ := x.(io.Closer)
 		name := fmt.Sprintf("%T", x) // use type for name
-		return NewFile(name, r, w, c)
+		return NewFile(name, x, r, w, c)
 
 	default:
 		return x // external

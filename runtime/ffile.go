@@ -151,7 +151,7 @@ func File(env *Env, args ...Value) (Value, *Closure) {
 			writer = bufio.NewWriter(writer)
 		}
 	}
-	return Return(NewFile(name, reader, writer, f))
+	return Return(NewFile(name, f, reader, writer, f))
 }
 
 //  f.flush() flushes output on file f.

@@ -19,28 +19,32 @@ var _ io.ReadWriteCloser = &VFile{} // ensure promise is kept
 
 //  standard files, referenced (and changeable) by keyword / dynamic variables
 var (
-	STDIN  Value = NewFile("%stdin", bufio.NewReader(os.Stdin), nil, os.Stdin)
-	STDOUT Value = NewFile("%stdout", nil, bufio.NewWriter(os.Stdout), os.Stdout)
-	STDERR Value = NewFile("%stderr", nil, io.Writer(os.Stderr), os.Stderr)
+	STDIN Value = NewFile(
+		"%stdin", os.Stdin, bufio.NewReader(os.Stdin), nil, os.Stdin)
+	STDOUT Value = NewFile(
+		"%stdout", os.Stdout, nil, bufio.NewWriter(os.Stdout), os.Stdout)
+	STDERR Value = NewFile(
+		"%stderr", os.Stderr, nil, io.Writer(os.Stderr), os.Stderr)
 )
 
 type VFile struct {
-	Name   string    // name when opened
-	Reader io.Reader // reader, if open for read
-	Writer io.Writer // writer, if open for write
-	Closer io.Closer // closer
+	Name     string      // name when opened
+	Original interface{} // underlying object (os.File? other Reader or Writer?)
+	Reader   io.Reader   // reader, if open for read
+	Writer   io.Writer   // writer, if open for write
+	Closer   io.Closer   // closer; the underlying file, if buffered
 }
 
 var FileType = NewType("file", "f", rFile, File, FileMethods,
 	"file", "name,flags", "open a file")
 
-//  NewFile(name, reader, writer, closer) -- construct new Goaldi file
-func NewFile(name string,
+//  NewFile(name, file, reader, writer, closer) -- construct new Goaldi file
+func NewFile(name string, file interface{},
 	reader io.Reader, writer io.Writer, closer io.Closer) *VFile {
 	if closer == nil { // need a closer; nil means already closed
 		closer = ioutil.NopCloser(reader)
 	}
-	return &VFile{name, reader, writer, closer}
+	return &VFile{name, file, reader, writer, closer}
 }
 
 //  VFile.String -- conversion to Go string returns "f:name"
@@ -80,9 +84,27 @@ func (v *VFile) Import() Value {
 	return v
 }
 
-//  VFile.Export returns itself, which implements the ReadWriteCloser interface
+//  VFile.Export exports a Goaldi file
+//  If the file is buffered, it returns the Goaldi file,
+//  which implements the ReadWriteCloser interface.
+//  If not, it returns the underlying file.
 func (v *VFile) Export() interface{} {
-	return v
+	if v.IsBuffered() {
+		return v // Goaldi file is buffered; return that
+	} else {
+		return v.Original // no; return underlying file
+	}
+}
+
+//  VFile.IsBuffered returns true if f is buffered.
+func (v *VFile) IsBuffered() bool {
+	if _, ok := v.Reader.(*bufio.Reader); ok { // if input is buffered
+		return true
+	}
+	if _, ok := v.Writer.(*bufio.Writer); ok { // if output is buffered
+		return true
+	}
+	return false // neither is buffered
 }
 
 //  VFile.Read() calls io.Read().  This implements the Go io.Reader interface.
