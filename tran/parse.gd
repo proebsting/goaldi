@@ -611,7 +611,7 @@ procedure parser.parse_expr10() {
 		coord := self.cur_tok.coord
 		op := self.eat_token()
 		operand := self.parse_expr10()
-		case tmp_tok of {
+		case tmp_tok.tag of {
 			lex_SLASHSLASH:	return a_Unop("/", operand, coord)
 			lex_CONCAT:		return a_RepAlt(operand, coord)
 			lex_LCONCAT:	return a_RepAlt(operand, coord)
