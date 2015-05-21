@@ -39,9 +39,12 @@ procedure json_list(f, p, indent) {
 
 procedure json_record(f, p, indent) {
 	f.writes("{\n", indent, "\t\"tag\" : ", image(type(p).name()))
+	^t := p.type()
 	every ^i := 1 to *p do {
-		f.writes(",\n", indent, "\t", image(p.type()[i]), " : ")
-		json(f, p[i], indent || "\t")
+		if ^v := \p[i] then {	# omit null fields
+			f.writes(",\n", indent, "\t\"", t[i], "\" : ")
+			json(f, v, indent || "\t")
+		}
 	}
 	f.writes("\n", indent, "}")
 }
