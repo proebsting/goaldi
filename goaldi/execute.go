@@ -100,8 +100,11 @@ func execute(f *pr_frame, label string) (rv g.Value, rc *g.Closure) {
 				case ir.Ir_Create:
 					fnew := newframe(f)
 					fnew.cxout = g.NewChannel(0)
-					fnew.env = g.NewEnv(f.env)
-					fnew.env.ThreadID = <-g.TID
+					e := g.NewEnv(f.env)
+					e.ThreadID = <-g.TID
+					e.VarMap["current"] = fnew.cxout // set %current
+					fnew.env = e
+					fnew.vars[i.Scope] = e
 					fnew.coord = i.Coord
 					if i.Lhs != "" {
 						f.temps[i.Lhs] = fnew.cxout

@@ -72,12 +72,6 @@ func EnvInit(name string, v Value) {
 //  Initial dynamic variables
 func init() {
 
-	// internal flag
-	EnvInit("gostack", NilValue)
-
-	// %gpath = argv[0]
-	EnvInit("gpath", NewString(os.Args[0]))
-
 	// math constants
 	EnvInit("e", E)
 	EnvInit("phi", PHI)
@@ -87,6 +81,13 @@ func init() {
 	EnvInit("stdin", STDIN)
 	EnvInit("stdout", STDOUT)
 	EnvInit("stderr", STDERR)
+
+	// execution environment
+	EnvInit("current", NilValue) // output channel of current co-expr
+
+	// internal flags
+	EnvInit("gostack", NilValue)            // if non-nil, dump Go stack on panic
+	EnvInit("gpath", NewString(os.Args[0])) // argv[0] for use by translator
 }
 
 //	ShowEnvironment(f) -- list standard environment on file f

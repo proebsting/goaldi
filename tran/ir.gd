@@ -41,7 +41,7 @@ record ir_IndirectGoto(coord, targetTmpLabel, labelList)
 record ir_Succeed(coord, expr, resumeLabel)
 record ir_Fail(coord)
 
-record ir_Create(coord, lhs, coexpLabel)
+record ir_Create(coord, lhs, coexpLabel, scope)
 record ir_CoRet(coord, value, resumeLabel)
 record ir_CoFail(coord)
 

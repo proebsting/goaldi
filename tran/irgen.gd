@@ -1109,7 +1109,7 @@ procedure ir_a_Create(p, st, target, bounded, rval) {
 	st.createflag := nil
 
 	suspend ir_chunk(p.ir.start, [
-		ir_Create(p.coord, target, p.expr.ir.start),
+		ir_Create(p.coord, target, p.expr.ir.start, ir_stname(st.syms)),
 		ir_Goto(p.coord, p.ir.success),
 		])
 	/bounded & suspend ir_chunk(p.ir.resume, [ ir_Goto(p.coord, p.ir.failure) ])

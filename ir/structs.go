@@ -253,6 +253,7 @@ type Ir_Create struct {
 	Coord      string
 	Lhs        string
 	CoexpLabel string
+	Scope      string
 }
 
 type Ir_CoRet struct {
