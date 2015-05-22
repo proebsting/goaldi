@@ -40,6 +40,12 @@ accept:	gtran
 			@echo '------'
 			cp -p gtran stable-gtran
 
+#  get profiling data (by running gtran to compile itself) and start pprof
+profile: gtran
+			goaldi -x -P -t gtran -t -c *.gd
+			: suggested pprof commands: "top25" or "weblist main"
+			go tool pprof $(GOBIN)/goaldi ./PROFILE
+
 #  clean up build products
 clean:
-			rm -f *.gir gtran gtran.go
+			rm -f *.gir gtran gtran.go PROFILE
