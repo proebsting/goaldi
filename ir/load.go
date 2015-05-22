@@ -46,7 +46,13 @@ func Load(rdr io.Reader) (comments []string, ircode [][]interface{}) {
 	bzheader := []byte("BZh91AY&SY")
 	b, _ := buffi.Peek(10)
 	if len(b) == 10 && bytes.Compare(b, bzheader) == 0 {
-		gcode = bzreader(buffi)
+		gcode = bzip2.NewReader(buffi) // use decompressing reader
+		if runtime.NumCPU() > 1 {
+			// with multiple CPUs, read in parallel
+			// (buffer size tuned empirically on Perigrine.cs 22-May-2015)
+			gcode = ParallelReader(gcode, 16*1024)
+			defer func() { gcode.(io.Closer).Close() }()
+		}
 	}
 
 	//  load the JSON-encoded program
@@ -68,35 +74,6 @@ func Load(rdr io.Reader) (comments []string, ircode [][]interface{}) {
 		fileNumber++
 	}
 	return comments, ircode
-}
-
-//  bzreader -- return reader that decompresses bz2 format.
-func bzreader(ifile io.Reader) io.Reader {
-	bzr := bzip2.NewReader(ifile)
-	if runtime.NumCPU() == 1 {
-		return bzr
-	}
-	// we have multiple CPUs; run the decompression concurrently
-	prdr, pwtr := io.Pipe()
-	go func() {
-		// this is a little faster than io.Copy (possibly due to buffer size)
-		// buffer size tuned empirically on Perigrine.cs 22-May-2015
-		buf := make([]byte, 512*1024)
-		for {
-			n, err := bzr.Read(buf)
-			if n > 0 {
-				pwtr.Write(buf[:n])
-			}
-			if err == io.EOF {
-				break
-			}
-			if err != nil {
-				panic(err)
-			}
-		}
-		pwtr.Close()
-	}()
-	return prdr
 }
 
 //  jstructs -- replace maps by IR structs in Json tree
