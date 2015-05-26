@@ -52,7 +52,8 @@ func execute(f *pr_frame, label string) (rv g.Value, rc *g.Closure) {
 			}
 		}()
 
-		// interpret the IR code
+		// interpret the IR code (main loop)
+		// a "goto" in the IR code sets "label" and jumps to NextChunk
 	NextChunk:
 		for {
 			if opt_trace {
@@ -63,8 +64,10 @@ func execute(f *pr_frame, label string) (rv g.Value, rc *g.Closure) {
 				panic(g.Malfunction("No instructions for IR label: " + label))
 			}
 			inchunk := label
-			label = "UNSET"              // should never see this
-			for _, insn := range ilist { // execute insns in chunk
+			label = "UNSET"        // should never see this
+			for j := range ilist { // execute insns in chunk
+			Dispatch: // jump target for reissuing JIT-modified instruction
+				insn := ilist[j]
 				if opt_trace {
 					t := fmt.Sprintf("%T", insn)[6:]
 					fmt.Printf("[%d]    %s %v\n", f.env.ThreadID, t, insn)
@@ -130,16 +133,22 @@ func execute(f *pr_frame, label string) (rv g.Value, rc *g.Closure) {
 					if i.Lhs != "" {
 						f.temps[i.Lhs] = v
 					}
+				case Ins_Literal: // replaces ir_{Nil,Int,Real,Str}Lit
+					f.temps[i.Lhs] = i.Value
 				case ir.Ir_NilLit:
-					f.temps[i.Lhs] = g.NilValue
+					ilist[j] = Ins_Literal{i.Lhs, g.NilValue}
+					goto Dispatch
 				case ir.Ir_IntLit:
 					n, _ := g.ParseNumber(i.Val)
-					f.temps[i.Lhs] = g.NewNumber(n)
+					ilist[j] = Ins_Literal{i.Lhs, g.NewNumber(n)}
+					goto Dispatch
 				case ir.Ir_RealLit:
 					n, _ := g.ParseNumber(i.Val)
-					f.temps[i.Lhs] = g.NewNumber(n)
+					ilist[j] = Ins_Literal{i.Lhs, g.NewNumber(n)}
+					goto Dispatch
 				case ir.Ir_StrLit:
-					f.temps[i.Lhs] = g.NewString(i.Val)
+					ilist[j] = Ins_Literal{i.Lhs, g.NewString(i.Val)}
+					goto Dispatch
 				case ir.Ir_MakeList:
 					n := len(i.ValueList)
 					a := make([]g.Value, n)
