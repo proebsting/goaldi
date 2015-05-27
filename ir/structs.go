@@ -204,9 +204,9 @@ type Ir_OpFunction struct {
 	Lhs        string // may be nil
 	Lhsclosure string // may be nil
 	Fn         string
-	ArgList    []interface{} // heterogeneous
-	Rval       string        // may be nil
-	FailLabel  string        // may be nil
+	ArgList    []string
+	Rval       string // may be nil
+	FailLabel  string // may be nil
 }
 
 type Ir_Call struct {
@@ -214,7 +214,7 @@ type Ir_Call struct {
 	Lhs        string
 	Lhsclosure string
 	Fn         string
-	ArgList    []interface{} // heterogeneous
+	ArgList    []string
 	NameList   []string
 	FailLabel  string // may be nil
 	Scope      string

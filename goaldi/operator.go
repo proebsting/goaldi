@@ -26,9 +26,9 @@ type iOperator struct {
 	Lhs        string // may be nil
 	Lhsclosure string // may be nil
 	Fn         string // opstring for tracing purposes
-	Arg0       interface{}
-	Arg1       interface{}
-	Arg2       interface{}
+	Arg0       string
+	Arg1       string // may be nil
+	Arg2       string // may be nil
 	FailLabel  string // may be nil
 }
 
@@ -209,13 +209,10 @@ func operate(env *g.Env, f *pr_frame, i *iOperator) (g.Value, *g.Closure) {
 }
 
 //  argval retrieves an argument for an operator and possibly deferences it
-func argval(f *pr_frame, v interface{}, isvar uint16) g.Value {
-	v = f.temps[v.(string)]
+func argval(f *pr_frame, a string, isvar uint16) g.Value {
+	v := f.temps[a]
 	if isvar == 0 {
 		v = g.Deref(v)
-	}
-	if v == nil {
-		panic("Go nil in Operator/ArgVal")
 	}
 	return g.Value(v)
 }

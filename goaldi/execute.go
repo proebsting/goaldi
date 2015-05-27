@@ -265,7 +265,12 @@ func execute(f *pr_frame, label string) (rv g.Value, rc *g.Closure) {
 				case ir.Ir_Call:
 					f.coord = i.Coord
 					proc := g.Deref(f.temps[i.Fn].(g.Value))
-					arglist := getArgs(f, 0, i.ArgList)
+					n := len(i.ArgList)
+					arglist := make([]g.Value, n)
+					for j, a := range i.ArgList {
+						v := f.temps[a]
+						arglist[j] = g.Deref(v.(g.Value))
+					}
 					f.offv = proc
 					e := f.vars[i.Scope].(*g.Env) // get correct environment
 					v, c := proc.(g.ICall).Call(e, arglist, i.NameList)
@@ -307,31 +312,6 @@ func execute(f *pr_frame, label string) (rv g.Value, rc *g.Closure) {
 
 	// start up the interpreter
 	return self.Resume()
-}
-
-//  getArgs -- load values from heterogeneous ArgList slice field
-//  nd is the number of leading arguments that should *not* be dereferenced
-func getArgs(f *pr_frame, nd int, arglist []interface{}) []g.Value {
-	n := len(arglist)
-	argl := make([]g.Value, n)
-	for i, a := range arglist {
-		switch t := a.(type) {
-		case string:
-			a = f.temps[t]
-		default:
-			// nothing to do: use entry as is
-		}
-		if a == nil {
-			panic(g.Malfunction(
-				fmt.Sprintf("Go nil in getArgs(): i=%d %#v", i, arglist[i])))
-		}
-		if i < nd {
-			argl[i] = a.(g.Value)
-		} else {
-			argl[i] = g.Deref(a.(g.Value))
-		}
-	}
-	return argl
 }
 
 //  irSelect -- execute select statement, returning label of chosen case body
