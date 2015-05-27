@@ -8,13 +8,19 @@ import (
 	g "goaldi/runtime"
 )
 
+//  iLiteral replaces Ir_NilLit, Ir_IntLit, Ir_RealLit, Ir_StrLit
+type iLiteral struct {
+	Lhs   string
+	Value g.Value
+}
+
 //  coexecute wraps an execute call to catch a panic in a co-expression
 func coexecute(f *pr_frame, label string) (g.Value, *g.Closure) {
 	defer g.Catcher(f.env)
 	return execute(f, label)
 }
 
-//  execute IR instructions for procedure or co-expression
+//  execute dispatches and interprets IR instructions for a procedure or coexpr
 func execute(f *pr_frame, label string) (rv g.Value, rc *g.Closure) {
 
 	// set up error catcher to call user recovery procedure
@@ -133,21 +139,21 @@ func execute(f *pr_frame, label string) (rv g.Value, rc *g.Closure) {
 					if i.Lhs != "" {
 						f.temps[i.Lhs] = v
 					}
-				case Ins_Literal: // replaces ir_{Nil,Int,Real,Str}Lit
+				case iLiteral: // replaces ir_{Nil,Int,Real,Str}Lit
 					f.temps[i.Lhs] = i.Value
 				case ir.Ir_NilLit:
-					ilist[j] = Ins_Literal{i.Lhs, g.NilValue}
+					ilist[j] = iLiteral{i.Lhs, g.NilValue}
 					goto Dispatch
 				case ir.Ir_IntLit:
 					n, _ := g.ParseNumber(i.Val)
-					ilist[j] = Ins_Literal{i.Lhs, g.NewNumber(n)}
+					ilist[j] = iLiteral{i.Lhs, g.NewNumber(n)}
 					goto Dispatch
 				case ir.Ir_RealLit:
 					n, _ := g.ParseNumber(i.Val)
-					ilist[j] = Ins_Literal{i.Lhs, g.NewNumber(n)}
+					ilist[j] = iLiteral{i.Lhs, g.NewNumber(n)}
 					goto Dispatch
 				case ir.Ir_StrLit:
-					ilist[j] = Ins_Literal{i.Lhs, g.NewString(i.Val)}
+					ilist[j] = iLiteral{i.Lhs, g.NewString(i.Val)}
 					goto Dispatch
 				case ir.Ir_MakeList:
 					n := len(i.ValueList)
@@ -223,9 +229,13 @@ func execute(f *pr_frame, label string) (rv g.Value, rc *g.Closure) {
 					// so that the remainder can get garbage collected
 					f.temps[i.Lhs] = irProcedure(ProcTable[i.Name], f.vars)
 				case ir.Ir_OpFunction:
-					f.coord = i.Coord
-					v, c := operator(f.env, f, &i)
-					if i.Rval != "" && v != nil { // if an rval is required
+					// replace by equivalent iOperator and re-dispatch
+					e := getOperator(&i)
+					ilist[j] = *e
+					goto Dispatch
+				case iOperator:
+					v, c := operate(f.env, f, &i)         // execute operation
+					if (i.Flags&rflag) != 0 && v != nil { // if rval needed
 						v = g.Deref(v) // then make sure we have one
 						// note v can be set nil by failing Deref
 					}
