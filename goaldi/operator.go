@@ -23,12 +23,12 @@ type iOperator struct {
 	OpCode     uint16 // integer opcode for dispatching
 	Flags      uint16 // flags
 	Coord      string
-	Lhs        string // may be nil
-	Lhsclosure string // may be nil
+	Lhs        int    // may be zero
+	Lhsclosure int    // may be zero
 	Fn         string // opstring for tracing purposes
-	Arg0       string
-	Arg1       string // may be nil
-	Arg2       string // may be nil
+	Arg0       int
+	Arg1       int    // may be nil
+	Arg2       int    // may be nil
 	FailLabel  string // may be nil
 }
 
@@ -209,8 +209,8 @@ func operate(env *g.Env, f *pr_frame, i *iOperator) (g.Value, *g.Closure) {
 }
 
 //  argval retrieves an argument for an operator and possibly deferences it
-func argval(f *pr_frame, a string, isvar uint16) g.Value {
-	v := f.temps[a]
+func argval(f *pr_frame, t int, isvar uint16) g.Value {
+	v := f.temps[t]
 	if isvar == 0 {
 		v = g.Deref(v)
 	}

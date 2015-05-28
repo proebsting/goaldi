@@ -1837,7 +1837,7 @@ procedure ir_key(str) {
 
 procedure ir_tmp(st) {
 	st.tmp +:= 1
-	return ir_Tmp("tmp" || st.tmp)
+	return ir_Tmp(9000 + st.tmp)
 }
 
 procedure ir_tmploc(st) {
@@ -1847,7 +1847,7 @@ procedure ir_tmploc(st) {
 
 procedure ir_tmpclosure(st) {
 	st.tmp +:= 1
-	return ir_TmpClosure("closure" || st.tmp)
+	return ir_TmpClosure(st.tmp)
 }
 
 procedure ir_make_sentinel(L) {

@@ -116,6 +116,14 @@ func structFor(m map[string]interface{}) interface{} {
 
 //  setField -- set field in struct
 func setField(f reflect.Value, key string, val interface{}) {
+
+	defer func() {
+		if x := recover(); x != nil {
+			fmt.Println("SETFIELD PANIC: ", f, f.Interface(), key, val)
+			panic(x)
+		}
+	}()
+
 	if key == "Tag" || val == nil {
 		return // nothing to do
 	}
@@ -123,14 +131,18 @@ func setField(f reflect.Value, key string, val interface{}) {
 		panic(g.Malfunction("Cannot set key " + key))
 	}
 
-	// prefix file number "Fn" or "Name" or "Parent" beginning with "$"
-	if (key == "Name" || key == "Fn" || key == "Parent") && val.(string)[0] == '$' {
-		val = fmt.Sprintf("%d%s", fileNumber, val)
-	}
-
 	t := f.Type()
 	if t.Kind() != reflect.Slice || t.Elem().Kind() == reflect.Interface {
 		// set a simple value
+		if t.Kind() == reflect.Int { // ints are read as floats
+			val = int(val.(float64))
+		} else if t.Kind() == reflect.String && val.(string)[0] == '$' {
+			// prefix file number to Name/Parent/Fn beginning with '$'
+			switch key {
+			case "Name", "Fn", "Parent":
+				val = fmt.Sprintf("%d%s", fileNumber, val)
+			}
+		}
 		v := reflect.ValueOf(val)
 		if f.Kind() == reflect.Ptr && v.Kind() != reflect.Ptr {
 			// we have a value but need a pointer;
@@ -147,6 +159,9 @@ func setField(f reflect.Value, key string, val interface{}) {
 	resultp := reflect.New(t)
 	result := resultp.Elem()
 	for _, v := range val.([]interface{}) {
+		if f, ok := v.(float64); ok { // if float64
+			v = int(f) // convert to int
+		}
 		result = reflect.Append(result, reflect.ValueOf(v))
 	}
 	f.Set(result)

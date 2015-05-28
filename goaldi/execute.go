@@ -10,7 +10,7 @@ import (
 
 //  iLiteral replaces Ir_NilLit, Ir_IntLit, Ir_RealLit, Ir_StrLit
 type iLiteral struct {
-	Lhs   string
+	Lhs   int
 	Value g.Value
 }
 
@@ -44,7 +44,7 @@ func execute(f *pr_frame, label string) (rv g.Value, rc *g.Closure) {
 	}()
 
 	// create re-entrant interpreter
-	f.temps = make(map[string]interface{}) // each cx needs own copy
+	f.temps = make(map[int]interface{}) // each cx needs own copy
 	var self *g.Closure
 	self = &g.Closure{func() (g.Value, *g.Closure) {
 
@@ -103,7 +103,7 @@ func execute(f *pr_frame, label string) (rv g.Value, rc *g.Closure) {
 					} else {
 						f.onerr = f.offv.(*g.VProcedure) // else must be proc
 					}
-					if i.Lhs != "" {
+					if i.Lhs != 0 {
 						f.temps[i.Lhs] = f.onerr
 					}
 				case ir.Ir_Create:
@@ -115,7 +115,7 @@ func execute(f *pr_frame, label string) (rv g.Value, rc *g.Closure) {
 					fnew.env = e
 					fnew.vars[i.Scope] = e
 					fnew.coord = i.Coord
-					if i.Lhs != "" {
+					if i.Lhs != 0 {
 						f.temps[i.Lhs] = fnew.cxout
 					}
 					go coexecute(fnew, i.CoexpLabel)
@@ -136,7 +136,7 @@ func execute(f *pr_frame, label string) (rv g.Value, rc *g.Closure) {
 					f.coord = i.Coord
 					e := f.vars[i.Scope].(*g.Env) // get correct environment
 					v := e.Lookup(i.Name, i.Rval != "")
-					if i.Lhs != "" {
+					if i.Lhs != 0 {
 						f.temps[i.Lhs] = v
 					}
 				case iLiteral: // replaces ir_{Nil,Int,Real,Str}Lit
@@ -159,7 +159,7 @@ func execute(f *pr_frame, label string) (rv g.Value, rc *g.Closure) {
 					n := len(i.ValueList)
 					a := make([]g.Value, n)
 					for j, v := range i.ValueList {
-						a[j] = g.Deref(f.temps[v.(string)])
+						a[j] = g.Deref(f.temps[v.(int)])
 					}
 					f.temps[i.Lhs] = g.InitList(a)
 				case ir.Ir_Var:
@@ -214,8 +214,7 @@ func execute(f *pr_frame, label string) (rv g.Value, rc *g.Closure) {
 					label = i.TargetLabel
 					continue NextChunk
 				case ir.Ir_IndirectGoto:
-					label = i.TargetTmpLabel
-					label = f.temps[label].(string)
+					label = f.temps[i.TargetTmpLabel].(string)
 					for _, s := range i.LabelList {
 						if s == label {
 							continue NextChunk
@@ -240,10 +239,10 @@ func execute(f *pr_frame, label string) (rv g.Value, rc *g.Closure) {
 						// note v can be set nil by failing Deref
 					}
 					if v != nil {
-						if i.Lhs != "" {
+						if i.Lhs != 0 {
 							f.temps[i.Lhs] = v
 						}
-						if i.Lhsclosure != "" {
+						if i.Lhsclosure != 0 {
 							f.temps[i.Lhsclosure] = c
 						}
 					} else if i.FailLabel != "" {
@@ -258,7 +257,7 @@ func execute(f *pr_frame, label string) (rv g.Value, rc *g.Closure) {
 						if i.Rval != "" { // if an rval is required
 							v = g.Deref(v) // then make sure we have one
 						}
-						if i.Lhs != "" {
+						if i.Lhs != 0 {
 							f.temps[i.Lhs] = v
 						}
 					}
@@ -275,10 +274,10 @@ func execute(f *pr_frame, label string) (rv g.Value, rc *g.Closure) {
 					e := f.vars[i.Scope].(*g.Env) // get correct environment
 					v, c := proc.(g.ICall).Call(e, arglist, i.NameList)
 					if v != nil {
-						if i.Lhs != "" {
+						if i.Lhs != 0 {
 							f.temps[i.Lhs] = v
 						}
-						if i.Lhsclosure != "" {
+						if i.Lhsclosure != 0 {
 							f.temps[i.Lhsclosure] = c
 						}
 					} else if i.FailLabel != "" {
@@ -293,10 +292,10 @@ func execute(f *pr_frame, label string) (rv g.Value, rc *g.Closure) {
 						v, c = c.Go()
 					}
 					if v != nil {
-						if i.Lhs != "" {
+						if i.Lhs != 0 {
 							f.temps[i.Lhs] = v
 						}
-						if i.Lhsclosure != "" {
+						if i.Lhsclosure != 0 {
 							f.temps[i.Lhsclosure] = c
 						}
 					} else if i.FailLabel != "" {

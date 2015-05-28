@@ -107,8 +107,8 @@ type Ir_NoOp struct {
 
 type Ir_Catch struct {
 	Coord string
-	Lhs   string
-	Fn    string
+	Lhs   int
+	Fn    int
 }
 
 type Ir_EnterScope struct {
@@ -128,7 +128,7 @@ type Ir_ExitScope struct {
 
 type Ir_Var struct {
 	Coord     string
-	Lhs       string
+	Lhs       int
 	Name      string
 	Namespace string
 	Scope     string
@@ -137,7 +137,7 @@ type Ir_Var struct {
 
 type Ir_Key struct {
 	Coord string
-	Lhs   string // may be nil
+	Lhs   int // may be nil
 	Name  string
 	Scope string
 	Rval  string // may be nil
@@ -145,76 +145,76 @@ type Ir_Key struct {
 
 type Ir_NilLit struct {
 	Coord string
-	Lhs   string
+	Lhs   int
 }
 
 type Ir_IntLit struct {
 	Coord string
-	Lhs   string
+	Lhs   int
 	Val   string
 }
 
 type Ir_RealLit struct {
 	Coord string
-	Lhs   string
+	Lhs   int
 	Val   string
 }
 
 type Ir_StrLit struct {
 	Coord string
-	Lhs   string
+	Lhs   int
 	Len   string // length of the UTF-8 encoding
 	Val   string // individual bytes of the UTF-8 encoding
 }
 
 type Ir_MakeClosure struct {
 	Coord string
-	Lhs   string
+	Lhs   int
 	Name  string
 }
 
 type Ir_Move struct {
 	Coord string
-	Lhs   string
-	Rhs   string
+	Lhs   int
+	Rhs   int
 }
 
 type Ir_MoveLabel struct {
 	Coord string
-	Lhs   string
+	Lhs   int
 	Label string
 }
 
 type Ir_MakeList struct {
 	Coord     string
-	Lhs       string
+	Lhs       int
 	ValueList []interface{} // heterogeneous
 }
 
 type Ir_Field struct {
 	Coord string
-	Lhs   string // may be nil
-	Expr  string
+	Lhs   int // may be nil
+	Expr  int
 	Field string
 	Rval  string // may be nil
 }
 
 type Ir_OpFunction struct {
 	Coord      string
-	Lhs        string // may be nil
-	Lhsclosure string // may be nil
+	Lhs        int // may be nil
+	Lhsclosure int // may be nil
 	Fn         string
-	ArgList    []string
+	ArgList    []int
 	Rval       string // may be nil
 	FailLabel  string // may be nil
 }
 
 type Ir_Call struct {
 	Coord      string
-	Lhs        string
-	Lhsclosure string
-	Fn         string
-	ArgList    []string
+	Lhs        int
+	Lhsclosure int
+	Fn         int
+	ArgList    []int
 	NameList   []string
 	FailLabel  string // may be nil
 	Scope      string
@@ -222,9 +222,9 @@ type Ir_Call struct {
 
 type Ir_ResumeValue struct {
 	Coord      string
-	Lhs        string // may be nil
-	Lhsclosure string
-	Closure    string
+	Lhs        int // may be nil
+	Lhsclosure int
+	Closure    int
 	FailLabel  string // may be nil
 }
 
@@ -235,13 +235,13 @@ type Ir_Goto struct {
 
 type Ir_IndirectGoto struct {
 	Coord          string
-	TargetTmpLabel string
+	TargetTmpLabel int
 	LabelList      []string
 }
 
 type Ir_Succeed struct {
 	Coord       string
-	Expr        string
+	Expr        int
 	ResumeLabel string // may be nil
 }
 
@@ -251,14 +251,14 @@ type Ir_Fail struct {
 
 type Ir_Create struct {
 	Coord      string
-	Lhs        string
+	Lhs        int
 	CoexpLabel string
 	Scope      string
 }
 
 type Ir_CoRet struct {
 	Coord       string
-	Value       string
+	Value       int
 	ResumeLabel string
 }
 
@@ -275,14 +275,14 @@ type Ir_Select struct {
 type Ir_SelectCase struct {
 	Coord     string
 	Kind      string // "send" | "receive" | "default"
-	Lhs       string
-	Rhs       string
+	Lhs       int
+	Rhs       int
 	BodyLabel string
 }
 
 type Ir_NoValue struct {
 	Coord string
-	Lhs   string
+	Lhs   int
 }
 
 type Ir_Unreachable struct {

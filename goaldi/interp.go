@@ -13,7 +13,7 @@ type pr_frame struct {
 	info  *pr_Info               // static procedure information
 	args  []g.Value              // arglist as called
 	vars  map[string]interface{} // variables and scopes
-	temps map[string]interface{} // temporaries
+	temps map[int]interface{}    // temporaries
 	coord string                 // last known source location
 	offv  g.Value                // offending value for traceback
 	cxout g.VChannel             // co-expression output pipe
