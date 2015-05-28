@@ -13,6 +13,8 @@ TMP1=/tmp/libdoc.$$a
 TMP2=/tmp/libdoc.$$b
 trap 'rm -f $TMP1 $TMP2; exit' 0 1 2 15
 
+set -e	# quit on error
+
 #  get the Goaldi procedure listing
 goaldi -l -E /dev/null >$TMP1
 
