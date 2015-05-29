@@ -39,7 +39,10 @@ build:
 #  bootstrap build goaldi using stable translator binary
 boot:
 	cd tran; $(MAKE) boot
+	go build -o gexe $(PROGS)
+	./gexe -l /dev/null	# validate build
 	go install $(PROGS)
+	rm -f tran/gtran.go gexe
 
 #  full three-pass rebuild using bootstrapping from old stable front end
 #%#% this does some intermediate installs of untested code
