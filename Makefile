@@ -7,10 +7,8 @@
 #	$GOPATH/bin is part of search path
 #
 #	Goaldi builds itself by a bootstrapping process.
-#	If you break it so badly that this doesn't work:
-#		run "make clean uninstall"  (probably optional, but a good idea)
-#		restore the original source code
-#		run "make full"
+#	Run "make clean" to force a full reboot after making an incompatible
+#	IR change or after breaking things so badly it can't build itself.
 
 PKG = goaldi
 PROGS = $(PKG)/goaldi
@@ -34,6 +32,8 @@ $(HOOKFILE):	$(HOOKMASTER)
 build:
 	+$(GOBIN)/goaldi -x -l /dev/null || $(MAKE) boot
 	cd tran; $(MAKE)
+	go build -o gexe $(PROGS)
+	./gexe -l /dev/null	# validate build
 	go install $(PROGS)
 
 #  bootstrap build goaldi using stable translator binary
@@ -42,6 +42,7 @@ boot:
 	go install $(PROGS)
 
 #  full three-pass rebuild using bootstrapping from old stable front end
+#%#% this does some intermediate installs of untested code
 full:
 	#
 	# make an executable that embeds an old version of the front end
@@ -112,7 +113,7 @@ clean:
 	cd tests; $(MAKE) clean
 	cd doc; $(MAKE) clean
 	rm -rf $(GOBIN)/../pkg/*/goaldi
-	rm -rf Goaldi-*-*
+	rm -rf gexe Goaldi-*-*
 
 #  remove files placed elsewhere in $GOPATH
 uninstall:
