@@ -42,12 +42,12 @@ quick:		build qktest expt
 #  -- setup targets --
 
 gcommand:	# ensure that we have a "goaldi" command
-	+command -v goaldi >/dev/null || $(MAKE) boot
+	+command -v goaldi >/dev/null || make boot
 
 boot:		# install goaldi using stable pre-built translator IR code
-	cd tran; $(MAKE) boot
+	+cd tran; make boot
 	go build -o gexe $(PROGS)
-	$(MAKE) install
+	+make install
 	rm -f tran/gtran.go gexe
 
 $(HOOKFILE): $(HOOKMASTER)	# configure Git pre-commit hook
@@ -57,7 +57,7 @@ $(HOOKFILE): $(HOOKMASTER)	# configure Git pre-commit hook
 #  -- build targets --
 
 gexe: 
-	cd tran; $(MAKE)
+	+cd tran; make
 	go build -o gexe $(PROGS)
 	./gexe -l /dev/null	# validate build
 
@@ -66,7 +66,7 @@ install: gexe
 	cp ./gexe $(GOBIN)/goaldi
 
 doc:	.FORCE
-	cd doc; $(MAKE)
+	+cd doc; make
 
 
 #  full three-pass rebuild using bootstrapping from old stable front end
@@ -75,27 +75,27 @@ full:
 	#
 	# make an executable that embeds an old version of the front end
 	#
-	cd tran; $(MAKE) boot
+	+cd tran; make boot
 	cd runtime; go test
 	go install $(PROGS)
-	cd tests; $(MAKE) quick
+	+cd tests; make quick
 	#
 	# make an executable embedding the latest front end, built by the old one
 	#
-	cd tran; $(MAKE) clean; $(MAKE) GEN=1 gtran.go
+	+cd tran; make clean; make GEN=1 gtran.go
 	go install $(PROGS)
-	cd tests; $(MAKE) quick
+	+cd tests; make quick
 	#
 	# make an executable embedding the latest front end as built by itself
 	#
-	cd tran; $(MAKE) clean; $(MAKE) GEN=2 gtran.go
+	+cd tran; make clean; make GEN=2 gtran.go
 	go install $(PROGS)
-	$(MAKE) doc
-	cd tests; $(MAKE) quick
+	+make doc
+	+cd tests; make quick
 	#
 	# looks good in quick tests; now run full suite
 	#
-	$(MAKE) test
+	+make test
 
 
 #  -- testing targets --
@@ -103,12 +103,12 @@ full:
 #  run Go unit tests; build and link demos; run Goaldi test suite
 test:
 	cd runtime; go test
-	cd demos; $(MAKE) link
-	cd tests; $(MAKE)
+	+cd demos; make link
+	+cd tests; make
 
 #  run a single quick test
 qktest:
-	cd tests; $(MAKE) quick
+	+cd tests; make quick
 
 #  run expt.gd (presumably the test of the moment) if present
 #  passes $GXOPTS to interpreter if set in environment
@@ -117,7 +117,7 @@ expt:
 
 #  run demo programs (non-automated, with output to stdout)
 demos: .FORCE
-	cd demos; $(MAKE)
+	+cd demos; make
 
 
 #  -- miscellaneous targets --
@@ -137,7 +137,7 @@ bundle:
 #  install the newly built translator as the stable version for future builds
 #  (be sure this is a good one or you'll lose the ability to bootstrap)
 accept:
-	cd tran; $(MAKE) accept
+	+cd tran; make accept
 
 #  a prerequesite target to force unconditional rebuild of dependent items
 .FORCE:
@@ -149,9 +149,9 @@ accept:
 #  and also subpackages built and saved in $GOPATH
 clean:
 	go clean $(PKG) $(PROGS)
-	cd tran; $(MAKE) clean
-	cd tests; $(MAKE) clean
-	cd doc; $(MAKE) clean
+	+cd tran; make clean
+	+cd tests; make clean
+	+cd doc; make clean
 	rm -rf $(GOBIN)/../pkg/*/goaldi
 	rm -rf gexe Goaldi-*-*
 

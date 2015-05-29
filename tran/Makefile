@@ -28,7 +28,7 @@ gtran:	$(GIR)
 gtran0:
 			rm -f *.gir
 			$(GOALDI) -c $(SRC)
-			$(MAKE) gtran
+			+make gtran
 			$(GOALDI) -x gtran -c $(SRC)
 			mv gtran gtran0
 

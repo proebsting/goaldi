@@ -13,8 +13,8 @@ quick:
 	GOALDI=$(GOALDI) ./runtest.sh alltypes
 
 
-gir:	; $(MAKE) F=c X=gir derivatives   # make .gir for every .gd file
-gia:	; $(MAKE) F=a X=gia derivatives   # make .gia for every .gd file
+gir:	; +make F=c X=gir derivatives   # make .gir for every .gd file
+gia:	; +make F=a X=gia derivatives   # make .gia for every .gd file
 
 F=c
 X=gir
