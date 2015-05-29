@@ -69,33 +69,13 @@ doc:	.FORCE
 	+cd doc; make
 
 
-#  full three-pass rebuild using bootstrapping from old stable front end
-#%#% this does some intermediate installs of untested code
-full:
-	#
-	# make an executable that embeds an old version of the front end
-	#
-	+cd tran; make boot
-	cd runtime; go test
-	go install $(PROGS)
-	+cd tests; make quick
-	#
-	# make an executable embedding the latest front end, built by the old one
-	#
-	+cd tran; make clean; make GEN=1 gtran.go
-	go install $(PROGS)
-	+cd tests; make quick
-	#
-	# make an executable embedding the latest front end as built by itself
-	#
-	+cd tran; make clean; make GEN=2 gtran.go
-	go install $(PROGS)
-	+make doc
-	+cd tests; make quick
-	#
-	# looks good in quick tests; now run full suite
-	#
-	+make test
+#  self: rebuild using already-built gexe
+#  (this confirms that the latest version can build itself)
+self: gexe
+	rm -f tran/*.gir
+	cd tran; make GOALDI=../gexe
+	go build -o gexe $(PROGS)
+	./gexe -l /dev/null	# validate build
 
 
 #  -- testing targets --
