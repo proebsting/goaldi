@@ -16,7 +16,7 @@
 
 
 PKG = goaldi
-PROGS = $(PKG)/goaldi
+PROGS = $(PKG)/interp
 # GOBIN expands in the shell to {first component of $GOPATH}/bin
 GOBIN = $${GOPATH%%:*}/bin
 # a Git pre-commit hook validates formatting before check-in
@@ -106,7 +106,7 @@ demos: .FORCE
 format:
 	go fmt *.go
 	go fmt ir/*.go
-	go fmt goaldi/*.go
+	go fmt interp/*.go
 	go fmt runtime/*.go
 	go fmt extensions/*.go
 
