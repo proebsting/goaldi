@@ -3,7 +3,7 @@
 #  The default action runs all the demos,
 #  but inspecting and running them individually may be more useful.
 
-GOALDI = ../gexe
+GOALDI = ../goaldi
 
 default:	run
 

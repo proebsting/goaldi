@@ -20,7 +20,7 @@ mkdir $VNAME
 cp README.adoc $VNAME
 cp LICENSE.adoc $VNAME
 cp INSTALL.adoc $VNAME
-cp gexe $VNAME/goaldi
+cp goaldi $VNAME/goaldi
 (
 	file $VNAME/goaldi
 	echo `date` /`whoami`

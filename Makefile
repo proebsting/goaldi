@@ -33,7 +33,7 @@ default:	setup build test expt
 setup:  gcommand $(HOOKFILE)
 
 #  build:  make the goaldi executable and the extracted documentation
-build:	gexe doc
+build:	goaldi doc
 
 #  quick rebuild and test
 quick:		build qktest expt
@@ -46,9 +46,9 @@ gcommand:	# ensure that we have a "goaldi" command
 
 boot:		# install goaldi using stable pre-built translator IR code
 	+cd tran; make boot
-	go build -o gexe $(PROGS)
+	go build -o goaldi $(PROGS)
 	+make install
-	rm -f tran/gtran.go gexe
+	rm -f tran/gtran.go goaldi
 
 $(HOOKFILE): $(HOOKMASTER)	# configure Git pre-commit hook
 	test -d .git && cp $(HOOKMASTER) $(HOOKFILE) || :
@@ -56,26 +56,26 @@ $(HOOKFILE): $(HOOKMASTER)	# configure Git pre-commit hook
 
 #  -- build targets --
 
-gexe: 
+goaldi:
 	+cd tran; make
-	go build -o gexe $(PROGS)
-	./gexe -l /dev/null	# validate build
+	go build -o goaldi $(PROGS)
+	./goaldi -l /dev/null	# validate build
 
-install: gexe
-	./gexe -l /dev/null	# validate build
-	cp ./gexe $(GOBIN)/goaldi
+install: goaldi
+	./goaldi -l /dev/null	# validate build
+	cp ./goaldi $(GOBIN)/goaldi
 
 doc:	.FORCE
 	+cd doc; make
 
 
-#  self: rebuild using already-built gexe
+#  self: rebuild using already-built goaldi
 #  (this confirms that the latest version can build itself)
-self: gexe
+self: goaldi
 	rm -f tran/*.gir
-	cd tran; make GOALDI=../gexe
-	go build -o gexe $(PROGS)
-	./gexe -l /dev/null	# validate build
+	cd tran; make GOALDI=../goaldi
+	go build -o goaldi $(PROGS)
+	./goaldi -l /dev/null	# validate build
 
 
 #  -- testing targets --
@@ -93,7 +93,7 @@ qktest:
 #  run expt.gd (presumably the test of the moment) if present
 #  passes $GXOPTS to interpreter if set in environment
 expt:
-	test -f expt.gd && ./gexe $$GXOPTS expt.gd || :
+	test -f expt.gd && ./goaldi $$GXOPTS expt.gd || :
 
 #  run demo programs (non-automated, with output to stdout)
 demos: .FORCE
@@ -133,7 +133,7 @@ clean:
 	+cd tests; make clean
 	+cd doc; make clean
 	rm -rf $(GOBIN)/../pkg/*/goaldi
-	rm -rf gexe Goaldi-*-*
+	rm -rf goaldi Goaldi-*-*
 
 #  remove files placed elsewhere in $GOPATH
 uninstall:

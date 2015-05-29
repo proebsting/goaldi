@@ -1,6 +1,6 @@
 #  tests/Makefile -- Goaldi test files
 
-GOALDI = ../gexe
+GOALDI = ../goaldi
 
 default:  runall
 

@@ -1,6 +1,6 @@
 #  Makefile for Goaldi stdlib documentation
 
-GOALDI = ../gexe
+GOALDI = ../goaldi
 
 default:	stdlib.adoc
 
