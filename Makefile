@@ -1,48 +1,73 @@
 #  Goaldi Makefile
 #
-#  Assumptions:
-#	The "go" command is in the search path
-#	$GOPATH specifies a workspace as per the Go documentation
-#	$GOPATH/bin (first GOPATH component) is destination for built programs
-#	$GOPATH/bin is part of search path
+#  ASSUMPTIONS:
 #
-#	Goaldi builds itself by a bootstrapping process.
-#	Run "make clean" to force a full reboot after making an incompatible
-#	IR change or after breaking things so badly it can't build itself.
+#  (1) Go is installed and in the search path, and $GOPATH is set properly.
+#      IF NOT: Install Go before proceeding, and set $GOPATH.
+#
+#  (2) A functioning “goaldi” executable is in the search path.
+#      IF NOT: Remove any nonfunctional goaldi executable from the path.
+#      Then run “make boot” in a clean, unedited release package to build
+#      and install in $GOPATH/bin from a stable intermediate snapshot.
+#
+#  (3) Any intermediate build products are functional and mutually compatible.
+#      IF NOT: Run “make clean” to remove them after a failed build
+#      or after making incompatible changes to the intermediate representation.
+
 
 PKG = goaldi
 PROGS = $(PKG)/goaldi
 # GOBIN expands in the shell to {first component of $GOPATH}/bin
 GOBIN = $${GOPATH%%:*}/bin
+# a Git pre-commit hook validates formatting before check-in
+HOOKMASTER = ./pre-commit.hook
+HOOKFILE = .git/hooks/pre-commit
 
-#  default action: set up, build all, run test suite, run expt.gd if present
-default:	setup build doc test expt
+
+#  -- shorthand targets --
+
+#  default: configure, build all, run tests, run expt.gd if present
+default:	setup build test expt
+
+#  setup:  prepare for building and developing
+setup:  gcommand $(HOOKFILE)
+
+#  build:  make the goaldi executable and the extracted documentation
+build:	gexe doc
 
 #  quick rebuild and test
 quick:		build qktest expt
 
-#  configure Git pre-commit hook
-HOOKMASTER = ./pre-commit.hook
-HOOKFILE = .git/hooks/pre-commit
-setup:	$(HOOKFILE)
-$(HOOKFILE):	$(HOOKMASTER)
-	cp $(HOOKMASTER) $(HOOKFILE)
 
-#  build using existing translator if available
-build:
-	+$(GOBIN)/goaldi -x -l /dev/null || $(MAKE) boot
+#  -- setup targets --
+
+gcommand:	# ensure that we have a "goaldi" command
+	+command -v goaldi >/dev/null || $(MAKE) boot
+
+boot:		# install goaldi using stable pre-built translator IR code
+	cd tran; $(MAKE) boot
+	go build -o gexe $(PROGS)
+	$(MAKE) install
+	rm -f tran/gtran.go gexe
+
+$(HOOKFILE): $(HOOKMASTER)	# configure Git pre-commit hook
+	test -d .git && cp $(HOOKMASTER) $(HOOKFILE) || :
+
+
+#  -- build targets --
+
+gexe: 
 	cd tran; $(MAKE)
 	go build -o gexe $(PROGS)
 	./gexe -l /dev/null	# validate build
-	go install $(PROGS)
 
-#  bootstrap build goaldi using stable translator binary
-boot:
-	cd tran; $(MAKE) boot
-	go build -o gexe $(PROGS)
+install: gexe
 	./gexe -l /dev/null	# validate build
-	go install $(PROGS)
-	rm -f tran/gtran.go gexe
+	cp ./gexe $(GOBIN)/goaldi
+
+doc:	.FORCE
+	cd doc; $(MAKE)
+
 
 #  full three-pass rebuild using bootstrapping from old stable front end
 #%#% this does some intermediate installs of untested code
@@ -72,9 +97,8 @@ full:
 	#
 	$(MAKE) test
 
-#  extract stdlib documentation from the Goaldi binary
-doc:	.FORCE
-	cd doc; $(MAKE)
+
+#  -- testing targets --
 
 #  run Go unit tests; build and link demos; run Goaldi test suite
 test:
@@ -89,12 +113,14 @@ qktest:
 #  run expt.gd (presumably the test of the moment) if present
 #  passes $GXOPTS to interpreter if set in environment
 expt:
-	test -f expt.gd && $(GOBIN)/goaldi $$GXOPTS expt.gd || :
+	test -f expt.gd && ./gexe $$GXOPTS expt.gd || :
 
-#  install the newly built translator as the stable version for future builds
-#  (be sure this is a good one or you'll lose the ability to bootstrap)
-accept:
-	cd tran; $(MAKE) accept
+#  run demo programs (non-automated, with output to stdout)
+demos: .FORCE
+	cd demos; $(MAKE)
+
+
+#  -- miscellaneous targets --
 
 #  prepare Go source for check-in by running standard Go reformatter
 format:
@@ -104,9 +130,20 @@ format:
 	go fmt runtime/*.go
 	go fmt extensions/*.go
 
-#  gather together source for single-file editing; requires "bundle" util
+#  gather together Go source for single-file editing; requires "bundle" utility
 bundle:
 	@bundle `find * -name '*.go' ! -name gtran.go`
+
+#  install the newly built translator as the stable version for future builds
+#  (be sure this is a good one or you'll lose the ability to bootstrap)
+accept:
+	cd tran; $(MAKE) accept
+
+#  a prerequesite target to force unconditional rebuild of dependent items
+.FORCE:
+
+
+#  -- cleanup targets --
 
 #  remove temporary and built files from source tree
 #  and also subpackages built and saved in $GOPATH
@@ -122,6 +159,3 @@ clean:
 uninstall:
 	go clean -i $(PKG) $(PROGS)
 	rm -rf $(GOBIN)/goaldi $(GOBIN)/../pkg/*/goaldi
-
-
-.FORCE:

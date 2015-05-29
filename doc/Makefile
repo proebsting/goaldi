@@ -1,5 +1,7 @@
 #  Makefile for Goaldi stdlib documentation
 
+GOALDI = ../gexe
+
 default:	stdlib.adoc
 
 show:		stdlib.html
@@ -7,9 +9,8 @@ show:		stdlib.html
 
 
 #  extract stdlib procedure documentation.
-#  gets data from installed "goaldi" but does not specify explicit dependency.
 stdlib.adoc:	libdoc.sh libdoc.hdr libdoc.gd .FORCE
-	./libdoc.sh >stdlib.tmp
+	GOALDI=$(GOALDI) ./libdoc.sh >stdlib.tmp
 	mv stdlib.tmp stdlib.adoc
 
 
