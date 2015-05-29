@@ -56,13 +56,13 @@ $(HOOKFILE): $(HOOKMASTER)	# configure Git pre-commit hook
 
 #  -- build targets --
 
-goaldi:
+goaldi: .FORCE
 	+cd tran; make
 	go build -o goaldi $(PROGS)
 	./goaldi -l /dev/null	# validate build
 
-install: goaldi
-	./goaldi -l /dev/null	# validate build
+install:
+	./goaldi -l /dev/null	# validate binary
 	cp ./goaldi $(GOBIN)/goaldi
 
 doc:	.FORCE
@@ -71,7 +71,7 @@ doc:	.FORCE
 
 #  self: rebuild using already-built goaldi
 #  (this confirms that the latest version can build itself)
-self: goaldi
+self:
 	rm -f tran/*.gir
 	cd tran; make GOALDI=../goaldi
 	go build -o goaldi $(PROGS)
