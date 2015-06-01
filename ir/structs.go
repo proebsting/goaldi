@@ -93,6 +93,7 @@ type Ir_Function struct {
 	CodeStart   string
 	Parent      string
 	Namespace   string
+	TempCount   int
 }
 
 type Ir_chunk struct {

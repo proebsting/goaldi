@@ -20,6 +20,7 @@ type pr_Info struct {
 	locals   []string                 // list of local names
 	params   []string                 // list of parameter names
 	variadic bool                     // true if last param is []
+	ntemps   int                      // number of temporaries
 	vproc    *g.VProcedure            // execution-time procedure struct
 }
 
@@ -43,6 +44,7 @@ func declareProc(irf *ir.Ir_Function) *pr_Info {
 	pr.variadic = (irf.Accumulate != "")
 	pr.params = pr.ir.ParamList
 	pr.locals = pr.ir.LocalList
+	pr.ntemps = pr.ir.TempCount
 	ProcTable[pr.qname] = pr
 	return pr
 }

@@ -44,7 +44,6 @@ func execute(f *pr_frame, label string) (rv g.Value, rc *g.Closure) {
 	}()
 
 	// create re-entrant interpreter
-	f.temps = make(map[int]interface{}) // each cx needs own copy
 	var self *g.Closure
 	self = &g.Closure{func() (g.Value, *g.Closure) {
 

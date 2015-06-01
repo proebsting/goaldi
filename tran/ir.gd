@@ -4,7 +4,8 @@ record ir_Record(coord, name, extendsRec, extendsPkg, fieldList, namespace)
 record ir_Global(coord, name, fn, namespace)
 record ir_Initial(coord, fn, namespace)
 record ir_Function(coord, name, paramList, accumulate,
-	localList, staticList, unboundList, codeList, codeStart, parent, namespace)
+	localList, staticList, unboundList, codeList, codeStart,
+	parent, namespace, tempCount)
 record ir_chunk(label, insnList)
 
 record ir_NoOp(coord, comment)

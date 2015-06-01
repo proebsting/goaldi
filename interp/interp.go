@@ -13,7 +13,7 @@ type pr_frame struct {
 	info  *pr_Info               // static procedure information
 	args  []g.Value              // arglist as called
 	vars  map[string]interface{} // variables and scopes
-	temps map[int]interface{}    // temporaries
+	temps []interface{}          // temporaries
 	coord string                 // last known source location
 	offv  g.Value                // offending value for traceback
 	cxout g.VChannel             // co-expression output pipe
@@ -24,7 +24,8 @@ type pr_frame struct {
 func newframe(f *pr_frame) *pr_frame {
 	fnew := &pr_frame{} // allocate new frame
 	*fnew = *f          // duplicate values
-	f.onerr = nil       // don't copy recovery procedure
+	fnew.onerr = nil    // don't copy recovery procedure
+	fnew.temps = make([]interface{}, len(f.temps))
 	fnew.vars = make(map[string]interface{})
 	for k, v := range f.vars {
 		fnew.vars[k] = v
@@ -59,9 +60,10 @@ func interp(env *g.Env, pr *pr_Info, outer map[string]interface{},
 
 	// initialize procedure frame
 	var f pr_frame
-	f.env = env   // environment
-	f.info = pr   // static procedure info
-	f.args = args // argument list
+	f.env = env                                // environment
+	f.info = pr                                // static procedure info
+	f.args = args                              // argument list
+	f.temps = make([]interface{}, 1+pr.ntemps) // temporaries
 
 	// initialize variable dictionary with inherited variables;
 	// any of these may be subsequently hidden (replaced)

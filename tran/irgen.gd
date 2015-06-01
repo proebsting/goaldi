@@ -888,7 +888,7 @@ procedure ir_a_ProcDecl1(st, body, params, accumulate, coord) {
 
 	return ir_Function(coord, st.current_proc, params,
 					  accumulate, locals, statics, globals, code,
-					  body.ir.start, st.parent, ir_namespace)
+					  body.ir.start, st.parent, ir_namespace, ir_Tmp(st.tmp))
 }
 
 # record a_ProcCode( body )
