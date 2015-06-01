@@ -9,15 +9,19 @@
 #  Note that libdoc.gd has an "exclusion list" to suppress certain procedures
 #  such as sample extensions.  This list may need manual updating.
 
+GOALDI=${GOALDI-goaldi}
+
 TMP1=/tmp/libdoc.$$a
 TMP2=/tmp/libdoc.$$b
 trap 'rm -f $TMP1 $TMP2; exit' 0 1 2 15
 
+set -e	# quit on error
+
 #  get the Goaldi procedure listing
-goaldi -l -E /dev/null >$TMP1
+$GOALDI -l -E /dev/null >$TMP1
 
 #  extract a list of referenced packages
-PKGS=`goaldi -l -E /dev/null 2>/dev/null |
+PKGS=`$GOALDI -l -E /dev/null 2>/dev/null |
 	sed -n '/ -- /s/.*  \([a-zA-Z0-9/]*\)\.[^.]*$/\1/p' |
 	sort |
 	uniq`
@@ -30,6 +34,6 @@ done
 #  now process everything
 cat libdoc.hdr
 echo "'''"	# hrule
-./libdoc.gd $TMP1 $TMP2
+$GOALDI libdoc.gd $TMP1 $TMP2
 echo ""
 echo "'''"	# hrule

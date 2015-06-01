@@ -1,5 +1,7 @@
 #  Makefile for Goaldi stdlib documentation
 
+GOALDI = ../goaldi
+
 default:	stdlib.adoc
 
 show:		stdlib.html
@@ -7,9 +9,9 @@ show:		stdlib.html
 
 
 #  extract stdlib procedure documentation.
-#  gets data from installed "goaldi" but does not specify explicit dependency.
 stdlib.adoc:	libdoc.sh libdoc.hdr libdoc.gd .FORCE
-	./libdoc.sh >stdlib.adoc
+	GOALDI=$(GOALDI) ./libdoc.sh >stdlib.tmp
+	mv stdlib.tmp stdlib.adoc
 
 
 #  make HTML documentation.
@@ -21,7 +23,7 @@ stdlib.html:	stdlib.adoc gdstyle.css
 #
 #  The build product libdoc.adoc is not removed because it gets checked in.
 clean:
-	rm -f stdlib.html
+	rm -f stdlib.tmp stdlib.html
 
 
 .FORCE:

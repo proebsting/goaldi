@@ -4,7 +4,7 @@
 
 #	check for necessary binaries
 GOBIN=${GOPATH%%:*}/bin
-GOALDI=$GOBIN/goaldi
+GOALDI=${GOALDI-goaldi}
 ls -l $GOALDI || exit
 
 #	ensure scipt exits immediately on interrupt (needed on Mac)

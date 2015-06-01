@@ -5,11 +5,13 @@
 *.err
 *.gia
 *.gir
+goaldi
 PROFILE
 README.html
 LICENSE.html
 INSTALL.html
 Goaldi-*-*.tgz
+tran/gtran0
 tran/gtran
 tran/gtran.go
 doc/stdlib.html

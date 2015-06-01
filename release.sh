@@ -1,12 +1,11 @@
 #!/bin/sh
 #
-#  Usage:  release.sh version-label
+#  Usage:  release.sh version-label  (e.g. release.sh v47)
 #
-#  Makes a release package from the currently built executable.
+#  Makes a release package containing the currently built executable.
 #  Before running this, run "make full" and "make accept".
 
 VERSION=${1?"Version number required"}
-GOBIN=${GOPATH%%:*}/bin
 
 U=`uname`
 case $U in
@@ -15,26 +14,20 @@ case $U in
 esac
 VNAME="Goaldi-$UNAME-$VERSION"
 
-STABLE=`head -3 tran/stable-gtran | awk 'NR==2 {print $4}'`
-GHEAD=`git rev-parse HEAD`
-if [ "$STABLE" != "$GHEAD" ]; then
-	echo 1>&2
-	echo 1>&2 WARNING: possible mismatch
-	echo 1>&2 WARNING: stable-gtran: $STABLE
-	echo 1>&2 WARNING: current-head: $GHEAD
-fi
-
+set -e
 rm -rf $VNAME $VNAME.tgz
 mkdir $VNAME
 cp README.adoc $VNAME
 cp LICENSE.adoc $VNAME
 cp INSTALL.adoc $VNAME
-cp $GOBIN/goaldi $VNAME
+cp goaldi $VNAME/goaldi
 (
 	file $VNAME/goaldi
-	echo $GHEAD
 	echo `date` /`whoami`
+	uname -n -s -m
 ) >$VNAME/MANIFEST
+chmod 755 $VNAME $VNAME/[a-z]*
+chmod 644 $VNAME/[A-Z]*
 echo
 echo MANIFEST:
 cat $VNAME/MANIFEST
@@ -43,4 +36,5 @@ echo
 tar tvfz $VNAME.tgz
 rm -rf $VNAME
 echo
+chmod 644 $VNAME.tgz
 ls -l $VNAME.tgz
