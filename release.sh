@@ -3,7 +3,7 @@
 #  Usage:  release.sh version-label  (e.g. release.sh v47)
 #
 #  Makes a release package containing the currently built executable.
-#  Before running this, run "make full" and "make accept".
+#  Before running this, run "make self" and "make accept".
 
 VERSION=${1?"Version number required"}
 
