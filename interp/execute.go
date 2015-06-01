@@ -158,8 +158,8 @@ func execute(f *pr_frame, label string) (rv g.Value, rc *g.Closure) {
 				case ir.Ir_MakeList:
 					n := len(i.ValueList)
 					a := make([]g.Value, n)
-					for j, v := range i.ValueList {
-						a[j] = g.Deref(f.temps[v.(int)])
+					for j, t := range i.ValueList {
+						a[j] = g.Deref(f.temps[t])
 					}
 					f.temps[i.Lhs] = g.InitList(a)
 				case ir.Ir_Var:

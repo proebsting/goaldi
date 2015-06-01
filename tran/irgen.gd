@@ -1842,12 +1842,12 @@ procedure ir_tmp(st) {
 
 procedure ir_tmploc(st) {
 	st.tmp +:= 1
-	return ir_TmpLabel("loc" || st.tmp)
+	return ir_TmpLabel(7000 + st.tmp)
 }
 
 procedure ir_tmpclosure(st) {
 	st.tmp +:= 1
-	return ir_TmpClosure(st.tmp)
+	return ir_TmpClosure(8000 + st.tmp)
 }
 
 procedure ir_make_sentinel(L) {

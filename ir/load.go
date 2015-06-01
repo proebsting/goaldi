@@ -136,11 +136,14 @@ func setField(f reflect.Value, key string, val interface{}) {
 		// set a simple value
 		if t.Kind() == reflect.Int { // ints are read as floats
 			val = int(val.(float64))
-		} else if t.Kind() == reflect.String && val.(string)[0] == '$' {
-			// prefix file number to Name/Parent/Fn beginning with '$'
-			switch key {
-			case "Name", "Fn", "Parent":
-				val = fmt.Sprintf("%d%s", fileNumber, val)
+		} else if t.Kind() == reflect.String {
+			s := val.(string)
+			if len(s) > 0 && s[0] == '$' {
+				// prefix file number to Name/Parent/Fn beginning with '$'
+				switch key {
+				case "Name", "Fn", "Parent":
+					val = fmt.Sprintf("%d%s", fileNumber, val)
+				}
 			}
 		}
 		v := reflect.ValueOf(val)

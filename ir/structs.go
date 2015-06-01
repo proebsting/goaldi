@@ -188,7 +188,7 @@ type Ir_MoveLabel struct {
 type Ir_MakeList struct {
 	Coord     string
 	Lhs       int
-	ValueList []interface{} // heterogeneous
+	ValueList []int
 }
 
 type Ir_Field struct {
