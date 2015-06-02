@@ -172,18 +172,20 @@ func setField(f reflect.Value, key string, val interface{}) {
 
 //  Capitalize(s) -- convert first character of string to upper case
 func Capitalize(s string) string {
-	if s == "" {
-		return ""
-	}
 	r, n := utf8.DecodeRuneInString(s)
-	return string(unicode.ToUpper(r)) + s[n:]
+	if unicode.IsLower(r) {
+		return string(unicode.ToUpper(r)) + s[n:]
+	} else {
+		return s // includes case of empty string
+	}
 }
 
 //  DeCapit(s) -- convert first character of string to lower case
 func DeCapit(s string) string {
-	if s == "" {
-		return ""
-	}
 	r, n := utf8.DecodeRuneInString(s)
-	return string(unicode.ToLower(r)) + s[n:]
+	if unicode.IsUpper(r) {
+		return string(unicode.ToLower(r)) + s[n:]
+	} else {
+		return s // includes case of empty string
+	}
 }
