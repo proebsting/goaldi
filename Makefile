@@ -30,7 +30,7 @@ HOOKFILE = .git/hooks/pre-commit
 default:	setup build test expt
 
 #  setup:  prepare for building and developing
-setup:  gcommand $(HOOKFILE)
+setup:  gcommands $(HOOKFILE)
 
 #  build:  make the goaldi executable and the extracted documentation
 build:	goaldi doc
@@ -41,14 +41,21 @@ quick:		build qktest expt
 
 #  -- setup targets --
 
-gcommand:	# ensure that we have a "goaldi" command
-	+command -v goaldi >/dev/null || make boot
+gcommands:	# ensure that we have "go" and "goaldi" commands
+	@+command -v go >/dev/null || \
+		(echo 'No "go" command in $$PATH;' \
+		'install Go before proceeding' && exit 1)
+	@+command -v goaldi >/dev/null || \
+		(echo 'No "goaldi" command in $$PATH;' \
+		'run "make boot" to bootstrap into $$GOPATH/bin' && exit 1)
 
 boot:		# install goaldi using stable pre-built translator IR code
 	+cd tran; make boot
 	go build -o goaldi $(PROGS)
 	+make install
 	rm -f tran/gtran.go goaldi
+	ls -l $(GOBIN)/goaldi
+	: stable version installed successfully for bootstrapping
 
 $(HOOKFILE): $(HOOKMASTER)	# configure Git pre-commit hook
 	test -d .git && cp $(HOOKMASTER) $(HOOKFILE) || :
@@ -67,7 +74,6 @@ install:
 
 doc:	.FORCE
 	+cd doc; make
-
 
 #  self: rebuild using already-built goaldi
 #  (this confirms that the latest version can build itself)
