@@ -144,9 +144,13 @@ func main() {
 	for _, s := range args {
 		arglist = append(arglist, g.NewString(s))
 	}
-	g.Run(gmain, arglist)
+	go runGoaldi(gmain, arglist) // execution continues below
+	g.AppMain()                  // blocks; but must be called in main thread
+}
 
-	// exit
+//  runGoaldi runs the Goaldi main program
+func runGoaldi(gmain g.Value, arglist []g.Value) {
+	g.Run(gmain, arglist)
 	showInterval("execution")
 	g.Shutdown(0)
 }
