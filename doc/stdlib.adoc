@@ -169,6 +169,18 @@ f.close() closes file f.
 c.close() -- close channel::
 c.close() closes the channel c.
 
+color(r,g,b,a) -- create color::
+Color(r,g,b,a) creates and returns a new color.
++
+With one argument: r is a color name, or a grayscale value in (0, 1).
++
+With two arguments: r is a grayscale value; g is an alpha value in (0,
+1).
++
+With three arguments: r,g,b are color components in (0, 1).
++
+With four arguments: r,g,b,a are color components in (0, 1).
+
 command(name,args[]) -- build struct to run command [silver]_(http://golang.org/pkg/os/exec#Command[os/exec.Command])_::
 Command returns the Cmd struct to execute the named program with the
 given arguments.
