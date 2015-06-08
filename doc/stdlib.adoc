@@ -119,6 +119,9 @@ c.buffer(size) -- interpose channel buffer::
 c.buffer(size) returns a channel that interposes a buffer of the given
 size before the channel c.
 
+canvas(width,height,density) -- create canvas::
+canvas(w,h,d) creates and returns a new canvas.
+
 cbrt(n) -- compute cube root [silver]_(http://golang.org/pkg/math#Cbrt[math.Cbrt])_::
 Cbrt returns the cube root of x.
 +
@@ -180,6 +183,10 @@ With two arguments: r is a grayscale value; g is an alpha value in (0,
 With three arguments: r,g,b are color components in (0, 1).
 +
 With four arguments: r,g,b,a are color components in (0, 1).
+
+C.color(k) -- set drawing color::
+C.color(k) sets the drawing color for canvas c. If k is nil, the color
+remains unchanged. The current or updated value is returned.
 
 command(name,args[]) -- build struct to run command [silver]_(http://golang.org/pkg/os/exec#Command[os/exec.Command])_::
 Command returns the Cmd struct to execute the named program with the
