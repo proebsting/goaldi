@@ -84,6 +84,9 @@ func (v VColor) Export() interface{} {
 	return v
 }
 
+//  VColor.RGBA() implements the color.Color interface.
+func (k VColor) RGBA() (r, g, b, a uint32) { return color.NRGBA64(k).RGBA() }
+
 //  ColorMeaning maps color name strings to color values
 var ColorMeaning = make(map[string]VColor)
 

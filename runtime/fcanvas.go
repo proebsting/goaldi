@@ -2,11 +2,15 @@
 
 package runtime
 
-import ()
+import (
+	"math"
+)
 
 //  Declare methods
 var CanvasMethods = MethodTable([]*VProcedure{
 	DefMeth((*VCanvas).Color, "color", "k", "set drawing color"),
+	DefMeth((*VCanvas).Turn, "turn", "d", "alter orientation by d degrees"),
+	DefMeth((*VCanvas).Forward, "forward", "d", "draw forward for distance d"),
 })
 
 //  canvas(w,h,d) creates and returns a new canvas.
@@ -30,14 +34,36 @@ func Canvas(env *Env, args ...Value) (Value, *Closure) {
 	return Return(NewCanvas(w, h, float32(d)))
 }
 
-//  C.color(k) sets the drawing color for canvas c.
-//  If k is nil, the color remains unchanged.
-//  The current or updated value is returned.
+//  C.color(r,g,b,a) sets the drawing color for canvas c.
+//  With no arguments, the color remains unchanged.
+//  The current or updated color value is returned.
 func (v *VCanvas) Color(args ...Value) (Value, *Closure) {
 	defer Traceback("color", args)
 	k := ProcArg(args, 0, NilValue)
 	if k != NilValue {
-		v.k = k.(VColor)
+		if _, ok := k.(VColor); !ok {
+			k, _ = Color(nil, args...)
+		}
+		v.VColor = k.(VColor)
 	}
-	return Return(v.k)
+	return Return(v.VColor)
+}
+
+//  C.turn(d) adjusts the current orientation by d degrees.
+//  If d is nil, the orientation remains unchanged.
+//  The current or updated orientation is returned.
+func (v *VCanvas) Turn(args ...Value) (Value, *Closure) {
+	defer Traceback("turn", args)
+	d := ProcArg(args, 0, NilValue)
+	if d != NilValue {
+		v.Aim = math.Mod(v.Aim+FloatVal(d), 360)
+	}
+	return Return(NewNumber(v.Aim))
+}
+
+//  C.forward(d) draws a line by moving the pen forward d units.
+func (v *VCanvas) Forward(args ...Value) (Value, *Closure) {
+	defer Traceback("forward", args)
+	v.DwForward(FloatVal(ProcArg(args, 0, ONE)))
+	return Return(v)
 }

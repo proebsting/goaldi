@@ -24,10 +24,10 @@ import (
 //  A Surface is the actual writing area for a canvas.
 //  It can be written to a file and/or displayed on the screen.
 type Surface struct {
-	Width    int        // width in pixels
-	Height   int        // height in pixels
-	PixPerPt float32    // density in pixels/point
-	Image    draw.Image // underlying image
+	Width      int     // width in pixels
+	Height     int     // height in pixels
+	PixPerPt   float32 // density in pixels/point
+	draw.Image         // underlying image
 }
 
 //  app configuration (valid after app initialization)

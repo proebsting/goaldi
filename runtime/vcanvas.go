@@ -8,19 +8,27 @@ import (
 
 //  VCanvas implements a Goaldi canvas, a Surface pointer plus local attributes
 type VCanvas struct {
-	u *Surface
-	k VColor
+	*Surface         // underlying surface
+	VColor           // drawing color
+	Xloc     float64 // drawing location
+	Yloc     float64
+	Aim      float64 // orientation in degrees
+	Size     float64 // drawing width in #%#%? pixels
 }
 
 //  NewCanvas -- construct a new Goaldi canvas
 func NewCanvas(w int, h int, d float32) *VCanvas {
 	v := &VCanvas{}
 	if w < 0 || h < 0 {
-		v.u = AppSurface()
+		v.Surface = AppSurface()
 	} else {
-		v.u = MemSurface(w, h, d)
+		v.Surface = MemSurface(w, h, d)
 	}
-	v.k = NewColor(0, 0, 0, 1) // color=black
+	v.VColor = NewColor(0, 0, 0, 1) // color = black
+	v.Aim = -90                     // orientation = towards top
+	v.Xloc = float64(v.Width) / 2   //#%#% no coordinate system yet
+	v.Yloc = float64(v.Height) / 2  //#%#% no coordinate system yet
+	v.Size = float64(v.Width) / 200 //#%#% plausible draw width
 	return v
 }
 
@@ -33,13 +41,12 @@ var CanvasType = NewType("canvas", "C", rCanvas, Canvas, CanvasMethods,
 
 //  VCanvas.String -- default conversion to Go string returns "C:nnxnn"
 func (c *VCanvas) String() string {
-	return fmt.Sprintf("C:%dx%d", c.u.Width, c.u.Height)
+	return fmt.Sprintf("C:%dx%d", c.Width, c.Height)
 }
 
 //  VCanvas.GoString -- convert to Go string for image() and printf("%#v")
 func (c *VCanvas) GoString() string {
-	return fmt.Sprintf("canvas(%d,%d,%.2f)",
-		c.u.Width, c.u.Height, c.u.PixPerPt)
+	return fmt.Sprintf("canvas(%d,%d,%.2f)", c.Width, c.Height, c.PixPerPt)
 }
 
 //  VCanvas.Type -- return the canvas type

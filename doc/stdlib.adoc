@@ -185,8 +185,9 @@ With three arguments: r,g,b are color components in (0, 1).
 With four arguments: r,g,b,a are color components in (0, 1).
 
 C.color(k) -- set drawing color::
-C.color(k) sets the drawing color for canvas c. If k is nil, the color
-remains unchanged. The current or updated value is returned.
+C.color(r,g,b,a) sets the drawing color for canvas c. With no arguments,
+the color remains unchanged. The current or updated color value is
+returned.
 
 command(name,args[]) -- build struct to run command [silver]_(http://golang.org/pkg/os/exec#Command[os/exec.Command])_::
 Command returns the Cmd struct to execute the named program with the
@@ -335,6 +336,9 @@ Special cases are:
 
 f.flush() -- flush file::
 f.flush() flushes output on file f.
+
+C.forward(d) -- draw forward for distance d::
+C.forward(d) draws a line by moving the pen forward d units.
 
 fprintf(f,fmt,x[]) -- write to file with formatting [silver]_(http://golang.org/pkg/fmt#Fprintf[fmt.Fprintf])_::
 Fprintf formats according to a format specifier and writes to w. It
@@ -810,6 +814,11 @@ tuple(id:e...) -- create anonymous record::
 tuple(id:e, ...) creates an anonymous record value. Each argument must
 be named. Each distinct identifier list defines a new type, all of which
 have the name "tuple".
+
+C.turn(d) -- alter orientation by d degrees::
+C.turn(d) adjusts the current orientation by d degrees. If d is nil, the
+orientation remains unchanged. The current or updated orientation is
+returned.
 
 type(x) -- return type of value::
 type(x) returns the value of type "type" that represents the type of x.
