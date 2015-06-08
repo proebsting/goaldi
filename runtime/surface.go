@@ -30,8 +30,12 @@ type Surface struct {
 	draw.Image         // underlying image
 }
 
+//  configure minimum backing store for anti-aliasing coarse-grained screens
+const MinPPP = 3 // minimum PixPerPt acceptable
+
 //  app configuration (valid after app initialization)
 var cfg app.Config             // current app window configuration
+var pixPerPt float32           // our actual PPP value w/ anti-aliasing
 var gli *glutil.Image          // GLutil image currently displayed on screen
 var once sync.Once             // initialization interlock
 var appGo = make(chan bool)    // signal for starting app loop
@@ -45,7 +49,7 @@ func MemSurface(w int, h int, ppp float32) *Surface {
 //  AppSurface creates a Surface for use in a golang/x/mobile/app.
 func AppSurface() *Surface {
 	once.Do(appInit)
-	return newSurface(gli, geom.PixelsPerPt)
+	return newSurface(gli, pixPerPt)
 }
 
 //  newSurface initializes and returns a new App or Mem surface.
@@ -90,8 +94,13 @@ func AppMain() {
 //  appStart does the actual initialization once the app driver has started
 func appStart() {
 	cfg = app.GetConfig()
-	w := toPx(cfg.Width)
-	h := toPx(cfg.Height)
+	if geom.PixelsPerPt >= MinPPP {
+		pixPerPt = geom.PixelsPerPt
+	} else {
+		pixPerPt = MinPPP
+	}
+	w := int(math.Ceil(float64(float32(cfg.Width) * pixPerPt)))
+	h := int(math.Ceil(float64(float32(cfg.Height) * pixPerPt)))
 	gli = glutil.NewImage(w, h)
 	appReady <- true
 }
@@ -113,9 +122,4 @@ func appStop() {
 	//#%#%#%# SEND TO GOALDI PROGRAM ?????
 	fmt.Fprint(os.Stderr, "Shutdown by window system")
 	Shutdown(0)
-}
-
-//  toPx converts Pt measurement to integer pixels, rounded up
-func toPx(x geom.Pt) int {
-	return int(math.Ceil(float64(x.Px())))
 }
