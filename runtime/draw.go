@@ -15,7 +15,7 @@ import (
 
 //  VCanvas.DwForward(d) draws a line by moving the pen forward d units.
 func (v *VCanvas) DwForward(d float64) {
-	d = d * float64(v.PixPerPt) //#%#% no coord sys yet, scale sensibly
+	d = d * float64(v.PixPerPt) // scale units to pixels
 	s, c := math.Sincos(v.Aim * (math.Pi / 180))
 	x := v.Xloc + d*c
 	y := v.Yloc + d*s

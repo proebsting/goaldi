@@ -13,7 +13,7 @@ type VCanvas struct {
 	Xloc     float64 // drawing location
 	Yloc     float64
 	Aim      float64 // orientation in degrees
-	Size     float64 // drawing width in #%#%? pixels
+	Size     float64 // drawing width in pixels
 }
 
 //  NewCanvas -- construct a new Goaldi canvas
@@ -25,10 +25,10 @@ func NewCanvas(w int, h int, d float32) *VCanvas {
 		v.Surface = MemSurface(w, h, d)
 	}
 	v.VColor = NewColor(0, 0, 0, 1) // color = black
-	v.Aim = -90                     // orientation = towards top
-	v.Xloc = float64(v.Width) / 2   //#%#% no coordinate system yet
-	v.Yloc = float64(v.Height) / 2  //#%#% no coordinate system yet
-	v.Size = float64(v.Width) / 200 //#%#% plausible draw width
+	v.Xloc = float64(v.Width) / 2   // origin at center
+	v.Yloc = float64(v.Height) / 2
+	v.Aim = -90                  // orientation = towards top
+	v.Size = float64(v.PixPerPt) // drawing width = 1 pt
 	return v
 }
 
