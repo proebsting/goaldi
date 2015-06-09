@@ -7,15 +7,15 @@ procedure main() {
 	w.forward(-95)
 	w.turn(-90)
 	w.color("silver")
-	every !36 do {
-		w.forward(20)
-		w.turn(10)
+	every !72 do {
+		w.forward(10)
+		w.turn(5)
 		sleep(0.01)
 	}
 	w.turn(90)
 	randomize()
 	bush(w, 8)
-	sleep(10)
+	sleep()
 }
 
 procedure bush(w, n) {
