@@ -20,6 +20,7 @@ mkdir $VNAME
 cp README.adoc $VNAME
 cp LICENSE.adoc $VNAME
 cp INSTALL.adoc $VNAME
+cp doc/stdlib.adoc $VNAME/StdLib.adoc
 cp goaldi $VNAME/goaldi
 (
 	file $VNAME/goaldi
