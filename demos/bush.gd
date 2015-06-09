@@ -4,29 +4,30 @@
 procedure main() {
 	^w := canvas()
 	w.color("white")
-	w.forward(-95)
+	w.forward(-120)
 	w.turn(-90)
 	w.color("silver")
 	every !72 do {
+		w.turn(2.5)
 		w.forward(10)
-		w.turn(5)
+		w.turn(2.5)
 		sleep(0.01)
 	}
 	w.turn(90)
 	randomize()
-	bush(w, 8)
+	bush(w, 3, 8)
 	sleep()
 }
 
-procedure bush(w, n) {
-	/static clist := 
-		["black", "brown", "red", "orange", "green", "blue", "purple", "gray"]
+procedure bush(w, z, n) {
+	/static clist := ["black", "brown", "red", "orange", "gold", "gray"]
 	w.color(?clist)
+	w.Size := z
 	w.turn(?90 - 45)
-	w.forward(12 + ?10)
+	w.forward(8 + ?17)
 	sleep(0.002)
 	if n > 0 then {
-		bush(w.copy(), n-1)
-		bush(w.copy(), n-1)
+		bush(w.copy(), .93 * z, n-1)
+		bush(w.copy(), .87 * z, n-1)
 	}
 }
