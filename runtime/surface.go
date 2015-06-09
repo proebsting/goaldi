@@ -102,6 +102,7 @@ func appStart() {
 	w := int(math.Ceil(float64(float32(cfg.Width) * pixPerPt)))
 	h := int(math.Ceil(float64(float32(cfg.Height) * pixPerPt)))
 	gli = glutil.NewImage(w, h)
+	draw.Draw(gli, gli.Bounds(), image.White, image.Point{}, draw.Src) // erase
 	appReady <- true
 }
 
