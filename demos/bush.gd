@@ -4,12 +4,12 @@
 procedure main() {
 	^w := canvas()
 	w.color("white")
-	w.forward(-120)
+	w.Forward(-120)
 	w.turn(-90)
 	w.color("silver")
 	every !72 do {
 		w.turn(2.5)
-		w.forward(10)
+		w.Forward(10)
 		w.turn(2.5)
 		sleep(0.01)
 	}
@@ -24,7 +24,7 @@ procedure bush(w, z, n) {
 	w.color(?clist)
 	w.Size := z
 	w.turn(?90 - 45)
-	w.forward(8 + ?17)
+	w.Forward(8 + ?17)
 	sleep(0.002)
 	if n > 0 then {
 		bush(w.copy(), .93 * z, n-1)

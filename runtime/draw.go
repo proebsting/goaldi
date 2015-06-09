@@ -14,19 +14,20 @@ import (
 
 var _ = fmt.Printf // enable debugging
 
-//  VCanvas.DwForward(d) draws a line by moving the pen forward d units.
-func (v *VCanvas) DwForward(d float64) {
+//  VCanvas.Forward(d) draws a line by moving the pen forward d units.
+func (v *VCanvas) Forward(d float64) *VCanvas {
 	s, c := math.Sincos(v.Aim * (math.Pi / 180))
 	x := v.Xloc + d*c
 	y := v.Yloc + d*s
-	v.DwLine(v.Xloc, v.Yloc, x, y)
+	v.Line(v.Xloc, v.Yloc, x, y)
 	v.Xloc = x
 	v.Yloc = y
+	return v
 }
 
-//  VCanvas.DwLine(x1, y1, x2, y2) draws a line.
+//  VCanvas.Line(x1, y1, x2, y2) draws a line.
 //  #%#% in a really dumb way. should stroke, not draw a zillion points.
-func (v *VCanvas) DwLine(x1, y1, x2, y2 float64) {
+func (v *VCanvas) Line(x1, y1, x2, y2 float64) *VCanvas {
 	dx := x2 - x1
 	dy := y2 - y1
 	dmax := math.Max(math.Abs(dx), math.Abs(dy))
@@ -34,20 +35,22 @@ func (v *VCanvas) DwLine(x1, y1, x2, y2 float64) {
 	dx /= float64(n)
 	dy /= float64(n)
 	for i := 0; i <= n; i++ {
-		v.DwPoint(x1, y1)
+		v.Point(x1, y1)
 		x1 += dx
 		y1 += dy
 	}
+	return v
 }
 
-//  VCanvas.DwPoint(x, y) draws a point.
+//  VCanvas.Point(x, y) draws a point.
 //  #%#% in a really dumb way. should cache the pen. and it should be round.
-func (v *VCanvas) DwPoint(x, y float64) {
-	v.DwRect(x-v.Size/2, y-v.Size/2, v.Size, v.Size)
+func (v *VCanvas) Point(x, y float64) *VCanvas {
+	v.Rect(x-v.Size/2, y-v.Size/2, v.Size, v.Size)
+	return v
 }
 
-//  VCanvas.DwRect(x, y, w, h) draws a rectangle.
-func (v *VCanvas) DwRect(x, y, w, h float64) {
+//  VCanvas.Rect(x, y, w, h) draws a rectangle.
+func (v *VCanvas) Rect(x, y, w, h float64) *VCanvas {
 	if w < 0 {
 		x, w = x+w, -w
 	}
@@ -61,4 +64,5 @@ func (v *VCanvas) DwRect(x, y, w, h float64) {
 	r := image.Rect(int(x+0.5), int(y+0.5), int(x+w+0.5), int(y+h+0.5))
 	draw.Draw(v.Surface.Image, r,
 		image.NewUniform(v.VColor), image.Point{}, draw.Src)
+	return v
 }

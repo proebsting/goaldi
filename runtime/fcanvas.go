@@ -60,10 +60,3 @@ func (v *VCanvas) Turn(args ...Value) (Value, *Closure) {
 	}
 	return Return(NewNumber(v.Aim))
 }
-
-//  C.forward(d) draws a line by moving the pen forward d units.
-func (v *VCanvas) Forward(args ...Value) (Value, *Closure) {
-	defer Traceback("forward", args)
-	v.DwForward(FloatVal(ProcArg(args, 0, ONE)))
-	return Return(v)
-}
