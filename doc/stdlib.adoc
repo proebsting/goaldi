@@ -689,7 +689,7 @@ Special cases are:
 
 sleep(n) -- pause execution momentarily::
 sleep(n) delays execution for n seconds, which may be a fractional
-value.
+value. If n is nil, sleep() blocks indefinitely.
 
 L.sort(i) -- return sorted copy::
 L.sort(i) returns a copy of list L in which the elements have been

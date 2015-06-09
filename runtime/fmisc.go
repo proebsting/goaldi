@@ -4,6 +4,7 @@ package runtime
 
 import (
 	"fmt"
+	"math"
 	"os"
 	"os/exec"
 	"reflect"
@@ -81,12 +82,19 @@ func ErrResult(env *Env, args ...Value) (Value, *Closure) {
 }
 
 //  sleep(n) delays execution for n seconds, which may be a fractional value.
+//  If n is nil, sleep() blocks indefinitely.
 func Sleep(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("sleep", args)
-	n := FloatVal(ProcArg(args, 0, ONE))
-	d := time.Duration(n * float64(time.Second))
-	time.Sleep(d)
-	return Return(d)
+	a := ProcArg(args, 0, NilValue)
+	if a == NilValue {
+		time.Sleep(time.Duration(math.MaxInt64)) // approx 290 years
+		return nil, nil                          // not reached
+	} else {
+		n := FloatVal(a)
+		d := time.Duration(n * float64(time.Second))
+		time.Sleep(d)
+		return Return(d)
+	}
 }
 
 //  date() returns the current date in the form "yyyy/mm/dd".
