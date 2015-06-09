@@ -24,40 +24,54 @@ import (
 //  A Surface is the actual writing area for a canvas.
 //  It can be written to a file and/or displayed on the screen.
 type Surface struct {
-	Width      int     // width in pixels
-	Height     int     // height in pixels
-	PixPerPt   float64 // density in pixels/point
-	draw.Image         // underlying image
+	Width      int        // width in pixels
+	Height     int        // height in pixels
+	PixPerPt   float64    // density in pixels/point
+	Events     chan Event // window events
+	draw.Image            // underlying image
 }
 
-//  configure minimum backing store for anti-aliasing coarse-grained screens
+//  An Event is an action in a window.
+type Event struct {
+	ID     int64   // touch sequence ID (event.TouchSequenceID)
+	Action int     // 0=begin, 1=move, 2=release (event.TouchType)
+	X, Y   float64 // location in user coordinates
+}
+
+//  minimum backing store for anti-aliasing coarse-grained screens
 const MinPPP = 3 // minimum PixPerPt acceptable
 
-//  app configuration (valid after app initialization)
-var cfg app.Config             // current app window configuration
-var pixPerPt float64           // our actual PPP value w/ anti-aliasing
-var gli *glutil.Image          // GLutil image currently displayed on screen
-var once sync.Once             // initialization interlock
+//  size of the event buffer
+const EVBUFSIZE = 1000
+
+//  startup synchronization
+var appOnce sync.Once          // initialization interlock
 var appGo = make(chan bool)    // signal for starting app loop
 var appReady = make(chan bool) // signal when initialization is complete
 
+//  app configuration (valid after app initialization)
+var cfg app.Config       // current app window configuration
+var pixPerPt float64     // our actual PPP value w/ anti-aliasing
+var gli *glutil.Image    // GLutil image currently displayed on screen
+var appEvents chan Event // window event channel
+
 //  MemSurface creates a new off-line Surface with the given characteristics.
 func MemSurface(w int, h int, ppp float64) *Surface {
-	return newSurface(image.NewRGBA(image.Rect(0, 0, w, h)), ppp)
+	return newSurface(image.NewRGBA(image.Rect(0, 0, w, h)), ppp, nil)
 }
 
 //  AppSurface creates a Surface for use in a golang/x/mobile/app.
 func AppSurface() *Surface {
-	once.Do(appInit)
-	return newSurface(gli, pixPerPt)
+	appOnce.Do(appInit)
+	return newSurface(gli, pixPerPt, appEvents)
 }
 
 //  newSurface initializes and returns a new App or Mem surface.
-func newSurface(im draw.Image, ppp float64) *Surface {
+func newSurface(im draw.Image, ppp float64, ch chan Event) *Surface {
 	w := im.Bounds().Max.X
 	h := im.Bounds().Max.Y
 	draw.Draw(im, im.Bounds(), image.White, image.Point{}, draw.Src) // erase
-	return &Surface{w, h, ppp, im}
+	return &Surface{w, h, ppp, ch, im}
 }
 
 //  appRepaint is called 60x/second to draw the current Surface on the screen
@@ -81,6 +95,7 @@ func appInit() {
 //  The Go library requires that this be run in the main thread.
 func AppMain() {
 	<-appGo
+	appEvents = make(chan Event, EVBUFSIZE)
 	app.Register(app.Callbacks{
 		Start:  appStart,
 		Config: appConfig,
@@ -115,7 +130,13 @@ func appConfig(new, old app.Config) {
 
 //  appTouch responds to a mouse (or finger) event
 func appTouch(e event.Touch) {
-	//#%#%#%# SEND TO GOALDI PROGRAM...
+	// convert to user coordinates
+	//#%#%#% assumes the window has not been resized
+	//#%#%#% and the origin is still at the center
+	x := float64(e.Loc.X - cfg.Width/2)
+	y := float64(e.Loc.Y - cfg.Height/2)
+	// send to the channel
+	appEvents <- Event{int64(e.ID), int(e.Type), x, y}
 }
 
 //  appStop responds to an app "stop" call (#%#% whatever that means...)
