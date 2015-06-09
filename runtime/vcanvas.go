@@ -27,12 +27,7 @@ func NewCanvas(w int, h int, d float64) *VCanvas {
 	} else {
 		v.Surface = MemSurface(w, h, d)
 	}
-	v.VColor = NewColor(0, 0, 0, 1)   // color = black
-	v.Dx = float64(v.Width) / (2 * d) // offset to origin
-	v.Dy = float64(v.Height) / (2 * d)
-	v.Aim = -90 // orientation = towards top
-	v.Size = 1  // drawing width = 1 pt
-	return v
+	return v.Reset()
 }
 
 const rCanvas = 32       // declare sort ranking

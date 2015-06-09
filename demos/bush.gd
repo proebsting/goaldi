@@ -1,8 +1,18 @@
 #  an early demo of Goaldi turtle graphics
-#  draws a multi-colored bush
+#  draws a multi-colored bush; redraws on a click or touch
 
 procedure main() {
+	randomize()
 	^w := canvas()
+	repeat {
+		bush(w)
+		while (@w.Events).Action ~= 2
+		w.Reset()
+	}
+}
+
+procedure bush(w) {
+	w.Reset()
 	w.color("white")
 	w.Forward(-120)
 	w.turn(-90)
@@ -11,15 +21,13 @@ procedure main() {
 		w.turn(2.5)
 		w.Forward(10)
 		w.turn(2.5)
-		sleep(0.01)
+		sleep(0.001)
 	}
 	w.turn(90)
-	randomize()
-	bush(w, 3, 8)
-	sleep()
+	branch(w, 3, 8)
 }
 
-procedure bush(w, z, n) {
+procedure branch(w, z, n) {
 	/static clist := ["black", "brown", "red", "orange", "gold", "gray"]
 	w.color(?clist)
 	w.Size := z
@@ -27,7 +35,7 @@ procedure bush(w, z, n) {
 	w.Forward(8 + ?17)
 	sleep(0.002)
 	if n > 0 then {
-		bush(w.copy(), .93 * z, n-1)
-		bush(w.copy(), .87 * z, n-1)
+		branch(w.copy(), .93 * z, n-1)
+		branch(w.copy(), .87 * z, n-1)
 	}
 }

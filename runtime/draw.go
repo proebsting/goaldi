@@ -14,6 +14,25 @@ import (
 
 var _ = fmt.Printf // enable debugging
 
+//  VCanvas.Reset() establishes or reestablises initial conditions:
+//		origin = center of surface
+//		current location = origin
+//		orientation = towards top
+//		drawing size = 1 pt
+//		color = black
+func (v *VCanvas) Reset() *VCanvas {
+	v.Dx = float64(v.Width) / (2 * v.PixPerPt) // offset to origin
+	v.Dy = float64(v.Height) / (2 * v.PixPerPt)
+	v.Xloc = 0 // current location
+	v.Yloc = 0
+	v.Aim = -90                          // orientation = towards top
+	v.Size = 1                           // drawing width = 1 pt
+	v.VColor = NewColor(1, 1, 1, 1)      // color = white
+	v.Rect(-v.Dx, -v.Dy, 2*v.Dx, 2*v.Dy) // clear the canvas
+	v.VColor = NewColor(0, 0, 0, 1)      // color = black
+	return v
+}
+
 //  VCanvas.Forward(d) draws a line by moving the pen forward d units.
 func (v *VCanvas) Forward(d float64) *VCanvas {
 	s, c := math.Sincos(v.Aim * (math.Pi / 180))
