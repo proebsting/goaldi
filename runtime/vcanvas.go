@@ -6,29 +6,32 @@ import (
 	"fmt"
 )
 
-//  VCanvas implements a Goaldi canvas, a Surface pointer plus local attributes
+//  VCanvas implements a Goaldi canvas, a Surface pointer plus local attributes.
+//  Units are measured in points, as in the Go app package.
+//  Floating values are float64, for use with the math package.
 type VCanvas struct {
-	*Surface         // underlying surface
-	VColor           // drawing color
-	Xloc     float64 // drawing location
-	Yloc     float64
-	Aim      float64 // orientation in degrees
-	Size     float64 // drawing width in pixels
+	*Surface           // underlying surface
+	VColor             // drawing color
+	Dx, Dy     float64 // offset to coordinate origin
+	Xloc, Yloc float64 // drawing location
+	Aim        float64 // orientation in degrees
+	Size       float64 // drawing width
 }
 
 //  NewCanvas -- construct a new Goaldi canvas
-func NewCanvas(w int, h int, d float32) *VCanvas {
+func NewCanvas(w int, h int, d float64) *VCanvas {
 	v := &VCanvas{}
 	if w < 0 || h < 0 {
 		v.Surface = AppSurface()
+		d = v.PixPerPt
 	} else {
 		v.Surface = MemSurface(w, h, d)
 	}
-	v.VColor = NewColor(0, 0, 0, 1) // color = black
-	v.Xloc = float64(v.Width) / 2   // origin at center
-	v.Yloc = float64(v.Height) / 2
-	v.Aim = -90                  // orientation = towards top
-	v.Size = float64(v.PixPerPt) // drawing width = 1 pt
+	v.VColor = NewColor(0, 0, 0, 1)   // color = black
+	v.Dx = float64(v.Width) / (2 * d) // offset to origin
+	v.Dy = float64(v.Height) / (2 * d)
+	v.Aim = -90 // orientation = towards top
+	v.Size = 1  // drawing width = 1 pt
 	return v
 }
 

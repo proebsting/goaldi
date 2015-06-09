@@ -26,7 +26,7 @@ import (
 type Surface struct {
 	Width      int     // width in pixels
 	Height     int     // height in pixels
-	PixPerPt   float32 // density in pixels/point
+	PixPerPt   float64 // density in pixels/point
 	draw.Image         // underlying image
 }
 
@@ -35,14 +35,14 @@ const MinPPP = 3 // minimum PixPerPt acceptable
 
 //  app configuration (valid after app initialization)
 var cfg app.Config             // current app window configuration
-var pixPerPt float32           // our actual PPP value w/ anti-aliasing
+var pixPerPt float64           // our actual PPP value w/ anti-aliasing
 var gli *glutil.Image          // GLutil image currently displayed on screen
 var once sync.Once             // initialization interlock
 var appGo = make(chan bool)    // signal for starting app loop
 var appReady = make(chan bool) // signal when initialization is complete
 
 //  MemSurface creates a new off-line Surface with the given characteristics.
-func MemSurface(w int, h int, ppp float32) *Surface {
+func MemSurface(w int, h int, ppp float64) *Surface {
 	return newSurface(image.NewRGBA(image.Rect(0, 0, w, h)), ppp)
 }
 
@@ -53,7 +53,7 @@ func AppSurface() *Surface {
 }
 
 //  newSurface initializes and returns a new App or Mem surface.
-func newSurface(im draw.Image, ppp float32) *Surface {
+func newSurface(im draw.Image, ppp float64) *Surface {
 	w := im.Bounds().Max.X
 	h := im.Bounds().Max.Y
 	draw.Draw(im, im.Bounds(), image.White, image.Point{}, draw.Src) // erase
@@ -95,12 +95,12 @@ func AppMain() {
 func appStart() {
 	cfg = app.GetConfig()
 	if geom.PixelsPerPt >= MinPPP {
-		pixPerPt = geom.PixelsPerPt
+		pixPerPt = float64(geom.PixelsPerPt)
 	} else {
 		pixPerPt = MinPPP
 	}
-	w := int(math.Ceil(float64(float32(cfg.Width) * pixPerPt)))
-	h := int(math.Ceil(float64(float32(cfg.Height) * pixPerPt)))
+	w := int(math.Ceil(float64(cfg.Width) * float64(pixPerPt)))
+	h := int(math.Ceil(float64(cfg.Height) * float64(pixPerPt)))
 	gli = glutil.NewImage(w, h)
 	draw.Draw(gli, gli.Bounds(), image.White, image.Point{}, draw.Src) // erase
 	appReady <- true

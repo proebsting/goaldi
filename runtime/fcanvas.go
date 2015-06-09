@@ -31,7 +31,7 @@ func Canvas(env *Env, args ...Value) (Value, *Closure) {
 	if d <= 0 {
 		panic(NewExn("Invalid density", d))
 	}
-	return Return(NewCanvas(w, h, float32(d)))
+	return Return(NewCanvas(w, h, d))
 }
 
 //  C.color(r,g,b,a) sets the drawing color for canvas c.
