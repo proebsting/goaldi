@@ -33,6 +33,17 @@ func (v *VCanvas) Reset() *VCanvas {
 	return v
 }
 
+//  VCanvas.Goto(x,y,o) sets the current location to (x, y).
+//  If o is a number (not nil) it sets the current orientation to that.
+func (v *VCanvas) Goto(x, y float64, o interface{}) *VCanvas {
+	v.Xloc = x
+	v.Yloc = y
+	if aim, ok := o.(float64); ok {
+		v.Aim = aim
+	}
+	return v
+}
+
 //  VCanvas.Forward(d) draws a line by moving the pen forward d units.
 func (v *VCanvas) Forward(d float64) *VCanvas {
 	s, c := math.Sincos(v.Aim * (math.Pi / 180))
