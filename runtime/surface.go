@@ -38,6 +38,7 @@ type App struct {
 	app.Config               // current app window configuration
 	Events        chan Event // window events
 	PixPerPt      float64    // our actual PPP value w/ anti-aliasing
+	TL, TR, BL    geom.Point // position for rendering
 }
 
 var OneApp App // data for the one app
@@ -83,12 +84,7 @@ func newSurface(app *App, im draw.Image, ppp float64) *Surface {
 func evtRepaint() {
 	gli := OneApp.Image
 	gli.Upload()
-	gli.Draw(
-		geom.Point{0, 0},
-		geom.Point{OneApp.Config.Width, 0},
-		geom.Point{0, OneApp.Config.Height},
-		gli.Bounds(),
-	)
+	gli.Draw(OneApp.TL, OneApp.TR, OneApp.BL, gli.Bounds())
 }
 
 //  appInit starts the main loop and waits for its initialization to finish
@@ -114,25 +110,27 @@ func AppMain() {
 
 //  evtStart does the actual initialization once the app driver has started
 func evtStart() {
-	OneApp.Config = app.GetConfig()
 	if geom.PixelsPerPt >= MinPPP {
 		OneApp.PixPerPt = float64(geom.PixelsPerPt)
 	} else {
 		OneApp.PixPerPt = MinPPP
 	}
-	w := int(math.Ceil(float64(OneApp.Config.Width) * float64(OneApp.PixPerPt)))
-	h := int(math.Ceil(float64(OneApp.Config.Height) * float64(OneApp.PixPerPt)))
+	cfg := app.GetConfig()
+	w := int(math.Ceil(float64(cfg.Width) * OneApp.PixPerPt))
+	h := int(math.Ceil(float64(cfg.Height) * OneApp.PixPerPt))
 	gli := glutil.NewImage(w, h)
 	draw.Draw(gli, gli.Bounds(), image.White, image.Point{}, draw.Src) // erase
 	OneApp.Image = gli
+	OneApp.SetConfig(app.GetConfig())
 	appReady <- true
 }
 
 //  evtConfig responds to a resizing of the application window
 func evtConfig(new, old app.Config) {
-	OneApp.Config = new
-	//#%#%#%# DO SOMETHING MORE...
-	//#%#%#%# SEND TO GOALDI PROGRAM...
+	OneApp.SetConfig(new)
+	//#%#%#% DO SOMETHING MORE...
+	//#%#%#% SEND TO GOALDI PROGRAM...
+	//#%#%#% IMPLICATIONS ON MEANINGS OF CANVAS PPP VALUES & SCALING?
 }
 
 //  evtTouch responds to a mouse (or finger) event
@@ -151,4 +149,30 @@ func evtStop() {
 	//#%#%#%# SEND TO GOALDI PROGRAM ?????
 	fmt.Fprint(os.Stderr, "Shutdown by window system")
 	Shutdown(0)
+}
+
+//  App.SetConfig udpates an App struct for a new window configuration
+func (a *App) SetConfig(g app.Config) {
+	a.Config = g
+	rwidth := float64(a.Image.Rect.Max.X)  // raster width in pixels
+	rheight := float64(a.Image.Rect.Max.X) // raster height in pixels
+	raspr := rwidth / rheight              // raster aspect ratio
+	daspr := float64(g.Width / g.Height)   // display aspect ratio
+	if daspr > raspr {
+		// sidebar configuration
+		a.PixPerPt = rheight / float64(g.Height)
+		rwpts := geom.Pt(raspr) * g.Height // raster width in pts
+		dx := (g.Width - rwpts) / 2
+		a.TL = geom.Point{dx, 0}
+		a.TR = geom.Point{dx + rwpts, 0}
+		a.BL = geom.Point{dx, g.Height}
+	} else {
+		// letterbox configuration
+		a.PixPerPt = rwidth / float64(g.Width)
+		rhpts := g.Width / geom.Pt(raspr) // raster height in pts
+		dy := (g.Height - rhpts) / 2
+		a.TL = geom.Point{0, dy}
+		a.TR = geom.Point{g.Width, dy}
+		a.BL = geom.Point{0, dy + rhpts}
+	}
 }
