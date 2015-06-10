@@ -35,6 +35,7 @@ type Surface struct {
 //  Only one Surface can have such a window.
 type App struct {
 	*glutil.Image            // GLutil image currently displayed on screen
+	*Surface                 // associated surface
 	app.Config               // current app window configuration
 	Events        chan Event // window events
 	PixPerPt      float64    // our actual PPP value w/ anti-aliasing
@@ -69,7 +70,9 @@ func MemSurface(w int, h int, ppp float64) *Surface {
 //  AppSurface creates a Surface for use in a golang/x/mobile/app.
 func AppSurface() *Surface {
 	appOnce.Do(appInit)
-	return newSurface(&OneApp, OneApp.Image, OneApp.PixPerPt)
+	u := newSurface(&OneApp, OneApp.Image, OneApp.PixPerPt)
+	OneApp.Surface = u
+	return u
 }
 
 //  newSurface initializes and returns a new App or Mem surface.
@@ -136,10 +139,10 @@ func evtConfig(new, old app.Config) {
 //  evtTouch responds to a mouse (or finger) event
 func evtTouch(e event.Touch) {
 	// convert to user coordinates
-	//#%#%#% assumes the window has not been resized
-	//#%#%#% and the origin is still at the center
-	x := float64(e.Loc.X - OneApp.Config.Width/2)
-	y := float64(e.Loc.Y - OneApp.Config.Height/2)
+	//#%#%#% assumes that the origin is at the center of the canvas
+	m := OneApp.PixPerPt / OneApp.Surface.PixPerPt
+	x := m * (float64(e.Loc.X - OneApp.Config.Width/2))
+	y := m * (float64(e.Loc.Y - OneApp.Config.Height/2))
 	// send to the channel
 	OneApp.Events <- Event{int64(e.ID), int(e.Type), x, y}
 }
