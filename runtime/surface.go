@@ -37,7 +37,7 @@ type App struct {
 	*glutil.Image            // GLutil image currently displayed on screen
 	app.Config               // current app window configuration
 	Events        chan Event // window events
-	pixPerPt      float64    // our actual PPP value w/ anti-aliasing
+	PixPerPt      float64    // our actual PPP value w/ anti-aliasing
 }
 
 var OneApp App // data for the one app
@@ -68,7 +68,7 @@ func MemSurface(w int, h int, ppp float64) *Surface {
 //  AppSurface creates a Surface for use in a golang/x/mobile/app.
 func AppSurface() *Surface {
 	appOnce.Do(appInit)
-	return newSurface(&OneApp, OneApp.Image, OneApp.pixPerPt)
+	return newSurface(&OneApp, OneApp.Image, OneApp.PixPerPt)
 }
 
 //  newSurface initializes and returns a new App or Mem surface.
@@ -116,12 +116,12 @@ func AppMain() {
 func evtStart() {
 	OneApp.Config = app.GetConfig()
 	if geom.PixelsPerPt >= MinPPP {
-		OneApp.pixPerPt = float64(geom.PixelsPerPt)
+		OneApp.PixPerPt = float64(geom.PixelsPerPt)
 	} else {
-		OneApp.pixPerPt = MinPPP
+		OneApp.PixPerPt = MinPPP
 	}
-	w := int(math.Ceil(float64(OneApp.Config.Width) * float64(OneApp.pixPerPt)))
-	h := int(math.Ceil(float64(OneApp.Config.Height) * float64(OneApp.pixPerPt)))
+	w := int(math.Ceil(float64(OneApp.Config.Width) * float64(OneApp.PixPerPt)))
+	h := int(math.Ceil(float64(OneApp.Config.Height) * float64(OneApp.PixPerPt)))
 	gli := glutil.NewImage(w, h)
 	draw.Draw(gli, gli.Bounds(), image.White, image.Point{}, draw.Src) // erase
 	OneApp.Image = gli
