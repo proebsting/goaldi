@@ -38,8 +38,8 @@ func (v *VCanvas) Reset() *VCanvas {
 func (v *VCanvas) Goto(x, y float64, o interface{}) *VCanvas {
 	v.Xloc = x
 	v.Yloc = y
-	if aim, ok := o.(float64); ok {
-		v.Aim = aim
+	if o != nil {
+		v.Aim = o.(float64)
 	}
 	return v
 }
