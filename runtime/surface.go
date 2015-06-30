@@ -3,22 +3,16 @@
 package runtime
 
 import (
-	//"code.google.com/p/freetype-go/freetype"
 	"fmt"
 	"golang.org/x/mobile/app"
 	"golang.org/x/mobile/event"
-	//"golang.org/x/mobile/font"
 	"golang.org/x/mobile/geom"
-	//"golang.org/x/mobile/gl"
 	"golang.org/x/mobile/gl/glutil"
 	"image"
-	//"image/color"
 	"image/draw"
-	//"log"
 	"math"
 	"os"
 	"sync"
-	//"time"
 )
 
 //  A Surface is the actual writing area for a canvas.
@@ -31,15 +25,32 @@ type Surface struct {
 	draw.Image         // underlying image
 }
 
+//  Surface.String() produces a printable representation of a Surface struct.
+func (s Surface) String() string {
+	a := "-"
+	if s.App != nil {
+		a = "A"
+	}
+	return fmt.Sprintf("Surface(%s,%dx%dx%.2f)",
+		a, s.Width, s.Height, s.PixPerPt)
+}
+
 //  An App struct holds the application window configuration information.
 //  Only one Surface can have such a window.
 type App struct {
 	*glutil.Image            // GLutil image currently displayed on screen
 	*Surface                 // associated surface
-	app.Config               // current app window configuration
+	event.Config             // current app window configuration
 	Events        chan Event // window events
 	PixPerPt      float64    // our actual PPP value w/ anti-aliasing
 	TL, TR, BL    geom.Point // position for rendering
+}
+
+//  App.String() produces a printable representation of the App struct.
+func (a App) String() string {
+	return fmt.Sprintf("App(%.2fx%.2f+%.2f+%.2f,%.2f,%v)",
+		a.TR.X-a.TL.X, a.BL.Y-a.TL.Y, a.TL.X, a.TL.Y, a.PixPerPt,
+		a.Surface)
 }
 
 var OneApp App // data for the one app
@@ -57,10 +68,17 @@ const MinPPP = 3 // minimum PixPerPt acceptable
 //  size of the event buffer
 const EVBUFSIZE = 1000
 
-//  startup synchronization
-var appOnce sync.Once          // initialization interlock
-var appGo = make(chan bool)    // signal for starting app loop
-var appReady = make(chan bool) // signal when initialization is complete
+//  newSurface initializes and returns a new App or Mem surface.
+func newSurface(app *App, im draw.Image, ppp float64) *Surface {
+	w := im.Bounds().Max.X
+	h := im.Bounds().Max.Y
+	s := &Surface{app, w, h, ppp, im}
+	if app != nil {
+		app.Surface = s
+	}
+	draw.Draw(im, im.Bounds(), image.White, image.Point{}, draw.Src) // erase
+	return s
+}
 
 //  MemSurface creates a new off-line Surface with the given characteristics.
 func MemSurface(w int, h int, ppp float64) *Surface {
@@ -69,67 +87,67 @@ func MemSurface(w int, h int, ppp float64) *Surface {
 
 //  AppSurface creates a Surface for use in a golang/x/mobile/app.
 func AppSurface() *Surface {
-	appOnce.Do(appInit)
-	u := newSurface(&OneApp, OneApp.Image, OneApp.PixPerPt)
-	OneApp.Surface = u
-	return u
+	appOnce.Do(func() { // on first call only:
+		appGo <- true // start initialization in main thread
+		<-appGo       // wait for it to complete
+	})
+	return OneApp.Surface
 }
 
-//  newSurface initializes and returns a new App or Mem surface.
-func newSurface(app *App, im draw.Image, ppp float64) *Surface {
-	w := im.Bounds().Max.X
-	h := im.Bounds().Max.Y
-	draw.Draw(im, im.Bounds(), image.White, image.Point{}, draw.Src) // erase
-	return &Surface{app, w, h, ppp, im}
-}
+//  startup synchronization
+var appOnce sync.Once       // initialization interlock
+var appGo = make(chan bool) // thread handoff synchronization
 
 //  evtRepaint is called 60x/second to draw the current Surface on the screen
-func evtRepaint() {
+func evtRepaint(g event.Config) {
 	gli := OneApp.Image
 	gli.Upload()
-	gli.Draw(OneApp.TL, OneApp.TR, OneApp.BL, gli.Bounds())
-}
-
-//  appInit starts the main loop and waits for its initialization to finish
-func appInit() {
-	appGo <- true
-	<-appReady
+	gli.Draw(g, OneApp.TL, OneApp.TR, OneApp.BL, gli.Bounds())
 }
 
 //  AppMain, when signalled, starts up the main mobile application loop.
 //  The Go library requires that this be run in the main thread.
+//  #%#%#%#% Is that still a requirement?
 func AppMain() {
-	<-appGo
+	<-appGo // block until the first canvas call
 	OneApp.Events = make(chan Event, EVBUFSIZE)
-	app.Register(app.Callbacks{
+	app.Run(app.Callbacks{
 		Start:  evtStart,
 		Config: evtConfig,
 		Stop:   evtStop,
 		Touch:  evtTouch,
 		Draw:   evtRepaint,
 	})
-	app.Run(app.Callbacks{}) // n.b. argument deprecated
+	panic("app.Run() returned")
 }
 
-//  evtStart does the actual initialization once the app driver has started
+//  evtStart now does nothing.
+//  Actual initialization occurs in response to the first Config event.
 func evtStart() {
-	if geom.PixelsPerPt >= MinPPP {
-		OneApp.PixPerPt = float64(geom.PixelsPerPt)
+}
+
+//  evtInit initilizes the app in response to the first config event.
+func evtInit(cfg event.Config) {
+	if cfg.PixelsPerPt >= MinPPP {
+		OneApp.PixPerPt = float64(cfg.PixelsPerPt)
 	} else {
 		OneApp.PixPerPt = MinPPP
 	}
-	cfg := app.GetConfig()
 	w := int(math.Ceil(float64(cfg.Width) * OneApp.PixPerPt))
 	h := int(math.Ceil(float64(cfg.Height) * OneApp.PixPerPt))
 	gli := glutil.NewImage(w, h)
 	draw.Draw(gli, gli.Bounds(), image.White, image.Point{}, draw.Src) // erase
 	OneApp.Image = gli
-	OneApp.SetConfig(app.GetConfig())
-	appReady <- true
+	OneApp.SetConfig(cfg) // do before setting Ready
+	OneApp.Surface = newSurface(&OneApp, OneApp.Image, OneApp.PixPerPt)
+	appGo <- true
 }
 
-//  evtConfig responds to a resizing of the application window
-func evtConfig(new, old app.Config) {
+//  evtConfig responds to configuration (init or resize) of the app window.func
+func evtConfig(new, old event.Config) {
+	if OneApp.PixPerPt == 0 { // if not initialized
+		evtInit(new) // then do so
+	}
 	OneApp.SetConfig(new)
 	//#%#%#% DO SOMETHING MORE...
 	//#%#%#% SEND TO GOALDI PROGRAM...
@@ -137,7 +155,7 @@ func evtConfig(new, old app.Config) {
 }
 
 //  evtTouch responds to a mouse (or finger) event
-func evtTouch(e event.Touch) {
+func evtTouch(e event.Touch, g event.Config) {
 	// convert to user coordinates
 	//#%#%#% assumes that the origin is at the center of the canvas
 	m := OneApp.PixPerPt / OneApp.Surface.PixPerPt
@@ -147,15 +165,17 @@ func evtTouch(e event.Touch) {
 	OneApp.Events <- Event{int64(e.ID), int(e.Type), x, y}
 }
 
-//  evtStop responds to an app "stop" call (#%#% whatever that means...)
+//  evtStop responds to an app "stop" call
 func evtStop() {
 	//#%#%#%# SEND TO GOALDI PROGRAM ?????
 	fmt.Fprint(os.Stderr, "Shutdown by window system")
 	Shutdown(0)
 }
 
-//  App.SetConfig udpates an App struct for a new window configuration
-func (a *App) SetConfig(g app.Config) {
+//  App.SetConfig updates the App struct for a new window configuration.
+//  Mostly this means figuring out where to draw the OneApp Surface image
+//  in the reconfigured window.
+func (a *App) SetConfig(g event.Config) {
 	a.Config = g
 	rwidth := float64(a.Image.Rect.Max.X)  // raster width in pixels
 	rheight := float64(a.Image.Rect.Max.X) // raster height in pixels

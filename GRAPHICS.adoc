@@ -1,0 +1,17 @@
+= Goaldi Graphics Notes
+
+Graphics support is experimental and unstable.
+Build failures are quite likely because the
+underlying Go libraries are in a state of flux.
+
+Additional installation steps are needed on the graphics code branch.
+The graphics code requires external libraries which are obtained using
+*go get*.
+This command, in turn, requires that the Git and Mercurial packages
+(the *git* and *hg* commands) be installed in the search path.
+(Note: *hg* may not be needed at this moment, but it will be.)
+
+After downloading Goaldi, and after installing Git and Mercurial, run
+	*go get -d -u -a -v goaldi/interp*
+to download and install the necessary libraries before building Goaldi.
+
