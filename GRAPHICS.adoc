@@ -11,7 +11,10 @@ This command, in turn, requires that the Git and Mercurial packages
 (the *git* and *hg* commands) be installed in the search path.
 (Note: *hg* may not be needed at this moment, but it will be.)
 
-After downloading Goaldi, and after installing Git and Mercurial, run
-	*go get -d -u -a -v goaldi/interp*
+After installing Git and Mercurial, run
+----
+go get -u golang.org/x/mobile/app
+go get -u golang.org/x/mobile/exp/gl/glutil
+----
 to download and install the necessary libraries before building Goaldi.
 
