@@ -163,7 +163,7 @@ func evtTouch(e event.Touch, g event.Config) {
 //  evtStop responds to an app "stop" call
 func evtStop() {
 	//#%#%#%# SEND TO GOALDI PROGRAM ?????
-	fmt.Fprint(os.Stderr, "Shutdown by window system")
+	fmt.Fprint(os.Stderr, "Shutdown by window system\n")
 	Shutdown(0)
 }
 
