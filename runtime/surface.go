@@ -88,8 +88,8 @@ func MemSurface(w int, h int, ppp float64) *Surface {
 //  AppSurface creates a Surface for use in a golang/x/mobile/app.
 func AppSurface() *Surface {
 	appOnce.Do(func() { // on first call only:
-		appGo <- true // start initialization in main thread
-		<-appGo       // wait for it to complete
+		appGo <- true // start the application loop
+		<-appGo       // wait for signal from the start callback
 	})
 	return OneApp.Surface
 }
@@ -105,9 +105,9 @@ func evtRepaint(g event.Config) {
 	gli.Draw(g, OneApp.TL, OneApp.TR, OneApp.BL, gli.Bounds())
 }
 
-//  AppMain, when signalled, starts up the main mobile application loop.
+//  AppMain, when signalled, runs the main mobile application loop.
 //  The Go library requires that this be run in the main thread.
-//  #%#%#%#% Is that still a requirement?
+//  One or more Config events will precede the Start event.
 func AppMain() {
 	<-appGo // block until the first canvas call
 	OneApp.Events = make(chan Event, EVBUFSIZE)
@@ -121,13 +121,9 @@ func AppMain() {
 	panic("app.Run() returned")
 }
 
-//  evtStart now does nothing.
-//  Actual initialization occurs in response to the first Config event.
+//  evtStart initializes the app.
 func evtStart() {
-}
-
-//  evtInit initilizes the app in response to the first config event.
-func evtInit(cfg event.Config) {
+	cfg := OneApp.Config
 	if cfg.PixelsPerPt >= MinPPP {
 		OneApp.PixPerPt = float64(cfg.PixelsPerPt)
 	} else {
@@ -145,13 +141,12 @@ func evtInit(cfg event.Config) {
 
 //  evtConfig responds to configuration (init or resize) of the app window.func
 func evtConfig(new, old event.Config) {
-	if OneApp.PixPerPt == 0 { // if not initialized
-		evtInit(new) // then do so
+	OneApp.Config = new        // save configuration information
+	if OneApp.Surface == nil { // do nothing more until started
+		return
 	}
-	OneApp.SetConfig(new)
-	//#%#%#% DO SOMETHING MORE...
+	OneApp.SetConfig(new) // reconfigure for possibly new dimensions
 	//#%#%#% SEND TO GOALDI PROGRAM...
-	//#%#%#% IMPLICATIONS ON MEANINGS OF CANVAS PPP VALUES & SCALING?
 }
 
 //  evtTouch responds to a mouse (or finger) event
