@@ -337,9 +337,6 @@ Special cases are:
 f.flush() -- flush file::
 f.flush() flushes output on file f.
 
-C.forward(d) -- draw forward for distance d::
-VCanvas.Forward(d) draws a line by moving the pen forward d units.
-
 fprintf(f,fmt,x[]) -- write to file with formatting [silver]_(http://golang.org/pkg/fmt#Fprintf[fmt.Fprintf])_::
 Fprintf formats according to a format specifier and writes to w. It
 returns the number of bytes written and any write error encountered.

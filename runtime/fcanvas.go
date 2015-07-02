@@ -10,7 +10,6 @@ import (
 var CanvasMethods = MethodTable([]*VProcedure{
 	DefMeth((*VCanvas).Color, "color", "k", "set drawing color"),
 	DefMeth((*VCanvas).Turn, "turn", "d", "alter orientation by d degrees"),
-	DefMeth((*VCanvas).Forward, "forward", "d", "draw forward for distance d"),
 })
 
 //  canvas(w,h,d) creates and returns a new canvas.
