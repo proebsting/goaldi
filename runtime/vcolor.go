@@ -104,7 +104,7 @@ func init() {
 	defColor("black", 0, 0, 0, 1)
 	defColor("blue", 0, 0, 1, 1)
 	defColor("brown", .5, .25, 0, 1)
-	defColor("fuschia", 1, 0, 1, 1)
+	defColor("fuchsia", 1, 0, 1, 1)
 	defColor("gold", 1, .83, 0, 1)
 	defColor("gray", .5, .5, .5, 1)
 	defColor("green", 0, .5, 0, 1)
