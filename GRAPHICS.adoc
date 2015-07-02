@@ -13,8 +13,9 @@ This command, in turn, requires that the Git and Mercurial packages
 
 After installing Git and Mercurial, run
 ----
-go get -u golang.org/x/mobile/app
-go get -u golang.org/x/mobile/exp/gl/glutil
+go get -u -x golang.org/x/mobile/app
+go get -u -x golang.org/x/mobile/exp/gl/glutil
+go get -u -x code.google.com/p/freetype-go/freetype/truetype
 ----
 to download and install the necessary libraries before building Goaldi.
 

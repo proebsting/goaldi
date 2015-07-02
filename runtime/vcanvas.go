@@ -12,6 +12,7 @@ import (
 type VCanvas struct {
 	*Surface           // underlying surface
 	VColor             // drawing color
+	*VFont             // text font
 	Dx, Dy     float64 // offset to coordinate origin
 	Xloc, Yloc float64 // drawing location
 	Aim        float64 // orientation in degrees
@@ -27,6 +28,7 @@ func NewCanvas(w int, h int, d float64) *VCanvas {
 	} else {
 		v.Surface = MemSurface(w, h, d)
 	}
+	v.VFont = NewFont("mono", DefaultFontSize)
 	return v.Reset()
 }
 
@@ -71,4 +73,9 @@ func (v *VCanvas) Import() Value {
 //  VCanvas.Export returns itself.
 func (v *VCanvas) Export() interface{} {
 	return v
+}
+
+//  VCanvas.ToPx scales a point value to a pixel value
+func (v *VCanvas) ToPx(n float64) int {
+	return int(v.PixPerPt*n + 0.5)
 }

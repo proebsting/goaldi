@@ -87,12 +87,16 @@ func (v *VCanvas) Rect(x, y, w, h float64) *VCanvas {
 	if h < 0 {
 		y, h = y+h, -h
 	}
-	x = v.PixPerPt * (x + v.Dx) // convert from canvas coordinate system
-	y = v.PixPerPt * (y + v.Dy)
-	w = v.PixPerPt * w
-	h = v.PixPerPt * h
-	r := image.Rect(int(x+0.5), int(y+0.5), int(x+w+0.5), int(y+h+0.5))
+	x = x + v.Dx
+	y = y + v.Dy
+	r := image.Rect(v.ToPx(x), v.ToPx(y), v.ToPx(x+w), v.ToPx(y+h))
 	draw.Draw(v.Surface.Image, r,
 		image.NewUniform(v.VColor), image.Point{}, draw.Src)
+	return v
+}
+
+//  VCanvas.Text(x, y, s) draws a string of text characters.
+func (v *VCanvas) Text(x, y float64, s string) *VCanvas {
+	v.VFont.Typeset(v, v.ToPx(x+v.Dx), v.ToPx(y+v.Dy), s)
 	return v
 }

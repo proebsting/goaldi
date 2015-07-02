@@ -32,6 +32,7 @@ procedure main() {
 	add(E, %stdin, file)
 	add(E, channel(3), channel)
 	add(E, color("purple"), color)
+	add(E, font("mono"), font)
 	add(E, Point, constructor)
 	add(E, ^P := Point(7,5), Point)
 	add(E, P.dist, methodvalue)

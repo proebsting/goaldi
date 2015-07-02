@@ -1,4 +1,4 @@
-Example set: set{~,t:nil,t:Point,3.142,17,6.022e+23,abcd,f:%stdin,k:purple,c:3,m:dist,p:main,L:5,S:3,T:2,Circle{},Point{},elemtype{},tuple{},1h2m3s}
+Example set: set{~,t:nil,t:Point,3.142,17,6.022e+23,abcd,f:%stdin,k:purple,y:mono,c:3,m:dist,p:main,L:5,S:3,T:2,Circle{},Point{},elemtype{},tuple{},1h2m3s}
 
 Examples sorted by value, showing presentation options:
 
@@ -13,6 +13,7 @@ n    6.022e+23       6.02214129e+23                 6.02214129e+23
 s    abcd            "abcd"                         abcd
 f    f:%stdin        file(%stdin,r)                 f:%stdin
 k    k:purple        color("purple")                k:purple
+y    y:mono          font(mono,12.0)                y:mono
 c    c:3             channel(3)                     c:3
 m    m:dist          methodvalue (Point{}).dist     m:dist
 p    p:main          procedure main()               0xXXXXXX
@@ -38,6 +39,7 @@ n   0  t:number       number       t:number       -      t:number
 s   0  t:string       string       t:string       -      t:string
 f   0  t:file         file         t:file         -      t:file
 k   0  t:color        color        t:color        -      t:color
+y   0  t:font         font         t:font         -      t:font
 c   0  t:channel      channel      t:channel      -      t:channel
 m   0  t:methodvalue  methodvalue  t:methodvalue  -      t:methodvalue
 p   0  t:procedure    procedure    t:procedure    -      t:procedure
