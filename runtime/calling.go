@@ -75,7 +75,7 @@ func ArgNames(p *VProcedure, args []Value, names []string) []Value {
 
 	// make a list of target indexes for storing the named arguments seen
 	locs := make([]int, len(names)) // list of indexes
-	nslots := 0                     // totall number of parameters to pass
+	nslots := 0                     // total number of parameters to pass
 	for i, s := range names {
 		j := argIndex(s, p.Pnames) // get index of name i
 		locs[i] = j                // save it

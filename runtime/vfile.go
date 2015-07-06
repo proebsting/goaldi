@@ -130,7 +130,7 @@ func (v *VFile) ReadLine() *VString {
 		// use library func to read a line
 		s, e = r.ReadString('\n')
 	} else {
-		// not bufferred; read a char at a time up through newline
+		// not buffered; read a char at a time up through newline
 		var b bytes.Buffer
 		p := make([]byte, 1)
 		for p[0] != '\n' {

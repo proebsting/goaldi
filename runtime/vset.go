@@ -32,7 +32,7 @@ func NewSet(L *VList) *VSet {
 }
 
 //  GoKey(v) turns a Goaldi value into something usable as a Go map key.
-//  Strings and numbers must be converted becuase otherwise two
+//  Strings and numbers must be converted because otherwise two
 //  identical values in different objects would be seen as distinct keys.
 //  The inverse of GoKey() is Import().
 func GoKey(v Value) interface{} {

@@ -299,7 +299,7 @@ Each character of the optional flags argument selects an option:
 	"f"   fail on error (instead of panicking)
 +
 If none of "w", "a", or "c" are specified, then "r" is implied. "w"
-implies "c" unless "r" is also specififed. Buffering is used if "n" is
+implies "c" unless "r" is also specified. Buffering is used if "n" is
 absent and the file is opened exclusively for reading or writing but not
 both.
 +
@@ -492,7 +492,7 @@ associated methods.
 
 number(x) -- convert to number::
 number(x) returns its argument converted to number, or fails if it
-cannot be converted due to its form or dataype. For string (or
+cannot be converted due to its form or datatype. For string (or
 stringable) arguments, number() trims leading and trailing spaces and
 then accepts standard Go decimal forms (fixed and floating) or Goaldi
 radix forms (101010b, 52o, 2Ax, 23r1J).

@@ -91,7 +91,7 @@ func Cause(x interface{}) interface{} {
 	}
 }
 
-//  Catcher(env) prints a tracepback after a panic.
+//  Catcher(env) prints a traceback after a panic.
 //  This is the recovery procedure at the top of the main (or coexpr) stack.
 func Catcher(env *Env) {
 	if x := recover(); x != nil {
