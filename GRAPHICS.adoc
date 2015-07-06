@@ -13,5 +13,5 @@ Then, before building Goaldi, run *make getlibs*
 to download and install the necessary external libraries.
 
 As these libraries change, Goaldi changes in response.
-After updating Goaldi, it may be necessary to agin run
+After updating Goaldi, it may be necessary to again run
 *make getlibs* to refresh the imported libraries.

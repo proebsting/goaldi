@@ -14,7 +14,7 @@ import (
 
 var _ = fmt.Printf // enable debugging
 
-//  VCanvas.Reset() establishes or reestablises initial conditions:
+//  VCanvas.Reset() establishes or reestablishes initial conditions:
 //		origin = center of surface
 //		current location = origin
 //		orientation = towards top
