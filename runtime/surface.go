@@ -58,7 +58,7 @@ var OneApp App // data for the one app
 //  An Event is an action in a window.
 type Event struct {
 	ID     int64   // touch sequence ID (event.TouchSequenceID)
-	Action int     // 0=begin, 1=move, 2=release (event.TouchType)
+	Action string  // "touch" | "drag" | "release"
 	X, Y   float64 // location in user coordinates
 }
 
@@ -157,7 +157,18 @@ func evtTouch(e event.Touch, g event.Config) {
 	x := m * (float64(e.Loc.X - OneApp.Config.Width/2))
 	y := m * (float64(e.Loc.Y - OneApp.Config.Height/2))
 	// send to the channel
-	OneApp.Events <- Event{int64(e.ID), int(e.Type), x, y}
+	var s string
+	switch e.Change {
+	case event.ChangeOn:
+		s = "touch"
+	case event.ChangeNone:
+		s = "drag"
+	case event.ChangeOff:
+		s = "release"
+	default:
+		panic(fmt.Sprintf("Unexpected event type: %v", e))
+	}
+	OneApp.Events <- Event{int64(e.ID), s, x, y}
 }
 
 //  evtStop responds to an app "stop" call

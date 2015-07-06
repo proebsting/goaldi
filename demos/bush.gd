@@ -10,7 +10,7 @@ procedure main() {
 	repeat {
 		moon(w)
 		branch(w, 3, 8)
-		while (@w.Events).Action ~= 2
+		while (@w.Events).Action ~== "release"
 		w.Reset()
 		clist :=: dlist
 	}

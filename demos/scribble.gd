@@ -6,7 +6,7 @@ procedure main() {
 	^x := 0
 	^y := 0
 	while ^e := @w.Events do {
-		if e.Action = 1 then {		# if a drag event
+		if e.Action == "drag" then {
 			w.Line(x, y, e.X, e.Y)	# draw a line
 		}
 		x := e.X
