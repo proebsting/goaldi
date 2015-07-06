@@ -8,6 +8,7 @@ import (
 	"golang.org/x/mobile/event"
 	"golang.org/x/mobile/exp/gl/glutil"
 	"golang.org/x/mobile/geom"
+	"golang.org/x/mobile/gl"
 	"image"
 	"image/draw"
 	"math"
@@ -100,6 +101,8 @@ var appGo = make(chan bool) // thread handoff synchronization
 
 //  evtRepaint is called 60x/second to draw the current Surface on the screen
 func evtRepaint(g event.Config) {
+	gl.ClearColor(.5, .5, .5, 1)
+	gl.Clear(gl.COLOR_BUFFER_BIT)
 	gli := OneApp.Image
 	gli.Upload()
 	gli.Draw(g, OneApp.TL, OneApp.TR, OneApp.BL, gli.Bounds())
