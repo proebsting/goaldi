@@ -60,6 +60,11 @@ boot:		# install goaldi using stable pre-built translator IR code
 $(HOOKFILE): $(HOOKMASTER)	# configure Git pre-commit hook
 	test -d .git && cp $(HOOKMASTER) $(HOOKFILE) || :
 
+getlibs:	# get latest versions of supplemental libraries
+	go get -u -x golang.org/x/mobile/app
+	go get -u -x golang.org/x/mobile/exp/gl/glutil
+	go get -u -x code.google.com/p/freetype-go/freetype/truetype
+
 
 #  -- build targets --
 

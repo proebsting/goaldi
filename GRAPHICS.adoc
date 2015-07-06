@@ -4,18 +4,14 @@ Graphics support is experimental and unstable.
 Build failures are quite likely because the
 underlying Go libraries are in a state of flux.
 
-Additional installation steps are needed on the graphics code branch.
-The graphics code requires external libraries which are obtained using
-*go get*.
-This command, in turn, requires that the Git and Mercurial packages
-(the *git* and *hg* commands) be installed in the search path.
-(Note: *hg* may not be needed at this moment, but it will be.)
+The graphics code uses external libraries that must be obtained
+using Git and Mercurial (the *git* and *hg* commands).
+Install these packages first (in addition to the Go language)
+if they are not already present.
 
-After installing Git and Mercurial, run
-----
-go get -u -x golang.org/x/mobile/app
-go get -u -x golang.org/x/mobile/exp/gl/glutil
-go get -u -x code.google.com/p/freetype-go/freetype/truetype
-----
-to download and install the necessary libraries before building Goaldi.
+Then, before building Goaldi, run *make getlibs*
+to download and install the necessary external libraries.
 
+As these libraries change, Goaldi changes in response.
+After updating Goaldi, it may be necessary to agin run
+*make getlibs* to refresh the imported libraries.
