@@ -29,7 +29,7 @@ var NumberType = NewType("number", "n", rNumber, Number, nil,
 	"number", "x", "convert to number")
 
 //  ParseNumber -- standard string-to-number conversion for Goaldi.
-//  Trims leading spaces and tabs, then allows either stadard Go
+//  Trims leading spaces and tabs, then allows either standard Go
 //  "ParseFloat" form or any Goaldi radix form (nnb, nno, nnx, nnrxxxx).
 func ParseNumber(s string) (float64, error) {
 	// trim leading and trailing strings; must have something left

@@ -5,13 +5,13 @@
 #  (1) Go is installed and in the search path, and $GOPATH is set properly.
 #      IF NOT: Install Go before proceeding, and set $GOPATH.
 #
-#  (2) A functioning “goaldi” executable is in the search path.
+#  (2) A functioning "goaldi" executable is in the search path.
 #      IF NOT: Remove any nonfunctional goaldi executable from the path.
-#      Then run “make boot” in a clean, unedited release package to build
+#      Then run "make boot" in a clean, unedited release package to build
 #      and install in $GOPATH/bin from a stable intermediate snapshot.
 #
 #  (3) Any intermediate build products are functional and mutually compatible.
-#      IF NOT: Run “make clean” to remove them after a failed build
+#      IF NOT: Run "make clean" to remove them after a failed build
 #      or after making incompatible changes to the intermediate representation.
 
 
@@ -130,7 +130,7 @@ bundle:
 accept:
 	+cd tran; make accept
 
-#  a prerequesite target to force unconditional rebuild of dependent items
+#  a prerequisite target to force unconditional rebuild of dependent items
 .FORCE:
 
 

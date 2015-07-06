@@ -50,7 +50,7 @@ func init() {
 }
 
 //  number(x) returns its argument converted to number,
-//  or fails if it cannot be converted due to its form or dataype.
+//  or fails if it cannot be converted due to its form or datatype.
 //  For string (or stringable) arguments,
 //  number() trims leading and trailing spaces
 //  and then accepts standard Go decimal forms (fixed and floating)

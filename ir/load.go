@@ -49,7 +49,7 @@ func Load(rdr io.Reader) (comments []string, ircode [][]interface{}) {
 		gcode = bzip2.NewReader(buffi) // use decompressing reader
 		if runtime.NumCPU() > 1 {
 			// with multiple CPUs, read in parallel
-			// (buffer size tuned empirically on Perigrine.cs 22-May-2015)
+			// (buffer size tuned empirically on Peregrine.cs 22-May-2015)
 			gcode = ParallelReader(gcode, 16*1024)
 			defer func() { gcode.(io.Closer).Close() }()
 		}

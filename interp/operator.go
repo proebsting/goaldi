@@ -208,7 +208,7 @@ func operate(env *g.Env, f *pr_frame, i *iOperator) (g.Value, *g.Closure) {
 	}
 }
 
-//  argval retrieves an argument for an operator and possibly deferences it
+//  argval retrieves an argument for an operator and possibly dereferences it
 func argval(f *pr_frame, t int, isvar uint16) g.Value {
 	v := f.temps[t]
 	if isvar == 0 {

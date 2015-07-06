@@ -70,7 +70,7 @@ var nlByte = []byte("\n")
 //		"f"   fail on error (instead of panicking)
 //
 //	If none of "w", "a", or "c" are specified, then "r" is implied.
-//	"w" implies "c" unless "r" is also specififed.
+//	"w" implies "c" unless "r" is also specified.
 //	Buffering is used if "n" is absent and the file is opened
 //	exclusively for reading or writing but not both.
 //
