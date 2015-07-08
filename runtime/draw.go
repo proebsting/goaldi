@@ -14,13 +14,13 @@ import (
 
 var _ = fmt.Printf // enable debugging
 
-//  VCanvas.Reset() establishes or reestablishes initial conditions:
+//  VPainter.Reset() establishes or reestablishes initial conditions:
 //		origin = center of surface
 //		current location = origin
 //		orientation = towards top
 //		drawing size = 1 pt
 //		color = black
-func (v *VCanvas) Reset() *VCanvas {
+func (v *VPainter) Reset() *VPainter {
 	v.Dx = float64(v.Width) / (2 * v.PixPerPt) // offset to origin
 	v.Dy = float64(v.Height) / (2 * v.PixPerPt)
 	v.Xloc = 0 // current location
@@ -33,9 +33,9 @@ func (v *VCanvas) Reset() *VCanvas {
 	return v
 }
 
-//  VCanvas.Goto(x,y,o) sets the current location to (x, y).
+//  VPainter.Goto(x,y,o) sets the current location to (x, y).
 //  If o is a number (not nil) it sets the current orientation to that.
-func (v *VCanvas) Goto(x, y float64, o interface{}) *VCanvas {
+func (v *VPainter) Goto(x, y float64, o interface{}) *VPainter {
 	v.Xloc = x
 	v.Yloc = y
 	if o != nil {
@@ -44,8 +44,8 @@ func (v *VCanvas) Goto(x, y float64, o interface{}) *VCanvas {
 	return v
 }
 
-//  VCanvas.Forward(d) draws a line by moving the pen forward d units.
-func (v *VCanvas) Forward(d float64) *VCanvas {
+//  VPainter.Forward(d) draws a line by moving the pen forward d units.
+func (v *VPainter) Forward(d float64) *VPainter {
 	s, c := math.Sincos(v.Aim * (math.Pi / 180))
 	x := v.Xloc + d*c
 	y := v.Yloc + d*s
@@ -55,9 +55,9 @@ func (v *VCanvas) Forward(d float64) *VCanvas {
 	return v
 }
 
-//  VCanvas.Line(x1, y1, x2, y2) draws a line.
+//  VPainter.Line(x1, y1, x2, y2) draws a line.
 //  #%#% in a really dumb way. should stroke, not draw a zillion points.
-func (v *VCanvas) Line(x1, y1, x2, y2 float64) *VCanvas {
+func (v *VPainter) Line(x1, y1, x2, y2 float64) *VPainter {
 	dx := x2 - x1
 	dy := y2 - y1
 	dmax := math.Max(math.Abs(dx), math.Abs(dy))
@@ -72,15 +72,15 @@ func (v *VCanvas) Line(x1, y1, x2, y2 float64) *VCanvas {
 	return v
 }
 
-//  VCanvas.Point(x, y) draws a point.
+//  VPainter.Point(x, y) draws a point.
 //  #%#% in a really dumb way. should cache the pen. and it should be round.
-func (v *VCanvas) Point(x, y float64) *VCanvas {
+func (v *VPainter) Point(x, y float64) *VPainter {
 	v.Rect(x-v.Size/2, y-v.Size/2, v.Size, v.Size)
 	return v
 }
 
-//  VCanvas.Rect(x, y, w, h) draws a rectangle.
-func (v *VCanvas) Rect(x, y, w, h float64) *VCanvas {
+//  VPainter.Rect(x, y, w, h) draws a rectangle.
+func (v *VPainter) Rect(x, y, w, h float64) *VPainter {
 	if w < 0 {
 		x, w = x+w, -w
 	}
@@ -95,8 +95,8 @@ func (v *VCanvas) Rect(x, y, w, h float64) *VCanvas {
 	return v
 }
 
-//  VCanvas.Text(x, y, s) draws a string of text characters.
-func (v *VCanvas) Text(x, y float64, s string) *VCanvas {
+//  VPainter.Text(x, y, s) draws a string of text characters.
+func (v *VPainter) Text(x, y float64, s string) *VPainter {
 	v.VFont.Typeset(v, v.ToPx(x+v.Dx), v.ToPx(y+v.Dy), s)
 	return v
 }

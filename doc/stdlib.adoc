@@ -119,8 +119,8 @@ c.buffer(size) -- interpose channel buffer::
 c.buffer(size) returns a channel that interposes a buffer of the given
 size before the channel c.
 
-canvas(width,height,density) -- create canvas::
-canvas(w,h,d) creates and returns a new canvas.
+canvas(width,height,density) -- create canvas and return painter::
+canvas(w,h,d) creates a new canvas and returns a painter value.
 
 cbrt(n) -- compute cube root [silver]_(http://golang.org/pkg/math#Cbrt[math.Cbrt])_::
 Cbrt returns the cube root of x.
@@ -184,7 +184,7 @@ With three arguments: r,g,b are color components in (0, 1).
 +
 With four arguments: r,g,b,a are color components in (0, 1).
 
-C.color(k) -- set drawing color::
+P.color(k) -- set drawing color::
 C.color(r,g,b,a) sets the drawing color for canvas c. With no arguments,
 the color remains unchanged. The current or updated color value is
 returned.
@@ -816,7 +816,7 @@ tuple(id:e, ...) creates an anonymous record value. Each argument must
 be named. Each distinct identifier list defines a new type, all of which
 have the name "tuple".
 
-C.turn(d) -- alter orientation by d degrees::
+P.turn(d) -- alter orientation by d degrees::
 C.turn(d) adjusts the current orientation by d degrees. If d is nil, the
 orientation remains unchanged. The current or updated orientation is
 returned.

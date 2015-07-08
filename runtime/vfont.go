@@ -92,7 +92,7 @@ func (y *VFont) Export() interface{} {
 }
 
 //  VFont.Typeset(surface, x, y, s) draws a string in an image.
-func (f *VFont) Typeset(v *VCanvas, x, y int, s string) {
+func (f *VFont) Typeset(v *VPainter, x, y int, s string) {
 	cx := freetype.NewContext()
 	cx.SetFont(f.Font)
 	cx.SetSrc(image.NewUniform(v.VColor))
