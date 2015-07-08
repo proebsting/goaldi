@@ -15,7 +15,7 @@ import (
 var _ = fmt.Printf // enable debugging
 
 //  VPainter.Reset() establishes or reestablishes initial conditions:
-//		origin = center of surface
+//		origin = center of canvas
 //		current location = origin
 //		orientation = towards top
 //		drawing size = 1 pt
@@ -90,7 +90,7 @@ func (v *VPainter) Rect(x, y, w, h float64) *VPainter {
 	x = x + v.Dx
 	y = y + v.Dy
 	r := image.Rect(v.ToPx(x), v.ToPx(y), v.ToPx(x+w), v.ToPx(y+h))
-	draw.Draw(v.Surface.Image, r,
+	draw.Draw(v.Canvas.Image, r,
 		image.NewUniform(v.VColor), image.Point{}, draw.Src)
 	return v
 }

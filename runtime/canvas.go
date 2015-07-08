@@ -1,4 +1,4 @@
-//  surface.go -- the image type underlying a Goaldi canvas
+//  canvas.go -- the Goaldi type "canvas", a grid of pixels
 
 package runtime
 
@@ -16,9 +16,8 @@ import (
 	"sync"
 )
 
-//  A Surface is the actual writing area for a canvas.
-//  It can be written to a file and/or displayed on the screen.
-type Surface struct {
+//  A Canvas is an on or offscreen image (a grid of pixels).
+type Canvas struct {
 	*App               // app configuration, or nil
 	Width      int     // width in pixels
 	Height     int     // height in pixels
@@ -26,21 +25,21 @@ type Surface struct {
 	draw.Image         // underlying image
 }
 
-//  Surface.String() produces a printable representation of a Surface struct.
-func (s Surface) String() string {
+//  Canvas.String() produces a printable representation of a Canvas struct.
+func (s Canvas) String() string {
 	a := "-"
 	if s.App != nil {
 		a = "A"
 	}
-	return fmt.Sprintf("Surface(%s,%dx%dx%.2f)",
+	return fmt.Sprintf("Canvas(%s,%dx%dx%.2f)",
 		a, s.Width, s.Height, s.PixPerPt)
 }
 
 //  An App struct holds the application window configuration information.
-//  Only one Surface can have such a window.
+//  Only one Canvas can have such a window.
 type App struct {
 	*glutil.Image            // GLutil image currently displayed on screen
-	*Surface                 // associated surface
+	*Canvas                  // associated canvas
 	event.Config             // current app window configuration
 	Events        chan Event // window events
 	PixPerPt      float64    // our actual PPP value w/ anti-aliasing
@@ -51,7 +50,7 @@ type App struct {
 func (a App) String() string {
 	return fmt.Sprintf("App(%.2fx%.2f+%.2f+%.2f,%.2f,%v)",
 		a.TR.X-a.TL.X, a.BL.Y-a.TL.Y, a.TL.X, a.TL.Y, a.PixPerPt,
-		a.Surface)
+		a.Canvas)
 }
 
 var OneApp App // data for the one app
@@ -69,37 +68,37 @@ const MinPPP = 3 // minimum PixPerPt acceptable
 //  size of the event buffer
 const EVBUFSIZE = 1000
 
-//  newSurface initializes and returns a new App or Mem surface.
-func newSurface(app *App, im draw.Image, ppp float64) *Surface {
+//  newCanvas initializes and returns a new App or Mem canvas.
+func newCanvas(app *App, im draw.Image, ppp float64) *Canvas {
 	w := im.Bounds().Max.X
 	h := im.Bounds().Max.Y
-	s := &Surface{app, w, h, ppp, im}
+	s := &Canvas{app, w, h, ppp, im}
 	if app != nil {
-		app.Surface = s
+		app.Canvas = s
 	}
 	draw.Draw(im, im.Bounds(), image.White, image.Point{}, draw.Src) // erase
 	return s
 }
 
-//  MemSurface creates a new off-line Surface with the given characteristics.
-func MemSurface(w int, h int, ppp float64) *Surface {
-	return newSurface(nil, image.NewRGBA(image.Rect(0, 0, w, h)), ppp)
+//  MemCanvas creates a new off-line Canvas with the given characteristics.
+func MemCanvas(w int, h int, ppp float64) *Canvas {
+	return newCanvas(nil, image.NewRGBA(image.Rect(0, 0, w, h)), ppp)
 }
 
-//  AppSurface creates a Surface for use in a golang/x/mobile/app.
-func AppSurface() *Surface {
+//  AppCanvas creates a Canvas for use in a golang/x/mobile/app.
+func AppCanvas() *Canvas {
 	appOnce.Do(func() { // on first call only:
 		appGo <- true // start the application loop
 		<-appGo       // wait for signal from the start callback
 	})
-	return OneApp.Surface
+	return OneApp.Canvas
 }
 
 //  startup synchronization
 var appOnce sync.Once       // initialization interlock
 var appGo = make(chan bool) // thread handoff synchronization
 
-//  evtRepaint is called 60x/second to draw the current Surface on the screen
+//  evtRepaint is called 60x/second to draw the current Canvas on the screen
 func evtRepaint(g event.Config) {
 	gl.ClearColor(.5, .5, .5, 1)
 	gl.Clear(gl.COLOR_BUFFER_BIT)
@@ -138,14 +137,14 @@ func evtStart() {
 	draw.Draw(gli, gli.Bounds(), image.White, image.Point{}, draw.Src) // erase
 	OneApp.Image = gli
 	OneApp.SetConfig(cfg) // do before setting Ready
-	OneApp.Surface = newSurface(&OneApp, OneApp.Image, OneApp.PixPerPt)
+	OneApp.Canvas = newCanvas(&OneApp, OneApp.Image, OneApp.PixPerPt)
 	appGo <- true
 }
 
 //  evtConfig responds to configuration (init or resize) of the app window.func
 func evtConfig(new, old event.Config) {
-	OneApp.Config = new        // save configuration information
-	if OneApp.Surface == nil { // do nothing more until started
+	OneApp.Config = new       // save configuration information
+	if OneApp.Canvas == nil { // do nothing more until started
 		return
 	}
 	OneApp.SetConfig(new) // reconfigure for possibly new dimensions
@@ -156,7 +155,7 @@ func evtConfig(new, old event.Config) {
 func evtTouch(e event.Touch, g event.Config) {
 	// convert to user coordinates
 	//#%#%#% assumes that the origin is at the center of the canvas
-	m := OneApp.PixPerPt / OneApp.Surface.PixPerPt
+	m := OneApp.PixPerPt / OneApp.Canvas.PixPerPt
 	x := m * (float64(e.Loc.X - OneApp.Config.Width/2))
 	y := m * (float64(e.Loc.Y - OneApp.Config.Height/2))
 	// send to the channel
@@ -182,7 +181,7 @@ func evtStop() {
 }
 
 //  App.SetConfig updates the App struct for a new window configuration.
-//  Mostly this means figuring out where to draw the OneApp Surface image
+//  Mostly this means figuring out where to draw the OneApp Canvas image
 //  in the reconfigured window.
 func (a *App) SetConfig(g event.Config) {
 	a.Config = g

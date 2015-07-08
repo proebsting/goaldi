@@ -12,8 +12,8 @@ var PainterMethods = MethodTable([]*VProcedure{
 	DefMeth((*VPainter).Turn, "turn", "d", "alter orientation by d degrees"),
 })
 
-//  canvas(w,h,d) creates a new canvas and returns a painter value.
-func Canvas(env *Env, args ...Value) (Value, *Closure) {
+//  MakeCanvas(w,h,d) creates a new canvas and returns a painter value.
+func MakeCanvas(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("canvas", args)
 	if len(args) == 0 {
 		return Return(NewPainter(-1, -1, -1))

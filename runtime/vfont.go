@@ -91,7 +91,7 @@ func (y *VFont) Export() interface{} {
 	return y
 }
 
-//  VFont.Typeset(surface, x, y, s) draws a string in an image.
+//  VFont.Typeset(painter, x, y, s) draws a string in an image.
 func (f *VFont) Typeset(v *VPainter, x, y int, s string) {
 	cx := freetype.NewContext()
 	cx.SetFont(f.Font)

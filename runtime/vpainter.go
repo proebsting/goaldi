@@ -10,7 +10,7 @@ import (
 //  Units are measured in points, as in the Go app package.
 //  Floating values are float64, for use with the math package.
 type VPainter struct {
-	*Surface           // underlying surface
+	*Canvas            // underlying canvas
 	VColor             // drawing color
 	*VFont             // text font
 	Dx, Dy     float64 // offset to coordinate origin
@@ -23,10 +23,10 @@ type VPainter struct {
 func NewPainter(w int, h int, d float64) *VPainter {
 	v := &VPainter{}
 	if w < 0 || h < 0 {
-		v.Surface = AppSurface()
+		v.Canvas = AppCanvas()
 		d = v.PixPerPt
 	} else {
-		v.Surface = MemSurface(w, h, d)
+		v.Canvas = MemCanvas(w, h, d)
 	}
 	v.VFont = NewFont("mono", DefaultFontSize)
 	return v.Reset()
@@ -36,7 +36,7 @@ const rPainter = 32       // declare sort ranking
 var _ ICore = &VPainter{} // validate implementation
 
 //  PainterType is the painter instance of type type.
-var PainterType = NewType("painter", "P", rPainter, Canvas, PainterMethods,
+var PainterType = NewType("painter", "P", rPainter, MakeCanvas, PainterMethods,
 	"canvas", "width,height,density", "create canvas and return painter")
 
 //  VPainter.String -- default conversion to Go string returns "C:nnxnn"
@@ -54,7 +54,7 @@ func (c *VPainter) Type() IRank {
 	return PainterType
 }
 
-//  VPainter.Copy returns a new painter sharing the same underlying surface
+//  VPainter.Copy returns a new painter sharing the same underlying canvas
 func (c *VPainter) Copy() Value {
 	new := *c
 	return &new
