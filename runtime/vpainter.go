@@ -19,17 +19,13 @@ type VPainter struct {
 	Size       float64 // drawing width
 }
 
-//  NewPainter -- construct a new Goaldi canvas and return a painter
+//  NewPainter -- construct a new Goaldi canvas and return a painter.
+//  If w or h is negative, an app canvas is created and installed.
 func NewPainter(w int, h int, d float64) *VPainter {
-	v := &VPainter{}
-	if w < 0 || h < 0 {
-		v.Canvas = AppCanvas()
-		d = v.PixPerPt
-	} else {
-		v.Canvas = MemCanvas(w, h, d)
-	}
-	v.VFont = NewFont("mono", DefaultFontSize)
-	return v.Reset()
+	p := &VPainter{}
+	p.Canvas = NewCanvas(w, h, d)
+	p.VFont = NewFont("mono", DefaultFontSize)
+	return p.Reset()
 }
 
 const rPainter = 32       // declare sort ranking
@@ -66,16 +62,16 @@ func (a *VPainter) Before(b Value, i int) bool {
 }
 
 //  VPainter.Import returns itself
-func (v *VPainter) Import() Value {
-	return v
+func (p *VPainter) Import() Value {
+	return p
 }
 
 //  VPainter.Export returns itself.
-func (v *VPainter) Export() interface{} {
-	return v
+func (p *VPainter) Export() interface{} {
+	return p
 }
 
 //  VPainter.ToPx scales a point value to a pixel value
-func (v *VPainter) ToPx(n float64) int {
-	return int(v.PixPerPt*n + 0.5)
+func (p *VPainter) ToPx(n float64) int {
+	return int(p.PixPerPt*n + 0.5)
 }
