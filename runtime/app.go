@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"golang.org/x/mobile/app"
 	"golang.org/x/mobile/event"
+	"golang.org/x/mobile/exp/f32"
 	"golang.org/x/mobile/geom"
 	"golang.org/x/mobile/gl"
 	"os"
@@ -30,14 +31,11 @@ type App struct {
 	event.Config            // current app window configuration
 	Events       chan Event // window event channel
 	PixPerPt     float64    // our actual PPP value w/ anti-aliasing
-	TL, TR, BL   geom.Point // position for rendering
 }
 
 //  App.String() produces a printable representation of the App struct.
 func (a *App) String() string {
-	return fmt.Sprintf("App(%.2fx%.2f+%.2f+%.2f,%.2f,%v)",
-		a.TR.X-a.TL.X, a.BL.Y-a.TL.Y, a.TL.X, a.TL.Y, a.PixPerPt,
-		a.Canvas)
+	return fmt.Sprintf("App(%v,%.2f)", a.Canvas, a.PixPerPt)
 }
 
 var OneApp App // data for the one app window
@@ -144,36 +142,52 @@ func evtRepaint(g event.Config) {
 	if OneApp.Canvas == nil { // if canvas not set yet
 		return
 	}
-	OneApp.SetConfig(OneApp.Config) //#%#%#%#% recalc every time?
-	gli := OneApp.Image
-	gli.Upload()
-	gli.Draw(g, OneApp.TL, OneApp.TR, OneApp.BL, gli.Bounds())
+	m := &f32.Affine{}
+	OneApp.SetMatrix(m)
+	OneApp.Display(OneApp.Canvas, m)
 }
 
-//  App.SetConfig updates the App struct for a new window configuration.
-//  Mostly this means figuring out where to draw the OneApp Canvas image
-//  in the reconfigured window.
-func (a *App) SetConfig(g event.Config) {
-	a.Config = g
+//  App.SetMatrix(m) initializes a transformation matrix for the base canvas.
+func (a *App) SetMatrix(m *f32.Affine) {
 	rwidth := float64(a.Image.Rect.Max.X)  // raster width in pixels
-	rheight := float64(a.Image.Rect.Max.X) // raster height in pixels
+	rheight := float64(a.Image.Rect.Max.Y) // raster height in pixels
 	raspr := rwidth / rheight              // raster aspect ratio
-	daspr := float64(g.Width / g.Height)   // display aspect ratio
+	g := a.Config
+	daspr := float64(g.Width / g.Height) // display aspect ratio
+	dx := float32(0)
+	dy := float32(0)
 	if daspr > raspr {
 		// sidebar configuration
 		a.PixPerPt = rheight / float64(g.Height)
 		rwpts := geom.Pt(raspr) * g.Height // raster width in pts
-		dx := (g.Width - rwpts) / 2
-		a.TL = geom.Point{dx, 0}
-		a.TR = geom.Point{dx + rwpts, 0}
-		a.BL = geom.Point{dx, g.Height}
+		dx = float32(g.Width-rwpts) / 2
 	} else {
 		// letterbox configuration
 		a.PixPerPt = rwidth / float64(g.Width)
 		rhpts := g.Width / geom.Pt(raspr) // raster height in pts
-		dy := (g.Height - rhpts) / 2
-		a.TL = geom.Point{0, dy}
-		a.TR = geom.Point{g.Width, dy}
-		a.BL = geom.Point{0, dy + rhpts}
+		dy = float32(g.Height-rhpts) / 2
+	}
+	sc := float32(1 / a.PixPerPt)
+	m.Identity()
+	m.Translate(m, dx, dy)
+	m.Scale(m, sc, sc)
+}
+
+//  App.Display(canvas,xform) displays a canvas on the app screen.
+func (a *App) Display(c *Canvas, m *f32.Affine) {
+	w := float32(c.Image.Rect.Max.X)
+	h := float32(c.Image.Rect.Max.Y)
+	tl := pj(m, 0, 0)
+	tr := pj(m, w, 0)
+	bl := pj(m, 0, h)
+	c.Image.Upload()
+	c.Image.Draw(OneApp.Config, tl, tr, bl, c.Image.Bounds())
+}
+
+//  pj(xform, x, y) -- project a point using an affine transform
+func pj(m *f32.Affine, x float32, y float32) geom.Point {
+	return geom.Point{
+		geom.Pt(m[0][0]*x + m[0][1]*y + m[0][2]),
+		geom.Pt(m[1][0]*x + m[1][1]*y + m[1][2]),
 	}
 }
