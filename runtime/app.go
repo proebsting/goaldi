@@ -10,6 +10,7 @@ import (
 	"golang.org/x/mobile/gl"
 	"os"
 	"sync"
+	"time"
 )
 
 //  Minimum acceptable pixel density, in pixels per point.
@@ -19,6 +20,9 @@ const MinPPP = 2.7183 // minimum PixPerPt acceptable
 
 //  Size of the event buffer.
 const EVBUFSIZE = 100
+
+//  Shutdown allowance
+const SHUTDOWN = 200 * time.Millisecond
 
 //  An App struct holds the application window configuration information.
 type App struct {
@@ -127,8 +131,9 @@ func evtTouch(e event.Touch, g event.Config) {
 
 //  evtStop responds to an app "stop" call
 func evtStop() {
-	//#%#%#%# SEND TO GOALDI PROGRAM ?????
-	fmt.Fprint(os.Stderr, "Shutdown by window system\n")
+	OneApp.Events <- Event{0, "stop", 0, 0}              // send to program
+	time.Sleep(SHUTDOWN)                                 // allow to shutdown
+	fmt.Fprint(os.Stderr, "Shutdown by window system\n") // force kill
 	Shutdown(0)
 }
 
