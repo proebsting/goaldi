@@ -26,12 +26,15 @@ const EVBUFSIZE = 100
 //  Shutdown allowance
 const SHUTDOWN = 200 * time.Millisecond
 
+//  Identity transform
+var IDENTITY = &f32.Affine{{1, 0, 0}, {0, 1, 0}} // constant
+
 //  An App struct holds the application window configuration information.
 type App struct {
 	*Canvas                 // associated canvas
+	*Sprite                 // tree of sprites to display (incl base canvas)
 	event.Config            // current app window configuration
 	Events       chan Event // window event channel
-	PixPerPt     float64    // our actual PPP value w/ anti-aliasing
 }
 
 //  App.String() produces a printable representation of the App struct.
@@ -71,6 +74,7 @@ func AppCanvas(c *Canvas) {
 		OneApp.Canvas.App = nil // disconnect old app canvas
 	}
 	OneApp.Canvas = c
+	OneApp.Sprite = NewSprite(nil, c, 0, 0, 1)
 }
 
 //  startup synchronization
@@ -143,9 +147,8 @@ func evtRepaint(g event.Config) {
 	if OneApp.Canvas == nil { // if canvas not set yet
 		return
 	}
-	m := &f32.Affine{}
-	OneApp.SetMatrix(m)
-	OneApp.Display(OneApp.Canvas, m)
+	OneApp.SetMatrix(&OneApp.Sprite.Xform) // #%#%# recalc every time???
+	OneApp.ShowTree(IDENTITY, OneApp.Sprite)
 }
 
 //  App.SetMatrix(m) initializes a transformation matrix for the base canvas.
@@ -169,9 +172,18 @@ func (a *App) SetMatrix(m *f32.Affine) {
 		dy = float32(g.Height-rhpts) / 2
 	}
 	sc := float32(1 / a.PixPerPt)
-	m.Identity()
-	m.Translate(m, dx, dy)
+	m.Translate(IDENTITY, dx, dy)
 	m.Scale(m, sc, sc)
+}
+
+//  App.ShowTree(xform, sprite) renders the tree of sprites on the screen.
+func (a *App) ShowTree(m0 *f32.Affine, e *Sprite) {
+	var m f32.Affine
+	m.Mul(m0, &e.Xform)
+	a.Display(e.Source, &m)
+	for _, c := range e.Children {
+		a.ShowTree(&m, c)
+	}
 }
 
 //  App.Display(canvas,xform) displays a canvas on the app screen.
