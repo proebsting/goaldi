@@ -95,6 +95,15 @@ func (v *VPainter) Rect(x, y, w, h float64) *VPainter {
 	return v
 }
 
+//  VPainter.Overlay(x, y, c) copies an image from canvas c.
+//  #%#% should allow subimage and scaling specification somehow
+//  #%#% shouldn't assume both have same PixelsPerPt
+func (v *VPainter) Overlay(x, y float64, c *VPainter) *VPainter {
+	dst := image.Rect(v.ToPx(x+v.Dx), v.ToPx(y+v.Dy), v.Width, v.Height)
+	draw.Draw(v.Image, dst, c.Image, image.Point{0, 0}, draw.Over)
+	return v
+}
+
 //  VPainter.Text(x, y, s) draws a string of text characters.
 func (v *VPainter) Text(x, y float64, s string) *VPainter {
 	v.VFont.Typeset(v, v.ToPx(x+v.Dx), v.ToPx(y+v.Dy), s)

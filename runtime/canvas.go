@@ -11,11 +11,11 @@ import (
 
 //  A Canvas is a grid of pixels forming an image.
 type Canvas struct {
-	*App                  // associated app if app canvas, else nil
-	Width         int     // width in pixels
-	Height        int     // height in pixels
-	PixPerPt      float64 // density in pixels/point
-	*glutil.Image         // underlying image
+	*App               // associated app if app canvas, else nil
+	Width      int     // width in pixels
+	Height     int     // height in pixels
+	PixPerPt   float64 // density in pixels/point
+	draw.Image         // underlying image
 }
 
 //  Canvas.String() produces a printable representation of a Canvas struct.
@@ -34,10 +34,13 @@ func NewCanvas(w int, h int, ppp float64) *Canvas {
 	var c = &Canvas{}
 	if w >= 0 && h >= 0 {
 		// simple offscreen scratch canvas
+		c.Image = image.NewRGBA(image.Rect(0, 0, w, h))
 		c.setup(w, h, ppp)
 	} else {
 		// application canvas
-		c.setup(AppSize())
+		w, h, ppp = AppSize()
+		c.Image = glutil.NewImage(w, h)
+		c.setup(w, h, ppp)
 		AppCanvas(c)
 	}
 	return c
@@ -45,7 +48,7 @@ func NewCanvas(w int, h int, ppp float64) *Canvas {
 
 //  C.setup initializes a canvas struct.
 func (c *Canvas) setup(w int, h int, ppp float64) {
-	im := glutil.NewImage(w, h)
+	im := c.Image
 	draw.Draw(im, im.Bounds(), image.White, image.Point{}, draw.Src) // erase
 	c.Width = w
 	c.Height = h

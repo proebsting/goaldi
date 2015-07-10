@@ -7,6 +7,7 @@ import (
 	"golang.org/x/mobile/app"
 	"golang.org/x/mobile/event"
 	"golang.org/x/mobile/exp/f32"
+	"golang.org/x/mobile/exp/gl/glutil"
 	"golang.org/x/mobile/geom"
 	"golang.org/x/mobile/gl"
 	"os"
@@ -149,9 +150,9 @@ func evtRepaint(g event.Config) {
 
 //  App.SetMatrix(m) initializes a transformation matrix for the base canvas.
 func (a *App) SetMatrix(m *f32.Affine) {
-	rwidth := float64(a.Image.Rect.Max.X)  // raster width in pixels
-	rheight := float64(a.Image.Rect.Max.Y) // raster height in pixels
-	raspr := rwidth / rheight              // raster aspect ratio
+	rwidth := float64(a.Image.Bounds().Max.X)  // raster width in pixels
+	rheight := float64(a.Image.Bounds().Max.Y) // raster height in pixels
+	raspr := rwidth / rheight                  // raster aspect ratio
 	g := a.Config
 	daspr := float64(g.Width / g.Height) // display aspect ratio
 	dx := float32(0)
@@ -175,13 +176,14 @@ func (a *App) SetMatrix(m *f32.Affine) {
 
 //  App.Display(canvas,xform) displays a canvas on the app screen.
 func (a *App) Display(c *Canvas, m *f32.Affine) {
-	w := float32(c.Image.Rect.Max.X)
-	h := float32(c.Image.Rect.Max.Y)
+	w := float32(c.Image.Bounds().Max.X)
+	h := float32(c.Image.Bounds().Max.Y)
 	tl := pj(m, 0, 0)
 	tr := pj(m, w, 0)
 	bl := pj(m, 0, h)
-	c.Image.Upload()
-	c.Image.Draw(OneApp.Config, tl, tr, bl, c.Image.Bounds())
+	gli := c.Image.(*glutil.Image)
+	gli.Upload()
+	gli.Draw(OneApp.Config, tl, tr, bl, c.Image.Bounds())
 }
 
 //  pj(xform, x, y) -- project a point using an affine transform
