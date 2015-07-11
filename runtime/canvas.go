@@ -12,6 +12,7 @@ import (
 //  A Canvas is a grid of pixels forming an image.
 type Canvas struct {
 	*App               // associated app if app canvas, else nil
+	*Sprite            // placement on screen, and overlain sprites
 	Width      int     // width in pixels
 	Height     int     // height in pixels
 	PixPerPt   float64 // density in pixels/point
@@ -54,4 +55,5 @@ func (c *Canvas) setup(w int, h int, ppp float64) {
 	c.Height = h
 	c.PixPerPt = ppp
 	c.Image = im
+	c.Sprite = NewSprite(nil, c, 0, 0, 1)
 }

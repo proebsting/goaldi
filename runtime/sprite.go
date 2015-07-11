@@ -30,10 +30,12 @@ func NewSprite(dst, src *Canvas, x, y, scale float32) *Sprite {
 	return e
 }
 
-//  Canvas.Sprite(src, x, y, scale) creates a sprite on a canvas.
-func (dst *Canvas) Sprite(src *Canvas, x, y, scale float32) *Sprite {
+//  Canvas.AddSprite(src, x, y, scale) creates a sprite on a canvas.
+func (c *Canvas) AddSprite(src *Canvas, x, y, scale float32) *Sprite {
 	//#%#% recompute ppp in case of ppp disagreements?
-	return NewSprite(dst, src, x, y, scale)
+	e := NewSprite(c, src, x, y, scale)
+	c.Sprite.Children = append(c.Sprite.Children, e)
+	return e
 }
 
 //  Sprite.MoveTo(x,y,scale) sets the location of a sprite on its parent.

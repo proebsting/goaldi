@@ -32,7 +32,6 @@ var IDENTITY = &f32.Affine{{1, 0, 0}, {0, 1, 0}} // constant
 //  An App struct holds the application window configuration information.
 type App struct {
 	*Canvas                 // associated canvas
-	*Sprite                 // tree of sprites to display (incl base canvas)
 	event.Config            // current app window configuration
 	Events       chan Event // window event channel
 }
@@ -74,7 +73,6 @@ func AppCanvas(c *Canvas) {
 		OneApp.Canvas.App = nil // disconnect old app canvas
 	}
 	OneApp.Canvas = c
-	OneApp.Sprite = NewSprite(nil, c, 0, 0, 1)
 }
 
 //  startup synchronization
