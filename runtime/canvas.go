@@ -35,6 +35,7 @@ func NewCanvas(w int, h int, ppp float64) *Canvas {
 	var c = &Canvas{}
 	if w >= 0 && h >= 0 {
 		// simple offscreen scratch canvas
+		// (not a GL image, because that doesn't work if not an app)
 		c.Image = image.NewRGBA(image.Rect(0, 0, w, h))
 		c.setup(w, h, ppp)
 	} else {
@@ -47,7 +48,7 @@ func NewCanvas(w int, h int, ppp float64) *Canvas {
 	return c
 }
 
-//  C.setup initializes a canvas struct.
+//  Canvas.setup initializes a canvas struct.
 func (c *Canvas) setup(w int, h int, ppp float64) {
 	im := c.Image
 	draw.Draw(im, im.Bounds(), image.White, image.Point{}, draw.Src) // erase
@@ -56,4 +57,14 @@ func (c *Canvas) setup(w int, h int, ppp float64) {
 	c.PixPerPt = ppp
 	c.Image = im
 	c.Sprite = NewSprite(nil, c, 0, 0, 1)
+}
+
+//  Canvas.MakeDisplayable() makes a canvas useable in an app context.
+//  This means changing its image to a GL image if it is not one already.
+func (c *Canvas) MakeDisplayable() {
+	if _, ok := c.Image.(*glutil.Image); !ok { // if not alread a GL image
+		im := glutil.NewImage(c.Width, c.Height)
+		draw.Draw(im, im.Bounds(), c.Image, image.Point{}, draw.Src)
+		c.Image = im
+	}
 }
