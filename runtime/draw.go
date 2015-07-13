@@ -96,11 +96,36 @@ func (v *VPainter) Rect(x, y, w, h float64) *VPainter {
 }
 
 //  VPainter.Overlay(x, y, c) copies an image from canvas c.
-//  #%#% should allow subimage and scaling specification somehow
-//  #%#% shouldn't assume both have same PixelsPerPt
+//  The origin of canvas c is aligned with (x,y) of the destination.
+//  #%#% Should allow subimage and scaling specification somehow.
 func (v *VPainter) Overlay(x, y float64, c *VPainter) *VPainter {
-	dst := image.Rect(v.ToPx(x+v.Dx), v.ToPx(y+v.Dy), v.Width, v.Height)
-	draw.Draw(v.Image, dst, c.Image, image.Point{0, 0}, draw.Over)
+	f := c.PixPerPt / v.PixPerPt        // scaling (sampling) factor
+	w := float64(c.Width) / c.PixPerPt  // width in points
+	h := float64(c.Height) / c.PixPerPt // height in points
+	x0 := v.ToPx(x + v.Dx - c.Dx)
+	y0 := v.ToPx(y + v.Dy - c.Dy)
+	x1 := x0 + v.ToPx(w)
+	y1 := y0 + v.ToPx(h)
+	if x0 < 0 {
+		x0 = 0
+	}
+	if y0 < 0 {
+		y0 = 0
+	}
+	if x1 > v.Width {
+		x1 = v.Width
+	}
+	if y1 > v.Height {
+		y1 = v.Height
+	}
+	//#%#% could add a fast path calling draw.Draw if densities agree
+	for j := y0; j < y1; j++ {
+		jj := int(f * float64(j-y0))
+		for i := x0; i < x1; i++ {
+			ii := int(f * float64(i-x0))
+			v.Image.Set(i, j, c.Image.At(ii, jj))
+		}
+	}
 	return v
 }
 
