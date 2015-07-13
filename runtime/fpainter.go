@@ -18,8 +18,8 @@ func MakeCanvas(env *Env, args ...Value) (Value, *Closure) {
 	if len(args) == 0 {
 		return Return(NewPainter(-1, -1, -1))
 	}
-	w := IntVal(ProcArg(args, 0, NewNumber(10*72)))
-	h := IntVal(ProcArg(args, 1, NewNumber(float64(w))))
+	w := FloatVal(ProcArg(args, 0, NewNumber(10*72)))
+	h := FloatVal(ProcArg(args, 1, NewNumber(w)))
 	d := FloatVal(ProcArg(args, 2, ONE))
 	if w < 1 {
 		panic(NewExn("Invalid width", w))

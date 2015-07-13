@@ -21,7 +21,7 @@ type VPainter struct {
 
 //  NewPainter -- construct a new Goaldi canvas and return a painter.
 //  If w or h is negative, an app canvas is created and installed.
-func NewPainter(w int, h int, d float64) *VPainter {
+func NewPainter(w, h, d float64) *VPainter {
 	p := &VPainter{}
 	p.Canvas = NewCanvas(w, h, d)
 	p.VFont = NewFont("mono", DefaultFontSize)

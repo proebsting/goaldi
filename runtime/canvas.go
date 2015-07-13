@@ -29,18 +29,20 @@ func (s *Canvas) String() string {
 		a, s.Width, s.Height, s.PixPerPt)
 }
 
-//  NewCanvas creates a new Canvas.
-//  If w or h is negative, the canvas is connected to the app window.
-func NewCanvas(w int, h int, ppp float64) *Canvas {
+//  NewCanvas creates a new Canvas of size w x h points at density ppp.
+//  If w or h is negative, size and density are set by the app window.
+func NewCanvas(w, h, ppp float64) *Canvas {
 	var c = &Canvas{}
 	if w >= 0 && h >= 0 {
 		// simple offscreen scratch canvas
 		// (not a GL image, because that doesn't work if not an app)
-		c.Image = image.NewRGBA(image.Rect(0, 0, w, h))
-		c.setup(w, h, ppp)
+		ww := int(w*ppp + 0.5)
+		hh := int(h*ppp + 0.5)
+		c.Image = image.NewRGBA(image.Rect(0, 0, ww, hh))
+		c.setup(ww, hh, ppp)
 	} else {
 		// application canvas
-		w, h, ppp = AppSize()
+		w, h, ppp := AppSize()
 		c.Image = glutil.NewImage(w, h)
 		c.setup(w, h, ppp)
 		AppCanvas(c)
