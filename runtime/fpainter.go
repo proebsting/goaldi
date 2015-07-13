@@ -3,8 +3,11 @@
 package runtime
 
 import (
+	"fmt"
 	"math"
 )
+
+var _ = fmt.Printf // enable debugging
 
 //  Declare methods
 var PainterMethods = MethodTable([]*VProcedure{
@@ -45,7 +48,7 @@ func (v *VPainter) Color(args ...Value) (Value, *Closure) {
 		}
 		v.VColor = k.(VColor)
 	}
-	return Return(v.VColor)
+	return Return(v)
 }
 
 //  C.turn(d) adjusts the current orientation by d degrees.
@@ -57,5 +60,5 @@ func (v *VPainter) Turn(args ...Value) (Value, *Closure) {
 	if d != NilValue {
 		v.Aim = math.Mod(v.Aim+FloatVal(d), 360)
 	}
-	return Return(NewNumber(v.Aim))
+	return Return(v)
 }
