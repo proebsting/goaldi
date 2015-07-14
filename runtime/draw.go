@@ -91,7 +91,7 @@ func (v *VPainter) Rect(x, y, w, h float64) *VPainter {
 	y = y + v.Dy
 	r := image.Rect(v.ToPx(x), v.ToPx(y), v.ToPx(x+w), v.ToPx(y+h))
 	draw.Draw(v.Canvas.Image, r,
-		image.NewUniform(v.VColor), image.Point{}, draw.Src)
+		image.NewUniform(v.VColor), image.Point{}, draw.Over)
 	return v
 }
 
