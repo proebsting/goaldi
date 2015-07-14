@@ -1,39 +1,65 @@
 # colors demo
 
-global x := -150
-global y := -140
+global x
+global y
 global dy := 16
 
 procedure main() {
-	^c := [ "aqua", "black", "blue", "brown", "fuchsia", "gold", "gray",
-		"green", "lime", "maroon", "navy", "olive", "orange", "purple", "red",
-		"silver", "slate", "teal", "yellow",]
 	^w := canvas()
 	w.VFont := font("mono", dy)
-	every w.color(!c) do
-		showcolor(w)
-	x := 0
-	y := -140
-	every ncolor(w, 0 to 1 by 0.125)
-	ncolor(w, .5, 1, 0)	# yellow-green
-	ncolor(w, 0, 1, .75)	# better aqua (i.e. not cyan)
-	ncolor(w, .2, .8, 1)	# sky blue
-	ncolor(w, .75, .5, 1)	# violet
-	ncolor(w, .5, 0, 1)		# purple
-	ncolor(w, .75, 0, 0)	# dark red
-	ncolor(w, 1, .5, 0)		# better orange
-	ncolor(w, .75, .5, 0)	# tan
 
-	while (@w.Events).Action ~=== "stop"
+	x := -150	# left column
+	y := -140	# reset to top
+	every showcolor(w, !names)
+
+	x := 0		# right column
+	y := -140	# reset to top
+	showcolor(w, .333)			# darkish gray
+	showcolor(w, .667, 1)		# lightish gray
+	showcolor(w, .5, 1, 0)		# yellow-green
+	showcolor(w, 0, 1, .75)		# better aqua (i.e. not cyan)
+	showcolor(w, .2, .8, 1)		# sky blue
+	showcolor(w, .75, .5, 1)	# violet
+	showcolor(w, .5, 0, 1)		# better purple
+	showcolor(w, .75, 0, 0)		# dark red
+	showcolor(w, 1, .5, 0)		# better orange
+	showcolor(w, .75, .5, 0)	# tan
+	showcolor(w, "white")		# (for spacing)
+	showcolor(w, "#D")			# #k
+	showcolor(w, "#A3")			# #kk
+	showcolor(w, "#FDB")		# #rgb
+	showcolor(w, "#FDB8")		# #rgba
+	showcolor(w, "#6F6BFE")		# #rrggbb
+	showcolor(w, "#6F6BFE80")	# #rrggbbaa
+
+	while (@w.Events).Action ~=== "stop"	# wait until closed
 }
 
-procedure ncolor(w, a[]) {
+procedure showcolor(w, a[]) {
 	w.color(color ! a)
-	showcolor(w)
-}
-
-procedure showcolor(w) {
-	w.Rect(x, y, 20, -(dy - 2))
-	w.Text(x + 25, y, string(w.VColor))
+	w.Rect(x, y, 40, -(dy - 2))
+	w.Text(x + 45, y, string(w.VColor)[3:0])
 	y +:= dy
 }
+
+global names := [
+	"fuchsia",	# magenta
+	"red",
+	"orange",
+	"gold",
+	"yellow",
+	"lime",
+	"aqua",	# cyan (turquoise)
+	"blue",
+	"navy",
+	"teal",
+	"green",
+	"olive",
+	"brown",
+	"maroon",
+	"purple",
+	"black",
+	"slate",
+	"gray",
+	"silver",
+]

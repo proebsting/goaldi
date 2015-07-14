@@ -175,7 +175,8 @@ c.close() closes the channel c.
 color(r,g,b,a) -- create color::
 Color(r,g,b,a) creates and returns a new color.
 +
-With one argument: r is a color name, or a grayscale value in (0, 1).
+With one argument: r is a color name, a grayscale value in (0, 1), or a
+hexadecimal specification (#k, #kk, #rgb, #rgba, #rrggbb, #rrggbbaa).
 +
 With two arguments: r is a grayscale value; g is an alpha value in (0,
 1).
