@@ -32,13 +32,14 @@ var IDENTITY = &f32.Affine{{1, 0, 0}, {0, 1, 0}} // constant
 //  An App struct holds the application window configuration information.
 type App struct {
 	*Canvas                 // associated canvas
+	CvScale      float64    // canvas scaling
 	event.Config            // current app window configuration
 	Events       chan Event // window event channel
 }
 
 //  App.String() produces a printable representation of the App struct.
 func (a *App) String() string {
-	return fmt.Sprintf("App(%v,%.2f)", a.Canvas, a.PixPerPt)
+	return fmt.Sprintf("App(%v,%.2f)", a.Canvas, a.CvScale)
 }
 
 var OneApp App // data for the one app window
@@ -112,7 +113,7 @@ func evtConfig(new, old event.Config) {
 func evtTouch(e event.Touch, g event.Config) {
 	// convert to user coordinates
 	//#%#%#% assumes that the origin is at the center of the canvas
-	m := OneApp.PixPerPt / OneApp.Canvas.PixPerPt
+	m := OneApp.CvScale / OneApp.Canvas.PixPerPt
 	x := m * (float64(e.Loc.X - OneApp.Config.Width/2))
 	y := m * (float64(e.Loc.Y - OneApp.Config.Height/2))
 	// send to the channel
@@ -145,12 +146,13 @@ func evtRepaint(g event.Config) {
 	if OneApp.Canvas == nil { // if canvas not set yet
 		return
 	}
-	OneApp.SetMatrix(&OneApp.Sprite.Xform) // #%#%# recalc every time???
+	OneApp.ConfigDisplay() // #%#%# recalculate this every time???
 	OneApp.ShowTree(IDENTITY, OneApp.Sprite)
 }
 
-//  App.SetMatrix(m) initializes a transformation matrix for the base canvas.
-func (a *App) SetMatrix(m *f32.Affine) {
+//  App.ConfigDisplay configures the transformation matrix
+//  for displaying the underlying canvas.
+func (a *App) ConfigDisplay() {
 	rwidth := float64(a.Image.Bounds().Max.X)  // raster width in pixels
 	rheight := float64(a.Image.Bounds().Max.Y) // raster height in pixels
 	raspr := rwidth / rheight                  // raster aspect ratio
@@ -160,18 +162,18 @@ func (a *App) SetMatrix(m *f32.Affine) {
 	dy := float32(0)
 	if daspr > raspr {
 		// sidebar configuration
-		a.PixPerPt = rheight / float64(g.Height)
+		a.CvScale = rheight / float64(g.Height)
 		rwpts := geom.Pt(raspr) * g.Height // raster width in pts
 		dx = float32(g.Width-rwpts) / 2
 	} else {
 		// letterbox configuration
-		a.PixPerPt = rwidth / float64(g.Width)
+		a.CvScale = rwidth / float64(g.Width)
 		rhpts := g.Width / geom.Pt(raspr) // raster height in pts
 		dy = float32(g.Height-rhpts) / 2
 	}
-	sc := float32(1 / a.PixPerPt)
+	m := &a.Sprite.Xform
 	m.Translate(IDENTITY, dx, dy)
-	m.Scale(m, sc, sc)
+	m.Scale(m, float32(1/a.CvScale), float32(1/a.CvScale))
 }
 
 //  App.ShowTree(xform, sprite) renders the tree of sprites on the screen.
