@@ -2,18 +2,18 @@
 
 global x
 global y
-global dy := 16
+global dy := 13
 
 procedure main() {
 	^w := canvas()
 	w.VFont := font("mono", dy)
 
-	x := -150	# left column
-	y := -140	# reset to top
+	x := -125	# left column
+	y := -125	# reset to top
 	every showcolor(w, !names)
 
 	x := 0		# right column
-	y := -140	# reset to top
+	y := -125	# reset to top
 	showcolor(w, .333)			# darkish gray
 	showcolor(w, .667, 1)		# lightish gray
 	showcolor(w, .5, 1, 0)		# yellow-green
@@ -36,10 +36,10 @@ procedure main() {
 }
 
 procedure showcolor(w, a[]) {
+	y +:= dy
 	w.color(color ! a)
 	w.Rect(x, y, 40, -(dy - 2))
 	w.Text(x + 45, y, string(w.VColor)[3:0])
-	y +:= dy
 }
 
 global names := [

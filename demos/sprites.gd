@@ -39,8 +39,8 @@ procedure stones() {
 	^w := win.copy().color("orange")
 	every ^i := -8 to 23 do {
 		^a := i * %pi / 16
-		^x := 150 * cos(a)
-		^y := 150 * sin(a)
+		^x := 120 * cos(a)
+		^y := 120 * sin(a)
 		w.Rect(x-5, y-5, 10, 10)
 		sleep(0.01)
 	}
@@ -55,10 +55,10 @@ procedure drifter(x, y, z) {
 	^dx := ^dy := ^ddx := ^ddy := 0
 	repeat {
 		sleep(0.05 * z)
-		ddx := 0.3 * (?3 - 1 -0.001 * x)
-		ddy := 0.3 * (?3 - 1 -0.001 * y)
-		dx +:= ddx
-		dy +:= ddy
+		ddx := 0.3 * (?3 - 1)
+		ddy := 0.3 * (?3 - 1)
+		dx +:= ddx - 0.002 * x
+		dy +:= ddy - 0.002 * y
 		x +:= dx
 		y +:= dy
 		e.MoveTo(x, y, z)

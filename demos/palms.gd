@@ -10,9 +10,9 @@ procedure main() {
 	w.Forward(-100)
 	w.turn(-90)
 	w.turn(180 / *c)
-	w.Size := 20
+	w.Size := 10
 	every w.color(!c) do {
-		w.Forward(40)
+		w.Forward(32)
 		w.turn(360 / *c)
 	}
 	w.Size := 3
