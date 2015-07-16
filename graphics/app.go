@@ -4,14 +4,11 @@ package graphics
 
 import (
 	"fmt"
-	g "goaldi/runtime"
 	"golang.org/x/mobile/app"
 	"golang.org/x/mobile/event"
 	"golang.org/x/mobile/exp/f32"
 	"golang.org/x/mobile/exp/gl/glutil"
 	"golang.org/x/mobile/geom"
-	"golang.org/x/mobile/gl"
-	"os"
 	"sync"
 	"time"
 )
@@ -21,9 +18,6 @@ import (
 //  (An irrational value to try and avoid Moire effects.)
 const MinPPP = 2.7183 // minimum PixPerPt acceptable
 
-//  Size of the event buffer.
-const EVBUFSIZE = 100
-
 //  Shutdown allowance
 const SHUTDOWN = 200 * time.Millisecond
 
@@ -32,10 +26,11 @@ var IDENTITY = &f32.Affine{{1, 0, 0}, {0, 1, 0}} // constant
 
 //  An App struct holds the application window configuration information.
 type App struct {
-	*Canvas                  // associated canvas
-	CvScale      float64     // canvas scaling
-	event.Config             // current app window configuration
-	Events       chan *Event // window event channel
+	*Canvas                    // associated canvas
+	CvScale      float64       // canvas scaling
+	event.Config               // current app window configuration
+	ToEvtQ       chan<- *Event // channel for sending events
+	Events       <-chan *Event // channel for getting events
 }
 
 //  App.String() produces a printable representation of the App struct.
@@ -44,18 +39,6 @@ func (a *App) String() string {
 }
 
 var OneApp App // data for the one app window
-
-//  An Event is an action in a window.
-type Event struct {
-	ID     int64   // touch sequence ID (event.TouchSequenceID)
-	Action string  // "touch" | "drag" | "release"
-	X, Y   float64 // location in user coordinates
-}
-
-//  Event.String() produces a printable representation of an Event.
-func (e *Event) String() string {
-	return fmt.Sprintf("Event(%d,%s,%.2f,%.2f)", e.ID, e.Action, e.X, e.Y)
-}
 
 //  AppSize returns the current size for an application canvas.
 //  On the first call, it starts up the application main loop.
@@ -91,7 +74,11 @@ var appGo = make(chan bool) // thread handoff synchronization
 //  One or more Config events will precede the Start event.
 func AppMain() {
 	<-appGo // block until the first canvas call
-	OneApp.Events = make(chan *Event, EVBUFSIZE)
+	toqueue := make(chan *Event)
+	fmqueue := make(chan *Event)
+	go eventQueuer(toqueue, fmqueue)
+	OneApp.ToEvtQ = toqueue
+	OneApp.Events = fmqueue
 	app.Run(app.Callbacks{
 		Start:  evtStart,
 		Config: evtConfig,
@@ -100,60 +87,6 @@ func AppMain() {
 		Draw:   evtRepaint,
 	})
 	panic("app.Run() returned")
-}
-
-//  evtStart signals that the app is ready to go.
-func evtStart() {
-	appGo <- true
-}
-
-//  evtConfig responds to configuration (init or resize) of the app window.
-func evtConfig(new, old event.Config) {
-	// save for use in drawing the canvas
-	OneApp.Config = new
-	// send to Goaldi program event channel
-	OneApp.Events <- &Event{0, "config", float64(new.Width), float64(new.Height)}
-}
-
-//  evtTouch responds to a mouse (or finger) event
-func evtTouch(e event.Touch, f event.Config) {
-	// convert to user coordinates
-	//#%#%#% assumes that the origin is at the center of the canvas
-	m := OneApp.CvScale / OneApp.Canvas.PixPerPt
-	x := m * (float64(e.Loc.X - OneApp.Config.Width/2))
-	y := m * (float64(e.Loc.Y - OneApp.Config.Height/2))
-	// send to the channel
-	var s string
-	switch e.Change {
-	case event.ChangeOn:
-		s = "touch"
-	case event.ChangeNone:
-		s = "drag"
-	case event.ChangeOff:
-		s = "release"
-	default:
-		panic(fmt.Sprintf("Unexpected event type: %v", e))
-	}
-	OneApp.Events <- &Event{int64(e.ID), s, x, y}
-}
-
-//  evtStop responds to an app "stop" call
-func evtStop() {
-	OneApp.Events <- &Event{0, "stop", 0, 0}             // send to program
-	time.Sleep(SHUTDOWN)                                 // allow to shutdown
-	fmt.Fprint(os.Stderr, "Shutdown by window system\n") // force kill
-	g.Shutdown(0)
-}
-
-//  evtRepaint is called 60x/second to draw the current Canvas on the screen
-func evtRepaint(f event.Config) {
-	gl.ClearColor(.5, .5, .5, 1)
-	gl.Clear(gl.COLOR_BUFFER_BIT)
-	if OneApp.Canvas == nil { // if canvas not set yet
-		return
-	}
-	OneApp.ConfigDisplay() // #%#%# recalculate this every time???
-	OneApp.ShowTree(IDENTITY, OneApp.Sprite)
 }
 
 //  App.ConfigDisplay configures the transformation matrix
