@@ -1,9 +1,10 @@
 //  vpainter.go -- VPainter, the Goaldi type "painter"
 
-package runtime
+package graphics
 
 import (
 	"fmt"
+	g "goaldi/runtime"
 )
 
 //  VPainter implements a Goaldi painter for drawing on a canvas.
@@ -28,11 +29,11 @@ func NewPainter(w, h, d float64) *VPainter {
 	return p.Reset()
 }
 
-const rPainter = 32       // declare sort ranking
-var _ ICore = &VPainter{} // validate implementation
+const rPainter = 32         // declare sort ranking
+var _ g.ICore = &VPainter{} // validate implementation
 
 //  PainterType is the painter instance of type type.
-var PainterType = NewType("painter", "P", rPainter, MakeCanvas, PainterMethods,
+var PainterType = g.NewType("painter", "P", rPainter, MakeCanvas, PainterMethods,
 	"canvas", "width,height,density", "create canvas and return painter")
 
 //  VPainter.String -- default conversion to Go string returns "C:nnxnn"
@@ -46,23 +47,23 @@ func (c *VPainter) GoString() string {
 }
 
 //  VPainter.Type -- return the painter type
-func (c *VPainter) Type() IRank {
+func (c *VPainter) Type() g.IRank {
 	return PainterType
 }
 
 //  VPainter.Copy returns a new painter sharing the same underlying canvas
-func (c *VPainter) Copy() Value {
+func (c *VPainter) Copy() g.Value {
 	new := *c
 	return &new
 }
 
 //  VPainter.Before compares two painters for sorting
-func (a *VPainter) Before(b Value, i int) bool {
+func (a *VPainter) Before(b g.Value, i int) bool {
 	return false // no ordering defined
 }
 
 //  VPainter.Import returns itself
-func (p *VPainter) Import() Value {
+func (p *VPainter) Import() g.Value {
 	return p
 }
 

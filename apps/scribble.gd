@@ -1,4 +1,6 @@
-#  draw on the screen
+#  scribble.gd -- a very simple interactive demo
+#
+#  use mouse/finger to draw on the screen
 
 procedure main() {
 	^w := canvas()	# open a window

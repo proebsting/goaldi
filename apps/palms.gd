@@ -1,4 +1,7 @@
-# palm trees gpx demo: penwidth, colors, text, turtles, touching, stopping
+#  palms.gd -- miscellaneous graphics demo
+#
+#  exercises penwidth, colors, text, turtles, touching, stopping
+#  (drawing a palm tree on a release event)
 
 procedure main() {
 	^n := 0
@@ -37,4 +40,3 @@ procedure main() {
 		}
 	}
 }
-

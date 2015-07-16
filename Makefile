@@ -95,6 +95,7 @@ self:
 test:
 	cd runtime; go test
 	+cd demos; make link
+	+cd apps; make link
 	+cd tests; make
 
 #  run a single quick test
@@ -110,6 +111,10 @@ expt:
 demos: .FORCE
 	+cd demos; make
 
+#  run apps (non-automated, with output to stdout)
+apps: .FORCE
+	+cd apps; make
+
 
 #  -- miscellaneous targets --
 
@@ -119,6 +124,7 @@ format:
 	go fmt ir/*.go
 	go fmt interp/*.go
 	go fmt runtime/*.go
+	go fmt graphics/*.go
 	go fmt extensions/*.go
 
 #  gather together Go source for single-file editing; requires "bundle" utility

@@ -1,9 +1,10 @@
 //  vcolor.go -- VColor, the Goaldi type "color"
 
-package runtime
+package graphics
 
 import (
 	"fmt"
+	g "goaldi/runtime"
 	"image/color"
 )
 
@@ -19,11 +20,11 @@ func NewColor(r, g, b, a float64) VColor {
 	return VColor(color.NRGBA64{rr, gg, bb, aa})
 }
 
-const rColor = 33                  // declare sort ranking
-var _ ICore = NewColor(0, 0, 0, 0) // validate implementation
+const rColor = 33                    // declare sort ranking
+var _ g.ICore = NewColor(0, 0, 0, 0) // validate implementation
 
 //  ColorType is the color instance of type type.
-var ColorType = NewType("color", "k", rColor, Color, ColorMethods,
+var ColorType = g.NewType("color", "k", rColor, Color, ColorMethods,
 	"color", "r,g,b,a", "create color")
 
 //  VColor.String -- default conversion to Go string returns "k:rrggbbaa"
@@ -49,18 +50,18 @@ func (k VColor) GoString() string {
 }
 
 //  VColor.Type -- return the color type
-func (k VColor) Type() IRank {
+func (k VColor) Type() g.IRank {
 	return ColorType
 }
 
 //  VColor.Copy returns itself
-func (k VColor) Copy() Value {
+func (k VColor) Copy() g.Value {
 	return k
 }
 
 //  VColor.Before compares two colors for sorting
 //  Ordering is first by alpha and then by luminance.
-func (a VColor) Before(b Value, i int) bool {
+func (a VColor) Before(b g.Value, i int) bool {
 	k := b.(VColor)
 	if a.R != k.R {
 		return a.R < k.R
@@ -75,7 +76,7 @@ func (k VColor) ilum() int {
 }
 
 //  VColor.Import returns itself
-func (v VColor) Import() Value {
+func (v VColor) Import() g.Value {
 	return v
 }
 

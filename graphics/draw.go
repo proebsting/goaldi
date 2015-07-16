@@ -3,7 +3,7 @@
 //#%#% a crude first hack.
 //#%#% will need a good rewrite with error checking, clipping, etc.
 
-package runtime
+package graphics
 
 import (
 	"fmt"

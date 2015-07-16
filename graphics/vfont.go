@@ -1,11 +1,12 @@
 //  vfont.go -- VFont, the Goaldi type "font"
 
-package runtime
+package graphics
 
 import (
 	"code.google.com/p/freetype-go/freetype"
 	"code.google.com/p/freetype-go/freetype/truetype"
 	"fmt"
+	g "goaldi/runtime"
 	"golang.org/x/mobile/exp/font"
 	"image"
 )
@@ -33,7 +34,7 @@ func NewFont(name string, ptsize float64) *VFont {
 		}
 	default:
 		{
-			panic(NewExn("Unrecognized typeface", name))
+			panic(g.NewExn("Unrecognized typeface", name))
 		}
 	}
 	font, err := freetype.ParseFont(f)
@@ -43,11 +44,11 @@ func NewFont(name string, ptsize float64) *VFont {
 	return &VFont{name, ptsize, font}
 }
 
-const rFont = 34       // declare sort ranking
-var _ ICore = &VFont{} // validate implementation
+const rFont = 34         // declare sort ranking
+var _ g.ICore = &VFont{} // validate implementation
 
 //  FontType is the font instance of type type.
-var FontType = NewType("font", "y", rFont, Font, FontMethods,
+var FontType = g.NewType("font", "y", rFont, Font, FontMethods,
 	"font", "name,ptsize", "load font")
 
 //  VFont.String -- convert to string
@@ -61,18 +62,18 @@ func (y *VFont) GoString() string {
 }
 
 //  VFont.Type -- return the font type
-func (y *VFont) Type() IRank {
+func (y *VFont) Type() g.IRank {
 	return FontType
 }
 
 //  VFont.Copy returns itself
-func (y *VFont) Copy() Value {
+func (y *VFont) Copy() g.Value {
 	return y
 }
 
 //  VFont.Before compares two fonts for sorting
 //  Ordering is first by alpha and then by luminance.
-func (a *VFont) Before(b Value, i int) bool {
+func (a *VFont) Before(b g.Value, i int) bool {
 	y := b.(*VFont)
 	if a.name != y.name {
 		return a.name < y.name
@@ -82,7 +83,7 @@ func (a *VFont) Before(b Value, i int) bool {
 }
 
 //  VFont.Import returns itself
-func (y *VFont) Import() Value {
+func (y *VFont) Import() g.Value {
 	return y
 }
 

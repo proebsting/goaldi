@@ -6,7 +6,7 @@
 
 //  #%#%  A sprite can only be placed on an *app* canvas.
 
-package runtime
+package graphics
 
 import (
 	"fmt"

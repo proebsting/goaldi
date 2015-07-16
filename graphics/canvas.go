@@ -1,6 +1,6 @@
 //  canvas.go -- image canvas code.
 
-package runtime
+package graphics
 
 import (
 	"fmt"

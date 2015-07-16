@@ -1,4 +1,7 @@
-# colors demo
+#  colors.gd -- colors demo
+#
+#  shows all the named colors (except white)
+#  and illustrates examples of other specification forms.
 
 global x
 global y

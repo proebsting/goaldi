@@ -11,6 +11,7 @@ import (
 	"bytes"
 	"fmt"
 	_ "goaldi/extensions"
+	"goaldi/graphics"
 	"goaldi/ir"
 	g "goaldi/runtime"
 	"goaldi/tran"
@@ -145,7 +146,7 @@ func main() {
 		arglist = append(arglist, g.NewString(s))
 	}
 	go runGoaldi(gmain, arglist) // execution continues below
-	g.AppMain()                  // blocks; but must be called in main thread
+	graphics.AppMain()           // blocks; but must be called in main thread
 }
 
 //  runGoaldi runs the Goaldi main program

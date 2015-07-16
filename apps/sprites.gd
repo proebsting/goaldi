@@ -1,4 +1,6 @@
-#  demo sprites
+#  sprites.gd -- sprite demonstration
+#
+#  draws a few background objects and then sends some sprites flying
 
 global win		# main display window
 global boxy		# a simple sprite figure

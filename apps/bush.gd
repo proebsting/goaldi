@@ -1,4 +1,5 @@
-#  an early demo of Goaldi turtle graphics
+#  bush.gd -- a turtle graphics demo
+#
 #  draws a multi-colored bush; redraws on a click or touch
 
 global clist := ["black", "brown", "green", "blue", "gray", "purple"]

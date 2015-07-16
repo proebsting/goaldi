@@ -1,9 +1,10 @@
 //  app.go -- graphics code specific to application windows
 
-package runtime
+package graphics
 
 import (
 	"fmt"
+	g "goaldi/runtime"
 	"golang.org/x/mobile/app"
 	"golang.org/x/mobile/event"
 	"golang.org/x/mobile/exp/f32"
@@ -115,7 +116,7 @@ func evtConfig(new, old event.Config) {
 }
 
 //  evtTouch responds to a mouse (or finger) event
-func evtTouch(e event.Touch, g event.Config) {
+func evtTouch(e event.Touch, f event.Config) {
 	// convert to user coordinates
 	//#%#%#% assumes that the origin is at the center of the canvas
 	m := OneApp.CvScale / OneApp.Canvas.PixPerPt
@@ -141,11 +142,11 @@ func evtStop() {
 	OneApp.Events <- &Event{0, "stop", 0, 0}             // send to program
 	time.Sleep(SHUTDOWN)                                 // allow to shutdown
 	fmt.Fprint(os.Stderr, "Shutdown by window system\n") // force kill
-	Shutdown(0)
+	g.Shutdown(0)
 }
 
 //  evtRepaint is called 60x/second to draw the current Canvas on the screen
-func evtRepaint(g event.Config) {
+func evtRepaint(f event.Config) {
 	gl.ClearColor(.5, .5, .5, 1)
 	gl.Clear(gl.COLOR_BUFFER_BIT)
 	if OneApp.Canvas == nil { // if canvas not set yet
@@ -161,20 +162,20 @@ func (a *App) ConfigDisplay() {
 	rwidth := float64(a.Image.Bounds().Max.X)  // raster width in pixels
 	rheight := float64(a.Image.Bounds().Max.Y) // raster height in pixels
 	raspr := rwidth / rheight                  // raster aspect ratio
-	g := a.Config
-	daspr := float64(g.Width / g.Height) // display aspect ratio
+	f := a.Config
+	daspr := float64(f.Width / f.Height) // display aspect ratio
 	dx := float32(0)
 	dy := float32(0)
 	if daspr > raspr {
 		// sidebar configuration
-		a.CvScale = rheight / float64(g.Height)
-		rwpts := geom.Pt(raspr) * g.Height // raster width in pts
-		dx = float32(g.Width-rwpts) / 2
+		a.CvScale = rheight / float64(f.Height)
+		rwpts := geom.Pt(raspr) * f.Height // raster width in pts
+		dx = float32(f.Width-rwpts) / 2
 	} else {
 		// letterbox configuration
-		a.CvScale = rwidth / float64(g.Width)
-		rhpts := g.Width / geom.Pt(raspr) // raster height in pts
-		dy = float32(g.Height-rhpts) / 2
+		a.CvScale = rwidth / float64(f.Width)
+		rhpts := f.Width / geom.Pt(raspr) // raster height in pts
+		dy = float32(f.Height-rhpts) / 2
 	}
 	m := &a.Sprite.Xform
 	m.Translate(IDENTITY, dx, dy)
