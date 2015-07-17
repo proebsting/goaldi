@@ -137,12 +137,13 @@ func (v *VPainter) Text(x, y float64, s string) *VPainter {
 
 //  VPainter.Disc(x, y, d) draws a circle of diameter d at (x,y),
 func (v *VPainter) Disc(x, y, d float64) *VPainter {
-	x = x + v.Dx
-	y = y + v.Dy
-	r := d / 2
-	bounds := image.Rect(v.ToPx(x-r), v.ToPx(y-r), v.ToPx(x+r), v.ToPx(y+r))
-	mask := &zircle{v.PixPerPt * r}
-	draw.DrawMask(v.Canvas.Image, bounds, image.NewUniform(v.VColor), image.ZP,
+	xx := v.ToPx(x + v.Dx) // center quantized to raster coordinates
+	yy := v.ToPx(y + v.Dy)
+	r := v.PixPerPt * d / 2 // radius in pixels as floating value
+	mask := &zircle{r}
+	b := mask.Bounds()
+	dstr := image.Rect(xx+b.Min.X, yy+b.Min.Y, xx+b.Max.X, yy+b.Max.Y)
+	draw.DrawMask(v.Canvas.Image, dstr, image.NewUniform(v.VColor), image.ZP,
 		mask, mask.Bounds().Min, draw.Over)
 	return v
 }
