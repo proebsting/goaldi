@@ -8,6 +8,7 @@ package graphics
 import (
 	"fmt"
 	"image"
+	"image/color"
 	"image/draw"
 	"math"
 )
@@ -72,10 +73,9 @@ func (v *VPainter) Line(x1, y1, x2, y2 float64) *VPainter {
 	return v
 }
 
-//  VPainter.Point(x, y) draws a point.
-//  #%#% in a really dumb way. should cache the pen. and it should be round.
+//  VPainter.Point(x, y) draws a point (a disc based on pen size).
 func (v *VPainter) Point(x, y float64) *VPainter {
-	v.Rect(x-v.Size/2, y-v.Size/2, v.Size, v.Size)
+	v.Disc(x, y, v.Size)
 	return v
 }
 
@@ -133,4 +133,40 @@ func (v *VPainter) Overlay(x, y float64, c *VPainter) *VPainter {
 func (v *VPainter) Text(x, y float64, s string) *VPainter {
 	v.VFont.Typeset(v, v.ToPx(x+v.Dx), v.ToPx(y+v.Dy), s)
 	return v
+}
+
+//  VPainter.Disc(x, y, d) draws a circle of diameter d at (x,y),
+func (v *VPainter) Disc(x, y, d float64) *VPainter {
+	x = x + v.Dx
+	y = y + v.Dy
+	r := d / 2
+	bounds := image.Rect(v.ToPx(x-r), v.ToPx(y-r), v.ToPx(x+r), v.ToPx(y+r))
+	mask := &zircle{v.PixPerPt * r}
+	draw.DrawMask(v.Canvas.Image, bounds, image.NewUniform(v.VColor), image.ZP,
+		mask, mask.Bounds().Min, draw.Over)
+	return v
+}
+
+//  Adapted from "Drawing Through a Mask"
+//  http://blog.golang.org/go-imagedraw-package
+
+type zircle struct { // a circle of radius r at (0,0)
+	r float64
+}
+
+func (z *zircle) ColorModel() color.Model {
+	return color.AlphaModel
+}
+
+func (z *zircle) Bounds() image.Rectangle {
+	i := int(math.Ceil(z.r))
+	return image.Rect(-i, -i, i, i)
+}
+
+func (z *zircle) At(x, y int) color.Color {
+	if float64(x*x+y*y) < z.r*z.r {
+		return color.Alpha{255}
+	} else {
+		return color.Alpha{0}
+	}
 }

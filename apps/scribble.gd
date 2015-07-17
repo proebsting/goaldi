@@ -8,7 +8,7 @@ procedure main() {
 	^x := 0
 	^y := 0
 	while ^e := @w.Events do {
-		if e.Action == "drag" then {
+		if e.Action == ("drag" | "release") then {
 			w.Line(x, y, e.X, e.Y)	# draw a line
 		}
 		x := e.X
