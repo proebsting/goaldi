@@ -31,7 +31,9 @@ func (p *Sprite) String() string {
 //  The src sprite is displayed with its origin over (x,y) of dst.
 func NewSprite(dst *VPainter, src *Canvas, x, y, scale float32) *Sprite {
 	e := &Sprite{Parent: dst, Source: src}
-	e.MoveTo(x, y, scale)
+	if dst != nil {
+		e.MoveTo(x, y, scale)
+	}
 	return e
 }
 
@@ -44,23 +46,37 @@ func (p *VPainter) AddSprite(src *Canvas, x, y, scale float32) *Sprite {
 }
 
 //  Sprite.MoveTo(x,y,scale) sets the location of a sprite on its parent.
-//  The center (#%#%??) of the sprite is aligned with (x,y).
+//  The center of the sprite is aligned over parent location (x,y).
 //
 //  Note that this does not expose the full generality of possible transforms:
 //  There is no provision for rotation or skew.
 func (e *Sprite) MoveTo(x, y, scale float32) {
+	v := e.Source
+	p := e.Parent
 	e.X = x
 	e.Y = y
 	e.Scale = scale
-	if p := e.Parent; p != nil {
-		x += float32(p.ToPx(p.Dx))
-		y += float32(p.ToPx(p.Dy))
-		scale *= float32(e.Parent.PixPerPt / e.Source.PixPerPt)
-	}
-	v := e.Source
+
+	// #%#% this is the correct set of transformations, and it works,
+	// #%#% but I do not understand the sequencing.
 	m := &e.Xform
 	m.Identity()
+
+	// move origin back to destination center
+	m.Translate(m, float32(p.Width)/2, float32(p.Height)/2)
+
+	// scale from points to destination pixels
+	m.Scale(m, float32(p.PixPerPt), float32(p.PixPerPt))
+
+	// translate to intended location
 	m.Translate(m, x, y)
+
+	// apply requested zoom parameter
 	m.Scale(m, scale, scale)
+
+	// scale from source pixels to points
+	m.Scale(m, float32(1/v.PixPerPt), float32(1/v.PixPerPt))
+
+	// align tile center with origin
 	m.Translate(m, float32(-v.Width)/2, float32(-v.Height)/2)
 }
