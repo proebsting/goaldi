@@ -3,6 +3,7 @@
 #	click a tile to move it to an adjacent empty space
 #	swipe offscreen left to reset
 #	swipe offscreen right to scramble
+#	swipe off to upper left to quit
 
 #	tile background stripe colors (not currently used)
 global VCOLORS := ["#C00", "#00A", "#870", "#080"]
@@ -57,6 +58,8 @@ procedure main() {
 			^j := tj(e.X)
 			if 1 <= i <= NHIGH & 1 <= j <= NWIDE then {
 				(\cell[i,j]).move(7)
+			} else if j < 1 && i < 1 then {
+				break
 			} else if j < 1 then {
 				reset()
 			} else if j > NWIDE then {
