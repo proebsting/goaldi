@@ -59,7 +59,7 @@ func evtStart() {
 	appGo <- true
 }
 
-//  evtConfig responds to configuration (init or resize) of the app window.
+//  evtConfig responds to configuration (initial or resize) of the app window.
 func evtConfig(new, old event.Config) {
 	// save for use in drawing the canvas
 	OneApp.Config = new
@@ -100,11 +100,11 @@ func evtStop() {
 
 //  evtRepaint is called 60x/second to draw the current Canvas on the screen
 func evtRepaint(f event.Config) {
-	gl.ClearColor(.5, .5, .5, 1)
-	gl.Clear(gl.COLOR_BUFFER_BIT)
-	if OneApp.Canvas == nil { // if canvas not set yet
+	gl.ClearColor(.5, .5, .5, 1)  // color for margins
+	gl.Clear(gl.COLOR_BUFFER_BIT) // clear area behind base canvas
+	if OneApp.Canvas == nil {     // if canvas not set yet
 		return
 	}
-	OneApp.ConfigDisplay() // #%#%# recalculate this every time???
-	OneApp.ShowTree(IDENTITY, OneApp.Sprite)
+	OneApp.ConfigDisplay()                   // #%#%# recalculate this every time???
+	OneApp.ShowTree(IDENTITY, OneApp.Sprite) // render canvas and sprites
 }

@@ -14,15 +14,15 @@ import (
 )
 
 //  Minimum acceptable pixel density, in pixels per point.
-//  Used for anti-aliasing coarse-grained screens.
-//  (An irrational value to try and avoid Moire effects.)
+//  This provides some anti-aliasing if a coarse-grained screen is zoomed.
+//  An irrational value attempts to avoid Moire effects.
 const MinPPP = 2.7183 // minimum PixPerPt acceptable
 
-//  Shutdown allowance
+//  Shutdown allowance granted to user program before we force quit.
 const SHUTDOWN = 200 * time.Millisecond
 
-//  Identity transform
-var IDENTITY = &f32.Affine{{1, 0, 0}, {0, 1, 0}} // constant
+//  Identity transform (should be treated as a constant)
+var IDENTITY = &f32.Affine{{1, 0, 0}, {0, 1, 0}}
 
 //  An App struct holds the application window configuration information.
 type App struct {
@@ -33,12 +33,13 @@ type App struct {
 	Events       <-chan *Event // channel for getting events
 }
 
+//  OneApp is the actual data for the single application window.
+var OneApp App
+
 //  App.String() produces a printable representation of the App struct.
 func (a *App) String() string {
 	return fmt.Sprintf("App(%v,%.2f)", a.Canvas, a.CvScale)
 }
-
-var OneApp App // data for the one app window
 
 //  AppSize returns the current size for an application canvas.
 //  On the first call, it starts up the application main loop.
@@ -60,7 +61,7 @@ func AppSize() (w int, h int, d float64) {
 func AppCanvas(c *Canvas) {
 	c.App = &OneApp
 	if OneApp.Canvas != nil {
-		OneApp.Canvas.App = nil // disconnect old app canvas
+		OneApp.Canvas.App = nil // disconnect previous app canvas
 	}
 	OneApp.Canvas = c
 }

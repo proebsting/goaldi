@@ -186,9 +186,8 @@ With three arguments: r,g,b are color components in (0, 1).
 With four arguments: r,g,b,a are color components in (0, 1).
 
 P.color(k) -- set drawing color::
-C.color(r,g,b,a) sets the drawing color for canvas c. With no arguments,
-the color remains unchanged. The current or updated color value is
-returned.
+P.color(r,g,b,a) sets the drawing color for painter P. The Painter value
+is returned to allow chaining.
 
 command(name,args[]) -- build struct to run command [silver]_(http://golang.org/pkg/os/exec#Command[os/exec.Command])_::
 Command returns the Cmd struct to execute the named program with the
@@ -818,9 +817,8 @@ be named. Each distinct identifier list defines a new type, all of which
 have the name "tuple".
 
 P.turn(d) -- alter orientation by d degrees::
-C.turn(d) adjusts the current orientation by d degrees. If d is nil, the
-orientation remains unchanged. The current or updated orientation is
-returned.
+P.turn(d) adjusts the current orientation by d degrees. The Painter
+value is returned to allow chaining.
 
 type(x) -- return type of value::
 type(x) returns the value of type "type" that represents the type of x.

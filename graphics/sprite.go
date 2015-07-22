@@ -57,7 +57,7 @@ func (e *Sprite) MoveTo(x, y, scale float32) {
 	e.Y = y
 	e.Scale = scale
 
-	// #%#% this is the correct set of transformations, and it works,
+	// #%#% This set of transformations works,
 	// #%#% but I do not understand the sequencing.
 	m := &e.Xform
 	m.Identity()

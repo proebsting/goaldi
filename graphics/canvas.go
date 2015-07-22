@@ -1,4 +1,4 @@
-//  canvas.go -- image canvas code.
+//  canvas.go -- a grid of pixels forming an image
 
 package graphics
 
@@ -64,7 +64,7 @@ func (c *Canvas) setup(w int, h int, ppp float64) {
 //  Canvas.MakeDisplayable() makes a canvas useable in an app context.
 //  This means changing its image to a GL image if it is not one already.
 func (c *Canvas) MakeDisplayable() {
-	if _, ok := c.Image.(*glutil.Image); !ok { // if not alread a GL image
+	if _, ok := c.Image.(*glutil.Image); !ok { // if not already a GL image
 		im := glutil.NewImage(c.Width, c.Height)
 		draw.Draw(im, im.Bounds(), c.Image, image.Point{}, draw.Src)
 		c.Image = im

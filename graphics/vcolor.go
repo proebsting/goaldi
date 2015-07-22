@@ -88,18 +88,14 @@ func (v VColor) Export() interface{} {
 //  VColor.RGBA() implements the color.Color interface.
 func (k VColor) RGBA() (r, g, b, a uint32) { return color.NRGBA64(k).RGBA() }
 
-//  ColorMeaning maps color name strings to color values
+//  ColorMeaning maps color names to color values
 var ColorMeaning = make(map[string]VColor)
 
 //  ColorName maps color values back to names
 var ColorName = make(map[VColor]string)
 
-func defColor(name string, r, g, b, a float64) {
-	k := NewColor(r, g, b, a)
-	ColorMeaning[name] = k
-	ColorName[k] = name
-}
-
+//  This init func defines the built-in color names.
+//  Most are based on the CSS2 set, with identical meanings.
 func init() {
 	defColor("aqua", 0, 1, 1, 1)
 	defColor("black", 0, 0, 0, 1)
@@ -122,4 +118,11 @@ func init() {
 	defColor("transparent", 0, 0, 0, 0)
 	defColor("white", 1, 1, 1, 1)
 	defColor("yellow", 1, 1, 0, 1)
+}
+
+//  defColor adds one color name to the standard set.
+func defColor(name string, r, g, b, a float64) {
+	k := NewColor(r, g, b, a)
+	ColorMeaning[name] = k
+	ColorName[k] = name
 }

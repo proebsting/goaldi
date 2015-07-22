@@ -13,8 +13,8 @@ import (
 
 //  VFont implements a Goaldi font.
 type VFont struct {
-	name           string  // requested name
-	ptsize         float64 // requested point size
+	Name           string  // requested name
+	Ptsize         float64 // requested point size
 	*truetype.Font         // underlying font
 }
 
@@ -53,12 +53,12 @@ var FontType = g.NewType("font", "y", rFont, Font, FontMethods,
 
 //  VFont.String -- convert to string
 func (y *VFont) String() string {
-	return fmt.Sprintf("y:%s", y.name)
+	return fmt.Sprintf("y:%s", y.Name)
 }
 
 //  VFont.GoString -- convert to Go string for image() and printf("%#v")
 func (y *VFont) GoString() string {
-	return fmt.Sprintf("font(%s,%.1f)", y.name, y.ptsize)
+	return fmt.Sprintf("font(%s,%.1f)", y.Name, y.Ptsize)
 }
 
 //  VFont.Type -- return the font type
@@ -72,13 +72,13 @@ func (y *VFont) Copy() g.Value {
 }
 
 //  VFont.Before compares two fonts for sorting
-//  Ordering is first by alpha and then by luminance.
+//  Ordering is first by name and then by size.
 func (a *VFont) Before(b g.Value, i int) bool {
 	y := b.(*VFont)
-	if a.name != y.name {
-		return a.name < y.name
+	if a.Name != y.Name {
+		return a.Name < y.Name
 	} else {
-		return a.ptsize < y.ptsize
+		return a.Ptsize < y.Ptsize
 	}
 }
 
@@ -101,7 +101,7 @@ func (f *VFont) Typeset(v *VPainter, x, y int, s string) {
 	cx.SetDst(v.Image)
 	cx.SetClip(v.Image.Bounds())
 	cx.SetDPI(72 * v.PixPerPt)
-	cx.SetFontSize(f.ptsize)
+	cx.SetFontSize(f.Ptsize)
 	base := freetype.Pt(x, y)
 	if _, err := cx.DrawString(s, base); err != nil {
 		panic(err)

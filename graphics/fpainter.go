@@ -37,29 +37,23 @@ func MakeCanvas(env *g.Env, args ...g.Value) (g.Value, *g.Closure) {
 	return g.Return(NewPainter(w, h, d))
 }
 
-//  C.color(r,g,b,a) sets the drawing color for canvas c.
-//  With no arguments, the color remains unchanged.
-//  The current or updated color value is returned.
+//  P.color(r,g,b,a) sets the drawing color for painter P.
+//  The Painter value is returned to allow chaining.
 func (v *VPainter) Color(args ...g.Value) (g.Value, *g.Closure) {
 	defer g.Traceback("color", args)
 	k := g.ProcArg(args, 0, g.NilValue)
-	if k != g.NilValue {
-		if _, ok := k.(VColor); !ok {
-			k, _ = Color(nil, args...)
-		}
-		v.VColor = k.(VColor)
+	if _, ok := k.(VColor); !ok {
+		k, _ = Color(nil, args...)
 	}
+	v.VColor = k.(VColor)
 	return g.Return(v)
 }
 
-//  C.turn(d) adjusts the current orientation by d degrees.
-//  If d is nil, the orientation remains unchanged.
-//  The current or updated orientation is returned.
+//  P.turn(d) adjusts the current orientation by d degrees.
+//  The Painter value is returned to allow chaining.
 func (v *VPainter) Turn(args ...g.Value) (g.Value, *g.Closure) {
 	defer g.Traceback("turn", args)
 	d := g.ProcArg(args, 0, g.NilValue)
-	if d != g.NilValue {
-		v.Aim = math.Mod(v.Aim+g.FloatVal(d), 360)
-	}
+	v.Aim = math.Mod(v.Aim+g.FloatVal(d), 360)
 	return g.Return(v)
 }
