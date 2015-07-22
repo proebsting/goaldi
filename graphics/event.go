@@ -92,10 +92,13 @@ func evtTouch(e event.Touch, f event.Config) {
 
 //  evtStop responds to an app "stop" call
 func evtStop() {
-	OneApp.ToEvtQ <- &Event{0, "stop", "", 0, 0}         // send to event queue
-	time.Sleep(SHUTDOWN)                                 // allow to shutdown
-	fmt.Fprint(os.Stderr, "Shutdown by window system\n") // force kill
-	g.Shutdown(0)
+	OneApp.ToEvtQ <- &Event{0, "stop", "", 0, 0} // send to event queue
+	go func() {
+		// allow program a chance to shut down -- then kill it
+		time.Sleep(SHUTDOWN)
+		fmt.Fprint(os.Stderr, "Shutdown by window system\n")
+		g.Shutdown(0)
+	}()
 }
 
 //  evtRepaint is called 60x/second to draw the current Canvas on the screen
