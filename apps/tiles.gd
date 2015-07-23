@@ -40,24 +40,22 @@ procedure main() {
 
 	# animate initial scrambling
 	sleep(1)
-	every !3 do randmove(25)
-	every !5 do randmove(15)
-	every !5 do randmove(10)
-	every !5 do randmove(7)
-	every !15 do randmove(5)
-	every !20 do randmove(4)
-	every !30 do randmove(3)
-	every !30 do randmove(2)
-	every !30 do randmove(1)
+	every randmove(8 | 5 | 3)
+	every !10 do randmove(1)
 	scramble()
+	every !10 do randmove(1)
+	every randmove(3 | 5 | 8)
 
 	# main loop
 	while ^e := @app.Events do case e.Action of {
 		"release": {
 			^i := ti(e.Y)
 			^j := tj(e.X)
-			if 1 <= i <= NHIGH & 1 <= j <= NWIDE then {
-				(\cell[i,j]).move(7)
+			if ^t := tileAt(e.X, e.Y) then {
+				if (^di := -1 to 1) & (^dj := -1 to 1) &
+					(^n := t.canmove(di,dj)) then {
+						t.move(n, di, dj, 7)
+				}
 			} else if j < 1 && i < 1 then {
 				break
 			} else if j < 1 then {
@@ -91,13 +89,18 @@ procedure scramble() {			#: rearrange tiles randomly
 	every !250 do randmove()
 }
 
-procedure randmove(nsteps) {	#: move a random tile, but not the previous one
-	static tprev
+procedure randmove(nsteps) {	#: move random tile, but not to undo previous mv
+	/static prevdi := 0
+	/static prevdj := 0
 	repeat {	# just try until one works (#%#% inefficient)
 		^t := \cell[?NHIGH+1,?NWIDE+1] | continue
-		if t === tprev then continue
-		if tprev := t.move(nsteps) then {
-			return t
+		if (^di := -1 to 1) & (^dj := -1 to 1) & (^n := t.canmove(di,dj)) then {
+			if di = -prevdi & dj = -prevdj then {
+				continue
+			}
+			prevdi := di
+			prevdj := dj
+			return t.move(n, di, dj, nsteps)
 		}
 	}
 }
@@ -110,7 +113,7 @@ procedure makeTiles() {			#: create tiles and place in cells
 			^n := j + NWIDE * (i - 1)
 			if i = NHIGH & j = NWIDE then break
 			^c := canvas(100, 100, 1)
-			# (don't use) background colors
+			# (don't use) background stripes
 			# c.color(VCOLORS[j]).Rect(-30,-50,60,100)
 			# c.color(HCOLORS[i]).Rect(-50,-25,100,50)
 			# draw tile number label
@@ -130,6 +133,12 @@ procedure makeTiles() {			#: create tiles and place in cells
 			cell[i,j] := t
 		}
 	}
+}
+
+procedure tileAt(x,y) {			#! return tile, if any, at (x, y)
+	^i := ti(y)
+	^j := tj(x)
+	return \cell[0<i, 0<j]
 }
 
 procedure ti(y) {				#! compute row number from y-coordinate
@@ -158,23 +167,18 @@ procedure dumpCells() {			#: print a snapshot of current state
 	}
 }
 
-procedure tile.move(nsteps) {	#: move tile to adjacent cell in n steps
-	^di := ^dj := 0
-	if self.j > 1 && /cell[self.i, self.j-1] then {
-		dj := -1	# move left
-	} else if self.j < NWIDE && /cell[self.i, self.j+1] then {
-		dj := +1	# move right
-	} else if self.i > 1 && /cell[self.i-1, self.j] then {
-		di := -1	# move up
-	} else if self.i < NWIDE && /cell[self.i+1, self.j] then {
-		di := +1	# move down
-	} else return fail	# no move possible
-
-	self.slideto(self.i + di, self.j + dj, nsteps)
-	cell[self.i, self.j] := nil
-	self.i +:= di
-	self.j +:= dj
-	cell[self.i, self.j] := self
+#	move ntiles (from vacant cell through self) by (di,dj) in nsteps
+procedure tile.move(ntiles, di, dj, nsteps) {
+	^vi := self.i + ntiles * di		# vacant cell location
+	^vj := self.j + ntiles * dj
+	every ^k := !ntiles do {
+		^t := cell[vi - k * di, vj - k * dj]
+		t.slideto(t.i + di, t.j + dj, nsteps)
+		cell[t.i, t.j] := nil
+		t.i +:= di
+		t.j +:= dj
+		cell[t.i, t.j] := t
+	}
 	return self
 }
 
@@ -193,4 +197,25 @@ procedure tile.slideto(i, j, nsteps) {	#: slide tile to [i,j] in n steps
 		self.sprite.MoveTo(newx, newy, self.sprite.Scale)
 	}
 	return self
+}
+
+procedure tile.canmove(di, dj) {	#: return number of tiles that can move
+	if di ~= 0 & dj ~= 0 then return fail
+	if di ~= 0 then {
+		every ^n := 1 to NHIGH-1 do {
+			^k := self.i + n * di
+			if 1 <= k <= NHIGH & /cell[k, self.j] then {
+				return n
+			}
+		}
+	}
+	if dj ~= 0 then {
+		every ^n := 1 to NWIDE-1 do {
+			^k := self.j + n * dj
+			if 1 <= k <= NWIDE & /cell[self.i, k] then {
+				return n
+			}
+		}
+	}
+	return fail
 }
