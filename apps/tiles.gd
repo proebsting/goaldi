@@ -14,7 +14,7 @@ global NHIGH := *HCOLORS	# down
 
 global BACKGD := "#776"	# background color
 global UPBEVL := "#EEE"	# bevel color (sunny side)
-global DNBEVL := "#BBB"	# bevel color (shady side)
+global DNBEVL := "#AAA"	# bevel color (shady side)
 global BEVLW := 6		# bevel width
 
 record tile (
@@ -124,6 +124,9 @@ procedure makeTiles() {			#: create tiles and place in cells
 			^n := j + NWIDE * (i - 1)
 			if i = NHIGH & j = NWIDE then break
 			^c := canvas(100, 100, 1)
+			# give each tile a different pastel background
+			^k := color(1 - .5 * i / NWIDE, .8, 1 - .5 * j / NHIGH)
+			c.color(k).Rect(-50,-50,100,100)
 			# (don't use) background stripes
 			# c.color(VCOLORS[j]).Rect(-30,-50,60,100)
 			# c.color(HCOLORS[i]).Rect(-50,-25,100,50)
