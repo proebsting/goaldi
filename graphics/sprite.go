@@ -24,7 +24,7 @@ type Sprite struct {
 
 //  Sprite.String() produces a printable representation of a Sprite.
 func (p *Sprite) String() string {
-	return fmt.Sprintf("Sprite(%v,%v,%d)", p.Source, p.Xform, len(p.Children))
+	return fmt.Sprintf("Sprite(%v,%.2f,%d)", p.Source, p.Xform, len(p.Children))
 }
 
 //  NewSprite(dst, src, x, y, scale) creates and initializes a new sprite.
