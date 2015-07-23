@@ -47,11 +47,22 @@ procedure main() {
 	every randmove(3 | 5 | 8)
 
 	# main loop
+	local istart
+	local jstart
 	while ^e := @app.Events do case e.Action of {
+		"touch": {
+			istart := ti(e.Y)
+			jstart := tj(e.X)
+		}
 		"release": {
 			^i := ti(e.Y)
 			^j := tj(e.X)
-			if ^t := tileAt(e.X, e.Y) then {
+			if /cell[0<i, 0<j] then {
+				# ended in vacant cell; use start point instead
+				i := istart
+				j := jstart
+			}
+			if ^t := \cell[0<i, 0<j] then {
 				if (^di := -1 to 1) & (^dj := -1 to 1) &
 					(^n := t.canmove(di,dj)) then {
 						t.move(n, di, dj, 7)
@@ -133,12 +144,6 @@ procedure makeTiles() {			#: create tiles and place in cells
 			cell[i,j] := t
 		}
 	}
-}
-
-procedure tileAt(x,y) {			#! return tile, if any, at (x, y)
-	^i := ti(y)
-	^j := tj(x)
-	return \cell[0<i, 0<j]
 }
 
 procedure ti(y) {				#! compute row number from y-coordinate
