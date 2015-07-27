@@ -141,7 +141,7 @@ func (a *App) Display(c *Canvas, m *f32.Affine) {
 //  pj(xform, x, y) -- project a point using an affine transform
 func pj(m *f32.Affine, x float32, y float32) geom.Point {
 	return geom.Point{
-		geom.Pt(m[0][0]*x + m[0][1]*y + m[0][2]),
-		geom.Pt(m[1][0]*x + m[1][1]*y + m[1][2]),
+		X: geom.Pt(m[0][0]*x + m[0][1]*y + m[0][2]),
+		Y: geom.Pt(m[1][0]*x + m[1][1]*y + m[1][2]),
 	}
 }

@@ -124,6 +124,7 @@ vet:
 	go vet ir/*.go
 	go vet interp/*.go
 	go vet runtime/*.go
+	go vet graphics/*.go
 	go vet extensions/*.go
 
 #  prepare Go source for check-in by running standard Go reformatter
