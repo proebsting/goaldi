@@ -305,7 +305,6 @@ func execute(f *pr_frame, label string) (rv g.Value, rc *g.Closure) {
 			}
 			panic(g.Malfunction("Ir_Chunk exhausted: " + inchunk))
 		}
-		return nil, nil
 	}}
 
 	// start up the interpreter

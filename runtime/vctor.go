@@ -125,8 +125,6 @@ func (c *VCtor) Lookup(x Value) (index int, isNumber bool) {
 		i := c.Fmap[key]
 		if i > 0 {
 			return i - 1, false
-		} else {
-			return -1, false // fail: name not found
 		}
 		k := s.TryNumber()
 		if k == nil {

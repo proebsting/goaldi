@@ -189,10 +189,10 @@ records with the given type name and field list. There is no requirement
 or guarantee that record names be distinct.
 
 contains(s,substr) -- return 1 if substr is in s [silver]_(http://golang.org/pkg/strings#Contains[strings.Contains])_::
-Contains returns true if substr is within s.
+Contains reports whether substr is within s.
 
 containsany(s,chars) -- return 1 if any char is in s [silver]_(http://golang.org/pkg/strings#ContainsAny[strings.ContainsAny])_::
-ContainsAny returns true if any Unicode code points in chars are within
+ContainsAny reports whether any Unicode code points in chars are within
 s.
 
 copy(x) -- copy value::

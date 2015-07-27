@@ -50,4 +50,8 @@ procedure main() {
 	write(`simple["f"]: `, simple["f"])
 	write(`rec["f1"] `, rec["f1"])
 	write(`rec["f2"] `, rec["f2"])
+	write(`rec[2] `, rec[2])
+	write(`rec[-2] `, rec[-2])
+	write(`rec["2"] `, rec["2"])
+	write(`rec["-2"] `, rec["-2"])
 }

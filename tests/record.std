@@ -20,3 +20,7 @@ rec{f1:73,f2:74}
 simple["f"]: 1
 rec["f1"] 1
 rec["f2"] 2
+rec[2] f2
+rec[-2] f1
+rec["2"] f2
+rec["-2"] f1
