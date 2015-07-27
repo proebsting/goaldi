@@ -22,7 +22,7 @@ func TestStringOps(t *testing.T) {
 	ck4s(t, "Concat", "♡♢♣♠", hdcs, hdcs, hdcs, hdcs)
 	sz := hdcs.(ISize).Size().(*VNumber).Val()
 	if sz != 4.0 {
-		t.Errorf("String %s length %d, expected 4", hdcs, sz)
+		t.Errorf("String %s length %v, expected 4", hdcs, sz)
 	}
 }
 

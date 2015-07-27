@@ -75,7 +75,6 @@ func DispenseMap(T interface{} /*anymap*/) (Value, *Closure) {
 				return ElemType.New([]Value{k, v}), c
 			}
 		}
-		return Fail()
 	}}
 	return c.Resume()
 }

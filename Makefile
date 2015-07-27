@@ -118,6 +118,14 @@ apps: .FORCE
 
 #  -- miscellaneous targets --
 
+#  run "go vet" on Go source files
+vet:
+	go vet *.go
+	go vet ir/*.go
+	go vet interp/*.go
+	go vet runtime/*.go
+	go vet extensions/*.go
+
 #  prepare Go source for check-in by running standard Go reformatter
 format:
 	go fmt *.go
