@@ -646,7 +646,8 @@ Remove removes the named file or directory. If there is an error, it
 will be of type *PathError.
 
 rename(old,new) -- change file name [silver]_(http://golang.org/pkg/os#Rename[os.Rename])_::
-Rename renames (moves) a file. OS-specific restrictions might apply.
+Rename renames (moves) a file. OS-specific restrictions might apply. If
+there is an error, it will be of type *LinkError.
 
 repl(s,count) -- concatenate copies of s [silver]_(http://golang.org/pkg/strings#Repeat[strings.Repeat])_::
 Repeat returns a new string consisting of count copies of the string s.
