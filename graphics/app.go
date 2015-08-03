@@ -4,6 +4,7 @@ package graphics
 
 import (
 	"fmt"
+	g "goaldi/runtime"
 	"golang.org/x/mobile/app"
 	"golang.org/x/mobile/event/config"
 	"golang.org/x/mobile/event/lifecycle"
@@ -11,6 +12,7 @@ import (
 	"golang.org/x/mobile/event/touch"
 	"golang.org/x/mobile/exp/f32"
 	"golang.org/x/mobile/geom"
+	"os"
 	"sync"
 	"time"
 )
@@ -101,7 +103,10 @@ func AppMain() {
 			}
 		}
 	})
-	panic("app.Main() returned")
+	// allow program a chance to shut down -- then kill it
+	time.Sleep(SHUTDOWN)
+	fmt.Fprint(os.Stderr, "Shutdown by window system\n")
+	g.Shutdown(0)
 }
 
 //  App.ConfigDisplay configures the transformation matrix
