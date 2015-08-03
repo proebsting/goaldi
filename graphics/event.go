@@ -5,7 +5,8 @@ package graphics
 import (
 	"fmt"
 	g "goaldi/runtime"
-	"golang.org/x/mobile/event"
+	"golang.org/x/mobile/event/config"
+	"golang.org/x/mobile/event/touch"
 	"golang.org/x/mobile/gl"
 	"os"
 	"time"
@@ -54,40 +55,35 @@ func eventQueuer(inq, outq chan *Event) {
 	}
 }
 
-//  evtStart signals that the app is ready to go.
-func evtStart() {
-	appGo <- true
-}
-
 //  evtConfig responds to configuration (initial or resize) of the app window.
-func evtConfig(new, old event.Config) {
+func evtConfig(c config.Event) {
 	// save for use in drawing the canvas
-	OneApp.Config = new
+	OneApp.Config = c
 	// send to Goaldi program event channel
 	OneApp.ToEvtQ <- &Event{0, "config", "",
-		float64(new.Width), float64(new.Height)}
+		float64(c.WidthPt), float64(c.HeightPt)}
 }
 
 //  evtTouch responds to a mouse (or finger) event
-func evtTouch(e event.Touch, f event.Config) {
+func evtTouch(e touch.Event) {
 	// convert to user coordinates
 	//#%#%#% assumes that the origin is at the center of the canvas
 	m := OneApp.CvScale / OneApp.Canvas.PixPerPt
-	x := m * (float64(e.Loc.X - OneApp.Config.Width/2))
-	y := m * (float64(e.Loc.Y - OneApp.Config.Height/2))
+	x := m * (float64(e.Loc.X - OneApp.Config.WidthPt/2))
+	y := m * (float64(e.Loc.Y - OneApp.Config.HeightPt/2))
 	// send to the channel
 	var s string
-	switch e.Change {
-	case event.ChangeOn:
+	switch e.Type {
+	case touch.TypeBegin:
 		s = "touch"
-	case event.ChangeNone:
+	case touch.TypeMove:
 		s = "drag"
-	case event.ChangeOff:
+	case touch.TypeEnd:
 		s = "release"
 	default:
-		panic(fmt.Sprintf("Unexpected event type: %v", e))
+		panic(fmt.Sprintf("Unexpected touch type: %v", e.Type))
 	}
-	OneApp.ToEvtQ <- &Event{int64(e.ID), s, "", x, y}
+	OneApp.ToEvtQ <- &Event{int64(e.Sequence), s, "", x, y}
 }
 
 //  evtStop responds to an app "stop" call
@@ -102,7 +98,7 @@ func evtStop() {
 }
 
 //  evtRepaint is called 60x/second to draw the current Canvas on the screen
-func evtRepaint(f event.Config) {
+func evtRepaint() {
 	gl.ClearColor(.5, .5, .5, 1)  // color for margins
 	gl.Clear(gl.COLOR_BUFFER_BIT) // clear area behind base canvas
 	if OneApp.Canvas == nil {     // if canvas not set yet

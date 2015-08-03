@@ -11,12 +11,13 @@ import (
 
 //  A Canvas is a grid of pixels forming an image.
 type Canvas struct {
-	*App               // associated app if app canvas, else nil
-	*Sprite            // placement on screen, and overlain sprites
-	Width      int     // width in pixels
-	Height     int     // height in pixels
-	PixPerPt   float64 // density in pixels/point
-	draw.Image         // underlying image
+	*App                     // associated app if app canvas, else nil
+	*Sprite                  // placement on screen, and overlain sprites
+	Width      int           // width in pixels
+	Height     int           // height in pixels
+	PixPerPt   float64       // density in pixels/point
+	GLI        *glutil.Image // OpenGL image, if any
+	draw.Image               // underlying RGBA image
 }
 
 //  Canvas.String() produces a printable representation of a Canvas struct.
@@ -43,7 +44,8 @@ func NewCanvas(w, h, ppp float64) *Canvas {
 	} else {
 		// application canvas
 		w, h, ppp := AppSize()
-		c.Image = glutil.NewImage(w, h)
+		c.GLI = glutil.NewImage(w, h)
+		c.Image = c.GLI.RGBA
 		c.setup(w, h, ppp)
 		AppCanvas(c)
 	}
@@ -64,9 +66,10 @@ func (c *Canvas) setup(w int, h int, ppp float64) {
 //  Canvas.MakeDisplayable() makes a canvas useable in an app context.
 //  This means changing its image to a GL image if it is not one already.
 func (c *Canvas) MakeDisplayable() {
-	if _, ok := c.Image.(*glutil.Image); !ok { // if not already a GL image
-		im := glutil.NewImage(c.Width, c.Height)
-		draw.Draw(im, im.Bounds(), c.Image, image.Point{}, draw.Src)
-		c.Image = im
+	if c.GLI == nil { // if not already a GL image
+		gli := glutil.NewImage(c.Width, c.Height)
+		draw.Draw(gli.RGBA, gli.RGBA.Bounds(), c.Image, image.Point{}, draw.Src)
+		c.Image = gli.RGBA
+		c.GLI = gli
 	}
 }

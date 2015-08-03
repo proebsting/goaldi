@@ -5,9 +5,11 @@ package graphics
 import (
 	"fmt"
 	"golang.org/x/mobile/app"
-	"golang.org/x/mobile/event"
+	"golang.org/x/mobile/event/config"
+	"golang.org/x/mobile/event/lifecycle"
+	"golang.org/x/mobile/event/paint"
+	"golang.org/x/mobile/event/touch"
 	"golang.org/x/mobile/exp/f32"
-	"golang.org/x/mobile/exp/gl/glutil"
 	"golang.org/x/mobile/geom"
 	"sync"
 	"time"
@@ -26,11 +28,11 @@ var IDENTITY = &f32.Affine{{1, 0, 0}, {0, 1, 0}}
 
 //  An App struct holds the application window configuration information.
 type App struct {
-	*Canvas                    // associated canvas
-	CvScale      float64       // canvas scaling
-	event.Config               // current app window configuration
-	ToEvtQ       chan<- *Event // channel for sending events
-	Events       <-chan *Event // channel for getting events
+	*Canvas               // associated canvas
+	CvScale float64       // canvas scaling
+	Config  config.Event  // current app window configuration
+	ToEvtQ  chan<- *Event // channel for sending events
+	Events  <-chan *Event // channel for getting events
 }
 
 //  OneApp is the actual data for the single application window.
@@ -52,8 +54,8 @@ func AppSize() (w int, h int, d float64) {
 	if d < MinPPP {
 		d = MinPPP
 	}
-	w = int(d*float64(OneApp.Config.Width) + 0.5)
-	h = int(d*float64(OneApp.Config.Height) + 0.5)
+	w = int(d*float64(OneApp.Config.WidthPt) + 0.5)
+	h = int(d*float64(OneApp.Config.HeightPt) + 0.5)
 	return w, h, d
 }
 
@@ -80,14 +82,26 @@ func AppMain() {
 	go eventQueuer(toqueue, fmqueue)
 	OneApp.ToEvtQ = toqueue
 	OneApp.Events = fmqueue
-	app.Run(app.Callbacks{
-		Start:  evtStart,
-		Config: evtConfig,
-		Stop:   evtStop,
-		Touch:  evtTouch,
-		Draw:   evtRepaint,
+	app.Main(func(a app.App) {
+		for e := range a.Events() {
+			switch e := app.Filter(e).(type) {
+			case config.Event:
+				evtConfig(e)
+			case touch.Event:
+				evtTouch(e)
+			case paint.Event:
+				evtRepaint()
+				a.EndPaint(e)
+			case lifecycle.Event:
+				if e.Crosses(lifecycle.StageVisible) == lifecycle.CrossOn {
+					appGo <- true // now alive and visible
+				} else if e.Crosses(lifecycle.StageVisible) == lifecycle.CrossOff {
+					evtStop() // lost our window
+				} // else something else happened, e.g. gained/lost focus
+			}
+		}
 	})
-	panic("app.Run() returned")
+	panic("app.Main() returned")
 }
 
 //  App.ConfigDisplay configures the transformation matrix
@@ -97,19 +111,19 @@ func (a *App) ConfigDisplay() {
 	rheight := float64(a.Image.Bounds().Max.Y) // raster height in pixels
 	raspr := rwidth / rheight                  // raster aspect ratio
 	f := a.Config
-	daspr := float64(f.Width / f.Height) // display aspect ratio
+	daspr := float64(f.WidthPt / f.HeightPt) // display aspect ratio
 	dx := float32(0)
 	dy := float32(0)
 	if daspr > raspr {
 		// sidebar configuration
-		a.CvScale = rheight / float64(f.Height)
-		rwpts := geom.Pt(raspr) * f.Height // raster width in pts
-		dx = float32(f.Width-rwpts) / 2
+		a.CvScale = rheight / float64(f.HeightPt)
+		rwpts := geom.Pt(raspr) * f.HeightPt // raster width in pts
+		dx = float32(f.WidthPt-rwpts) / 2
 	} else {
 		// letterbox configuration
-		a.CvScale = rwidth / float64(f.Width)
-		rhpts := f.Width / geom.Pt(raspr) // raster height in pts
-		dy = float32(f.Height-rhpts) / 2
+		a.CvScale = rwidth / float64(f.WidthPt)
+		rhpts := f.WidthPt / geom.Pt(raspr) // raster height in pts
+		dy = float32(f.HeightPt-rhpts) / 2
 	}
 	m := &a.Sprite.Xform
 	m.Translate(IDENTITY, dx, dy)
@@ -133,9 +147,8 @@ func (a *App) Display(c *Canvas, m *f32.Affine) {
 	tl := pj(m, 0, 0)
 	tr := pj(m, w, 0)
 	bl := pj(m, 0, h)
-	gli := c.Image.(*glutil.Image)
-	gli.Upload()
-	gli.Draw(OneApp.Config, tl, tr, bl, c.Image.Bounds())
+	c.GLI.Upload()
+	c.GLI.Draw(OneApp.Config, tl, tr, bl, c.Image.Bounds())
 }
 
 //  pj(xform, x, y) -- project a point using an affine transform
