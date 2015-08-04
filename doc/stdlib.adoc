@@ -332,7 +332,8 @@ linefeed or CRLF is removed from the returned value. f.get() fails at
 EOF when no more data is available.
 
 c.get() -- read from channel::
-c.get() reads the next value from channel c.
+c.get() reads the next value from channel c, or fails if no value is
+available.
 
 L.get() -- remove from front::
 L.get() removes the first element from list L and returns the element's

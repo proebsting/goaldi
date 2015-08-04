@@ -33,16 +33,18 @@ func Channel(env *Env, args ...Value) (Value, *Closure) {
 	return Return(NewChannel(i))
 }
 
-//  c.get() reads the next value from channel c.
+//  c.get() reads the next value from channel c,
+//  or fails if no value is available.
 func (c VChannel) Get(args ...Value) (Value, *Closure) {
 	defer Traceback("c.get", args)
-	return c.Take(nil), nil
+	return GetChan(c)
 }
 
-//  GoChanGet(c) returns the next value from a Go channel
+//  GoChanGet(c) returns the next value from a Go channel,
+//  or fails if no value is available.
 func GoChanGet(c Value, args ...Value) (Value, *Closure) {
 	defer Traceback("c.get", args)
-	return TakeChan(c), nil
+	return GetChan(c)
 }
 
 //  c.put(e...) writes its argument values, in order, to channel c.

@@ -27,6 +27,22 @@ func TakeChan(c interface{} /*anychan*/) Value {
 	}
 }
 
+//  GetChan(c) receives and imports a value from a Goaldi or external channel,
+//  or fails if no value is available.
+func GetChan(c interface{} /*anychan*/) (Value, *Closure) {
+	cv := reflect.ValueOf(c)
+	cases := []reflect.SelectCase{
+		reflect.SelectCase{Dir: reflect.SelectDefault},
+		reflect.SelectCase{Dir: reflect.SelectRecv, Chan: cv},
+	}
+	i, v, ok := reflect.Select(cases)
+	if i > 0 && ok {
+		return Return(Import(v.Interface())) // got a value
+	} else {
+		return Fail() // no value available
+	}
+}
+
 //  DispenseChan(c) implements @c for a Goaldi or external channel
 func DispenseChan(c interface{} /*anychan*/) (Value, *Closure) {
 	var f *Closure

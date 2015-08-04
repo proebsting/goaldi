@@ -5,6 +5,7 @@ procedure main() {
 	local ch
 	write("[new1]")
 	ch := channel(5)
+	try(ch) # should fail, nothing sent yet
 	ch.put("algebub")
 	ch @: "biolozy"
 	ch.put("chemixtry")
@@ -37,11 +38,11 @@ procedure main() {
 
 #  try reading one value from channel, showing size
 procedure try(ch) {
-	write(image(ch), " size=", *ch, "   =>   ", image(@ch) | "[failed]")
+	write(image(ch), " size=", *ch, "   =>   ", image(ch.get()) | "[failed]")
 }
 
 #  drain channel and print, without showing size  (more deterministic)
 procedure drain(ch) {
-	while write(image(ch), "  =>  ", image(ch.get()))
+	while write(image(ch), "  =>  ", image(@ch))
 	write(image(ch), "  =>  [failed]")
 }
