@@ -1,4 +1,5 @@
 [new1]
+channel(5) size=0   =>   [failed]
 channel(5) size=3   =>   "algebub"
 channel(5) size=2   =>   "biolozy"
 [closed]
