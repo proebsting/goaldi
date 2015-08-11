@@ -1,17 +1,19 @@
 = Goaldi Graphics Notes
 
-Graphics support is experimental and unstable.
-Build failures are quite likely because the
-underlying Go libraries are in a state of flux.
+Goaldi graphics support is experimental, incomplete, and
+a bit incoherent.
+It was developed as an exploratory proof of concept,
+not as a final product in any sense.
 
-The graphics code uses external libraries that must be obtained
+Graphics code uses external libraries that must be obtained
 using Git and Mercurial (the *git* and *hg* commands).
 Install these packages first (in addition to the Go language)
 if they are not already present.
-
 Then, before building Goaldi, run *make getlibs*
 to download and install the necessary external libraries.
 
-As these libraries change, Goaldi changes in response.
-After updating Goaldi, it may be necessary to again run
-*make getlibs* to refresh the imported libraries.
+The external *golang.org/x/mobile* package mutates rapidly,
+repeatedly breaking the Goaldi code.
+This version of Goaldi works with
+golang.org/x/mobile updated through commit *1F6220*
+of August 3, 2015.
