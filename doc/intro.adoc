@@ -20,6 +20,7 @@ is split among:
 * link:intro.adoc[Goaldi Introduction] (this document)
 * link:ref.adoc[Goaldi Language Reference]
 * link:stdlib.adoc[Goaldi Library Reference]
+* link:graphics.adoc[Goaldi Graphics]
 * link:diffs.adoc[Goaldi for Icon Programmers]
 * link:build.adoc[Goaldi Installation and Internals]
 

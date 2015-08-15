@@ -32,6 +32,7 @@ Just unpack the appropriate *.tgz* file and run the *goaldi* executable.
 * link:doc/intro.adoc[Introduction]
 * link:doc/ref.adoc[Language Reference]
 * link:doc/stdlib.adoc[Library Reference]
+* link:doc/graphics.adoc[Graphics]
 * link:doc/diffs.adoc[Goaldi for Icon Programmers]
 * link:doc/build.adoc[Installation and Internals]
 

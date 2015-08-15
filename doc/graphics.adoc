@@ -1,0 +1,251 @@
+Goaldi:  Graphics
+=================
+
+Gregg Townsend and Todd Proebsting +
+Department of Computer Science +
+The University of Arizona +
+goaldi@cs.arizona.edu +
+
+*_This documents some unfinished work in progress._*
+
+'''''
+
+Goaldi programs can create simple images composed of geometric figures
+(points, lines, discs, etc.), and text.  Both coordinate-based and
+turtle-graphics output modes are available.  Onscreen images support
+dynamic updates and mouse-based interaction.  Offscreen images can be
+created and used as sprites to dynamically overlay an onscreen window.
+
+Goaldi graphics use the Go “mobile” package, which is under active
+development with frequent and sometimes incompatible changes.  The
+“mobile” package works on Mac and Linux and it is designed for producing
+Android and IOS apps.
+
+Limitations imposed by the “mobile” package include:
+
+* only one onscreen window is allowed
+* the window size is set initially by the system, not by the user
+* only two fonts are provided (and only the monospaced one works)
+* there is no keyboard input, only mouse touch / drag / release
+
+Goaldi windows are fundamentally pixel-based, but future work could
+conceivably provide for recording the output sequence to produce a
+vector-based SVG or PDF file as well as a JPEG or other image file.
+
+'''''
+
+Warning:  The imported libraries used for graphics are constantly
+changing.  The Goaldi source code was last synchronized with the latest
+library versions on August 3, 2015, and was again invalidated by
+incompatible library changes committed on August 4th.
+
+'''''
+
+Canvases and Painters
+~~~~~~~~~~~~~~~~~~~~~
+
+A Go *Canvas* struct holds a grid of pixels representing an on- or
+off-screen image.  One canvas is displayed as the application screen.
+Goaldi programs access a canvas through an associated *painter* value
+that holds current drawing parameters such as color and font.
+
+Many painter values, each with distinct parameters, can be associated
+with a single canvas.
+New painter values are created by copying the initial one returned by
+canvas creation.
+
+Canvas Creation
+~~~~~~~~~~~~~~~
+
+**P := canvas(w, h, d)** creates a new canvas and returns an associated
+painter value.
+The canvas has *w* by *h* pixels scaled at an assumed density of
+*d* typographic points per pixel (default of 1).  If the arguments are
+omitted, an on-screen canvas is created with dimensions and density
+supplied by the underlying window system.
+
+The new canvas has these attributes:
+
+* the origin is in the center of the canvas, +x to the right, +y to the
+bottom
+* coordinate units are typographic points (1/72 inch)
+* the canvas is initially all white
+* the pen is at the origin and oriented towards the top (an orientation
+of –90 degrees)
+* the drawing width is 1 (typographic point) and the drawing color is
+black
+
+Painter Methods
+~~~~~~~~~~~~~~~
+
+Painter methods use the parameters of a painter value to control
+operations that affect the underlying canvas.  Painter methods return
+the painter value to allow chaining, as in
+----
+P.copy().color(“green”).Forward(20).turn(90).Forward(10)
+----
+
+_Capitalized methods are Go methods that do not show up in the
+automatically built library documentation and generally do not allow the
+omission of trailing parameters._
+
+**P.Reset()** erases the underlying canvas and restores the initial
+conditions of a new canvas.
+
+**P.color(k)** sets the drawing color.  If k is not a color object, the
+color is set to **color(k)**.
+
+**P.turn(d)** turns the pen orientation d degrees to the right (if
+positive) or left (if negative).
+
+**P.Goto(x,y,o)** sets the drawing location, and if o is not nil it also
+sets the orientation.
+
+**P.Size := n** sets the size of the drawing pen.  There is currently no
+method for setting this.
+
+**P.Forward(n)** moves the pen n units forward along its current
+orientation, or backward if n is negative, while drawing a line.
+
+The following methods use the current color and size, and do not alter
+the pen location or orientation:
+
+* *P.Point(x, y)* draws a point at (x,y).
+* **P.Line(x1, y1, x2, y2)** draws a line between two points.
+* **P.Rect(x, y, w, h)** fills a rectangle with one corner at (x,y).  w
+and/or h can be negative.
+* **P.Disc(x, y, d)** fills a circle of diameter d centered at (x,y).
+* **P.Text(x, y, s)** typesets the string s with the left baseline at
+(x,y).
+* *P.Overlay(x, y, q)* copies the canvas of painter q atop the canvas of
+painter p at (x,y).
+
+Colors
+~~~~~~
+
+A *color* object designates the red, green, blue, and alpha
+(transparency) values used in a Painter.
+
+**k := color(n…)** specifies a color using numeric values ranging from
+0.0 to 1.0 inclusive.
+Interpretation depends on the number of arguments:
+
+* **color(k)**: grayscale
+* **color(k,a)**: grayscale with alpha
+* **color(r,g,b)**: full color
+* **color(r,g,b,a)**: full color with alpha
+
+Alternatively, **k := color(s)** creates a color value from a string
+specifier.  *s* can be one of the named colors *aqua, black, blue,
+brown, fuchsia, gold, gray, green, lime, maroon, navy, olive, orange,
+purple, red, silver, slate, teal, white, yellow,* or** transparent**; or
+*s* can be an RGB hex form **\#**_rgb_ or **_#_**_rrggbb_, a hex
+grayscale form **\#**_k_ or **#**_kk_, or an alpha variant of those
+**\#**_rgba_, **#**_rrggbbaa_, **#**_kkaa_.
+
+A color value is used by calling **P.color(k)** to set the drawing color
+of painter value *P*.  Note that this is a distinct method from the
+*color* library procedure and takes only a single argument.
+
+Fonts
+~~~~~
+
+A *font* value represents an instantiation of a typeface at a
+particular size.
+
+**y := font(name, size)** creates a font for the named font at the given
+size, which is measured in typographic points (units of 1/72 inch).
+Only the name **“mono”** is currently known to work.
+
+A font value is used by assigning it to the *VFont* field of a painter
+value, as in
+----
+P.VFont := font(“mono”, 12)
+----
+
+Sprites
+~~~~~~~
+
+A *Sprite* is an image that is displayed over the top of the
+application canvas, covering but not altering the underlying image.  A
+sprite’s location can be changed to created animated movement without
+redrawing.
+
+A sprite is created in two steps.  First, an offscreen canvas is created
+and drawn.  Then, this canvas is placed on the screen by the canvas
+method
+----
+Z := P.AddSprite(Q, x, y, scale)
+----
+which makes a sprite of the canvas underlying the painter Q and places
+its _center_ initially at (x,y) on the application canvas underlying
+painter P.  The scale parameter can be used to enlarge or shrink the
+sprite.  With a value of 1.0, scaling matches the densities (in pixels
+per point) of the two canvases.
+
+The returned Sprite value Z is a Go struct that contains three fields
+*X*, *Y*, and *Scale* that can be set programmatically to alter
+the position and size of the sprite on the screen.
+
+Events
+~~~~~~
+
+An *Event* value is a Go struct that reports the occurrence of an
+input action.  It includes these fields:
+
+* *Action*: a string “config”, “touch”, “drag”, “release”, or “stop”
+* *Lookahead*: a similar string,
+	if a following event is already queued, or nil
+* *X* and *Y*: location (in points) of the event,
+	or new dimensions for “config”
+
+Events are reported through a channel that can be referenced as
+**P.Events** from any painter associated with the application canvas.
+For example, a simple main program that just produces a static display
+might finish with
+----
+while @P.Events ~=== "stop"
+----
+to wait until its window is closed.
+
+The Lookahead field can be used to collapse multiple consecutive “drag”
+or “config” events.
+
+
+To Do
+-----
+
+Issues to Decide
+~~~~~~~~~~~~~~~~
+
+* proof-of-concept seems to work; now consider a better design
+* consider datatypes, primitives, high-level ops, O-O approach, etc, etc
+* use a different substrate, e.g. glfw instead of x/mobile/app??  or new “shiny”??
+* think about coordinate systems and transformation matrices
+* think about event reporting (sprite detection, coordinate systems)
+* which gpx structs should be first-class Goaldi types?
+* how much can/should Go calls & values be recast in Goaldi terms?
+* how specify rectangles?  xywh?  xyxy?  Rect()?
+* add an O-O based layout engine?
+
+Also To Do
+~~~~~~~~~~
+
+* fill out the set of graphics primitives, including CopyArea across canvases
+* need easy way to set/assume coordinates of default window
+* write images to files — raster or vector
+* use geom.Point datatype throughout??  and which size float?
+* make use of pixel and point values now both supplied in config events
+* add new Goaldi types to the alltypes test
+* document
+* and see \#%#% notes in code
+
+Bugs
+~~~~
+
+* resizing down to nothing crashes the program +
+(Can’t fix?  Gets an Apple Frameworks error, not a Go runtime error.)
+* tile.gd doesn’t see “stop” event, and just hangs +
+(The runtime system never even sees it! Go 1.5 beta 3 on Mac only.)
+
+'''''
