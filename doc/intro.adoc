@@ -1,0 +1,242 @@
+Goaldi: A Goal-Directed Programming Language
+============================================
+
+Gregg Townsend and Todd Proebsting +
+Department of Computer Science +
+The University of Arizona +
+goaldi@cs.arizona.edu +
+
+This is part of the documentation for
+http://goaldi.org/[The Goaldi Programming Language].
+Goaldi is a new general-purpose programming language that combines the
+goal-directed evaluation model of the Icon language with modern features
+such as concurrency, objects, and closures.  While Goaldi will look
+familiar to Icon programmers, it is not upwards compatible, and it omits
+some features of Icon.
+
+The language is still evolving, and changes are likely.  Documentation
+is split among:
+
+* link:intro.adoc[Goaldi Introduction] (this document)
+* link:ref.adoc[Goaldi Language Reference]
+* link:stdlib.adoc[Goaldi Library Reference]
+* link:diffs.adoc[Goaldi for Icon Programmers]
+* link:build.adoc[Goaldi Installation and Internals]
+
+Goaldi is a file-based language without a GUI.  To run a Goaldi program,
+create a source file and run it using a shell command:
+----
+goaldi filename.gd [arguments]
+----
+
+Goaldi is implemented using a front-end translator written in Goaldi
+combined with a back-end interpreter written in http://golang.org/[Go].
+The library is easily extensible by additional Go code.
+
+The implementation can be downloaded (in source or binary form) from
+https://github.com/proebsting/goaldi[github.com/proebsting/goaldi].
+
+A https://list.arizona.edu/sympa/info/goaldi-language[mailing list]
+has been established for announcements and discussions. Please
+https://list.arizona.edu/sympa/subscribe/goaldi-language[subscribe]
+to stay informed of Goaldi developments.
+
+The name “Goaldi” is pronounced to rhyme with “moldy” (not “malady” or
+“o’baldy”).
+
+
+Goaldi Language Overview
+------------------------
+
+Goaldi is a high-level, general-purpose procedural language.  The syntax
+is line-oriented with implicit semicolon insertion.
+
+Goaldi is polymorphic:  Values have types (which may be inspected), but
+variables are typeless and can hold any value.  Memory allocation and
+garbage collection are automatic.
+Data types include strings, numbers, channels, records (structs), lists,
+sets, and tables.  Lists can function as arrays, stacks, queues, or
+deques.
+
+Goaldi draws heavily from the Icon programming language.
+If you're unfamiliar with Icon, there is much information on the
+http://www.cs.arizona.edu/icon/[Icon website], including brief introductions
+http://www.cs.arizona.edu/icon/docs/ipd266.htm[by Ralph Griswold] or
+http://www.cs.arizona.edu/icon/intro.htm[by Dave Hanson].
+
+Goaldi adds objects and methods, concurrency, closures, exception
+handling, namespaces, dynamically scoped constants, structure
+initialization, dependency-based global initialization, and Unicode
+support; these are documented in the link:ref.adoc[Goaldi Language Reference].
+Goaldi lacks Icon's string scanning and multi-precision integers.
+
+Goaldi retains Icon's model of __goal-directed evaluation__, where under
+the right circumstances an expression or procedure can produce zero,
+one, or many results.
+
+Goaldi is written in the https://golang.org/[Go] language and is easily
+extended to interface with Go functions.
+
+
+Some Examples
+-------------
+
+Hello, world
+~~~~~~~~~~~~
+
+It is traditional to begin a presentation of a programming language with
+a program that writes something along the lines of “Hello, world”.  (One
+of the authors comes from a family of editors and publishers, and
+believes in the comma of direct address.)
+
+The simplest form is this:
+
+----
+procedure main() {
+    write("Hello, world")
+}
+----
+
+When run, it outputs a constant string.
+
+Let’s make it a little more flexible.  If any names are given on the
+command line, this enhanced version will greet them by name;  if not, it
+will again write a fixed string.
+
+----
+procedure main(args[]) {
+    if *args > 0 then {
+        while local name := args.get() do {
+            write("Hello, ", name)
+        }
+    } else {
+        write("Hello, world")
+    }
+}
+----
+
+The args[] parameter declaration says that this is a _variadic_
+procedure accepting any number of values, which form a _list_ named
+args.  For the main procedure, the arguments are those from the command
+line:  **goaldi hello.gd Homer**  writes  *Hello, Homer*  on standard
+output.  Note that **local name** both declares a variable and serves as a
+component of a larger expression.
+
+**args.get()** is a list method that removes and returns the first item
+of a list.  When the list is empty, the method _fails_, which
+terminates the *every* loop.  Failure is not a value like _true_ or
+_false_ but instead an out-of-band signal that no value is available.
+Because this signal propagates, the local variable can be eliminated:
+
+----
+procedure main(args[]) {
+    if *args > 0 then {
+        while write("Hello, ", args.get())
+    } else {
+        write("Hello, world")
+    }
+}
+----
+
+Now the *get* method call is enclosed directly in the *write* call.
+When the method fails, the enclosing *write* expression fails, and so
+the *while* loop terminates.
+
+The *get* operation is common enough that it can be replaced by an
+**@** operator:
+
+----
+procedure main(args[]) {
+    if *args > 0 then {
+        while write("Hello, ", @args)
+    } else {
+        write("Hello, world")
+    }
+}
+----
+
+As an alternative to consuming the list, we can iterate through it using
+a _generator_.  A generator is an expression that produces a sequence
+of values;  **1 to 10**  is a simple generator that produces ten
+integers.  The unary **!** operator generates the contents of a list and
+can be used like this:
+
+----
+procedure main(args[]) {
+    if *args > 0 then {
+        every write("Hello, ", !args)
+    } else {
+        write("Hello, world")
+    }
+}
+----
+
+Note that not only has the **@** operator been replaced by *!* but also
+the *while* loop is now an *every* loop.  The subtle but critical
+difference is that *while* evaluates its argument expression
+repeatedly; *every* initiates it just once but drives it to produce
+all its results.
+
+Finally, consider the original goal of printing arguments if there were
+any or using “world” if not.  Goaldi has an operator for this.  In the
+expression **x ~| y**, the **~|** operator produces the values of the
+subexpression *x*; but if *x* fails immediately without producing
+results, it instead produces the values of the subexpression *y*.  It
+turns out that this is exactly what we need:
+
+----
+procedure main(args[]) {
+    every write("Hello, ", !args ~| "world")
+}
+----
+
+Word Counting
+~~~~~~~~~~~~~
+
+This simple program counts the occurrences of distinct words in a text
+file.  It leverages the Go library’s regular expression package to
+extract the words.  A word is defined to be one or more consecutive
+Unicode letters, so “Camille Saint-Saëns” is three words.
+
+----
+procedure main(filename) {
+    local f := file(\filename) | %stdin
+    local words := table(0)
+    local rx := regex(`\pL+`)
+    while local line := f.read() do {
+        local matches := rx.FindAllString(line, -1)
+        every local w := !\matches do {
+            words[w] +:= 1
+        }
+    }
+    every local kv := !words.sort() do
+        printf("%6.0f  %s\n", kv.value, kv.key)
+}
+----
+
+The *file* call opens the file specified as a command-line argument; if
+none was given, *filename* is nil, **\filename** fails, and so
+standard input is used instead.
+
+*words* is a table in which the initial value of every element is set
+to zero for use as a counter.
+
+*rx* is initialized to a compiled regular expression, which is an
+*external* (Go) type to Goaldi.
+
+The *while* loop repeatedly calls *read* until the call fails at
+EOF.  For each line, *FindAllString* returns a list of words, or
+*nil* if the line had none.  This is a direct call of a Go object
+method from Goaldi.
+
+The inner *every* loop iterates through the words of the line,
+provided (by the **\matches** test) that *FindAllString* did not
+return nil.  For each word, the corresponding table entry is incremented
+by one.
+
+The final *every* loop prints the results.  **words.sort()** returns a
+list of key/value pairs, each of which is in turn assigned to *kv*.
+Each one is then printed using Go’s *printf* function to format the
+results.
+
+''''''

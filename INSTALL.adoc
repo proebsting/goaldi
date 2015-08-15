@@ -1,9 +1,8 @@
 = Installing Goaldi
 
 A binary distribution of Goaldi consists of a single self-contained
-executable file named *goaldi* accompanied by a small number of text files,
-including the link:./StdLib.adoc[library documentation]
-corresponding to the release.
+executable file named *goaldi* accompanied by a small number of text files
+including link:doc/intro.adoc[documentation].
 
 To use the *goaldi* executable,
 just leave it in place and add its directory to your search path;
@@ -14,8 +13,8 @@ Run Goaldi with the command *goaldi sourcefile.gd*,
 optionally appending any arguments to be passed to the Goaldi program.
 
 To install Goaldi from source, see
-https://docs.google.com/document/d/1VRyDtFVXbmamBkFJgsSGYPhqxLrPIaaokC3pNOC7e1k/edit?usp=sharing[Installation and Internals].
+link:doc/build.adoc[Installation and Internals].
 
 For further information about Goaldi, see the
-link:./README.adoc#[README] file and the
-https://docs.google.com/document/d/1TazaoECAzgqt0o-bdfvBL5nhMxA_w7KuJN65Cr5ov4M/edit?usp=sharing[documentation collection].
+link:README.adoc[README] file and the
+link:doc/intro.adoc[documentation collection].

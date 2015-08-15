@@ -29,11 +29,11 @@ Just unpack the appropriate *.tgz* file and run the *goaldi* executable.
 
 == Documentation
 
-* https://docs.google.com/document/d/1TazaoECAzgqt0o-bdfvBL5nhMxA_w7KuJN65Cr5ov4M/edit?usp=sharing[Introduction]
-* https://docs.google.com/document/d/1e21EacNqFg0eHtYowntbg1lKUpawl0busA375qnsqfY/edit?usp=sharing[Language Reference]
-* https://github.com/proebsting/goaldi/blob/master/doc/stdlib.adoc#goaldi-standard-library[Library Reference]
-* https://docs.google.com/document/d/1UCjBKAKH3wqefpKUKAMYlnaMtiodLcZKWiI1pN-Gc_s/edit?usp=sharing[Goaldi for Icon Programmers]
-* https://docs.google.com/document/d/1VRyDtFVXbmamBkFJgsSGYPhqxLrPIaaokC3pNOC7e1k/edit?usp=sharing[Installation and Internals]
+* link:doc/intro.adoc[Introduction]
+* link:doc/ref.adoc[Language Reference]
+* link:doc/stdlib.adoc[Library Reference]
+* link:doc/diffs.adoc[Goaldi for Icon Programmers]
+* link:doc/build.adoc[Installation and Internals]
 
 
 == Discussion List

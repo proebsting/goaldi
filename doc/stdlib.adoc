@@ -1,12 +1,13 @@
-= Goaldi Standard Library
-
+Goaldi Standard Library
+=======================
 
 Gregg Townsend and Todd Proebsting +
 Department of Computer Science +
 The University of Arizona +
+goaldi@cs.arizona.edu
 
 This is part of the documentation for
-https://docs.google.com/document/d/1TazaoECAzgqt0o-bdfvBL5nhMxA_w7KuJN65Cr5ov4M/edit?usp=sharing[The Goaldi Programming Language].
+http://goaldi.org[The Goaldi Programming Language].
 
 '''
 

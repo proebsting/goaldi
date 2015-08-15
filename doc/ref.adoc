@@ -1,0 +1,1461 @@
+Goaldi:  Language Reference
+===========================
+
+// define "tab" attribute for indenting lines with formatting
+:t:	{nbsp} {nbsp} {nbsp} {nbsp}
+// define "whitespace" attribute for extra embedded space
+:w:	{nbsp}
+
+Gregg Townsend and Todd Proebsting +
+Department of Computer Science +
+The University of Arizona +
+goaldi@cs.arizona.edu +
+
+This is part of the documentation for
+http://goaldi.org/[The Goaldi Programming Language].
+
+'''''
+
+This document is an informal reference manual for the Goaldi programming
+language.  It includes complete summaries of Goaldi's syntax, control
+structures, datatypes, and operators.  The standard library is documented
+ref:stdlib.adoc.
+
+Goaldi is inspired by the
+http://www.cs.arizona.edu/icon/[Icon] programming language.
+This manual describes in detail those features that are new to Goaldi.
+
+'''''
+
+xref:Programs[Programs] +
+xref:Expressions[Expressions] +
+xref:Procs[Procedures, Records, and Methods] +
+xref:Decls[Declarations and Scoping] +
+xref:Inits[Structure Initialization] +
+xref:Catch[Error Recovery] +
+xref:Channels[Channels and Concurrency] +
+xref:Datatypes[Datatype Summary] (
+xref:tAny[x]
+xref:tNil[z]
+xref:tType[t]
+xref:tNumber[n]
+xref:tString[s]
+xref:tFile[f]
+xref:tChannel[c]
+xref:tMethodVal[m]
+xref:tProcedure[p]
+xref:tList[L]
+xref:tSet[S]
+xref:tTable[T]
+xref:tRecord[R]
+xref:tExternal[X]
+) +
+xref:Syntax[Syntax Summary] +
+xref:Operators[Operator Summary] +
+xref:Cstructs[Control Structure Summary] +
+
+'''''
+
+[[Programs]]
+Programs
+--------
+
+Files
+~~~~~
+
+A Goaldi program is composed of one or more source files that are linked
+together to form an executable program.
+
+Each file consists of an optional *package* declaration followed by a
+sequence of declarations (**global, initial, record, procedure**).  The
+typical program is a single file with no *package* declaration.
+
+The ordering of global declarations is immaterial, both within and
+across files, except with respect to initialization.  Forward references
+are allowed and are resolved at link time.
+
+Following an initialization stage, execution begins by calling the
+procedure named *main* and passing it any command-line arguments.
+
+Program Initialization
+~~~~~~~~~~~~~~~~~~~~~~
+
+Two kinds of code blocks -- *global* initializations and
+*initial* blocks -- can execute before the main procedure.  Each block
+is implicitly an anonymous procedure, and they run serially.  Any fatal
+error terminates execution so that *main* never starts.
+
+Global initializations, created by assigning a values in
+*global* declarations, run first.  Global initializations are run in
+lexical order as allowed by their dependencies.  Any lexical reference
+in an initialization expression creates a dependency.  For example, in +
+{t} ** global a := 2 | c ** +
+{t} ** global b := 0 ** +
+{t} ** global c := b + 1 ** +
+the initialization order is **b, c, a** because *a* exhibits a (false)
+dependency on *c*.  A dependency cycle is a fatal error and prevents
+*main* from starting.
+
+Global references from called procedures are included in the dependency
+calculations.
+References from within methods are not considered, because Goaldi's
+dynamic typing precludes distinguishing in advance among multiple
+methods of the same name.
+
+After the global initializations have finished, *initial* blocks are
+then run in lexical order.  Any number of these can be present.  Initial
+blocks are anonymous procedures declared at the global level and having
+the form: +
+{t} **initial {** +
+{t}{t} _expr_ +
+{t}{t} ... +
+{t} *}* +
+
+Execution
+~~~~~~~~~
+
+After any initialization procedures have been run, execution begins by
+calling the procedure *main*.  Such a procedure must be defined, by
+the programmer, in the public namespace (that is, outside of any
+declared package).
+
+*main* can declare multiple parameters, including a variadic final
+parameter if desired.  Arguments supplied on the command line are passed
+to *main* as separate string values.
+
+
+[[Expressions]]
+Expressions
+-----------
+
+A procedure is a sequence of expressions.  In Goaldi, even control
+structures and local declarations are expressions and can be parts of
+larger expressions.  The “statement” +
+{t} *local x := local y := a + b* +
+is really composed of nested expressions +
+{t} ** (local x) := \((local y) := (a + b)) ** +
+
+Expressions produce an _outcome_ of zero, one, or many results.  A
+simple expression such as  **a + b  **produces a single result and is
+said to _succeed_.
+
+An expression such as  **x >= 0  **produces no result if *x* is
+negative.  An expression that produces no result is said to _fail_.
+Failure drives control structures, as in: +
+{t} **if x >= 0 then y := x else y := 0** +
+An *if* expression produces the results of the selected branch, so
+that example can be rewritten more concisely as +
+{t} *y := if x >= 0 then x else 0* +
+
+An expression that can produce multiple results, such as  **x | y**  or
+**1 to 5**, is called a _generator_.  The *every* expression drives
+its subexpression to produce all possible results.  The fragment +
+{t} **every i := 1 to 5 do** +
+{t}{t} *write(i)* +
+writes the integers 1, 2, 3, 4, 5 on standard output.  This can be
+written more concisely as +
+{t} **every write(1 to 5)** +
+
+For a simple expression (as contrasted with a control structure),
+failure propagates to an enclosing expression.  If a subexpression
+fails, there is no operand value available for the enclosing operation,
+or for use as a parameter in a procedure call.
+
+Comparison operators are left-associative and produce their right
+operands if they succeed.  This means that a test such as  **10 \<= x <
+20  **is both legal and sensible in Goaldi.
+
+
+[[Procs]]
+Procedures, Records, and Methods
+--------------------------------
+
+Procedure Declarations
+~~~~~~~~~~~~~~~~~~~~~~
+
+A procedure is declared by +
+{t} *procedure* _name_ *(* _arglist_ *) {* +
+{t}{t} ... +
+{t} *}* +
+where the body of the procedure is just a compound expression.
+
+When a procedure is called, actual parameter values are assigned to the
+variable names declared in the argument list, which may be empty.  Too
+many arguments is an error.
+
+A procedure declaration defines its **_name_** as a global symbol with a
+constant (unchangeable) value.
+
+A procedure call succeeds if the procedure executes a
+*suspend* expression (which allows resumption) or a *return*
+expression (which does not) with an operand that itself succeeds.  A
+procedure call fails if the procedure exhausts its component expressions
+(“falls off the end”) or if it executes a *return* with an operand
+that fails, including **return fail**.
+
+Closures and Lambdas
+~~~~~~~~~~~~~~~~~~~~
+
+Within a procedure body or other expression context such as
+initialization, the expression   **procedure(**...*) { … }*   builds a
+_closure_, a value of type *procedure* that is constructed during
+execution.  The closure may name arguments to accept when called.  The
+body of the closure can refer to variables declared in the enclosing
+procedure.  The constructed procedure is not executed until it is
+explicitly called.
+
+The expression   **lambda(**...**) e**   builds a closure from a single
+expression and is equivalent to   **procedure(**...**) { suspend e }**.
+
+Records
+~~~~~~~
+
+Records provide structures with named fields.  The global declaration +
+{t} *record* _name_ *(* __field1, field2, field3__, … *)* +
+declares a record type with the given name and fields.  A trailing comma
+is allowed in the declaration.  For example: +
+{t}  *record point(x,y,)*
+
+The record name defines a constant global value associated with a
+_constructor_ that can be called (in the same way a procedure is
+called) to create a record value.
+
+Method Declarations
+~~~~~~~~~~~~~~~~~~~
+
+User-defined record types can be treated as objects with associated
+methods.  A declaration of the form +
+{t} *procedure* _recname_**.**_procname_ *(* _arglist_ *) { … }* +
+defines _procname_ as a method of the record type named _recname_.
+
+The _arglist_ names the explicit method parameters; there is also an
+implicit parameter named *self* through which the method code can
+refer to the associated record object.
+
+If *R* is a record value, the expression **R.procname(1,2,3)** calls
+the method *procname* with three arguments; within the executing method
+code, *self* refers to the value of *R*.
+
+Inheritance
+~~~~~~~~~~~
+
+Records can be organized in a single-­inheritance object hierarchy. A
+declaration of the form +
+{t} *record* _name2_ *extends* _name1_ *( ... )* +
+defines an extending record type _name2_ that inherits the
+fields and methods of record type _name1_. The fields declared by
+_name1_ are implicitly part of _name2_ and cannot be
+redeclared.  Any methods declared for _name2_ override
+identically named methods of _name1_.
+
+The arguments of the default constructor for _name2_ are the fields
+of _name1_ followed by those of _name2_. This can cause problems
+if fields are later added to the parent object _name1_.  Instead of
+using the default constructor, it may be useful to define an explicit
+method named *new* or *init* for initializing an empty record.
+Creation of a new _name2_ value would then look like this: +
+{t} *R := name2().init( ... )* +
+
+The standard method **x.instanceof(t)** can be used to check membership
+in an object hierarchy. It returns *x* if it is an instance of type value *t*,
+and fails otherwise.
+
+
+[[Decls]]
+Declarations and Scoping
+------------------------
+
+All identifiers must be declared.  Local variables (including arguments
+and static variables) are declared within procedures; *local* and
+*static* declarations are expressions and can be used as such.  Global
+symbols are defined by declarations outside procedures.  Identifiers
+left unresolved at translation time must be satisfied by a global
+declaration found at link time or by an entry in the standard library.
+
+Packages
+~~~~~~~~
+
+Any source file can begin with a declaration +
+{t} *package* _identifier_ +
+to create a separate namespace for the global values (including records
+and procedures) defined in that file.  This is useful in limiting
+identifier collisions.  
+
+Within a package, and even across multiple source files of the same
+package, the package globals can be referenced freely without
+qualification.  Code within the package can also reference globals in
+the public (unnamed) namespace, including the standard library.
+Definitions within the package override public identifiers, rendering
+them inaccessible.
+
+Code outside a package can reference globals inside the package using
+the form +
+{t} _packagename_ **::** _identifier_. +
+Package values are not private in any sense except for being harder to
+access inadvertently.
+
+Global Variables
+~~~~~~~~~~~~~~~~
+
+A global declaration names a single variable and can optionally
+assign an initialization expression: +
+{t} **global b := 0** +
+Global variables are accessible to any procedure, across all source
+files, except where hidden by a local declaration of the same name.
+
+Local and Static Variables
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+In Goaldi, **local a** and** static s** are _expressions_, not
+declarations, that appear within the context of a procedure.  Each can
+name only one variable, but they can appear within larger expressions.
+For example: +
+{t} **local i := local j := 1** +
+{t} */static s := " "* +
+
+The scope of a local or static is the enclosing compound expression,
+with the caveat that the object of a *create* or a global
+initialization is treated implicitly as a compound expression even
+without explicit braces *{ }* .
+
+Each entry into a scope creates a new instance of all locals, but there
+is only a single, shared copy of each static variable.
+
+The syntactic form **^x** is shorthand for** local x**.  Accordingly you
+can write: +
+{t} ** every ^i := 1 to *x & ^j := 1 to *y do ... ** 
+
+By the scoping rules, *i* and *j* remain in scope beyond the end of
+the *every* loop until the end of the enclosing compound expression.
+
+Dynamically Scoped Constants
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The expression **with %id := e do { b }** creates a dynamically scoped
+constant **%id** that is visible during execution of *b*, including
+any called procedures, after which it disappears.  In the general form,
+multiple variables may be created:  *with %x := e1, %y := e2* … **do {
+b }**.  The braces **{ }** around *b* are required.
+
+Dynamic constants are distinguished in all references by beginning with
+a **%** character.  They are assigned values only in a
+*with* expression and are read-only in all other uses.  However,
+nested dynamic constants can shadow others of the same names.
+
+*%stderr* and **%pi** are examples of predefined dynamic constants.  It
+is quite reasonable to write +
+{t} **with %stdout := f do { … }** +
+and the altered **%stdout** will be used by all _Goaldi_ procedures
+within the braces.  It will not affect Go functions such as *printf*,
+but **fprintf(%stdout,...)** can substitute in that particular case.  It
+is probably not productive to write +
+{t} **with %pi := 22 / 7 do { … }** +
+and it will not affect any trigonometric functions, but it is legal.
+
+The visibility of dynamic constants is independent of package
+boundaries.
+
+
+[[Inits]]
+Structure Initialization
+------------------------
+
+The expression   **e0 {e1:v1, e2:v2, e3:v3,...}**  assigns  **e0[e1] :=
+v1**  and similarly for each succeeding index/value pair.   **e0**,
+which is returned as the result of the expression, must be an indexable
+value such as a record, table, list, or equivalent Go external value.
+
+Some examples:
+
+{t} **a := list(26, "") { 1:"a", 26:"z" }**
+	{w} # other 24 elements remain empty strings +
+{t} **c := table() { "Arizona":"Phoenix", "California":"Sacramento" }** +
+{t} **r := rectangle() { "y":3, "x":5, "h":1, "w":2 }**
+	{w} # rectangle(x:5, y:3, w:2, h:1) +
+{t} **r{ "x":8, "y":9 } **
+	{w} # move to (8,9) +
+
+For understanding side effects or pathological cases, it helps to know
+that the effect of a structure initialization expression is exactly
+equivalent (for an otherwise unreferenced temporary variable *t*) to: +
+{t} **t := e0** +
+{t} *every t[e1] := v1* +
+{t} *every t[e2] := v2* +
+{t}{t} ...
+
+Note that there is no implicit *every* over **e0**, so the explicit
+*every* in +
+{t} **every (T|S){ e:e, e:e }** +
+is necessary to get the desired effect.
+
+
+[[Catch]]
+Error Recovery
+--------------
+
+The Goaldi expression +
+{t} **catch p** +
+registers the value of expression *p*, which must be a procedure, for
+use if an exception (a Go _panic_) occurs subsequently in the current
+procedure invocation or anything called by it.
+
+If an exception arises, the registered procedure is called with the
+exception value as a single argument.  The effect is that of **return
+p(**_exception_**)**:  The first result or failure of *p* becomes the
+outcome of the original procedure call.
+
+The procedure *p* can alternatively call
+**throw(**_exception_**)** to panic anew and recreate the error
+condition after performing cleanup actions.  Throwing a different error
+is also allowed.
+
+Only a single recovery procedure can be registered by any particular
+procedure invocation;
+each *catch* expression replaces any previously registered value.
+**catch nil** clears the registration and restores the default action,
+which is to pass the exception upward to the procedure's caller.
+
+The library procedures *noresult*, *nullresult*, or
+*errresult* may be useful as *catch* operands.
+
+In general, the details of the exception value passed to a
+*catch* procedure are unspecified.
+Any such value, however, can be converted to a string by calling
+**string(**_exception_**)**.
+
+
+[[Channels]]
+Channels and Concurrency
+------------------------
+
+Goaldi allow simultaneous execution of multiple threads built using a
+*create* expression that looks very much like an Icon co-expression.
+Icon’s co-expressions, though, are coroutines that pass control back
+and forth in a well-defined structured manner.  Goaldi’s threads allow
+true concurrency.
+
+Communication among threads is the big challenge for concurrent
+programs.  Goaldi, like Go, provides a _channel_ datatype and uses
+message passing for synchronization.
+
+*An important note:* Goaldi data structures are _not_ thread-safe;
+shared variables should not be used unless they are viewed as read-only
+by all threads.
+
+Channels
+~~~~~~~~
+
+**channel(n)** creates and returns a channel with a buffer capable of
+holding *n* values.  Goaldi’s channels directly use Go channels, which
+can be thought of as pipelines for transmitting Goaldi values.  Reading
+from a channel blocks until a value is available.  Writing to a channel
+blocks if the channel’s buffer is already full.  Writing to an
+unbuffered channel blocks until a reader is ready, and thus accomplishes
+synchronization as well as data transmission.  Channel operations and
+methods are enumerated in the section describing the channel datatype.
+
+Creating Threads
+~~~~~~~~~~~~~~~~
+
+**create e** builds and launches a thread to execute *e* and returns
+an unbuffered channel.  The expression *e* executes asynchronously.
+Any results produced by by *e* are transmitted to the channel (which
+can cause *e* to block); when *e* fails, the channel is closed.  If
+the channel is closed when *e* tries to produce a value, then *e*’s
+thread dies silently.  There is, of course, no obligation for the new
+asynchronous thread to produce results or use the channel in any way.
+
+Local variables of the enclosing procedure are copied into *e*, not
+shared as in closures.  This is safer and more natural, creating a
+“snapshot” of the environment at thread creation time; it is consistent
+with the behavior of Icon co-expressions.
+
+Channel Selection
+~~~~~~~~~~~~~~~~~
+
+Channel selection allows a single thread to poll multiple channels.
+The *select* expression is modeled after that of Go and behaves
+similarly.
+
+{t} *select {* +
+{t}{t} _id_ **:= @**_expr_ **:** _stmt_ +
+{t}{t} _id_ **:= @**_expr_ **:** _stmt_ +
+{t}{t} _id_ **:= @**_expr_ **:** _stmt_ +
+{t}{t}{t} ... +
+{t}{t} _ch_ **@:** _expr_ **:** _stmt_ +
+{t}{t} _ch_ **@:** _expr_ **:** _stmt_ +
+{t}{t} _ch_ **@:** _expr_ **:** _stmt_ +
+{t}{t}{t} ... +
+{t}{t} **default:** _stmt_ +
+{t} *}* +
+_id_ can be any expression that produces a variable. +
+_ch_ can be any expression that produces a channel value. +
+_stmt_ can be any expression. +
+
+Each (__id,expr__) or (__ch,expr__) pair is mutually evaluated; the
+pairs are evaluated independently.  Failure of a pair eliminates that
+particular case from consideration.  If no cases remain for selection,
+the default case is executed.  If no cases remain and there is no
+default, the *select* statement fails.
+
+Otherwise, selection takes place using Go’s **reflect.Select()**.  The
+statement body associated with the selected pair is executed, after
+first assigning _id_ for a receive operation, producing the result of
+_stmt_ as the result of the *select* expression.  If Go selects a
+receive on a closed channel, that case is discarded and another one
+chosen.
+
+If no send or receive operation is possible, the *select* statement
+blocks unless there is a default clause, in which case the body of the
+*default* is executed to produce the result of the
+*select* expression.  
+
+Implementation Note
+~~~~~~~~~~~~~~~~~~~
+
+The Go runtime system does not garbage-collect orphaned goroutines.  The
+implication for Goaldi programs is that permanently blocked threads
+never go away and continue to consume resources (mostly memory).  The
+impact is negligible in small numbers, but can become noticeable in the
+millions.
+
+
+[[Datatypes]]
+Datatype Summary
+----------------
+
+Goaldi has several built-in types, and each *record* declaration adds
+a user-defined type.  This section summarizes the operations and other
+details that are specific to the various types.
+
+Types are listed here as they are ordered when sorting.  Each type name
+is prefixed by a one-character abbreviation used in Goaldi
+documentation.  Lower-case letters designate _value_ types, which act
+atomically and for which copies are indistinguishable.  Upper-case
+letters designate _reference_ types, for which modifications are
+visible to all instances of the same value.
+
+[[tAny]]
+x : Any Type
+~~~~~~~~~~~~
+
+Notationally, *x* usually designates a value that can be one of
+several types, or any type at all.
+The following operations, procedures, and methods are defined for all
+values and types.
+
+*/x* (is nil)   and  ** \x** (not nil) check for identity with *nil*. +
+*x === y* (identical) and **x ~=== y** (not identical) test identity. +
+**x.type()** or **type(x)** produces a type value. +
+**x.string()** or **string(x)** produces a short string representation
+    of a value, as used by *write(x).* +
+**x.image()** or **image(x)** produces a string representation that is
+    more detailed in some cases. +
+**x.copy()** or **copy(x)** produces a distinct copy if *x* is a
+    reference value, or otherwise just *x*. +
+**x.external()** or **external(x)** exports and then re-imports *x*. +
+**x.instanceof(t)** returns *x* if it is an instance of type
+    *t*, and fails otherwise. +
+
+[[tNil]]
+z : Nil
+~~~~~~~
+
+The reserved word *nil* designates the single special value that is
+initial value of every variable and every omitted argument.  It
+conventionally signifies the absence of any other meaningful value.  The
+type of *nil* is the global named *niltype*; as a constructor it
+takes no arguments and returns *nil*.
+
+The operators **/x** (is nil) and **\x** (is not nil) test *x* and
+return it as a variable if they succeed. +
+**/x := 1** is a common idiom for assigning a value to *x* if and only
+if it has not already been set.
+
+[[tType]]
+t : Type
+~~~~~~~~
+
+The datatype **_type_** characterizes the type of any value.  The
+runtime procedure **type(x)** returns the type of any value *x*.  The
+predefined globals *string*, *number*, *list*, *table*, etc. are
+values of type *type*.  Type values can be compared (e.g.** type(x)
+=== string**) and used in case statements.
+
+When called as procedures, type values produce a value of the type by
+conversion or construction.  The constructor **type(x)** produces a
+value of type *type* by returning the type of its argument.
+
+For most type values *t*, the operation ***t** returns 0 and both
+**!t** and **t[x]** fail immediately.  These operations have meaning if
+**t** is a record constructor; see the subsequent section on Records.
+
+[[tNumber]]
+n : Number
+~~~~~~~~~~
+
+The number type holds a 64-bit floating-point value, which suffices to
+represent integer values with 53 bits of precision.
+
+Decimal forms of number literals are standard: 123, 27.95, 6.02e23, 1e6,
+etc. +
+Radix forms are:  1001**b** (binary), 744**o** (octal),
+37FF**x** (hexadecimal), 19**r**7H3 (base 2–36). +
+In most contexts, a string value of such a form is automatically
+converted to number. +
+
+The unary operations on numbers are *\+n*, *–n*, *?n* (random value
+in **[0,n)** ), and **!n** (**1 to n**). +
+Binary operators are  **+  –  *  /  //  %  ^**  and the comparison
+operators  **<  \<=  ~=  =  >=  >**. +
+**e1 // e2** divides e1 by e2 and truncates the result to an integer;
+**^** is exponentiation. +
+Except for **?n** and **!n**, string operands are converted to numeric
+by all of these operators. +
+
+**number(x)** converts *x* to a number, if possible; otherwise it fails. +
+Goaldi provides several library procedures that operate on numbers:   +
+{t} *integer, seq, min, max, gcd, iand, ior, ixor, iclear, icom, ishift,* +
+{t} *log, atan, rtod, dtor, randomize, randgen* +
+In addition, the following Go library functions can be called directly: +
+{t} *abs, ceil, floor, sqrt, cbrt, exp, sin, cos, tan, asin, acos, hypot, seed* +
+All of these procedures accept and convert string arguments. +
+
+When a number is converted to a string value, the library procedures
+**string(n)** or *write(n)* produce a value with four significant digits
+when *n* is not an integer value.  The library procedure
+**image(n)** produces full precision, and **sprintf()** and
+**printf()** provide finer control.
+
+**%e**, **%pi**, and **%phi** are predefined dynamic constants having
+numeric values.
+
+[[tString]]
+s : String
+~~~~~~~~~~
+
+A string is a sequence of Unicode characters (Go Runes or Unicode code
+points).
+
+String literals may include non-ASCII characters such as
+**"**✔§⌘∮π€★♖☮♫¶♣**"**. +
+**\o**nnn  **\x**XX  and **\u**XXXXXXXX specify Unicode characters in
+octal or hexadecimal. +
+Raw string literals delimited by **\`**backquotes**`** may span multiple
+lines. +
+Backslashes and newlines have no special interpretation in raw literals. +
+
+Unary operations on strings are ***s** (size), **?s** (choose),
+**@s** (take), and **!s** (generate). +
+Simple binary operations are concatenation **||** and comparison **<<  <\<=
+~==  ==  >>=  >>**. +
+**s@:x** appends **x** to the variable **s**, as if by **s ||:= x**,
+but produces **x** instead of a substring. +
+
+Indexing forms are **s[i]**, **s[i:j]**, **s[i+:j]**, and **s[i–:j]**.
+Substrings are assignable if *s* is a variable.
+Indexing is 1-based, and 0 indicates the end of the string.  Nonpositive
+indices count from the end, with –1 designating the last character.
+Indexing fails if either operand is out of range.
+
+All string operations except **?s**, **!s**, and **s@:x** convert
+numeric values to strings.
+
+**string(x)** always succeeds for any value *x* and produces the same
+value as that used by **write(x)**.
+This is generally a more succinct form than that produced by
+**image(x)**.  For a string argument, **string(s)** is an identity while
+**image(s)** returns a quoted string with escapes.
+
+These library procedures are implemented for Goaldi: +
+{t} *string, image, char, ord, reverse* +
+Additionally, the following Go library functions can be called directly: +
+{t} *equalfold, replace, repl, sprintf, toupper, tolower, trim,* +
+{t} *fields, split, contains, containsany, regex, regexp* +
+All of these procedures accept and convert numeric arguments to strings. +
+
+[[tFile]]
+f : File
+~~~~~~~~
+
+File values represent open files used for text or binary I/O.
+
+Text files are treated as UTF-8-encoded sequences of Unicode characters.
+This is the usual encoding on modern Unix systems (the UTF-8 encoding
+does not alter a pure ASCII file) and makes Unicode I/O transparent to
+the programmer.
+
+The constructor **file(name,flags)** opens a file to create a file
+value.  The optional *flags* argument is a string containing any of
+these flags: +
+{t} *r* {t} open for reading +
+{t} *w* {t} open for writing +
+{t} *a* {t} open for appending +
+{t} *c* {t} create and open for writing +
+{t} *n* {t} open without buffering +
+{t} *f* {t} fail on error, instead of throwing an exception +
+
+**f.read()**, or **read(f)**, reads a line from file *f*, which
+defaults to standard input.  Line reading trims **\n** and
+**\r\n** (CRLF) but does not recognize old Mac bare-**\r** line
+delimiters.  **@f** is equivalent to **f.read()** and **!f** is
+equivalent to **|@f**.
+
+**f.write(x,...)** writes values to file *f* followed by a newline;
+**write(x,...)** writes to standard output.
+*f.writes()* and** writes()** are similar but do not append a newline.
+The Go functions *print* and *println* are available as either
+methods or procedures, and *printf* and *fprintf* are supplied as
+procedures.
+
+**f.flush** flushes output of a file.  Files opened exclusively for
+input or output are normally buffered, except standard error, but
+explicit flushing is seldom needed.
+
+**f.close** closes a file after automatically flushing any pending
+output.
+
+All the preceding file methods and procedures return the file value
+*f*.
+
+The methods **f.get()** and **f.put(...)** view a file as a sequence of
+values separated by newlines.
+Thus **f.get()** is equivalent to **f.read()**, but
+**f.put(**...**)** outputs a newline after _every_ argument.
+The operations **@f** and **f @: x** are equivalent to **f.get()** and
+**f.put(x)** respectively.
+
+Two methods provide binary I/O operations to bypass the UTF-8
+conversion.  For input, **f.readb(n)** reads up to *n* input bytes
+as Latin-1 (Unicode \x00–\xFF) characters;  for output,
+**f.writeb(s)** writes the low eight bits of each character of *s* as
+an output byte.
+
+**f.where()** reports the current file position, and **f.seek(n)** sets
+it.  File positions are counted like string and list positions, with 1
+being the beginning of file.  **seek(0)** goes to EOF, and negative
+values are allowed to count from the end.  File positions are measured
+in bytes, not Unicode characters.
+
+**%stdin**, **%stdout**, and **%stderr** are predefined dynamic
+constants.
+
+These Go library functions can be called directly: +
+{t} **printf, fprintf, sprintf**
+	{w} (use **"%.0f"** to format a Goaldi number as an integer) +
+{t} *chmod, remove, rename, truncate* +
+
+[[tChannel]]
+c : Channel
+~~~~~~~~~~~
+
+Channels provide access to Go channels that transmit Goaldi values.
+Channels are the means by which asynchronous threads communicate.
+
+**channel(n)** constructs a bidirectional channel with a buffer size of
+*n* (default 0). +
+**c.put(x)** sends value *x* to channel *c* and returns *c*.  It
+may block. +
+**c.get()** returns the next value from a channel, failing if no value
+is available or if *c* is closed. +
+**c.close()** closes a channel.  Sending to a closed channel is an
+error; reading fails. +
+
+**c @: x**  is equivalent to **c.put(x)** but returns *x*.  
+**@:** has precedence and associativity of **:=**. +
+**@c** returns the next value from channel *c*, blocking if necessary,
+but failing if *c* is closed.
+
+**!c** produces multiple values in sequence.  It is equivalent to
+**|@c**.
+
+***c** returns the number of values queued and ready in channel **c**.
+This is Go’s **len(c)** function and does not indicate whether an
+unbuffered rendezvous will proceed.
+
+Channel operators and methods work also on externals that are Goaldi
+channels.
+
+**c.buffer(n)** interposes a buffer of size *n* and returns a new
+channel, in effect buffering *c*.
+The alternate form **buffer(n,c)** allows combining a buffered channel
+with an asynchronously executing thread by writing **buffer(n, create
+e)**.
+
+[[tMethodVal]]
+m : Method Value
+~~~~~~~~~~~~~~~~
+
+A method value binds a value to an associated method.  It is the type,
+for example, of the expression **L.pop**.  A method value is callable
+and usable as a value.
+
+The constructor **methodvalue(x)** returns *x* if *x* is a method
+value and fails otherwise.
+
+[[tProcedure]]
+p : Procedure
+~~~~~~~~~~~~~
+
+A procedure value is used to call the associated block of code.
+
+**p(x…)** calls a procedure and passes the argument lists as the
+procedure's parameter values. +
+Argument names may be specified in a procedure call, for example:
+{w} **p(1, 2, target:6, max:9)**. +
+Any named arguments must follow all positional arguments. +
+
+**p ! L** calls a procedure using a list value as a source of positional
+parameters.
+
+The type of a procedure is the global named *proctype*.  Used as a
+constructor, **proctype(x)** returns *x* if *x* is a procedure and
+fails otherwise.
+
+[[tList]]
+L : List
+~~~~~~~~
+
+Lists are flexible sequences of arbitrary values.  They can be indexed
+randomly, from either end, and used as arrays.  Values can be added to
+or removed from either end for use as stacks, queues, or deques.
+
+**list(n,x)** constructs a list of *n* items each initialized to a
+copy of *x*. +
+The expression **[e,** …, **e]** constructs a list from zero or more
+subexpressions. +
+List comprehension, written  **[: e :]**, constructs a list from all
+values produced by the expression *e*. +
+
+**L.push(x**,...**)** adds items at the beginning of list *L* and
+returns *L*. +
+**L.pop()** removes and returns the first item from *L*, failing if
+*L* is initially empty. +
+Together, *push* and *pop* implement a stack. +
+
+*L.put(x,...)* adds items to the end of list *L* and returns *L*. +
+**L.get()** removes and returns the first item and is in fact identical
+to **L.pop()**. +
+Together, *put* and *get* implement a queue. +
+
+*L.pull()* removes and returns the _last_ item of *L*, failing if
+*L* is initially empty. +
+In combination with the other operations this implements a deque. +
+
+***L** returns the length of list **L**. +
+**?L** returns a random element of **L**. +
+**!L** generates all elements of **L**. +
+**L[i]** returns element **i** of **L**, counting from 1, or fails if
+there is no such element. +
+Negative indexing is allowed, with **L[–1]** corresponding to the last
+entry in **L**. +
+
+The results of **L[i]**, **?L**, and** !L** are all assignable. +
+The operations {w} ***L {w} ?L {w} !L {w} L[i]** {w}
+are also usable on an external containing an array or slice. +
+
+The operations **@L** and **L @: x** are equivalent to **L.get()** and
+**L.put(x)** respectively. +
+**L[i:j]** constructs a new list from a portion of *L*. +
+**L1 ||| L2** constructs a new list by concatenation of two lists. +
+
+**L.sort(i)** returns a copy of *L* with the contents sorted using
+field *i* as a tiebreaker.
+This is a stable sort, so multiple *sort* calls can implement a
+multi-key sort.
+Sorting is by type, then within types by value or name.  Between two
+lists or two records of the same named type, sorting compares field
+*i*, but this does not apply recursively.  Not all types are ordered;
+there is no ordering defined for channels, sets, tables, or external
+values.
+
+If *C* is the constructor for records in a list *L*,
+**L.sort(C["id"])** sorts on the field named by *id*.
+
+**L.shuffle()** returns a copy of *L* with the contents reordered
+randomly.
+
+[[tSet]]
+S : Set
+~~~~~~~
+
+Sets are unordered collections of values without duplication.
+
+**set(L)** creates a set initialized by the list** L**.
+**set()** creates an empty set. +
+
+**S[x]** produces *x* if *x* is a member of *S* and fails
+otherwise.   +
+
+**pass:[*]S ** returns the number of members of *S*. +
+**?S** returns a randomly selected member of *S*. +
+**@S** removes and returns a randomly selected member of *S*. +
+**S @: x** adds *x* to *S* (if not already a member) and returns
+*x*. +
+**!S** generates the members of *S* in unspecified order. +
+**S1 ++ S2** produces a new set that is the union of sets *S1*
+and** S2**. +
+**S1 pass:[**] S2** produces a new set that is the intersection of sets *S1*
+and** S2**. +
+**S1 pass:[--] S2** produces a new set containing those members of *S1* that
+are not in** S2**. +
+**S.put(x,...)** adds the specified values to *S* and returns *S*. +
+**S.delete(x,...)** removes the specified values from *S* and returns *S*. +
+**S.member(x)** is equivalent to **S[x]**. +
+*S.sort(i)* converts *S* to a list and returns the result of **L.sort(i)**. +
+
+[[tTable]]
+T : Table
+~~~~~~~~~
+
+Tables are a Goaldi implementation of hash tables. +
+Index and entry values can be any type, including nil.
+
+**table(x)** creates an empty table *T* with a default value of *x*.
+
+**T[x]** references the entry in the table with key *x*, and is
+assignable.  If *x* does not reference an existing entry in *T,* it
+produces the default value if used as a value.
+
+**pass:[*]T** returns the number of entries in *T.* +
+**T.delete(x)** removes the item with index *x*, if any, and returns *T*. +
+**T.member(x)** returns *x* if it is a key in table *T*, and fails otherwise. +
+
+Element-generation operations produce key-value pairs.
+These take the form of a record of type *elemtype* having two fields
+*key* and *value*.
+
+**!T** generates a sequence of *elemtype* records.  Modifying a record
+does not affect *T*. +
+**?T** returns a single *elemtype* record.   Modifying the record does
+not affect *T*. +
+**@T** returns a single *elemtype* record after removing the chosen
+entry from the table. +
+**T.sort(i)** returns a list of *elemtype* records sorted on field
+*i*. +
+
+Table operators and methods work also on externals that are Go maps.
+
+[[tRecord]]
+R : Record
+~~~~~~~~~~
+
+Records are structures with fixed, named fields.  There is no type
+_record_ as such; each record declaration creates a distinct type.
+The constructor is a constant global value having the name of the
+record type.  It acts like a procedure that returns a record, and is
+called the same way.  For a record value *R*, **type(R)** or
+**R.type()** returns the associated constructor.
+
+*C := constructor(s0, s1,* …**)** makes a constructor for a new record
+type named **s0** having fields named **s1**,....
+
+For any record constructor *C*: +
+
+* ***C** returns the number of fields of the record, and **!C** generates
+their names.
+
+* **C[s]** returns the index of the field named **s;** this facilitates
+sorting a list of records on that field.
+
+* **C[n]** returns the name of the **n**th field.   Both **C[s]** and
+**C[n]** fail if no such field exists.
+
+Anonymous records can be built by calling **tuple(id:e, id:e, …)**.
+Each distinct identifier list defines a new type, all of which have the
+name “*tuple*”.
+
+[[tExternal]]
+X : External
+~~~~~~~~~~~~
+
+Any unrecognized Go value is allowable as an “external” value.  External
+values are typically obtained by calling an imported Go function.  One
+example is the standard library procedure **now()** which returns a Go
+**time.Time** value.
+
+External values can be assigned to variables and used like other Goaldi
+values, with one exception.  External values that Go does not consider
+_comparable_ cannot be used as keys of Goaldi sets or tables.
+These are Go values that contain, directly or indirectly, a Go _slice,
+map,_ or _func_.  Such a value can, however, be embedded in a Goaldi
+record, and the record value used as a key.
+
+The constructor **external(x**) exports *x* to the corresponding Go
+value, as happens when calling Go functions **printf()**;  the resulting
+Go value then undergoes the usual import conversions in order to be
+returned as a Goaldi procedure result.  For certain Goaldi values such
+as lists or procedures this process produces an external value as the
+final result.
+
+
+[[Syntax]]
+Syntax Summary
+--------------
+
+This informal syntax was copied and adapted from Appendix A of _Graphics
+Programming in Icon_ by Griswold, Jeffery, and Townsend [1998].
+
+Italic brackets __[like this]__ indicate optional components; ellipses
+(...) indicate repeated items.  An ellipsis on a line by itself means
+that the item on the preceding line can be repeated; an ellipsis
+preceded by a punctuation character means that the preceding item can be
+repeated by using that punctuation character as a separator.
+
+_ident:_
+
+{t} An identifier is composed of any number of letters, digits, and
+underscores;  the first cannot be a digit. +
+{t} All Unicode letters (class “L”) and numeric digits (class “Nd”) are allowed. +
+{t} All code points are considered distinct, so identifiers are case sensitive.
+
+{t} The following words are reserved and cannot be used as
+identifiers:
+
+[width="60%",cols="6*1",frame="none",grid="none"]
+|========
+| 
+| 
+|
+[black]*break* +
+[black]*by* +
+[black]*case* +
+[black]*catch* +
+[black]*continue* +
+[black]*create* +
+[black]*default* +
+[black]*do* +
+|
+[black]*else* +
+[black]*every* +
+[black]*extends* +
+[black]*fail* +
+[black]*global* +
+[black]*if* +
+[black]*initial* +
+[black]*lambda* +
+[black]*local* +
+|
+[black]*not* +
+[black]*nil* +
+[black]*of* +
+[black]*package* +
+[black]*procedure* +
+[black]*record* +
+[black]*repeat* +
+[black]*return* +
+|
+[black]*select* +
+[black]*static* +
+[black]*suspend* +
+[black]*then* +
+[black]*to* +
+[black]*until* +
+[black]*while* +
+[black]*with* +
+[black]*yield* +
+|========
+
+_sourcefile_: +
+{t} __[__ *package* _ident_ *;* _]  [ declaration_ **;**__... ]__ +
+
+_declaration:_ +
+{t} *record* _ident [_ *extends* _ident ]_ *(* _[ ident_ **,**... _]_ *)* +
+{t} *global* _ident [_ *:=* _expr ]_ +
+{t} *initial* _compound-expr_ +
+{t} *procedure* _[ ident_ *.* _] ident_ *(* _[ ident_ **,**...  _]_ *)* _compound-expr_ +
+
+_compound-expr:_ +
+{t} **{** _expr_ **;**__...__ *}* +
+
+_expr:_ +
+{t} _[ ident_ *::* _] ident_ +
+{t} _expr_ **.**__ ident__ +
+{t} **%** _ident_ +
+{t} **^** _ident_ +
+{t} *local* _ident_ +
+{t} *static* _ident_ +
+{t} _literal_ +
+{t} *fail* +
+{t} **(** _expr_ **,**... **)** +
+{t} *[* _expr_ **,**__...__ *]* +
+{t} *[:* _expr_ *:]* +
+{t} _expr_ *[* _expr_ **,**... *]* +
+{t} _expr_ *[* __expr sectop expr__ *]* +
+{t} expr *(* _[ expr_ **,**__... ] [ idexpr__ **,**__... ]__ *)* +
+{t} _expr_ **{**__ [ idexpr__ **,**__... ]__ *}* +
+{t} **procedure (** __[ ident__ **,**..._]_ *)* _compound-expr_ +
+{t} **lambda (** _[ ident_ **,**..._]_ *)* _expr_ +
+{t} *create* _expr_ +
+{t} _unop expr_ +
+{t} _expr binop expr_ +
+{t} _compound-expr_ +
+{t} *with* _dydef_ **,**__...__ *do* __compound-expr__  +
+{t} *if* _expr_ *then* __expr [__ *else* __expr ]__ +
+{t} _case-expression_ +
+{t} _select-expression_ +
+{t} *repeat* __[__ **:**__ ident ] expr [__ *until* __expr ]__ +
+{t} *while* __[__ **:**__ ident ] expr [__ *do* __expr ]__ +
+{t} *every* __[__ **:**__ ident ] expr [__ *do* __expr ]__ +
+{t} *continue* __[__ **:**__ ident ] __ +
+{t} *break* __[__ **:**__ ident ] __ +
+{t} *yield* __[__ **:**__ ident ] expr__ +
+{t} *catch* _expr_ +
+{t} *suspend* __[ expr ] [__ *do* __expr ]__ +
+{t} *return* __[ expr ]__ +
+
+_idexpr:_ +
+{t} _ident_ **:**__ expr__ +
+
+_dydef:_ +
+{t} **%** _ident_** :=** _expr_ +
+
+_case-expression:_ +
+{t} *case* _expr_** of {** +
+{t}{t} _expr_ **:** __ expr__ +
+{t}{t}{t} ... +
+{t}{t} **default:** _expr_ +
+{t} **}** +
+
+_select-expression:_ +
+{t} **select {** +
+{t}{t} _ident_ *:= @* _expr_** :** _expr_ +
+{t}{t}{t} ... +
+{t}{t} _expr_ *@:* _expr_** :** _expr_ +
+{t}{t}{t} ... +
+{t}{t} **default:** _expr_ +
+{t} **}** +
+
+_unop:_ +
+
+{t} Unary (prefix) operators have higher precedence than binary (infix)
+operators, +
+{t} except for field selection (_expr_ **.**__ ident__), which has the
+highest precedence of all. +
+
+{t} *+ {w} – {w} * {w} / {w} \ {w} ? {w} ! {w} @ {w} | {w} not* +
+
+_binop:_ +
+
+{t} Binary operators are grouped in classes of decreasing precedence. +
+{t} Operators of equal precedence group to the left except as noted. +
+
+{t} **\ {w} !** +
+{t} **^** {w} (right associative) +
+{t} **/ {w} // {w} * {w} % pass:[**] ** +
+{t} *– {w} + {w} pass:[--] {w} ++* +
+{t} *|| {w} |||* +
+{t}  *< {w} \<= {w} = {w} ~= {w} >= {w} > {w}
+	<< {w} <\<= {w} == {w} ~== {w} >>= {w} >> {w} === {w} ~===* +
+{t} *|* +
+{t} *~|* +
+{t} **to {w} to–by ** {w} (a ternary operator in the second form) +
+{t} *:= {w} :=: {w} @:* {w} _op_**:= {w} <– {w} <–>** {w} (right associative) +
+{t} *&* +
+{t} *&&* +
+
+_op:_ +
+
+{t} An _op_ in _op_**:=** is any _binop_ except {nbsp}
+	**:= {nbsp} :=: {nbsp} @: {nbsp} <– {nbsp} <–> {nbsp} to {nbsp} to-by** +
+
+_sectop:_ +
+{t} **: {w} +: {w} –:** +
+
+_literal:_ +
+{t} *nil* {t}{t}{t}{t}{t}{t} nil literal +
+{t} **42 {w} 27.95 {w} 1e6 {w} 6.02e23 {t} **numeric literal (decimal examples) +
+{t} **101010b {w} 52o {w} 2Ax {w} 23r1J** {w} numeric literal (radix examples) +
+{t} "**32°F" {w} "line1\nline2"** {t} string literal allowing escapes +
+{t} **\`t₀±Δt**` {w} **\`\d+(.\d*)?**` {t}{w} raw string literal (may span lines) +
+
+{t} In double-quoted string literals, these escape sequences are recognized: +
+{t}{t} **\b** {t} backspace +
+{t}{t} **\d** {t} delete +
+{t}{t} **\e** {t} escape +
+{t}{t} **\f** {t} form feed +
+{t}{t} **\l** {t} line feed (same as **\n**) +
+{t}{t} **\n** {t} newline +
+{t}{t} **\r** {t} return +
+{t}{t} **\t** {t} tab +
+{t}{t} **\v** {t} vertical space +
+{t}{t} **\"** {t} double quote +
+{t}{t} **\\** {t} backslash +
+{t}{t} **\**_ooo_ {t} Unicode character given by 1 to 3 octal digits +
+{t}{t} **\x**_hh_ {t} Unicode character given by 1 or 2 hexadecimal digits +
+{t}{t} **\u**_hhhhhhhh_ {t} Unicode character given by 1 to 8 hexadecimal digits +
+{t}{t} **\^**_c_ {t} control character +
+
+
+[[Operators]]
+Operator Summary
+----------------
+
+This summary lists all the simple operators; see the following section
+for control structures. +
+Letters indicate allowable types, with *x* meaning any type, or any
+type listed in parentheses. +
+Allowable types listed do not include automatic conversion between
+string and number. +
+Operations listed for type** t** are meaningful only for type values
+that are record constructors. +
+
+Unary Operations
+~~~~~~~~~~~~~~~~
+**/x** {t} produces *x* if it is nil, but fails otherwise +
+**\x** {t} produces *x* if it is not nil, but fails otherwise +
+**+n** {t} produces the value of the number *n* +
+**–n** {t} produces the negation of the number *n* +
+***x** {t} produces the size of **x** (**t, s, c, L, S, T**) +
+**?x** {t} produces a randomly chosen element of **x** (**n, s, L, S, T**) +
+**!x** {t} generates the contents of **x** (**t, n, s, f, c, L, S, T**) +
+**@x** {t} consumes and returns one element of **x** (**s, f, c, L, S, T**) +
+
+Assignment Operations
+~~~~~~~~~~~~~~~~~~~~~
+**x := x** {t} simple assignment +
+*x* _op_**:= x** {t} augmented assignment (for most binary operators _op_) +
+**x :=: x** {t} exchange +
+**x <– x** {t} reversible assignment +
+**x <–> x {t} **reversible exchange +
+**x @: x {t} **send or append (**s, f, c, L, S**) +
+
+String Operations
+~~~~~~~~~~~~~~~~~
+Both operands must be strings.  Numbers are converted. +
+**s || s** {t} concatenate +
+
+Comparison operators return the right-hand value if successful: +
+**s << s** {t} less than +
+**s <\<= s** {t} less than or equal +
+**s == s** {t} equal +
+**s ~== s** {t} not equal +
+**s >>= s** {t} greater than or equal +
+**s >> s** {t} greater than +
+
+Numeric Operations
+~~~~~~~~~~~~~~~~~~
+Both operands must be numeric.  Strings are converted. +
+**n + n** {t} add +
+**n – n** {t} subtract +
+**n * n** {t} multiply +
+**n / n** {t} divide +
+**n // n** {t} divide and truncate to integer +
+**n % n** {t} modulo +
+**n ^ n** {t} exponentiate +
+**n to n {t} **generate sequence with interval of 1 +
+**n to n by n** {t} generate sequence with specified interval +
+
+Comparison operators return the right-hand value if successful: +
+**n < n** {t} less than +
+**n \<= n** {t} less than or equal +
+**n = n** {t} equal +
+**n ~= n** {t} not equal +
+**n >= n** {t} greater than or equal +
+**n > n** {t} greater than +
+
+Miscellaneous Operations
+~~~~~~~~~~~~~~~~~~~~~~~~
+**x === x {t} **produce right-hand operand if identical +
+**x ~=== x {t} **produce right-hand operand if not identical +
+
+**x (x**...**) {t} **call procedure or get **n**th argument (**n, p**) +
+**x ! L** {t} call procedure or get **n**th element (**n, p**) +
+*R .* _id_ {t} get field or method of record +
+
+**x[x]** {t} produce indexed element (**t, s, L, S, T, R**) +
+**x[x,x,**...**]** {t} multiple indexing, equivalent to **x[x][x]**... +
+**x[n:n] {t} **produce substring or list section (**s, L**) +
+**x[n+:n] {t} **produce substring or list section (**s, L**) +
+**x[n–:n] {t} **produce substring or list section (**s, L**) +
+
+**S ++ S {t} **set union +
+**S pass:[--] S** {t} set difference +
+**S pass:[**] S** {t} set intersection +
+
+**[x**…**]** {t} list construction +
+**L ||| L** {t} list concatenation +
+
+[[Cstructs]]
+Control Structure Summary
+-------------------------
+
+Nonstandard evaluation of arguments distinguishes a control structure
+from an operator or procedure.  Most control structures are identified
+by reserved words, and they are listed here alphabetically.  Control
+structures that use operator symbols follow at the end.
+
+Many control structures simply fail after acting, but some can produce
+results.  These are indicated by syntax annotations: +
+{t} _cstruct_         {w} {t}  no result (always fails) +
+{t} _cstruct_ *:* _t_     {t}  at most one result of type _t_ +
+{t} _cstruct_ **: x**       {t}  at most one result of any type +
+{t} _cstruct_ **: x,...**   {t}  multiple results possible +
+
+*break* __[__ **:**__ label ]__ ** -- exit from loop**
+[quote]
+*break* exits from the loop designated by _label_, or from the
+innermost enclosing loop, with the loop producing failure as the
+outcome.
+
+*case* _expr_** of {** … *} : x,... -- select by value*
+[quote]
+*case* evaluates its sequence of subcase labeling expressions until it
+finds one that matches (as if using the **===** operator) the value of
+_expr_; then it produces the outcome of executing the labeled
+expression.  It fails if _expr_ fails or if no case is selected.
+
+*catch* _expr_** : p -- register exception handler**
+[quote]
+*catch* registers _expr_, which must be a procedure or *nil*, as
+the exception handler for the current procedure.  This overrides any
+previous registration.  If a subsequent exception occurs before the
+current procedure returns, and the handler is not nil, the handler is
+called and its outcome becomes the procedure outcome.  *case* returns
+the value of _expr_.
+
+*continue* __[__ **:**__ label ]__ ** -- begin next loop iteration **
+[quote]
+*continue* transfers control to the beginning of the loop designated
+by _label_, or the innermost enclosing loop.
+
+*create* _expr_ ** : c -- fork concurrent thread**
+[quote]
+*create* begins execution of _expr_ in a separate thread of control
+that executes asynchronously.  It returns a newly created channel; any
+results produced by _expr_ are transmitted to this channel.
+
+*every* __[__ **:**__ label ] expr1 [__ *do* __expr2 ]__ ** : x,... --
+generate all results**
+[quote]
+*every* evaluates__ expr2__, if present, for every result produced by
+_expr1_.  It fails when__ expr1__ fails.  No results are produced by
+*every* unless _expr2_ executes a *yield*.
+
+*fail -- produce expression failure*
+[quote]
+*fail* produces no result.  Icon programmers should note that this is
+equivalent to Icon’s **&fail** keyword, and the the Goaldi equivalent of
+Icon’s *fail* is *return fail*.
+
+*if* _expr1_ *then* __expr2 [__ *else* __expr3 ]__ ** : x,... --
+select according to outcome**
+[quote]
+*if* produces the outcome of _expr2_ if _expr1_ succeeds, or
+otherwise the outcome of _expr3._
+
+*lambda (* _[ ident_ **,**..._]_ *)* _expr_** : p -- encapsulate
+expression as procedure**
+[quote]
+*lambda* returns a procedure that, when called, produces all the
+results of _expr_ and then fails.
+
+*not* _expr_ ** : z -- invert failure ** 
+[quote]
+*not* fails if _expr_ succeeds, and produces *nil* if _expr_ fails.
+Because of the high precedence of *not* as a unary
+operator, it is often necessary to parenthesize _expr_.
+
+**procedure (**__ [ ident__ **,**..._]_ *) {* … *}
+: p -- encapsulate code as procedure*
+[quote]
+As an expression, *procedure* returns a self-contained procedure (a
+_closure_) that can refer to variables in its enclosing procedure.
+
+*repeat* __[__ **:**__ label ] expr1 [__ *until* __expr2 ]__
+** : x,... -- evaluate recurrently**
+[quote]
+*repeat* evaluates _expr1_, then exits if _expr2_ fails.  As long
+as _expr2_ succeeds, or if it is omitted, this process repeats
+indefinitely.  No results are produced by *repeat* unless
+_expr2_ executes a *yield.*
+
+*return* __[ expr ]__ ** -- exit from procedure **
+[quote]
+*return* produces the first outcome of _expr_ -- whether success or
+failure -- as the sole outcome of the enclosing procedure.
+
+*select {* … *} : x,... -- find ready channel*
+[quote]
+*select* chooses one possible channel operation (send or receive) from
+a list of possibilities and produces its result.  The result of a
+*default* clause is produced if one is present and no channel
+operation can proceed.  In the absence of a *default* clause,
+*select* blocks.  If no operation remains viable and no *default* is
+supplied, *select* fails.
+
+*suspend* __[ expr1 ] [__ *do* __expr2 ]__ ** -- suspend procedure results**
+[quote]
+*suspend* produces the successive results of _expr1_ as outcomes of
+the current procedure.  If resumed, *suspend* evaluates _expr2_ before
+resuming _expr1_.
+
+*while* __[__ **:**__ label ] expr1 [__ *do* __expr2 ]__
+** : x,... -- loop conditionally**
+[quote]
+*while* evaluates _expr2_ each time _expr1_ succeeds; it fails
+when _expr1_ fails.  No results are produced by *while* unless
+_expr2_ executes a *yield.*
+
+**with %**__ident1__ *:=* _expr1_**,**_..._ *do {* _expr0_ **}** *:
+x,... -- execute with dynamic constants*
+[quote]
+*with* assigns values to one or more dynamic symbols that are then
+visible during the evaluation of _expr0_ and any procedures it may
+call.
+
+*yield* __[__ **:**__ label ] expr__ ** -- produce loop results **
+[quote]
+*yield* suspends execution of the enclosing *every*, *repeat*, or
+*while* loop and produces the results of _expr_.  If resumed,
+execution of the loop continues.
+
+_expr1_ **&**__ expr2__ *: x,... -- conjunction operator*
+[quote]
+The **&** operator produces _expr2_ if _expr1_ succeeds.  This is
+the only “control structure” that can be replaced by an appropriate
+procedure taking the same arguments, and as such *&* could arguably be
+labeled as just a simple operator; but its low precedence, below even
+assignment, is distinctive.
+
+_expr1_ **&&**__ expr2__ *: x,... -- parallel conjunction*
+[quote]
+The **&&** operator produces the first outcome of _expr2_ if
+_expr1_ succeeds.  When resumed, **&&** resumes _expr1_, and if that
+succeeds, the next result of _expr2_ is produced.  The **&&** operator
+fails as soon as either _expr1_ or _expr2_ fails.
+
+_expr1_ **|**__ expr2__ *: x,... -- evaluate alternatives*
+[quote]
+The binary **|** operator generates the results of _expr1_ followed by
+those of _expr2_.
+
+_expr1_ **~|**__ expr2__ *: x,... -- exclusive alternatives*
+[quote]
+The **~|** operator generates the results of _expr1_ if there are any.
+If _expr1_ fails immediately without producing results,
+**~|** instead generates the results of__ expr2__.
+
+**|**__ expr2__ *: x,... -- evaluate repeatedly*
+[quote]
+The unary **|** operator generates the results of__ expr__ repeatedly,
+terminating if _expr_ fails.
+
+_expr_ **\** _n_ *: x,... -- limit generator*
+[quote]
+The binary **\** operator generates at most _n_ results from the
+outcome of _expr_.
+
+*[:* _expr_** :] : L -- list comprehension**
+[quote]
+List comprehension produces a list containing all values produced by
+_expr_.
+
+**e0 {e1:v1, e2:v2, e3:v3,...} : x -- structure initialization**
+[quote]
+Structure initialization assigns **e0[e1] := v1** and similarly for each
+succeeding index/value pair.  **e0**, which is returned as the result of
+the expression, must be an indexable value such as a record, table,
+list, or equivalent Go external value.
+
+'''''
