@@ -1,0 +1,529 @@
+Goaldi:  Differences from Icon
+==============================
+
+// define "tab" attribute for indenting lines with formatting
+:t:	{nbsp} {nbsp} {nbsp} {nbsp}
+// define "whitespace" attribute for extra embedded space
+:w:	{nbsp}
+
+Gregg Townsend and Todd Proebsting +
+Department of Computer Science +
+The University of Arizona +
+goaldi@cs.arizona.edu +
+
+This is part of the documentation for
+http://goaldi.org/[The Goaldi Programming Language].
+
+'''''
+
+Goaldi is inspired by the
+http://www.cs.arizona.edu/icon[Icon] programming
+language.  The central concepts of polymorphism and goal-directed
+evaluation are the same.  The datatypes, control structures, operators,
+and overall appearance are all very similar.
+
+However, Goaldi is not upwards compatible, and some key features of Icon
+are not present.  This document highlights the differences that are
+significant to an Icon programmer and is aimed at a reader with a good
+working knowledge of Icon.  It touches only briefly on Goaldi's new
+features.  For those, see link:ref.adoc[Goaldi Language Reference].
+
+'''''
+
+Omissions
+---------
+
+These key features of Icon are absent from Goaldi:
+
+* String scanning and the cset datatype
+* Large (arbitrary precision) integers
+* Graphics
+
+In addition to smaller items discussed later, Goaldi also omits:
+
+* Dynamic loading (*loadfunc*)
+* Programmer defined control operations, or PDCO: *p { arglist }*
+* Error conversion to failure (replaced by exception handling)
+
+New Features
+------------
+
+These features are described in more detail in
+link:ref.adoc[Goaldi Language Reference].
+
+* Concurrent programming using message passing
+* Object-oriented programming with single inheritance
+* First-class functions (closures)
+* Namespaces, block-level scoping, and dynamic constants
+* Modest exception handling
+* Global initializers that run in dependency order
+* Structure initialization and list comprehension
+* Unicode support
+
+'''''
+
+Program Organization
+--------------------
+
+The current Goaldi implementation does not support the linking or
+execution of separately compiled source files.  Usage is
+
+{t} *goaldi*  _sourcefile.gd  [ program arguments ]_
+
+Icon's *link* and *invocable* declarations are gone, as is Icon's
+string invocation feature.
+
+Command-line arguments are passed to the main procedure as separate
+parameters instead of a single list.  As with other procedure calls, it
+is an error to pass too many expressions.  The main procedure may
+declare a variable argument list to mimic Icon’s behavior:
+
+{t} **procedure main(args[]) …**
+
+Goaldi allows a program to be partitioned into separate namespaces on a
+per-file basis using the new *package* declaration.
+
+The standard library includes most Icon library procedures that are
+still relevant and feasible, some recast as methods.  See the
+xref:stdlib.adoc[library
+documentation] for details of the specific procedures.
+
+Lexical Issues
+--------------
+
+Superficially, a Goaldi program looks much like an Icon program.  Most
+of the keywords and operators are the same, including **:=** for
+assignment.  Source programs are line-oriented, with line breaks serving
+as statement separators and **#** serving as the comment character.
+
+No Preprocessor
+~~~~~~~~~~~~~~~
+
+Goaldi has no source preprocessor.  Symbol definitions can often be
+replaced by initialized globals:
+
+{t} **$define MAXDEPTH 10 {w} ⇒ {w} global MAXDEPTH := 10** 
+
+Semicolon Insertion
+~~~~~~~~~~~~~~~~~~~
+
+A semicolon is implicitly inserted at the end of a source line to serve
+as a statement separator if the final token on the line can legally end
+a statement.  This is a simpler rule than Icon's, which additionally
+requires that the following token can legally begin a new statement.
+The most significant consequence is that an *else* at the beginning
+of a line is always an error, because a semicolon will have been
+inserted following any legal prefix.  The simple rules for safety are:
+
+* break expressions only after binary operators
+* follow the conditional of each loop or *if* with an opening brace on
+the same line
+
+Unicode Identifiers
+~~~~~~~~~~~~~~~~~~~
+
+Identifiers can include any Unicode letter (“class L”) or digit (“class
+Nd”) plus the underscore.
+
+Icon Keywords
+~~~~~~~~~~~~~
+
+All of Icon's keywords -- the special identifiers beginning with **&** --
+have been removed or replaced.
+
+**&null**  is replaced by the Goaldi keyword *nil*, which has
+essentially the same function.
+
+**&fail**  is replaced by the Goaldi keyword *fail*, which now causes
+_expression_ failure.
+(To make a _procedure_ fail, use  **return fail**.)
+
+The appendix gives a full list of Icon keywords with suggested
+replacements for some.
+
+Reserved Words
+~~~~~~~~~~~~~~
+
+The following keywords are new to Goaldi and cannot be used as
+identifiers: +
+{t} ** catch {w} continue {w} extends {w}
+	lambda {w} nil {w} package {w} select {w} with {w} yield **
+
+These words are no longer reserved: +
+{t} ** end {w} invocable {w} link {w} next **
+
+Trailing Commas
+~~~~~~~~~~~~~~~
+
+Trailing commas are allowed and ignored in identifier and expression
+lists.  This is especially useful in a multi-line record declaration or
+list constructor.  If a trailing nil (null) value is really wanted in an
+expression list, this must be made explicit:
+
+{t} **L := [1,2,3,] {w} ⇒ {w} L := [1,2,3,nil]**
+
+
+Declarations and Scoping
+------------------------
+
+Procedure Declarations
+~~~~~~~~~~~~~~~~~~~~~~
+
+Procedure declarations are delimited by braces *{ }* instead of being
+terminated by *end*:
+
+{t} *procedure hic(); write("!"); end {w} ⇒ {w} procedure hic() { write("!") }*
+
+A procedure or record declaration defines its name as a global symbol.
+Unlike Icon, this is not a variable.  To make a mutable global
+procedure name, declare a global variable and assign it a procedure
+value.
+
+Anonymous inner procedures can now be declared using *procedure* or
+*lambda* expressions.
+
+Variable Declarations
+~~~~~~~~~~~~~~~~~~~~~
+
+Global, static, and local declarations can each name only a single
+variable, but each can be followed by an initialization expression.
+
+Global initializations execute in dependency order.
+
+Local and static declarations are now expressions, so it is legal to
+write things like
+
+{t} **/static T := table()** +
+{t} **every local x := !L do …**
+
+The shorthand notation  **^x  ** is equivalent to   **local x**.
+
+
+Datatypes
+---------
+
+Numeric Values
+~~~~~~~~~~~~~~
+
+Instead of separate *real* and *integer* types, Goaldi has a single
+type **number.**  This is implemented as a 64-bit floating-point number,
+which gives about 53 bits of integer precision.
+
+An additional operator  **x // y**  provides division with truncation to
+integer.
+
+New radix literal forms are provided:  1001**b** (binary),
+744**o** (octal), 37FF**x** (hexadecimal).
+Icon's flexible form is retained:  19**r**7H3 (base 2–36; base 19 in
+this example).
+
+**!n** produces **1 to n**, not *!string(n).*
+
+For a number that is not an integer, conversion to string by
+**string(n)** or **write(n)** exhibits four significant digits.  If the
+full precision is meaningful, use **image(n)** for conversion.  For
+precise control, use **sprintf(s, n)**.
+
+Strings
+~~~~~~~
+
+Goaldi strings are composed of Unicode characters.  They may be coded
+directly in string literals, for example **"t**₀**±Δt"**, but they can
+also be specified using a new **"\u**_hhhhhhhh_**"** escape form which
+allows up to eight hexadecimal characters.
+
+Quote-delimited string literals must be self-contained on a single line;
+multi-line literals are done differently.   Raw literals, delimited by
+__`backquotes`__, can span lines; and in raw literals, the backslash
+does not introduce an escape sequence but is just another character.
+
+If *s* is a string variable,  **@s**  removes and returns the first
+character of *s*;  *s @: x*  appends *x* to *s*.
+
+For any value *x*, **string(x)** always succeeds and produces a string
+representation.  This is like **image(x)**, but the former is in general
+more succinct.
+
+String Scanning Alternatives
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Goaldi does not have Icon's string scanning facilities or csets.  Simple
+line parsing can be accomplished using some Go library routines that are
+part of the Goaldi standard library:
+
+* **contains(s, t)** returns nonzero if string *t* can be found within
+*s*
+* **containsany(s, t)** returns nonzero if any character of *t* can be
+found in *s*
+* *fields(s)* returns a list of the space-separated words found in *s*
+* *split(s,t)* returns a list of *t*-separated (e.g. **","** or
+**"\t"**) words found in *s*
+* **regex(s)** compiles a regular expression for subsequent parsing
+* **regexp(s)** compiles using (closer to) POSIX rules
+
+For a compiled regular expression *r*, the method call
+**r.FindStringSubmatch()** is especially useful, returning a list of the
+string matched by the whole expression followed by any
+parenthesis-enclosed subexpressions.  All the other methods of *r* are
+also callable.
+
+Go uses “extended” (in the POSIX sense) “Perl-compatible” regular
+expressions.  Raw literals enclosed in __`backquotes`__ are useful
+for specifying expressions containing backslashes.
+
+Files
+~~~~~
+
+For consistency with other datatypes, the file constructor is now
+**file()** instead of **open().**  Some of the flag arguments are
+different, but the usual **"r"** or **"w"** are unchanged.
+Goaldi does not support pipes or "untranslated" mode.
+
+By default, for ease of use and consistency with other file operations,
+**file()** throws an exception if unable to open the specified file.
+This can be overridden by passing an **"f"** flag to cause the call to
+fail as it does in Icon.
+
+Goaldi has Icon’s **read()** and **write()** library procedures plus
+several others and even a simple interface to Go’s **printf()**.
+However, **read()** and **write()** do not accept file arguments.
+Reading and writing of anything other than standard input or standard
+output uses new I/O methods **f.read()**, **f.write()**, etc.  Output
+procedures and methods all return the associated file, not the last
+value written.
+
+**write(x)** accepts any value of *x* and writes the characters
+produced by **string(x)**.  Note that **string(nil)** produces **"~"**,
+so writing a nil value now produces visible output.
+
+Text files are treated as UTF-8-encoded sequences of Unicode characters.
+This is the usual encoding on modern Unix systems (noting that the
+UTF-8 encoding of a pure ASCII file leaves it unaltered) and makes
+Unicode I/O transparent to the programmer.
+
+The UTF-8 interpretation is inappropriate for binary files.  For those,
+use the new **f.readb()** and **f.writeb()** methods; the conversion
+from **reads()** and **writes()** should be straightforward.
+
+Lists
+~~~~~
+
+Lists are very similar to Icon lists except that methods such as
+**L.pop()** replace Icon's access procedures such as *pop(L).*
+
+The constructor **list(n,x)** initializes each item of the new list with
+a _copy_ (unlike Icon) of *x*.
+
+**L.sort()** is a stable sort, allowing a multi-key sort to be
+accomplished by multiple calls.
+Unlike in Icon with its structure serial numbers, there are types for
+which the ordering of values is not defined: channels, sets, tables, and
+externals.
+
+New operators  **@L**  and  **L @: x**  are alternatives to
+**L.get()** and **L.put(x)** respectively.
+
+Sets
+~~~~
+
+Sets are also very similar to Icon sets, again with method calls
+replacing procedure calls.
+**insert(S,x)** is replaced by **S.put(x)**.
+
+**S[x]** succeeds and produces *x* if *x* is a member of *S*, but
+fails otherwise.
+
+*@S* consumes a member of *S*, removing it from *S* and returning
+its value.
+
+Tables
+~~~~~~
+
+Tables are again similar to Icon, and **T[x]** works the same way, but
+element-generation operations produce key-value pairs.  These take the
+form of a record of type *elemtype* having two fields *key* and
+*value*.  The operators **!T**, **?T**, and **@T** each produce a
+single record, and **T.sort()** produces a list of *elemtype* records.
+
+Records
+~~~~~~~
+
+Goaldi's records are upwards compatible with those of Icon.  Goaldi adds
+simple inheritance and the ability to associate methods with record
+types.
+
+Goaldi adds a **constructor()** library procedure for dynamically
+creating new record types.
+
+Types
+~~~~~
+
+In Goaldi, the type of a value is itself a value of type _type_.  The
+type of *"abc"* is *string*, and in general the type of any value is
+the the global procedure that constructs one; so
+
+{t} **type("abc") === string**
+
+succeeds because **type()** now returns a type value and not a string.
+
+Types that are record constructors can be inspected to retrieve the
+names of the fields.
+
+
+Control Structures
+------------------
+
+Initial Blocks
+~~~~~~~~~~~~~~
+
+Goaldi does not have Icon's *initial* blocks in procedure headers.
+Instead of
+----
+static L, T
+initial {
+   L := list()
+   T := table()
+}
+----
+
+use
+
+----
+/static T := table()
+/static L := list()
+----
+
+Loops
+~~~~~
+
+The new reserved word *continue* replaces *next* for advancing a loop. +
+The loop form **repeat e [ until e ]**  now allows a bottom-of-loop test. +
+Icon’s former **until e [ do e ]** has been removed.
+
+Any loop can be labeled by appending **:**_ident_ to the keyword, for example +
+{t} **every:L e1 do e2**
+
+*continue* and *break* statements can specify a branch label, e.g. +
+{t} **continue:L**
+
+The forms **break next** and *break* expr  are removed.  For the former,
+use *break* with a branch label.  To make a loop produce values, use
+**yield e** (the loop analogy of **suspend e**): +
+{t} **yield 1 to 3** +
+{t} **yield:L 0**
+
+Exclusive Alternation
+~~~~~~~~~~~~~~~~~~~~~
+
+The expression **x ~| y** produces the values of *x*; but if there are
+none, it produces those of *y*.
+Thus although  **every write(!2 | !2)**  writes **1212**,  **every
+write(!2 ~| !2)**  writes just **12**; and
+**suspend \x ~| (x := foo())**  cannot be resumed to call *foo* if
+**\x** succeeds initially.
+
+Parallel Conjunction
+~~~~~~~~~~~~~~~~~~~~
+
+The expression  **x && y  **evaluates *x* and *y* in parallel.
+Thus  **every (i := !2) && (j := !3) do write(i, j)  **writes
+**11** followed by **22**.
+
+The **&&** operation fails as soon as either operand fails; on success
+it produces *y*.
+
+Procedure Calls
+~~~~~~~~~~~~~~~
+
+As with Icon, omitted arguments in a procedure call are set to *nil*.
+However, passing too many arguments to a procedure or record
+constructor is now an error.
+
+In Goaldi, evaluation of procedure arguments is a single-pass process;
+Icon left the dereferencing of variables to a second pass.  This
+occasioned situations where an explicit dereferencing operator was
+required to get the desired result, as in
+
+{t} **foo(.x, x := 3)**
+
+In Goaldi, the dereferencing occurs before the second expression is
+evaluated, and there is no dereferencing operator.
+
+Values returned (or suspended) from procedures are always dereferenced.
+
+The expression **p ! R** (passing a record as procedure arguments) is
+not implemented.
+
+Co-Expressions
+~~~~~~~~~~~~~~
+
+Goaldi does not have Icon's co-expressions in their full generality with
+value transmission. Goaldi's threads and channels do support what is
+probably the most typical use of co-expressions: data generation.
+
+The Goaldi form +
+{t} *c* **:= create e** +
+creates a separate thread in which the expression *e* runs and assigns
+a value of type _channel_ to the variable *c*.  When *e* produces
+values, they can be read from the channel by the expression **@c**.
+Thus +
+{t} **c := create 1 to 10** +
+{t} **while write(@c)** +
+writes the first ten integers in either Goaldi or Icon.
+
+One crucial difference is that Goaldi threads exhibit true concurrency
+and can run in parallel on multiple CPUs.  It is important to realize
+that shared data structures are__ not__ thread-safe and that
+communication among threads should be restricted to channels.
+
+Appendix:  Translating Icon Keywords
+------------------------------------
+
+[cols="1,1,3",options="header,compact",frame="none",grid="none"]
+|==========================================================================
+|Icon keyword	|in Goaldi, use:|meaning
+|&allocated	|--		|accumulated bytes allocated
+|&ascii		|--		|cset of ascii characters
+|&clock		|time()		|current time of day
+|&collections	|--		|collection count
+|&cset		|--		|cset of all characters
+|&current	|--		|current co-expression
+|&date		|date()		|current date
+|&dateline	|now().Format(...)|current date and time
+|&digits	|--		|cset of digits 0-9
+|&dump		|--		|if non-zero, dump on termination
+|&e		|%e		|base of natural logs, 2.71828...
+|&error		|catch p	|run-time error conversion control
+|&errornumber	|--		|run-time error number
+|&errortext	|string(exception)|run-time error message text, for any error
+|&errorvalue	|exception.Offv[1]|run-time error offending value, if Goaldi error
+|&errout	|%stderr	|standard error output file
+|&fail		|fail		|fails
+|&features	|--		|implementation features
+|&file		|--		|current source code file name
+|&host		|host()		|string identifying host computer
+|&input		|%stdin		|standard input file
+|&lcase		|--		|cset of lower case letters a-z
+|&letters	|--		|cset of all letters A-Za-z
+|&level		|--		|level of current procedure call
+|&line		|--		|current source code line number
+|&main		|--		|main co-expression
+|&null		|nil		|the null value
+|&output	|%stdout	|standard output file
+|&phi		|%phi		|The golden ratio, 1.61803...
+|&pi		|%pi		|The value of pi, 3.14159...
+|&pos		|--		|string scanning position
+|&progname	|--		|file name of the executing program
+|&random	|seed(n) 	|[to set it] random number seed
+|&regions	|--		|current region size
+|&source	|--		|activator of current co-expression
+|&storage	|--		|current bytes allocated
+|&subject	|--		|string scanning subject
+|&time		|cputime()	|current run time in milliseconds
+|&trace		|--		|procedure tracing control
+|&ucase		|--		|cset of upper case letters A-Z
+|&version	|--		|version of Icon
+|==========================================================================
+
+
+''''''

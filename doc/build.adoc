@@ -1,0 +1,463 @@
+Goaldi: Installation and Internals
+===================================
+
+Gregg Townsend and Todd Proebsting +
+Department of Computer Science +
+The University of Arizona +
+goaldi@cs.arizona.edu +
+
+This is part of the documentation for
+http://goaldi.org/[The Goaldi Programming Language].
+
+'''''
+xref:Building[Installing Goaldi from Source] +
+xref:Running[Running Goaldi] +
+xref:GoTypes[Go Types in Goaldi] +
+xref:Extending[Extending Goaldi] +
+
+This document explains how to install Goaldi from the source. If you
+just want to run a pre-built binary distribution, find the latest one
+https://github.com/proebsting/goaldi/releases[here] and
+follow
+https://github.com/proebsting/goaldi/blob/master/INSTALL.adoc[these]
+instructions.
+
+'''''
+
+
+
+[[Building]]
+Installing Goaldi from Source
+-----------------------------
+
+Prerequisites
+~~~~~~~~~~~~~
+
+To build Goaldi you must first install the Go programming language.
+
+Get Go from http://golang.org/doc/install[golang.org], install it, and
+add it to your search path.
+For a standard installation you’ll probably add /usr/local/go/bin to $PATH.
+
+Create a work area for Go builds and define it in your environment as $GOPATH.
+For example:
+----
+export GOPATH=$HOME/go
+mkdir $GOPATH $GOPATH/src
+----
+
+Updating will be easiest if you use Git to clone the source:
+----
+cd $GOPATH/src
+git clone git://github.com/proebsting/goaldi.git
+----
+
+Alternatively, you can visit the GitHub page at
+https://github.com/proebsting/goaldi[github.com/proebsting/goaldi] and click
+“Download ZIP” in the right-hand sidebar.  Unpack the zip file to make
+$GOPATH/src/goaldi.
+
+Building Goaldi
+~~~~~~~~~~~~~~~
+
+Add $GOPATH/bin to your search path. +
+*cd* to $GOPATH/src/goaldi.
+
+Because Goaldi is written in Goaldi, there is a bootstrapping issue.  If
+an executable *goaldi* is found in the search path, perhaps from an
+earlier binary install, then that will be used to build Goaldi.  If not,
+run **make boot** to compile the Go portion of the system and combine it
+with previously-translated Goaldi intermediate code to install a
+*goaldi* executable in $GOPATH/bin.
+
+Type *make* to build and test Goaldi from the source tree.  There are
+no options. +
+Type **make install** to install the newly built *goaldi* in
+$GOPATH/bin.
+
+When Goaldi is updated, you can install the new version by entering:
+----
+cd $GOPATH/src/goaldi
+git pull
+make
+make install
+----
+
+Running Goaldi Programs
+~~~~~~~~~~~~~~~~~~~~~~~
+
+Goaldi is a traditional programming language without a GUI.  Programs
+are created using a separate editor and then run by typing **goaldi
+filename.gd** optionally followed by any program arguments.  Options for
+the *goaldi* command, usually not needed, are listed on the “Running
+Goaldi” page.
+
+A Goaldi program in source form can be made executable by beginning it
+with
+----
+#!/usr/bin/env goaldi
+----
+as the very first line and setting the Unix “execute bit” for the file
+(chmod +x filename).
+
+Assuming that goaldi is in your search path, you can then run the
+program by entering
+----
+./filename [arguments]
+----
+or it can be run via the shell search path.
+
+Program Examples
+~~~~~~~~~~~~~~~~
+
+There is no formal collection of examples yet, but you may wish to
+inspect the programs in the directories gtests (used for automated
+testing) and demo (not suitable for automating).
+
+gtests/{cxprimes,primes,sieve,genqueen,queens} are small examples
+converted from Icon. +
+gtests/alltypes illustrates how the various Goaldi types format for
+printing. +
+gtests/tokenizer is an early version of the Goaldi lexer written in
+Goaldi. +
+demo/shuffle measures the randomness of shuffling. +
+
+demo/{time,http} and gtests/{regex,hash32,zipreader} illustrate use of
+Go library methods
+(documented at http://golang.org/pkg/[golang.org/pkg]) associated with
+objects returned by library procedures or the sample Goaldi extensions
+that are included in the extensions directory.
+
+By far the largest example is the Goaldi front-end itself, in the tran
+directory.  This is derived, via manual conversion and extensive
+editing, from the Jcon translator of Icon.
+
+Discussion List
+~~~~~~~~~~~~~~~
+
+A mailing list has been established at
+https://list.arizona.edu/sympa/info/goaldi-language[list.arizona.edu] for
+announcements and discussions related to the Goaldi language.  Please
+https://list.arizona.edu/sympa/subscribe/goaldi-language[subscribe
+yourself] (or just ask us, and we’ll add you) to stay informed and to
+contribute as you wish.
+
+Contact Us Directly
+~~~~~~~~~~~~~~~~~~~
+
+To reach us directly, send mail to goaldi@cs.arizona.edu.  Problem
+reports that are not of general interest can be sent here.
+
+[[Running]]
+Running Goaldi
+--------------
+
+Running a Goaldi program is usually as simple as just
+----
+goaldi filename.gd [program arguments]
+----
+but here is the full “man page”.  Many of the options are for the
+benefit of the Goaldi developers and are not particularly useful to a
+Goaldi programmer.
+----
+goaldi [options] filename.gd… [--] [argument…]
+  –c   compile only, IR code to file.gir
+  –a   compile only, IR code to file.gir, assembly to file.gia
+  –l   load and link but do not execute
+  –t   show CPU timings
+  –A   dump assembly listing to stdout before execution
+  –D   dump Go stack on panic
+  –E   show initial environment
+  –I   trace initialization ordering
+  –N   inhibit optimization
+  –P   produce ./PROFILE file (Linux)
+  –T   trace IR instruction execution
+----
+
+If multiple source files are presented, they must have a .gd extension.
+
+If the first program argument ends in .gd it must be protected by a
+\-- separator argument.
+
+Arguments are passed to main as separate parameters (unlike the single
+array used in Icon).
+
+
+[[GoTypes]]
+Go Types in Goaldi
+------------------
+
+The Goaldi system can be extended by adding custom functions written in Go.
+Many standard Go functions such as *printf* are also incorporated in
+Goaldi this way.
+This section explains how values are converted when crossing the
+boundary between the Goaldi and Go type systems.  It applies to naïvely
+written Go functions that are not specifically designed to deal with
+Goaldi values.  Note that information loss is possible in either
+direction; for example, Goaldi does not have 64-bit integers.
+
+External values defined by Go functions extend the native Goaldi types.
+Any unrecognized Go value is imported as an external.  These values can
+provide methods that implement Goaldi operators.  A few Goaldi operators
+such as field selection and indexing can be applied to external values
+containing certain Go types such as arrays, maps, and structs even if no
+implementing methods are supplied by the value’s underlying type.
+
+Calling Go functions
+~~~~~~~~~~~~~~~~~~~~
+
+Goaldi programs can call only those Go functions that are registered
+when Goaldi is built.
+This is often a trivial matter; see numerous uses of GoLib in the Goaldi
+source code.
+When a Go function is called, arguments are converted according to the
+export rules below.
+If the function returns no values, nil is produced.  A single value is
+returned directly.  Multiple values are returned as a Goaldi list.
+(This behavior is modified for standard library procedures; for those,
+a final declared error return value is either deleted if nil or thrown
+as an exception if not.)
+
+Importing Go values into Goaldi
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+A Goaldi program imports a value from Go by calling a Go function or by
+accessing an external map, struct, slice, or array.  Any Go value is
+usable as a Goaldi value.
+
+A Go value is imported by inspecting the actual value, without regard to
+the declared type, and following these rules, in order:
+
+* A Go *nil*, even a typed nil, it is converted to a Goaldi *nil*.
+* A Goaldi native value is retained unmodified
+* A Go object *g* that implements **goaldi.IImport** is imported by
+calling **g.Import()**.
+* A Go object that implements **goaldi.IExternal** is unconditionally
+made *external*.
+* A Go *bool* is converted into 0 for false or 1 for true.
+* A Go numeric (**float32**, **uint16**, *rune*, etc.) is converted to
+*number*.
+* A Go *string* or **[]byte** is interpreted as UTF-8 and converted to
+a *string*.
+* A Go **[]rune** is converted directly to a Goaldi Unicode string.
+* A Go **io.Reader** or **io.Writer** is converted to a *file*.
+* Anything still unrecognized becomes an *external*.
+
+Exporting Goaldi values to Go
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+A Goaldi value passed as a function argument is converted to the type
+expected by the corresponding Go function parameter.
+
+* A Go parameter of any numeric type requires a Goaldi number as an
+argument, or a string convertible to number.
+* A Go *string* parameter, or convertible equivalent such as
+**[]byte** or **[]rune**, requires a Goaldi string or number.
+* A Go *bool* parameter is passed a value of *false* iff the Goaldi
+argument is **0** or *nil*.
+
+In all others cases, the Goaldi value is converted using the following
+rules:
+
+* A Goaldi *nil* is passed as **interface{}(nil)**.
+* A Goaldi *number* exports a Go **float64**.  (Use "**%.0d"** to see
+integers in *printf*.)
+* A Goaldi Unicode *string* is encoded in UTF-8 and passed as a Go
+*string*.
+* A buffered Goaldi *file* (**%stdin**, **%stdout**, or a typical file
+opened by a Goaldi program) is exported without conversion.  Because a
+Goaldi *file* implements *io*.*ReadWriteCloser* it can in be used
+directly as a sequential file in Go.
+* An unbuffered Goaldi *file* (**%stderr**, an imported file, or a
+file opened without buffering) exports the underlying **io.Reader** or
+**io.Writer** object.
+* A Goaldi *procedure* exports **func(env *Env, args ...Value) (Value,
+*Closure)**.
+* A Goaldi *list* exports a copy of its the data as a slice of Goaldi
+values.
+* A Goaldi *set* or *table* exports the underlying Go map.
+* A Goaldi *type*, *channel*, **method value**, or
+*record* exports itself without conversion.
+* A Goaldi *external* that implements **Export()** passes the result
+of calling that method.
+* Any other *external* is passed unconverted.
+
+The same conversion rules apply when storing values in a typed field in
+a Go struct, map, etc.
+
+A Go *interface{}* type accepts any value; this is how
+*printf* works.  For parameters of other types a panic occurs if the
+converted argument value is not compatible.
+
+[[Extending]]
+Extending Goaldi
+----------------
+
+Here are some notes about adding Go code to the Goaldi system.  They
+don’t attempt to explain the whole system; they assume you want to add
+run-time functionality without changing the language.
+
+Run-time extensions are made by adding files in the
+*extensions* directory.  These follow a pattern that can be seen in
+the sample extensions already present.  The simplest of these is
+**extensions/zipr.go**, which adds a Zip file reader with just a single
+line of code surrounded by a small amount of scaffolding.
+
+Because the Go language does not provide any sort of dynamic loading,
+any change requires rebuilding the system.  No changes to the Makefile
+are needed even if more files are added to the *extensions* directory.
+
+Most uses of Go from Goaldi, including these examples, leverage the
+automatic conversions between Goaldi values and Go values as described
+in an earlier section.
+
+The simplest change: Connecting a Go function
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Sometimes, adding a Go library function to the Goaldi standard library
+is all that’s needed.
+An exercise to add a Zip file reader ended up this way, as seen in the
+file **extensions/zipr.go**.
+Besides the boilerplate, there is just a single line of code
+encapsulated in an init function:
+----
+GoLib(zip.OpenReader, "zipreader", "name", "open a Zip file")
+----
+
+That line adds the Go function **zip.OpenReader** to the run-time
+library under the name *zipreader*.  It takes a single argument called
+*name* and is given a short description.
+
+When the newly added procedure *zipreader* is called, it returns a
+zip.ReadCloser object.  This object contains a slice of zip.File
+pointers; all of these can be read by Goaldi code.  See the example in
+the file **tests/zipreader.gd**.
+
+Slightly more complex:  Adding a file of new functions
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The example file **extensions/hash.go** is only a bit more complex. The
+init() function adds five entries to the standard library.  Four of
+these are imported from the Go library and one is defined in the source
+file.
+
+The added hashvalue() function makes the assumption that its argument is
+a file that was created by one of the other four functions.  It works by
+“converting” this to a Hash32 object using a type assertion and then
+returning the result of calling the object’s Sum32 function.
+
+An example of usage can be found in **tests/hash32.gd**.
+
+Even more complex:  A custom interface
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The example file **extensions/http.go** illustrates a more complex
+interface.  The line that adds the *htpost* procedure shows how
+multiple arguments are listed, including in this case a final variadic
+argument.
+
+This example shows how to implement the operators ***X** and **!X** for
+a user-defined type.  _Further documentation is needed here._
+
+A usage example is in **demos/http.gd**.
+
+Adding a new first-class type
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Here is an outline of the steps needed to add a new, fully-integrated
+datatype to Goaldi.  It is more of a checklist than a detailed
+instruction manual.
+
+Most Goaldi extensions won’t need to do all this.  They can use and
+transmit values that are treated by Goaldi as “external”.
+
+This list was made while adding the Set datatype to Goaldi.
+Parenthesized italic comments show, as examples, the particular choices
+made as part of that process.
+
+1.  Do the design work. Decide:
+
+..  name, abbreviation character, and sort rank  __(Set, "S", between
+lists and tables)__
+..  constructor details   _(set(L) makes a set from items in list L,
+which is optional)_
+..  method of exporting to the Go world   _(export the underlying map)_
+..  the forms string(x) and image(x) will take  __("S:n",
+"set{x1,x2,...,xn}")__
+..  the meaning of x.sort(i), if to be implemented  __(make a list and
+sort that)__
+..  runtime procedures to be added or modified   _(none)_
+..  methods to be implemented  __(S.insert(x…), S.delete(x…),
+..member(x))__
+..  existing operators to be implemented  __(?S, !S, *S, @S)__
+..  the form, precedence, and meaning of any new operators  __(++, --,
+**)__
+
+1.  Review and edit the documentation to reflect the design decisions.
+Doing this early helps catch some problems while they are easier to
+fix.
+2.  Start editing files in the goaldi/runtime directory.  Begin by
+creating a new file v__xxxxx__.go for implementing the fundamental parts
+of the new type.  Model the basic structure of v__xxxxx__.go from
+another existing file.
+
+..  Make it part of “package runtime”.
+..  Define the datatype to be used to implement the new type.  This
+should be either a pointer type or a type that behaves as one (e.g. map
+or interface).
+..  Define the sort ranking in correct relation to the definitions in
+other files.
+..  Add a line to validate the correct implementation of ICore functions
+to follow.
+..  Declare a New__Xxxxx__ function for creating instances of the
+datatype from Go code.
+..  Define a var __Xxxxx__Type that is initialized by calling the
+existing NewType function.  The arguments specify the new type’s name,
+abbreviation character, sort rank, constructor procedure, method list,
+global name for the constructor, constructor arglist signature, and
+description.
+
+1.  See the definition of ICore in interfaces.go, which specifies the
+minimal set of methods that must be implemented for a new type.
+ Implement these in v__xxxxx__.go, using the examples of other types as
+guides.
+2.  Create a new file f__xxxxx__.go for the procedures and methods of
+the new type.   Start with an initially empty method list modeled after
+those seen in other files.  Implement the constructor procedure that was
+named in the NewType function call.  This function should accept a
+Goaldi argument list and call the internal New__Xxxxx__ function.
+3.  Verify a successful compilation at this point by running “make” in
+the main directory.  Try a simple test program that constructs an
+example of the new type.
+4.  Implement procedures and methods in f__xxxxx__.go, testing
+incrementally.
+5.  Implement operators in a new file o__xxxxx__.go.
+6.  For each operator that is new to Goaldi rather than overloading an
+existing operator:
+
+..  Define a Go interface in the manner exemplified in onumber.go.
+..  Add a case in the interpreter in gexec/operator.go.
+..  Add the operator to the Goaldi translator in gtran.
+
+1.  Add one or more tests to the test suite.  A new test is added by
+creating two files:  __xxxx__.gd for the test and __xxxx__.std for its
+expected output.  A third file __xxxx__.dat can be added if a data file
+is needed; it will be used as standard input when the test runs.
+2.  If the new type is to be a standard type, it should join the
+collection of examples in the existing test gtests/alltypes.gd.  Add an
+example of the new type, check that the output is correct, and update
+gtests/alltypes.std.
+3.  Review and update the documentation one final time.
+
+Coding standards in the Goaldi implementation
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Go code in the Goaldi source is formatted to Go standards as enforced by
+“go fmt”.
+
+Tabs are assumed to be set every four columns for all files.
+
+Try to limit lines to 80 columns — not for punching on cards, but for
+readability.
+
+''''''
