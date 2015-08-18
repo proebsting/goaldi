@@ -7,7 +7,7 @@ import (
 	"reflect"
 )
 
-//  Field(x,s) calls x.Field(s) or falls back to reflection.
+//  Field(x,s) calls x.Field(s) or falls back to reflection for a Go value.
 func Field(x Value, s string) Value {
 	// first check to see if this value implements Field()
 	if t, ok := x.(IField); ok {
@@ -26,8 +26,15 @@ func Field(x Value, s string) Value {
 		if mv := UniMethod(x, s); mv != nil {
 			return mv
 		}
+		panic(NewExn("Field not found: "+s, x))
+	} else {
+		// not a Goaldi type; try reflection
+		return GoField(x, s)
 	}
-	// using reflection, peek inside interface and/or pointer to actual value
+}
+
+//  GoField(x, s) uses reflection to implement the field operation x.s.
+func GoField(x Value, s string) Value {
 	xv := reflect.ValueOf(x)
 	if xv.Kind() == reflect.Interface {
 		xv = xv.Elem()
