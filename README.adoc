@@ -12,8 +12,9 @@ and Unicode support.
 While Goaldi will look familiar to Icon programmers,
 it is not upwards compatible.
 
-This is an early distribution;
-some design and implementation details are likely to change.
+We're pleased with how Goaldi has turned out.
+At this time the implementation is reasonably stable and robust,
+and we're not actively developing it further.
 
 
 == Download

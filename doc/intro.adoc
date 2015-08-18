@@ -14,8 +14,7 @@ such as concurrency, objects, and closures.  While Goaldi will look
 familiar to Icon programmers, it is not upwards compatible, and it omits
 some features of Icon.
 
-The language is still evolving, and changes are likely.  Documentation
-is split among:
+Documentation is split among:
 
 * link:intro.adoc[Goaldi Introduction] (this document)
 * link:ref.adoc[Goaldi Language Reference]
