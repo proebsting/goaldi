@@ -72,6 +72,15 @@ func (p *VPainter) Export() interface{} {
 	return p
 }
 
+//  VPainter.Field gives direct Goaldi access to Go fields.
+func (p *VPainter) Field(s string) g.Value {
+	if m := PainterMethods[s]; m != nil {
+		return g.MethodVal(m, p)
+	} else {
+		return g.GoField(p, s)
+	}
+}
+
 //  VPainter.ToPx scales a point value to a pixel value
 func (p *VPainter) ToPx(n float64) int {
 	return int(p.PixPerPt*n + 0.5)
