@@ -165,11 +165,13 @@ func (v *VList) Snip(front bool, name string, args ...Value) (Value, *Closure) {
 	}
 	if front != v.rev {
 		r := v.data[0]
+		v.data[0] = nil
 		v.data = v.data[1:]
 		return Return(r)
 	} else {
 		n := len(v.data) - 1
 		r := v.data[n]
+		v.data[n] = nil
 		v.data = v.data[:n]
 		return Return(r)
 	}
