@@ -1104,10 +1104,10 @@ procedure ir_a_Create(p, st, target, bounded, rval) {
 	ir_init(p)
 	t := (\target | ir_tmp(st))
 
-	st.createflag := 1
+	st.createflag := st.syms
 	suspend ir(p.expr, st, t, nil, nil)
 	st.createflag := nil
-
+	
 	suspend ir_chunk(p.ir.start, [
 		ir_Create(p.coord, target, p.expr.ir.start, ir_stname(st.syms)),
 		ir_Goto(p.coord, p.ir.success),
@@ -1223,6 +1223,7 @@ procedure ir_lookupD(st, name) {
 	local syms
 	syms := st.syms
 	while \syms do {
+		if syms === st.createflag then { return nil }
 		if s := \(\syms.Dynamic)[name] then return syms
 		syms := syms.parent
 	}
