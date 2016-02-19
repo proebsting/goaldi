@@ -36,7 +36,7 @@
 301. Exception("Unrecognized flag","q")
 302. open /no/such/file: no such file or directory
 303. open /bin: is a directory
-304. open /bin/ls: permission denied
+304. open /bin/ls: operation not permitted
 305. Exception("Not open for writing",file(/dev/null,r))
 306. Exception("Not open for reading",file(/dev/null,w))
 311. Exception("Not open for reading",file(/dev/null,))
