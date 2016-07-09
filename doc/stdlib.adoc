@@ -651,7 +651,8 @@ rtod(r) returns the degree equivalent of the angle r given in radians.
 seed(n) -- set random number seed [silver]_(http://golang.org/pkg/math/rand#Seed[math/rand.Seed])_::
 Seed uses the provided seed value to initialize the default Source to a
 deterministic state. If Seed is not called, the generator behaves as if
-seeded by Seed(1).
+seeded by Seed(1). Seed values that have the same remainder when divided
+by 2^31-1 generate the same pseudo-random sequence.
 
 f.seek(n) -- set file position::
 f.seek(n) sets the position for the next read or write on file f. File
