@@ -148,7 +148,7 @@ func Diagnose(f io.Writer, v interface{}) bool {
 		fmt.Fprintf(f, "PANIC: %v\n", x)
 		return false
 	default:
-		fmt.Fprintf(f, "%T: %v\n", x, x)
+		fmt.Fprintf(f, "PANIC(%T): %v\n", x, x)
 		return false
 	}
 }
