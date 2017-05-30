@@ -18,8 +18,8 @@ https://github.com/proebsting/goaldi#goaldi-a-goal-directed-programming-language
 
 This document is an informal reference manual for the Goaldi programming
 language.  It includes complete summaries of Goaldi's syntax, control
-structures, datatypes, and operators.  The standard library is documented
-ref:stdlib.adoc.
+structures, datatypes, and operators.  The standard library is documented in
+link:stdlib.adoc[Goaldi Library Reference].
 
 Goaldi is inspired by the
 http://www.cs.arizona.edu/icon/[Icon] programming language.
