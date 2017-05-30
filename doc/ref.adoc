@@ -944,7 +944,7 @@ Records are structures with fixed, named fields.  There is no type
 _record_ as such; each record declaration creates a distinct type.
 The constructor is a constant global value having the name of the
 record type.  It acts like a procedure that returns a record, and is
-called the same way.  For a record value *R*, **type(R)** or
+called the same way.  For a record value *R*, **type\(R)** or
 **R.type()** returns the associated constructor.
 
 *C := constructor(s0, s1,* …**)** makes a constructor for a new record
