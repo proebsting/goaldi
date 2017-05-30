@@ -177,12 +177,13 @@ given arguments.
 It sets only the Path and Args in the returned structure.
 +
 If name contains no path separators, Command uses LookPath to resolve
-the path to a complete name if possible. Otherwise it uses name
-directly.
+name to a complete path if possible. Otherwise it uses name directly as
+Path.
 +
 The returned Cmd's Args field is constructed from the command name
 followed by the elements of arg, so arg should not include the command
-name itself. For example, Command("echo", "hello")
+name itself. For example, Command("echo", "hello"). Args[0] is always
+name, not the possibly resolved Path.
 
 constructor(name,fields[]) -- build a record constructor::
 constructor(name, field...) builds a record constructor for creating
@@ -343,7 +344,8 @@ value.
 getenv(key) -- read environment variable [silver]_(http://golang.org/pkg/os#Getenv[os.Getenv])_::
 Getenv retrieves the value of the environment variable named by the key.
 It returns the value, which will be empty if the variable is not
-present.
+present. To distinguish between an empty value and an unset value, use
+LookupEnv.
 
 getpid() -- get process ID [silver]_(http://golang.org/pkg/os#Getpid[os.Getpid])_::
 Getpid returns the process id of the caller.
@@ -624,13 +626,16 @@ Remove removes the named file or directory. If there is an error, it
 will be of type *PathError.
 
 rename(old,new) -- change file name [silver]_(http://golang.org/pkg/os#Rename[os.Rename])_::
-Rename renames (moves) oldpath to newpath. If newpath already exists,
-Rename replaces it. OS-specific restrictions may apply when oldpath and
-newpath are in different directories. If there is an error, it will be
-of type *LinkError.
+Rename renames (moves) oldpath to newpath. If newpath already exists and
+is not a directory, Rename replaces it. OS-specific restrictions may
+apply when oldpath and newpath are in different directories. If there is
+an error, it will be of type *LinkError.
 
 repl(s,count) -- concatenate copies of s [silver]_(http://golang.org/pkg/strings#Repeat[strings.Repeat])_::
 Repeat returns a new string consisting of count copies of the string s.
++
+It panics if count is negative or if the result of (len(s) * count)
+overflows.
 
 replace(s,old,new) -- return s with new replacing old [silver]_(http://golang.org/pkg/strings#Replace[strings.Replace])_::
 Replace returns a copy of the string s with the first n non-overlapping
@@ -652,7 +657,8 @@ seed(n) -- set random number seed [silver]_(http://golang.org/pkg/math/rand#Seed
 Seed uses the provided seed value to initialize the default Source to a
 deterministic state. If Seed is not called, the generator behaves as if
 seeded by Seed(1). Seed values that have the same remainder when divided
-by 2^31-1 generate the same pseudo-random sequence.
+by 2^31-1 generate the same pseudo-random sequence. Seed, unlike the
+Rand.Seed method, is safe for concurrent use.
 
 f.seek(n) -- set file position::
 f.seek(n) sets the position for the next read or write on file f. File
