@@ -163,39 +163,38 @@ func (e *TypeError) Error() string {
 //  Cleanup() simplifies the underlying Go runtime.TypeAssertionError.
 //  (This would be a lot easier if the error object fields weren't protected.)
 func (e *TypeError) Cleanup() string {
-	details := fmt.Sprintf("%#v", (*runtime.TypeAssertionError)(e))
-	conc := extract(details, "concreteString")
-	asst := extract(details, "assertedString")
-	miss := extract(details, "missingMethod")
-	var msg string
-	switch asst {
+	errstr := ((*runtime.TypeAssertionError)(e)).Error()
+	subj := extract(errstr, "conversion: ")
+	itis := extract(errstr, " is ")
+	isnot := extract(errstr, " not ")
+	switch isnot {
 	case "IVariable":
-		msg = "Variable expected"
+		return "Variable expected"
 	case "Numerable":
-		msg = "Number expected"
+		return "Number expected"
 	case "Stringable":
-		msg = "String expected"
+		return "String expected"
 	default:
-		if miss == "" {
-			msg = fmt.Sprintf("%s is not %s", conc, asst)
+		if itis != "not" { // i.e. "e is t" not "e is not ..."
+			return fmt.Sprintf("%s is not %s", itis, isnot)
 		} else {
-			msg = fmt.Sprintf("%s does not implement %s", conc, asst)
+			return fmt.Sprintf("%s does not implement %s", subj, isnot)
 		}
 	}
-	return msg
 }
 
-//  extract finds a field in the %#v image of a struct
-//  and cleans it up, removing [*][runtime.[V]] prefix
-func extract(s string, label string) string {
-	label = label + `:"`
-	i := strings.Index(s, label)
+//  extract finds the field following a given indicator prefix
+//  and cleans it up, removing any further [*][runtime.[V]] prefix
+func extract(s string, prefix string) string {
+	i := strings.Index(s, prefix)
 	if i < 0 {
 		return ""
 	}
-	s = s[i+len(label) : len(s)]
-	j := strings.Index(s, `"`)
-	s = s[0:j]
+	s = s[i+len(prefix) : len(s)]
+	j := strings.IndexAny(s, ", :")
+	if j > 0 {
+		s = s[0:j]
+	}
 	if strings.HasPrefix(s, "*") {
 		s = s[1:]
 	}
