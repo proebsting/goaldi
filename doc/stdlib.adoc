@@ -160,6 +160,21 @@ chmod(name,mode) -- change file mode [silver]_(http://golang.org/pkg/os#Chmod[os
 Chmod changes the mode of the named file to mode. If the file is a
 symbolic link, it changes the mode of the link's target. If there is an
 error, it will be of type *PathError.
++
+A different subset of the mode bits are used, depending on the operating
+system.
++
+On Unix, the mode's permission bits, ModeSetuid, ModeSetgid, and
+ModeSticky are used.
++
+On Windows, the mode must be non-zero but otherwise only the 0200 bit
+(owner writable) of mode is used; it controls whether the file's
+read-only attribute is set or cleared. attribute. The other bits are
+currently unused. Use mode 0400 for a read-only file and 0600 for a
+readable+writable file.
++
+On Plan 9, the mode's permission bits, ModeAppend, ModeExclusive, and
+ModeTemporary are used.
 
 clearenv() -- delete all environment variables [silver]_(http://golang.org/pkg/os#Clearenv[os.Clearenv])_::
 Clearenv deletes all environment variables.
@@ -285,7 +300,7 @@ external(x) exports and then re-imports the value x.
 fields(s) -- return fields of s delimited by whitespace [silver]_(http://golang.org/pkg/strings#Fields[strings.Fields])_::
 Fields splits the string s around each instance of one or more
 consecutive white space characters, as defined by unicode.IsSpace,
-returning an array of substrings of s or an empty list if s contains
+returning a slice of substrings of s or an empty slice if s contains
 only white space.
 
 file(name,flags) -- open a file::
@@ -464,13 +479,14 @@ min(n, ...) returns the smallest of its arguments.
 
 mkdir(name,perm) -- create directory [silver]_(http://golang.org/pkg/os#Mkdir[os.Mkdir])_::
 Mkdir creates a new directory with the specified name and permission
-bits. If there is an error, it will be of type *PathError.
+bits (before umask). If there is an error, it will be of type
+*PathError.
 
 mkdirall(path,perm) -- create directory tree [silver]_(http://golang.org/pkg/os#MkdirAll[os.MkdirAll])_::
 MkdirAll creates a directory named path, along with any necessary
 parents, and returns nil, or else returns an error. The permission bits
-perm are used for all directories that MkdirAll creates. If path is
-already a directory, MkdirAll does nothing and returns nil.
+perm (before umask) are used for all directories that MkdirAll creates.
+If path is already a directory, MkdirAll does nothing and returns nil.
 
 t.name() -- get type name::
 t.name() returns the name of type t.
@@ -619,7 +635,7 @@ backtracking search would have found first, while POSIX specifies that
 the match be chosen to maximize the length of the first subexpression,
 then the second, and so on from left to right. The POSIX rule is
 computationally prohibitive and not even well-defined. See
-http://swtch.com/~rsc/regexp/regexp2.html#posix for details.
+https://swtch.com/~rsc/regexp/regexp2.html#posix for details.
 
 remove(name) -- delete file [silver]_(http://golang.org/pkg/os#Remove[os.Remove])_::
 Remove removes the named file or directory. If there is an error, it
