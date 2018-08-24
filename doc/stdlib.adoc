@@ -638,8 +638,8 @@ computationally prohibitive and not even well-defined. See
 https://swtch.com/~rsc/regexp/regexp2.html#posix for details.
 
 remove(name) -- delete file [silver]_(http://golang.org/pkg/os#Remove[os.Remove])_::
-Remove removes the named file or directory. If there is an error, it
-will be of type *PathError.
+Remove removes the named file or (empty) directory. If there is an
+error, it will be of type *PathError.
 
 rename(old,new) -- change file name [silver]_(http://golang.org/pkg/os#Rename[os.Rename])_::
 Rename renames (moves) oldpath to newpath. If newpath already exists and
