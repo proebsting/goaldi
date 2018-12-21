@@ -53,24 +53,24 @@ Abs returns the absolute value of x.
 +
 Special cases are:
 +
-	Abs(±Inf) = +Inf
-	Abs(NaN) = NaN
+Abs(±Inf) = +Inf
+Abs(NaN) = NaN
 
 acos(n) -- compute arccosine [silver]_(http://golang.org/pkg/math#Acos[math.Acos])_::
 Acos returns the arccosine, in radians, of x.
 +
 Special case is:
 +
-	Acos(x) = NaN if x < -1 or x > 1
+Acos(x) = NaN if x < -1 or x > 1
 
 acosh(n) -- compute hyperbolic arccosine [silver]_(http://golang.org/pkg/math#Acosh[math.Acosh])_::
 Acosh returns the inverse hyperbolic cosine of x.
 +
 Special cases are:
 +
-	Acosh(+Inf) = +Inf
-	Acosh(x) = NaN if x < 1
-	Acosh(NaN) = NaN
+Acosh(+Inf) = +Inf
+Acosh(x) = NaN if x < 1
+Acosh(NaN) = NaN
 
 amean(n[]) -- compute arithmetic mean::
 amean(n,...) returns the arithmetic mean, or simple average, of its
@@ -81,97 +81,93 @@ Asin returns the arcsine, in radians, of x.
 +
 Special cases are:
 +
-	Asin(±0) = ±0
-	Asin(x) = NaN if x < -1 or x > 1
+Asin(±0) = ±0
+Asin(x) = NaN if x < -1 or x > 1
 
 asinh(n) -- compute hyperbolic arcsine [silver]_(http://golang.org/pkg/math#Asinh[math.Asinh])_::
 Asinh returns the inverse hyperbolic sine of x.
 +
 Special cases are:
 +
-	Asinh(±0) = ±0
-	Asinh(±Inf) = ±Inf
-	Asinh(NaN) = NaN
+Asinh(±0) = ±0
+Asinh(±Inf) = ±Inf
+Asinh(NaN) = NaN
 
 atan(y,x) -- compute arctangent of y / x::
-atan(y, x) returns the arctangent, in radians, of (y/x). The default
-value of x is 1, so atan(y) returns the arctangent of y. For the
-handling of special cases see
-http://golang.org/pkg/math/#Atan2[math.Atan2].
+atan(y, x) returns the arctangent, in radians, of (y/x). The default value
+of x is 1, so atan(y) returns the arctangent of y. For the handling of
+special cases see http://golang.org/pkg/math/#Atan2[math.Atan2].
 
 atanh(n) -- compute hyperbolic arccosine [silver]_(http://golang.org/pkg/math#Atanh[math.Atanh])_::
 Atanh returns the inverse hyperbolic tangent of x.
 +
 Special cases are:
 +
-	Atanh(1) = +Inf
-	Atanh(±0) = ±0
-	Atanh(-1) = -Inf
-	Atanh(x) = NaN if x < -1 or x > 1
-	Atanh(NaN) = NaN
+Atanh(1) = +Inf
+Atanh(±0) = ±0
+Atanh(-1) = -Inf
+Atanh(x) = NaN if x < -1 or x > 1
+Atanh(NaN) = NaN
 
 buffer(size,c) -- interpose buffer before channel::
-buffer(size, c) returns a channel that interposes a buffer of the given
-size before the channel c. This is useful in the Goaldi form
-buffer(size, create e) to provide buffering of the results produced by
-an asynchronous thread.
+buffer(size, c) returns a channel that interposes a buffer of the given size
+before the channel c. This is useful in the Goaldi form buffer(size, create
+e) to provide buffering of the results produced by an asynchronous thread.
 
 c.buffer(size) -- interpose channel buffer::
-c.buffer(size) returns a channel that interposes a buffer of the given
-size before the channel c.
+c.buffer(size) returns a channel that interposes a buffer of the given size
+before the channel c.
 
 cbrt(n) -- compute cube root [silver]_(http://golang.org/pkg/math#Cbrt[math.Cbrt])_::
 Cbrt returns the cube root of x.
 +
 Special cases are:
 +
-	Cbrt(±0) = ±0
-	Cbrt(±Inf) = ±Inf
-	Cbrt(NaN) = NaN
+Cbrt(±0) = ±0
+Cbrt(±Inf) = ±Inf
+Cbrt(NaN) = NaN
 
 ceil(n) -- round up to integer [silver]_(http://golang.org/pkg/math#Ceil[math.Ceil])_::
 Ceil returns the least integer value greater than or equal to x.
 +
 Special cases are:
 +
-	Ceil(±0) = ±0
-	Ceil(±Inf) = ±Inf
-	Ceil(NaN) = NaN
+Ceil(±0) = ±0
+Ceil(±Inf) = ±Inf
+Ceil(NaN) = NaN
 
 center(s,w,p) -- center with padding p to width w::
 center(s,w,p) centers s in a string of width w, padding with p.
 
 channel(size) -- create channel::
-channel(size) creates and returns a new channel with the given buffer
-size.
+channel(size) creates and returns a new channel with the given buffer size.
 
 char(n) -- return single character for Unicode value::
-char(n) returns the one-character string corresponding to the Unicode
-value of n truncated to integer.
+char(n) returns the one-character string corresponding to the Unicode value
+of n truncated to integer.
 
 t.char() -- get abbreviation character::
 t.char() returns single character used to abbreviate type t.
 
 chdir(dir) -- change working directory [silver]_(http://golang.org/pkg/os#Chdir[os.Chdir])_::
-Chdir changes the current working directory to the named directory. If
-there is an error, it will be of type *PathError.
+Chdir changes the current working directory to the named directory. If there
+is an error, it will be of type *PathError.
 
 chmod(name,mode) -- change file mode [silver]_(http://golang.org/pkg/os#Chmod[os.Chmod])_::
-Chmod changes the mode of the named file to mode. If the file is a
-symbolic link, it changes the mode of the link's target. If there is an
-error, it will be of type *PathError.
+Chmod changes the mode of the named file to mode. If the file is a symbolic
+link, it changes the mode of the link's target. If there is an error, it
+will be of type *PathError.
 +
 A different subset of the mode bits are used, depending on the operating
 system.
 +
-On Unix, the mode's permission bits, ModeSetuid, ModeSetgid, and
-ModeSticky are used.
+On Unix, the mode's permission bits, ModeSetuid, ModeSetgid, and ModeSticky
+are used.
 +
-On Windows, the mode must be non-zero but otherwise only the 0200 bit
-(owner writable) of mode is used; it controls whether the file's
-read-only attribute is set or cleared. attribute. The other bits are
-currently unused. Use mode 0400 for a read-only file and 0600 for a
-readable+writable file.
+On Windows, the mode must be non-zero but otherwise only the 0200 bit (owner
+writable) of mode is used; it controls whether the file's read-only
+attribute is set or cleared. attribute. The other bits are currently unused.
+Use mode 0400 for a read-only file and 0600 for a readable+writable file.
 +
 On Plan 9, the mode's permission bits, ModeAppend, ModeExclusive, and
 ModeTemporary are used.
@@ -186,62 +182,67 @@ c.close() -- close channel::
 c.close() closes the channel c.
 
 command(name,args[]) -- build struct to run command [silver]_(http://golang.org/pkg/os/exec#Command[os/exec.Command])_::
-Command returns the Cmd struct to execute the named program with the
-given arguments.
+Command returns the Cmd struct to execute the named program with the given
+arguments.
 +
 It sets only the Path and Args in the returned structure.
 +
-If name contains no path separators, Command uses LookPath to resolve
-name to a complete path if possible. Otherwise it uses name directly as
-Path.
+If name contains no path separators, Command uses LookPath to resolve name
+to a complete path if possible. Otherwise it uses name directly as Path.
 +
-The returned Cmd's Args field is constructed from the command name
-followed by the elements of arg, so arg should not include the command
-name itself. For example, Command("echo", "hello"). Args[0] is always
-name, not the possibly resolved Path.
+The returned Cmd's Args field is constructed from the command name followed
+by the elements of arg, so arg should not include the command name itself.
+For example, Command("echo", "hello"). Args[0] is always name, not the
+possibly resolved Path.
++
+On Windows, processes receive the whole command line as a single string and
+do their own parsing. Command combines and quotes Args into a command line
+string with an algorithm compatible with applications using
+CommandLineToArgvW (which is the most common way). Notable exceptions are
+msiexec.exe and cmd.exe (and thus, all batch files), which have a different
+unquoting algorithm. In these or other similar cases, you can do the quoting
+yourself and provide the full command line in SysProcAttr.CmdLine, leaving
+Args empty.
 
 constructor(name,fields[]) -- build a record constructor::
-constructor(name, field...) builds a record constructor for creating
-records with the given type name and field list. There is no requirement
-or guarantee that record names be distinct.
+constructor(name, field...) builds a record constructor for creating records
+with the given type name and field list. There is no requirement or
+guarantee that record names be distinct.
 
 contains(s,substr) -- return 1 if substr is in s [silver]_(http://golang.org/pkg/strings#Contains[strings.Contains])_::
 Contains reports whether substr is within s.
 
 containsany(s,chars) -- return 1 if any char is in s [silver]_(http://golang.org/pkg/strings#ContainsAny[strings.ContainsAny])_::
-ContainsAny reports whether any Unicode code points in chars are within
-s.
+ContainsAny reports whether any Unicode code points in chars are within s.
 
 copy(x) -- copy value::
-copy(x) returns a copy of x if x is a structure, or just x itself if x
-is a simple value. This is a shallow copy; nested structures are not
-duplicated.
+copy(x) returns a copy of x if x is a structure, or just x itself if x is a
+simple value. This is a shallow copy; nested structures are not duplicated.
 
 x.copy() -- copy value::
-copy(x) returns a copy of x if x is a structure, or just x itself if x
-is a simple value. This is a shallow copy; nested structures are not
-duplicated.
+copy(x) returns a copy of x if x is a structure, or just x itself if x is a
+simple value. This is a shallow copy; nested structures are not duplicated.
 
 cos(n) -- compute cosine [silver]_(http://golang.org/pkg/math#Cos[math.Cos])_::
 Cos returns the cosine of the radian argument x.
 +
 Special cases are:
 +
-	Cos(±Inf) = NaN
-	Cos(NaN) = NaN
+Cos(±Inf) = NaN
+Cos(NaN) = NaN
 
 cosh(n) -- compute hyperbolic cosine [silver]_(http://golang.org/pkg/math#Cosh[math.Cosh])_::
 Cosh returns the hyperbolic cosine of x.
 +
 Special cases are:
 +
-	Cosh(±0) = 1
-	Cosh(±Inf) = +Inf
-	Cosh(NaN) = NaN
+Cosh(±0) = 1
+Cosh(±Inf) = +Inf
+Cosh(NaN) = NaN
 
 cputime() -- return total processor time used::
-cputime() returns processor usage in seconds, likely a fractional value.
-The result includes both "user" and "system" time.
+cputime() returns processor usage in seconds, likely a fractional value. The
+result includes both "user" and "system" time.
 
 date() -- return the current date::
 date() returns the current date in the form "yyyy/mm/dd".
@@ -250,27 +251,27 @@ S.delete(x[]) -- remove members::
 S.delete(x...) removes all of its arguments from set S. It returns S.
 
 T.delete(x[]) -- remove entries::
-T.delete(k...) deletes the entries with the given keys from the table T.
-It returns T.
+T.delete(k...) deletes the entries with the given keys from the table T. It
+returns T.
 
 dtor(d) -- convert degrees to radians::
 dtor(d) returns the radian equivalent of the angle d given in degrees.
 
 duration(x) -- convert value to a Go Duration struct::
 duration(x) converts x to an external Go
-http://golang.org/pkg/time#Duration[time.Duration] value. If x is a
-string, it is passed directly to
-http://golang.org/pkg/time#ParseDuration[time.ParseDuration()]. If x is
-a number, "s" is appended to interpret it as an interval in seconds. If
-the conversion is unsuccessful, duration() fails.
+http://golang.org/pkg/time#Duration[time.Duration] value. If x is a string,
+it is passed directly to
+http://golang.org/pkg/time#ParseDuration[time.ParseDuration()]. If x is a
+number, "s" is appended to interpret it as an interval in seconds. If the
+conversion is unsuccessful, duration() fails.
 
 environ() -- get list of environment variables [silver]_(http://golang.org/pkg/os#Environ[os.Environ])_::
-Environ returns a copy of strings representing the environment, in the
-form "key=value".
+Environ returns a copy of strings representing the environment, in the form
+"key=value".
 
 equalfold(s,t) -- return 1 if s==t with case folding [silver]_(http://golang.org/pkg/strings#EqualFold[strings.EqualFold])_::
-EqualFold reports whether s and t, interpreted as UTF-8 strings, are
-equal under Unicode case-folding.
+EqualFold reports whether s and t, interpreted as UTF-8 strings, are equal
+under Unicode case-folding.
 
 errresult(e) -- return e::
 errresult(e) returns its argument e. It is suitable for use as a catch
@@ -285,11 +286,10 @@ Exp returns e**x, the base-e exponential of x.
 +
 Special cases are:
 +
-	Exp(+Inf) = +Inf
-	Exp(NaN) = NaN
+Exp(+Inf) = +Inf
+Exp(NaN) = NaN
 +
-Very large values overflow to 0 or +Inf. Very small values underflow to
-1.
+Very large values overflow to 0 or +Inf. Very small values underflow to 1.
 
 external(x) -- export and re-import::
 external(x) exports and then re-imports the value x.
@@ -298,27 +298,25 @@ x.external() -- export and re-import::
 external(x) exports and then re-imports the value x.
 
 fields(s) -- return fields of s delimited by whitespace [silver]_(http://golang.org/pkg/strings#Fields[strings.Fields])_::
-Fields splits the string s around each instance of one or more
-consecutive white space characters, as defined by unicode.IsSpace,
-returning a slice of substrings of s or an empty slice if s contains
-only white space.
+Fields splits the string s around each instance of one or more consecutive
+white space characters, as defined by unicode.IsSpace, returning a slice of
+substrings of s or an empty slice if s contains only white space.
 
 file(name,flags) -- open a file::
 file(name,flags) opens a file and returns a file value.
 +
 Each character of the optional flags argument selects an option:
 +
-	"r"   open for reading
-	"w"   open for writing
-	"a"   open for appending
-	"c"   create and open for writing
-	"n"   no buffering
-	"f"   fail on error (instead of panicking)
+"r"   open for reading
+"w"   open for writing
+"a"   open for appending
+"c"   create and open for writing
+"n"   no buffering
+"f"   fail on error (instead of panicking)
 +
-If none of "w", "a", or "c" are specified, then "r" is implied. "w"
-implies "c" unless "r" is also specified. Buffering is used if "n" is
-absent and the file is opened exclusively for reading or writing but not
-both.
+If none of "w", "a", or "c" are specified, then "r" is implied. "w" implies
+"c" unless "r" is also specified. Buffering is used if "n" is absent and the
+file is opened exclusively for reading or writing but not both.
 +
 In the absence of "f", any error throws an exception.
 
@@ -327,16 +325,16 @@ Floor returns the greatest integer value less than or equal to x.
 +
 Special cases are:
 +
-	Floor(±0) = ±0
-	Floor(±Inf) = ±Inf
-	Floor(NaN) = NaN
+Floor(±0) = ±0
+Floor(±Inf) = ±Inf
+Floor(NaN) = NaN
 
 f.flush() -- flush file::
 f.flush() flushes output on file f.
 
 fprintf(f,fmt,x[]) -- write to file with formatting [silver]_(http://golang.org/pkg/fmt#Fprintf[fmt.Fprintf])_::
-Fprintf formats according to a format specifier and writes to w. It
-returns the number of bytes written and any write error encountered.
+Fprintf formats according to a format specifier and writes to w. It returns
+the number of bytes written and any write error encountered.
 
 gcd(i[]) -- find greatest common divisor::
 gcd(i,...) truncates its arguments to integer and returns their greatest
@@ -345,8 +343,8 @@ values are zero.
 
 f.get() -- read one line::
 f.get() consumes and returns next line of text from file f. The trailing
-linefeed or CRLF is removed from the returned value. f.get() fails at
-EOF when no more data is available.
+linefeed or CRLF is removed from the returned value. f.get() fails at EOF
+when no more data is available.
 
 c.get() -- read from channel::
 c.get() reads the next value from channel c, or fails if no value is
@@ -357,10 +355,9 @@ L.get() removes the first element from list L and returns the element's
 value.
 
 getenv(key) -- read environment variable [silver]_(http://golang.org/pkg/os#Getenv[os.Getenv])_::
-Getenv retrieves the value of the environment variable named by the key.
-It returns the value, which will be empty if the variable is not
-present. To distinguish between an empty value and an unset value, use
-LookupEnv.
+Getenv retrieves the value of the environment variable named by the key. It
+returns the value, which will be empty if the variable is not present. To
+distinguish between an empty value and an unset value, use LookupEnv.
 
 getpid() -- get process ID [silver]_(http://golang.org/pkg/os#Getpid[os.Getpid])_::
 Getpid returns the process id of the caller.
@@ -369,79 +366,77 @@ getppid() -- get parent process ID [silver]_(http://golang.org/pkg/os#Getppid[os
 Getppid returns the process id of the caller's parent.
 
 getwd() -- get working directory [silver]_(http://golang.org/pkg/os#Getwd[os.Getwd])_::
-Getwd returns a rooted path name corresponding to the current directory.
-If the current directory can be reached via multiple paths (due to
-symbolic links), Getwd may return any one of them.
+Getwd returns a rooted path name corresponding to the current directory. If
+the current directory can be reached via multiple paths (due to symbolic
+links), Getwd may return any one of them.
 
 gmean(n[]) -- compute geometric mean::
-gmean(n,...) returns the geometric mean of its arguments, which must all
-be strictly positive.
+gmean(n,...) returns the geometric mean of its arguments, which must all be
+strictly positive.
 
 hmean(n[]) -- compute harmonic mean::
-hmean(n,...) returns the harmonic mean of its arguments, which must all
-be strictly positive.
+hmean(n,...) returns the harmonic mean of its arguments, which must all be
+strictly positive.
 
 hostname() -- get host machine name [silver]_(http://golang.org/pkg/os#Hostname[os.Hostname])_::
 Hostname returns the host name reported by the kernel.
 
 hypot(x,y) -- return sqrt of x^2 + y^2 [silver]_(http://golang.org/pkg/math#Hypot[math.Hypot])_::
-Hypot returns Sqrt(p*p + q*q), taking care to avoid unnecessary overflow
-and underflow.
+Hypot returns Sqrt(p*p + q*q), taking care to avoid unnecessary overflow and
+underflow.
 +
 Special cases are:
 +
-	Hypot(±Inf, q) = +Inf
-	Hypot(p, ±Inf) = +Inf
-	Hypot(NaN, q) = NaN
-	Hypot(p, NaN) = NaN
+Hypot(±Inf, q) = +Inf
+Hypot(p, ±Inf) = +Inf
+Hypot(NaN, q) = NaN
+Hypot(p, NaN) = NaN
 
 iand(i,j) -- compute bitwise AND::
 iand(i, j) returns the bitwise AND of the values i and j truncated to
 integer.
 
 iclear(i,j) -- compute bitwise clear of i by j::
-iclear(i, j) returns the value of i cleared of those bits set in j,
-after truncating both arguments to integer.
+iclear(i, j) returns the value of i cleared of those bits set in j, after
+truncating both arguments to integer.
 
 icom(i) -- compute bitwise complement::
 icom(i) truncates i to integer and returns its bitwise complement.
 
 image(x) -- return detailed string image::
-image(x) returns a string image of x. This is the same conversion
-applied by sprintf("%#v",x) and is typically more verbose and detailed
-than the result of string(x).
+image(x) returns a string image of x. This is the same conversion applied by
+sprintf("%#v",x) and is typically more verbose and detailed than the result
+of string(x).
 
 x.image() -- return detailed string image::
-image(x) returns a string image of x. This is the same conversion
-applied by sprintf("%#v",x) and is typically more verbose and detailed
-than the result of string(x).
+image(x) returns a string image of x. This is the same conversion applied by
+sprintf("%#v",x) and is typically more verbose and detailed than the result
+of string(x).
 
 x.instanceof(t) -- check type relationship::
-x.instanceof(t) returns x if x is an instance of type t; otherwise the
-call fails.
+x.instanceof(t) returns x if x is an instance of type t; otherwise the call
+fails.
 
 integer(n) -- truncate to integer [silver]_(http://golang.org/pkg/math#Trunc[math.Trunc])_::
 Trunc returns the integer value of x.
 +
 Special cases are:
 +
-	Trunc(±0) = ±0
-	Trunc(±Inf) = ±Inf
-	Trunc(NaN) = NaN
+Trunc(±0) = ±0
+Trunc(±Inf) = ±Inf
+Trunc(NaN) = NaN
 
 ior(i,j) -- compute bitwise OR::
-ior(i, j) returns the bitwise OR of the values i and j truncated to
-integer.
+ior(i, j) returns the bitwise OR of the values i and j truncated to integer.
 
 ishift(i,j) -- compute bitwise shift of i by j::
-ishift(i, j) shifts i by j bits and returns the result. If j > 0, the
-shift is to the left with zero fill. If j < 0, the shift is to the right
-with sign extension. The arguments are both truncated to integer before
-operating.
+ishift(i, j) shifts i by j bits and returns the result. If j > 0, the shift
+is to the left with zero fill. If j < 0, the shift is to the right with sign
+extension. The arguments are both truncated to integer before operating.
 
 ixor(i,j) -- compute bitwise exclusive OR::
-ixor(i, j) returns the bitwise exclusive OR of the values i and j
-truncated to integer.
+ixor(i, j) returns the bitwise exclusive OR of the values i and j truncated
+to integer.
 
 left(s,w,p) -- left-justify with padding p to width w::
 left(s,w,p) left-justifies s in a string of width w, padding with p.
@@ -451,15 +446,15 @@ list(size, x) builds and returns a new list of the given size with each
 element initialized to a copy of x.
 
 log(n,b) -- compute logarithm to base b::
-log(n, b) returns the logarithm of n to base b. The default value of b
-is %e (2.7183...), so log(n) returns the natural logarithm of n.
+log(n, b) returns the logarithm of n to base b. The default value of b is %e
+(2.7183...), so log(n) returns the natural logarithm of n.
 
 map(s,from,into) -- map characters::
 map(s,from,into) produces a new string that result from mapping the
-individual characters of a source string. Each character of s that
-appears in the "from" string is replaced by the corresponding character
-of the "into" string. If there is no corresponding character, because
-"into" is shorter, then the character from s is discarded.
+individual characters of a source string. Each character of s that appears
+in the "from" string is replaced by the corresponding character of the
+"into" string. If there is no corresponding character, because "into" is
+shorter, then the character from s is discarded.
 
 max(n[]) -- find maximum value::
 max(n, ...) returns the largest of its arguments.
@@ -478,15 +473,14 @@ min(n[]) -- find minimum value::
 min(n, ...) returns the smallest of its arguments.
 
 mkdir(name,perm) -- create directory [silver]_(http://golang.org/pkg/os#Mkdir[os.Mkdir])_::
-Mkdir creates a new directory with the specified name and permission
-bits (before umask). If there is an error, it will be of type
-*PathError.
+Mkdir creates a new directory with the specified name and permission bits
+(before umask). If there is an error, it will be of type *PathError.
 
 mkdirall(path,perm) -- create directory tree [silver]_(http://golang.org/pkg/os#MkdirAll[os.MkdirAll])_::
-MkdirAll creates a directory named path, along with any necessary
-parents, and returns nil, or else returns an error. The permission bits
-perm (before umask) are used for all directories that MkdirAll creates.
-If path is already a directory, MkdirAll does nothing and returns nil.
+MkdirAll creates a directory named path, along with any necessary parents,
+and returns nil, or else returns an error. The permission bits perm (before
+umask) are used for all directories that MkdirAll creates. If path is
+already a directory, MkdirAll does nothing and returns nil.
 
 t.name() -- get type name::
 t.name() returns the name of type t.
@@ -496,30 +490,30 @@ nilresult(e) returns nil, ignoring e. It is suitable for use as a catch
 handler.
 
 niltype() -- return nil value::
-niltype() always returns the sole instance of the nil value. niltype is
-the name of the result of nil.type().
+niltype() always returns the sole instance of the nil value. niltype is the
+name of the result of nil.type().
 
 noresult(e) -- fail immediately::
-noresult(e) fails immediately, ignoring e. It is suitable for use as a
-catch handler.
+noresult(e) fails immediately, ignoring e. It is suitable for use as a catch
+handler.
 
 now() -- return the current instant as a Go Time struct::
 now() returns the current time as an external Go
 http://golang.org/pkg/time#Time[time.Time] value, which can then be
 formatted or otherwise manipulated by calling
-http://golang.org/pkg/time/#Time.Format[tval.Format()] or other
-associated methods.
+http://golang.org/pkg/time/#Time.Format[tval.Format()] or other associated
+methods.
 
 number(x) -- convert to number::
-number(x) returns its argument converted to number, or fails if it
-cannot be converted due to its form or datatype. For string (or
-stringable) arguments, number() trims leading and trailing spaces and
-then accepts standard Go decimal forms (fixed and floating) or Goaldi
-radix forms (101010b, 52o, 2Ax, 23r1J).
+number(x) returns its argument converted to number, or fails if it cannot be
+converted due to its form or datatype. For string (or stringable) arguments,
+number() trims leading and trailing spaces and then accepts standard Go
+decimal forms (fixed and floating) or Goaldi radix forms (101010b, 52o, 2Ax,
+23r1J).
 
 ord(s) -- return Unicode ordinal of single character::
-ord(s) returns the Unicode value corresponding to the one-character
-string s.
+ord(s) returns the Unicode value corresponding to the one-character string
+s.
 
 L.pop() -- remove from front::
 L.pop() removes the first element from list L and returns the element's
@@ -545,21 +539,21 @@ f.println(x,...) writes its arguments to file f, separated by spaces and
 terminated by a newline character.
 
 proctype(x) -- succeed if procedure::
-proctype(x) return x if x is a procedure, and fails otherwise. proctype
-is the name of the result of main.type().
+proctype(x) return x if x is a procedure, and fails otherwise. proctype is
+the name of the result of main.type().
 
 L.pull() -- remove from end::
 L.pull() removes the final element from list L and returns the element's
 value.
 
 L.push(x[]) -- add to front::
-L.push(x...) adds its arguments, in order, to the beginning of list L.
-The last argument thus ends up as the first element of L.
+L.push(x...) adds its arguments, in order, to the beginning of list L. The
+last argument thus ends up as the first element of L.
 
 f.put(x[]) -- write values as lines::
 f.put(x,...) writes its arguments to file f, each followed by a newline.
-This treats a file as as a container of text values separated by
-newlines, which is consistent with the interpretation used by f.get().
+This treats a file as as a container of text values separated by newlines,
+which is consistent with the interpretation used by f.get().
 
 c.put(x) -- send to channel::
 c.put(e...) writes its argument values, in order, to channel c.
@@ -576,19 +570,18 @@ qmean(n,...) returns the quadratic mean, or root mean square, of its
 arguments.
 
 quote(s) -- add quotation marks and escapes to s [silver]_(http://golang.org/pkg/strconv#Quote[strconv.Quote])_::
-Quote returns a double-quoted Go string literal representing s. The
-returned string uses Go escape sequences (\t, \n, \xFF, \u0100) for
-control characters and non-printable characters as defined by IsPrint.
+Quote returns a double-quoted Go string literal representing s. The returned
+string uses Go escape sequences (\t, \n, \xFF, \u0100) for control
+characters and non-printable characters as defined by IsPrint.
 
 randgen(seed) -- create independent random sequence::
-randgen(i) returns a new random generator seeded by i. The returned
-external value is a Go
-http://golang.org/pkg/math/rand/#Rand[math.rand/Rand] object whose
-methods may be called from Goaldi to produce random values.
+randgen(i) returns a new random generator seeded by i. The returned external
+value is a Go http://golang.org/pkg/math/rand/#Rand[math.rand/Rand] object
+whose methods may be called from Goaldi to produce random values.
 
 randomize() -- irreproducibly seed random generation::
-randomize() seeds the random number generator with an irreproducible
-value obtained from /dev/urandom.
+randomize() seeds the random number generator with an irreproducible value
+obtained from /dev/urandom.
 
 read(f) -- read one line from a file::
 read(f) consumes and returns next line of text from file f. The trailing
@@ -596,56 +589,54 @@ linefeed or CRLF is removed from the returned value. read() fails at EOF
 when no more data is available.
 
 f.read() -- read one line::
-f.read() consumes and returns next line of text from file f. The
-trailing linefeed or CRLF is removed from the returned value. f.read()
-fails at EOF when no more data is available.
+f.read() consumes and returns next line of text from file f. The trailing
+linefeed or CRLF is removed from the returned value. f.read() fails at EOF
+when no more data is available.
 
 f.readb(size) -- read binary bytes::
-f.readb(n) reads up to n bytes into individual characters without
-attempting any UTF-8 decoding. This is useful for reading binary files.
-f.readb() fails at EOF when no more data is available.
+f.readb(n) reads up to n bytes into individual characters without attempting
+any UTF-8 decoding. This is useful for reading binary files. f.readb() fails
+at EOF when no more data is available.
 
 regex(expr) -- compile Go regular expression [silver]_(http://golang.org/pkg/regexp#Compile[regexp.Compile])_::
 Compile parses a regular expression and returns, if successful, a Regexp
 object that can be used to match against text.
 +
-When matching against text, the regexp returns a match that begins as
-early as possible in the input (leftmost), and among those it chooses
-the one that a backtracking search would have found first. This
-so-called leftmost-first matching is the same semantics that Perl,
-Python, and other implementations use, although this package implements
-it without the expense of backtracking. For POSIX leftmost-longest
-matching, see CompilePOSIX.
+When matching against text, the regexp returns a match that begins as early
+as possible in the input (leftmost), and among those it chooses the one that
+a backtracking search would have found first. This so-called leftmost-first
+matching is the same semantics that Perl, Python, and other implementations
+use, although this package implements it without the expense of
+backtracking. For POSIX leftmost-longest matching, see CompilePOSIX.
 
 regexp(expr) -- compile POSIX regular expression [silver]_(http://golang.org/pkg/regexp#CompilePOSIX[regexp.CompilePOSIX])_::
-CompilePOSIX is like Compile but restricts the regular expression to
-POSIX ERE (egrep) syntax and changes the match semantics to
-leftmost-longest.
+CompilePOSIX is like Compile but restricts the regular expression to POSIX
+ERE (egrep) syntax and changes the match semantics to leftmost-longest.
 +
-That is, when matching against text, the regexp returns a match that
-begins as early as possible in the input (leftmost), and among those it
-chooses a match that is as long as possible. This so-called
-leftmost-longest matching is the same semantics that early regular
-expression implementations used and that POSIX specifies.
+That is, when matching against text, the regexp returns a match that begins
+as early as possible in the input (leftmost), and among those it chooses a
+match that is as long as possible. This so-called leftmost-longest matching
+is the same semantics that early regular expression implementations used and
+that POSIX specifies.
 +
 However, there can be multiple leftmost-longest matches, with different
 submatch choices, and here this package diverges from POSIX. Among the
 possible leftmost-longest matches, this package chooses the one that a
-backtracking search would have found first, while POSIX specifies that
-the match be chosen to maximize the length of the first subexpression,
-then the second, and so on from left to right. The POSIX rule is
-computationally prohibitive and not even well-defined. See
+backtracking search would have found first, while POSIX specifies that the
+match be chosen to maximize the length of the first subexpression, then the
+second, and so on from left to right. The POSIX rule is computationally
+prohibitive and not even well-defined. See
 https://swtch.com/~rsc/regexp/regexp2.html#posix for details.
 
 remove(name) -- delete file [silver]_(http://golang.org/pkg/os#Remove[os.Remove])_::
-Remove removes the named file or (empty) directory. If there is an
-error, it will be of type *PathError.
+Remove removes the named file or (empty) directory. If there is an error, it
+will be of type *PathError.
 
 rename(old,new) -- change file name [silver]_(http://golang.org/pkg/os#Rename[os.Rename])_::
-Rename renames (moves) oldpath to newpath. If newpath already exists and
-is not a directory, Rename replaces it. OS-specific restrictions may
-apply when oldpath and newpath are in different directories. If there is
-an error, it will be of type *LinkError.
+Rename renames (moves) oldpath to newpath. If newpath already exists and is
+not a directory, Rename replaces it. OS-specific restrictions may apply when
+oldpath and newpath are in different directories. If there is an error, it
+will be of type *LinkError.
 
 repl(s,count) -- concatenate copies of s [silver]_(http://golang.org/pkg/strings#Repeat[strings.Repeat])_::
 Repeat returns a new string consisting of count copies of the string s.
@@ -656,9 +647,9 @@ overflows.
 replace(s,old,new) -- return s with new replacing old [silver]_(http://golang.org/pkg/strings#Replace[strings.Replace])_::
 Replace returns a copy of the string s with the first n non-overlapping
 instances of old replaced by new. If old is empty, it matches at the
-beginning of the string and after each UTF-8 sequence, yielding up to
-k+1 replacements for a k-rune string. If n < 0, there is no limit on the
-number of replacements.
+beginning of the string and after each UTF-8 sequence, yielding up to k+1
+replacements for a k-rune string. If n < 0, there is no limit on the number
+of replacements.
 
 reverse(s) -- return mirror image of string::
 reverse(s) returns the end-for-end reversal of the string s.
@@ -672,15 +663,15 @@ rtod(r) returns the degree equivalent of the angle r given in radians.
 seed(n) -- set random number seed [silver]_(http://golang.org/pkg/math/rand#Seed[math/rand.Seed])_::
 Seed uses the provided seed value to initialize the default Source to a
 deterministic state. If Seed is not called, the generator behaves as if
-seeded by Seed(1). Seed values that have the same remainder when divided
-by 2^31-1 generate the same pseudo-random sequence. Seed, unlike the
-Rand.Seed method, is safe for concurrent use.
+seeded by Seed(1). Seed values that have the same remainder when divided by
+2^31-1 generate the same pseudo-random sequence. Seed, unlike the Rand.Seed
+method, is safe for concurrent use.
 
 f.seek(n) -- set file position::
 f.seek(n) sets the position for the next read or write on file f. File
-positions are measured in bytes, not characters, counting the first byte
-as 1. A value of 0 seeks to end of file, and a negative value is an
-offset from the end.
+positions are measured in bytes, not characters, counting the first byte as
+1. A value of 0 seeks to end of file, and a negative value is an offset from
+the end.
 
 seq(n,incr) -- produce n to infinity::
 seq(n,incr) generates an endless sequence of values beginning at n with
@@ -702,76 +693,76 @@ Sin returns the sine of the radian argument x.
 +
 Special cases are:
 +
-	Sin(±0) = ±0
-	Sin(±Inf) = NaN
-	Sin(NaN) = NaN
+Sin(±0) = ±0
+Sin(±Inf) = NaN
+Sin(NaN) = NaN
 
 sinh(n) -- compute hyperbolic sine [silver]_(http://golang.org/pkg/math#Sinh[math.Sinh])_::
 Sinh returns the hyperbolic sine of x.
 +
 Special cases are:
 +
-	Sinh(±0) = ±0
-	Sinh(±Inf) = ±Inf
-	Sinh(NaN) = NaN
+Sinh(±0) = ±0
+Sinh(±Inf) = ±Inf
+Sinh(NaN) = NaN
 
 sleep(n) -- pause execution momentarily::
-sleep(n) delays execution for n seconds, which may be a fractional
-value. If n is nil, sleep() blocks indefinitely.
+sleep(n) delays execution for n seconds, which may be a fractional value. If
+n is nil, sleep() blocks indefinitely.
 
 L.sort(i) -- return sorted copy::
-L.sort(i) returns a copy of list L in which the elements have been
-sorted. Values are ordered first by type, then within types by their
-values. Among lists and among records of the same type, ordering is
-based on field i. Lists with no element i are sorted ahead of lists that
-have one. The value i defaults to 1 and must be strictly positive.
+L.sort(i) returns a copy of list L in which the elements have been sorted.
+Values are ordered first by type, then within types by their values. Among
+lists and among records of the same type, ordering is based on field i.
+Lists with no element i are sorted ahead of lists that have one. The value i
+defaults to 1 and must be strictly positive.
 
 S.sort(i) -- produce sorted list::
-S.sort(i) returns a sorted list of the members of set S. This is
-equivalent to [:!S:].sort(i).
+S.sort(i) returns a sorted list of the members of set S. This is equivalent
+to [:!S:].sort(i).
 
 T.sort(i) -- produce sorted list::
-T.sort(i) returns a sorted list of elemtype(key,value) records holding
-the contents of table T. Sorting is by key if i=1 and by value if i=2.
-T.sort(i) is equivalent to [:!T:].sort(i).
+T.sort(i) returns a sorted list of elemtype(key,value) records holding the
+contents of table T. Sorting is by key if i=1 and by value if i=2. T.sort(i)
+is equivalent to [:!T:].sort(i).
 
 split(s,sep) -- return fields delimited by sep [silver]_(http://golang.org/pkg/strings#Split[strings.Split])_::
-Split slices s into all substrings separated by sep and returns a slice
-of the substrings between those separators.
+Split slices s into all substrings separated by sep and returns a slice of
+the substrings between those separators.
 +
 If s does not contain sep and sep is not empty, Split returns a slice of
 length 1 whose only element is s.
 +
-If sep is empty, Split splits after each UTF-8 sequence. If both s and
-sep are empty, Split returns an empty slice.
+If sep is empty, Split splits after each UTF-8 sequence. If both s and sep
+are empty, Split returns an empty slice.
 +
 It is equivalent to SplitN with a count of -1.
 
 sprintf(fmt,x[]) -- make string by formatting values [silver]_(http://golang.org/pkg/fmt#Sprintf[fmt.Sprintf])_::
-Sprintf formats according to a format specifier and returns the
-resulting string.
+Sprintf formats according to a format specifier and returns the resulting
+string.
 
 sqrt(n) -- compute square root [silver]_(http://golang.org/pkg/math#Sqrt[math.Sqrt])_::
 Sqrt returns the square root of x.
 +
 Special cases are:
 +
-	Sqrt(+Inf) = +Inf
-	Sqrt(±0) = ±0
-	Sqrt(x < 0) = NaN
-	Sqrt(NaN) = NaN
+Sqrt(+Inf) = +Inf
+Sqrt(±0) = ±0
+Sqrt(x < 0) = NaN
+Sqrt(NaN) = NaN
 
 stop(x[]) -- write values and abort program::
-stop(x,...) writes its arguments to %stderr and terminates execution
-with an exit code of 1 (indicating an error).
+stop(x,...) writes its arguments to %stderr and terminates execution with an
+exit code of 1 (indicating an error).
 
 string(x) -- render as string::
-string(x) returns a string representation of x. The result is identical
-to the value used by write(x) or sprintf("%v",x).
+string(x) returns a string representation of x. The result is identical to
+the value used by write(x) or sprintf("%v",x).
 
 x.string() -- render value as string::
-string(x) returns a string representation of x. The result is identical
-to the value used by write(x) or sprintf("%v",x).
+string(x) returns a string representation of x. The result is identical to
+the value used by write(x) or sprintf("%v",x).
 
 table(x) -- create a table with default value x::
 table(x) creates a new, empty table having x as the default value.
@@ -781,18 +772,18 @@ Tan returns the tangent of the radian argument x.
 +
 Special cases are:
 +
-	Tan(±0) = ±0
-	Tan(±Inf) = NaN
-	Tan(NaN) = NaN
+Tan(±0) = ±0
+Tan(±Inf) = NaN
+Tan(NaN) = NaN
 
 tanh(n) -- compute hyperbolic tangent [silver]_(http://golang.org/pkg/math#Tanh[math.Tanh])_::
 Tanh returns the hyperbolic tangent of x.
 +
 Special cases are:
 +
-	Tanh(±0) = ±0
-	Tanh(±Inf) = ±1
-	Tanh(NaN) = NaN
+Tanh(±0) = ±0
+Tanh(±Inf) = ±1
+Tanh(NaN) = NaN
 
 throw(e,x[]) -- terminate with error and offending values::
 throw(e, x...) raises an exception with error value e and zero or more
@@ -805,26 +796,26 @@ time() -- return the current time::
 time() returns the current time of day in the form "hh:mm:ss".
 
 tolower(s) -- convert to lower case [silver]_(http://golang.org/pkg/strings#ToLower[strings.ToLower])_::
-ToLower returns a copy of the string s with all Unicode letters mapped
-to their lower case.
+ToLower returns a copy of the string s with all Unicode letters mapped to
+their lower case.
 
 toupper(s) -- convert to upper case [silver]_(http://golang.org/pkg/strings#ToUpper[strings.ToUpper])_::
-ToUpper returns a copy of the string s with all Unicode letters mapped
-to their upper case.
+ToUpper returns a copy of the string s with all Unicode letters mapped to
+their upper case.
 
 trim(s,cutset) -- remove leading and trailing characters [silver]_(http://golang.org/pkg/strings#Trim[strings.Trim])_::
-Trim returns a slice of the string s with all leading and trailing
-Unicode code points contained in cutset removed.
+Trim returns a slice of the string s with all leading and trailing Unicode
+code points contained in cutset removed.
 
 truncate(name,size) -- change file size [silver]_(http://golang.org/pkg/os#Truncate[os.Truncate])_::
-Truncate changes the size of the named file. If the file is a symbolic
-link, it changes the size of the link's target. If there is an error, it
-will be of type *PathError.
+Truncate changes the size of the named file. If the file is a symbolic link,
+it changes the size of the link's target. If there is an error, it will be
+of type *PathError.
 
 tuple(id:e...) -- create anonymous record::
-tuple(id:e, ...) creates an anonymous record value. Each argument must
-be named. Each distinct identifier list defines a new type, all of which
-have the name "tuple".
+tuple(id:e, ...) creates an anonymous record value. Each argument must be
+named. Each distinct identifier list defines a new type, all of which have
+the name "tuple".
 
 type(x) -- return type of value::
 type(x) returns the value of type "type" that represents the type of x.
@@ -837,10 +828,10 @@ f.unbuffer() removes any buffering from file f. Any buffered output is
 flushed; any buffered input is lost.
 
 unquote(s) -- remove delimiters and escapes from s::
-unquote(s) removes delimiters and escapes from a quoted string. The
-argument s must begin and end with explicit "double quotes" or
-\`backticks`. unquote() fails if s is not properly quoted or if it
-contains an invalid (by Go rules) escape sequence.
+unquote(s) removes delimiters and escapes from a quoted string. The argument
+s must begin and end with explicit "double quotes" or \`backticks`.
+unquote() fails if s is not properly quoted or if it contains an invalid (by
+Go rules) escape sequence.
 
 f.where() -- report current file position::
 f.where() reports the current position of file f. File positions are
@@ -850,8 +841,7 @@ write(x[]) -- write values and newline::
 write(x,...) writes its arguments to %stdout followed by a newline.
 
 f.write(x[]) -- write values and newline::
-f.write(x,...) writes its arguments to file f followed by a single
-newline.
+f.write(x,...) writes its arguments to file f followed by a single newline.
 
 f.writeb(s) -- write binary bytes::
 f.writeb(s) writes the string s to file f without any UTF-8 encoding.
