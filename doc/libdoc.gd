@@ -3,7 +3,7 @@
 #  libdoc.gd efile godoc -- extract Goaldi library documentation
 #
 #  efile is a file produced by "goaldi -E"
-#  godoc is a file produced by concatenating "godoc pkg" for all needed packages
+#  godoc is a file produced by "go doc -all pkg" for all needed packages
 #
 #  Parsing assume relatively simple types like those we are actually using.
 #  This probably can't handle double indirection or multiple parenthesis levels.
@@ -42,8 +42,11 @@ procedure loaddoc(g) {
 			local f := fields(line)
 			case f[1] of {
 				"package": {	# package: just remember the name
-					curpkg := f[2] || "."
 					curlist := []
+					if !!contains(line, " // import ") then {
+						# not a false hit; remember the name
+						curpkg := f[2] || "."
+					}
 				}
 				"func": {		# func: register and start accumulating lines
 					newfunc(line)
@@ -90,7 +93,7 @@ procedure gendoc(e) {
 		if !!contains(line, " -- ") then {
 
 			# this is a line specifying a stdlib procedure or method
-			local words := split(line, " ")
+			local words := split(trim(line, " "), " ")
 			local fspec := words[-1]
 			local descr := trim(line[1:-*fspec], " ")
 			local func := split(fspec, "/")[-1]

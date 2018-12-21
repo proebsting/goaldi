@@ -3,7 +3,7 @@
 #  libdoc.sh -- extract Goaldi library documentation
 #
 #  This script uses "goaldi -l -E" to list the standard library contents,
-#  runs "godoc" on each referenced package, then runs a Goaldi program
+#  runs "go doc" on each referenced package, then runs a Goaldi program
 #  to produce the final output.
 #
 #  Note that libdoc.gd has an "exclusion list" to suppress certain procedures
@@ -28,7 +28,7 @@ PKGS=`$GOALDI -l -E /dev/null 2>/dev/null |
 
 #  get the documetation for those packages
 for P in $PKGS; do
-	godoc $P >>$TMP2
+	go doc -all $P >>$TMP2
 done
 
 #  now process everything
