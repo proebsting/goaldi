@@ -115,7 +115,7 @@ func (v *VProcedure) Call(env *Env, args []Value, names []string) (Value, *Closu
 	}
 }
 
-//  proctype(x) return x if x is a procedure, and fails otherwise.
+//  proctype(x) returns x if x is a procedure, and fails otherwise.
 //  proctype is the name of the result of main.type().
 func ProcCtor(env *Env, args ...Value) (Value, *Closure) {
 	x := ProcArg(args, 0, NilValue)

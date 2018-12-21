@@ -539,7 +539,7 @@ f.println(x,...) writes its arguments to file f, separated by spaces and
 terminated by a newline character.
 
 proctype(x) -- succeed if procedure::
-proctype(x) return x if x is a procedure, and fails otherwise. proctype is
+proctype(x) returns x if x is a procedure, and fails otherwise. proctype is
 the name of the result of main.type().
 
 L.pull() -- remove from end::
