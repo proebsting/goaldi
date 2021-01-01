@@ -27,7 +27,7 @@ PKGS=`$GOALDI -l -E /dev/null 2>/dev/null |
 	uniq`
 
 #  get the documetation for those packages
-for P in $PKGS; do
+for P in goaldi/runtime $PKGS; do
 	go doc -all $P >>$TMP2
 done
 

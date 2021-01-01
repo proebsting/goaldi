@@ -4,8 +4,8 @@ package main
 
 import (
 	"fmt"
-	"goaldi/ir"
-	g "goaldi/runtime"
+	"github.com/proebsting/goaldi/ir"
+	g "github.com/proebsting/goaldi/runtime"
 )
 
 //  iOperator flag bits

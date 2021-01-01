@@ -53,24 +53,24 @@ Abs returns the absolute value of x.
 +
 Special cases are:
 +
-Abs(±Inf) = +Inf
-Abs(NaN) = NaN
+    Abs(±Inf) = +Inf
+    Abs(NaN) = NaN
 
 acos(n) -- compute arccosine [silver]_(http://golang.org/pkg/math#Acos[math.Acos])_::
 Acos returns the arccosine, in radians, of x.
 +
 Special case is:
 +
-Acos(x) = NaN if x < -1 or x > 1
+    Acos(x) = NaN if x < -1 or x > 1
 
 acosh(n) -- compute hyperbolic arccosine [silver]_(http://golang.org/pkg/math#Acosh[math.Acosh])_::
 Acosh returns the inverse hyperbolic cosine of x.
 +
 Special cases are:
 +
-Acosh(+Inf) = +Inf
-Acosh(x) = NaN if x < 1
-Acosh(NaN) = NaN
+    Acosh(+Inf) = +Inf
+    Acosh(x) = NaN if x < 1
+    Acosh(NaN) = NaN
 
 amean(n[]) -- compute arithmetic mean::
 amean(n,...) returns the arithmetic mean, or simple average, of its
@@ -81,17 +81,17 @@ Asin returns the arcsine, in radians, of x.
 +
 Special cases are:
 +
-Asin(±0) = ±0
-Asin(x) = NaN if x < -1 or x > 1
+    Asin(±0) = ±0
+    Asin(x) = NaN if x < -1 or x > 1
 
 asinh(n) -- compute hyperbolic arcsine [silver]_(http://golang.org/pkg/math#Asinh[math.Asinh])_::
 Asinh returns the inverse hyperbolic sine of x.
 +
 Special cases are:
 +
-Asinh(±0) = ±0
-Asinh(±Inf) = ±Inf
-Asinh(NaN) = NaN
+    Asinh(±0) = ±0
+    Asinh(±Inf) = ±Inf
+    Asinh(NaN) = NaN
 
 atan(y,x) -- compute arctangent of y / x::
 atan(y, x) returns the arctangent, in radians, of (y/x). The default value
@@ -103,11 +103,11 @@ Atanh returns the inverse hyperbolic tangent of x.
 +
 Special cases are:
 +
-Atanh(1) = +Inf
-Atanh(±0) = ±0
-Atanh(-1) = -Inf
-Atanh(x) = NaN if x < -1 or x > 1
-Atanh(NaN) = NaN
+    Atanh(1) = +Inf
+    Atanh(±0) = ±0
+    Atanh(-1) = -Inf
+    Atanh(x) = NaN if x < -1 or x > 1
+    Atanh(NaN) = NaN
 
 buffer(size,c) -- interpose buffer before channel::
 buffer(size, c) returns a channel that interposes a buffer of the given size
@@ -123,18 +123,18 @@ Cbrt returns the cube root of x.
 +
 Special cases are:
 +
-Cbrt(±0) = ±0
-Cbrt(±Inf) = ±Inf
-Cbrt(NaN) = NaN
+    Cbrt(±0) = ±0
+    Cbrt(±Inf) = ±Inf
+    Cbrt(NaN) = NaN
 
 ceil(n) -- round up to integer [silver]_(http://golang.org/pkg/math#Ceil[math.Ceil])_::
 Ceil returns the least integer value greater than or equal to x.
 +
 Special cases are:
 +
-Ceil(±0) = ±0
-Ceil(±Inf) = ±Inf
-Ceil(NaN) = NaN
+    Ceil(±0) = ±0
+    Ceil(±Inf) = ±Inf
+    Ceil(NaN) = NaN
 
 center(s,w,p) -- center with padding p to width w::
 center(s,w,p) centers s in a string of width w, padding with p.
@@ -164,10 +164,11 @@ system.
 On Unix, the mode's permission bits, ModeSetuid, ModeSetgid, and ModeSticky
 are used.
 +
-On Windows, the mode must be non-zero but otherwise only the 0200 bit (owner
-writable) of mode is used; it controls whether the file's read-only
-attribute is set or cleared. attribute. The other bits are currently unused.
-Use mode 0400 for a read-only file and 0600 for a readable+writable file.
+On Windows, only the 0200 bit (owner writable) of mode is used; it controls
+whether the file's read-only attribute is set or cleared. The other bits are
+currently unused. For compatibility with Go 1.12 and earlier, use a non-zero
+mode. Use mode 0400 for a read-only file and 0600 for a readable+writable
+file.
 +
 On Plan 9, the mode's permission bits, ModeAppend, ModeExclusive, and
 ModeTemporary are used.
@@ -228,17 +229,17 @@ Cos returns the cosine of the radian argument x.
 +
 Special cases are:
 +
-Cos(±Inf) = NaN
-Cos(NaN) = NaN
+    Cos(±Inf) = NaN
+    Cos(NaN) = NaN
 
 cosh(n) -- compute hyperbolic cosine [silver]_(http://golang.org/pkg/math#Cosh[math.Cosh])_::
 Cosh returns the hyperbolic cosine of x.
 +
 Special cases are:
 +
-Cosh(±0) = 1
-Cosh(±Inf) = +Inf
-Cosh(NaN) = NaN
+    Cosh(±0) = 1
+    Cosh(±Inf) = +Inf
+    Cosh(NaN) = NaN
 
 cputime() -- return total processor time used::
 cputime() returns processor usage in seconds, likely a fractional value. The
@@ -271,7 +272,8 @@ Environ returns a copy of strings representing the environment, in the form
 
 equalfold(s,t) -- return 1 if s==t with case folding [silver]_(http://golang.org/pkg/strings#EqualFold[strings.EqualFold])_::
 EqualFold reports whether s and t, interpreted as UTF-8 strings, are equal
-under Unicode case-folding.
+under Unicode case-folding, which is a more general form of
+case-insensitivity.
 
 errresult(e) -- return e::
 errresult(e) returns its argument e. It is suitable for use as a catch
@@ -286,8 +288,8 @@ Exp returns e**x, the base-e exponential of x.
 +
 Special cases are:
 +
-Exp(+Inf) = +Inf
-Exp(NaN) = NaN
+    Exp(+Inf) = +Inf
+    Exp(NaN) = NaN
 +
 Very large values overflow to 0 or +Inf. Very small values underflow to 1.
 
@@ -307,12 +309,12 @@ file(name,flags) opens a file and returns a file value.
 +
 Each character of the optional flags argument selects an option:
 +
-"r"   open for reading
-"w"   open for writing
-"a"   open for appending
-"c"   create and open for writing
-"n"   no buffering
-"f"   fail on error (instead of panicking)
+    "r"   open for reading
+    "w"   open for writing
+    "a"   open for appending
+    "c"   create and open for writing
+    "n"   no buffering
+    "f"   fail on error (instead of panicking)
 +
 If none of "w", "a", or "c" are specified, then "r" is implied. "w" implies
 "c" unless "r" is also specified. Buffering is used if "n" is absent and the
@@ -325,9 +327,9 @@ Floor returns the greatest integer value less than or equal to x.
 +
 Special cases are:
 +
-Floor(±0) = ±0
-Floor(±Inf) = ±Inf
-Floor(NaN) = NaN
+    Floor(±0) = ±0
+    Floor(±Inf) = ±Inf
+    Floor(NaN) = NaN
 
 f.flush() -- flush file::
 f.flush() flushes output on file f.
@@ -387,10 +389,10 @@ underflow.
 +
 Special cases are:
 +
-Hypot(±Inf, q) = +Inf
-Hypot(p, ±Inf) = +Inf
-Hypot(NaN, q) = NaN
-Hypot(p, NaN) = NaN
+    Hypot(±Inf, q) = +Inf
+    Hypot(p, ±Inf) = +Inf
+    Hypot(NaN, q) = NaN
+    Hypot(p, NaN) = NaN
 
 iand(i,j) -- compute bitwise AND::
 iand(i, j) returns the bitwise AND of the values i and j truncated to
@@ -422,9 +424,9 @@ Trunc returns the integer value of x.
 +
 Special cases are:
 +
-Trunc(±0) = ±0
-Trunc(±Inf) = ±Inf
-Trunc(NaN) = NaN
+    Trunc(±0) = ±0
+    Trunc(±Inf) = ±Inf
+    Trunc(NaN) = NaN
 
 ior(i,j) -- compute bitwise OR::
 ior(i, j) returns the bitwise OR of the values i and j truncated to integer.
@@ -664,7 +666,7 @@ seed(n) -- set random number seed [silver]_(http://golang.org/pkg/math/rand#Seed
 Seed uses the provided seed value to initialize the default Source to a
 deterministic state. If Seed is not called, the generator behaves as if
 seeded by Seed(1). Seed values that have the same remainder when divided by
-2^31-1 generate the same pseudo-random sequence. Seed, unlike the Rand.Seed
+2³¹-1 generate the same pseudo-random sequence. Seed, unlike the Rand.Seed
 method, is safe for concurrent use.
 
 f.seek(n) -- set file position::
@@ -693,18 +695,18 @@ Sin returns the sine of the radian argument x.
 +
 Special cases are:
 +
-Sin(±0) = ±0
-Sin(±Inf) = NaN
-Sin(NaN) = NaN
+    Sin(±0) = ±0
+    Sin(±Inf) = NaN
+    Sin(NaN) = NaN
 
 sinh(n) -- compute hyperbolic sine [silver]_(http://golang.org/pkg/math#Sinh[math.Sinh])_::
 Sinh returns the hyperbolic sine of x.
 +
 Special cases are:
 +
-Sinh(±0) = ±0
-Sinh(±Inf) = ±Inf
-Sinh(NaN) = NaN
+    Sinh(±0) = ±0
+    Sinh(±Inf) = ±Inf
+    Sinh(NaN) = NaN
 
 sleep(n) -- pause execution momentarily::
 sleep(n) delays execution for n seconds, which may be a fractional value. If
@@ -747,10 +749,10 @@ Sqrt returns the square root of x.
 +
 Special cases are:
 +
-Sqrt(+Inf) = +Inf
-Sqrt(±0) = ±0
-Sqrt(x < 0) = NaN
-Sqrt(NaN) = NaN
+    Sqrt(+Inf) = +Inf
+    Sqrt(±0) = ±0
+    Sqrt(x < 0) = NaN
+    Sqrt(NaN) = NaN
 
 stop(x[]) -- write values and abort program::
 stop(x,...) writes its arguments to %stderr and terminates execution with an
@@ -772,18 +774,18 @@ Tan returns the tangent of the radian argument x.
 +
 Special cases are:
 +
-Tan(±0) = ±0
-Tan(±Inf) = NaN
-Tan(NaN) = NaN
+    Tan(±0) = ±0
+    Tan(±Inf) = NaN
+    Tan(NaN) = NaN
 
 tanh(n) -- compute hyperbolic tangent [silver]_(http://golang.org/pkg/math#Tanh[math.Tanh])_::
 Tanh returns the hyperbolic tangent of x.
 +
 Special cases are:
 +
-Tanh(±0) = ±0
-Tanh(±Inf) = ±1
-Tanh(NaN) = NaN
+    Tanh(±0) = ±0
+    Tanh(±Inf) = ±1
+    Tanh(NaN) = NaN
 
 throw(e,x[]) -- terminate with error and offending values::
 throw(e, x...) raises an exception with error value e and zero or more
@@ -796,12 +798,10 @@ time() -- return the current time::
 time() returns the current time of day in the form "hh:mm:ss".
 
 tolower(s) -- convert to lower case [silver]_(http://golang.org/pkg/strings#ToLower[strings.ToLower])_::
-ToLower returns a copy of the string s with all Unicode letters mapped to
-their lower case.
+ToLower returns s with all Unicode letters mapped to their lower case.
 
 toupper(s) -- convert to upper case [silver]_(http://golang.org/pkg/strings#ToUpper[strings.ToUpper])_::
-ToUpper returns a copy of the string s with all Unicode letters mapped to
-their upper case.
+ToUpper returns s with all Unicode letters mapped to their upper case.
 
 trim(s,cutset) -- remove leading and trailing characters [silver]_(http://golang.org/pkg/strings#Trim[strings.Trim])_::
 Trim returns a slice of the string s with all leading and trailing Unicode

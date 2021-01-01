@@ -4,7 +4,7 @@ package extensions
 
 import (
 	"archive/zip"
-	"goaldi/runtime"
+	"github.com/proebsting/goaldi/runtime"
 )
 
 func init() {

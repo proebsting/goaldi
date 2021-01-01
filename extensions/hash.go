@@ -12,7 +12,7 @@
 package extensions
 
 import (
-	g "goaldi/runtime"
+	g "github.com/proebsting/goaldi/runtime"
 	"hash"
 	"hash/adler32"
 	"hash/crc32"

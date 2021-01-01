@@ -3,8 +3,8 @@
 package main
 
 import (
-	"goaldi/ir"
-	g "goaldi/runtime"
+	"github.com/proebsting/goaldi/ir"
+	g "github.com/proebsting/goaldi/runtime"
 	"strings"
 	"unicode"
 )

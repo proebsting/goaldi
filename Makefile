@@ -15,7 +15,7 @@
 #      or after making incompatible changes to the intermediate representation.
 
 
-PKG = goaldi
+PKG = github.com/proebsting/goaldi
 PROGS = $(PKG)/interp
 # GOBIN expands in the shell to {first component of $GOPATH}/bin
 GOBIN = $${GOPATH%%:*}/bin

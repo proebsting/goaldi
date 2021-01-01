@@ -139,7 +139,7 @@ procedure show(descr, fspec, doc) {
 	# build a boilerplate header from available parts
 	write()
 	writes(descr)
-	if fspec[1+:6] ~== "goaldi" then {
+	if not !!contains(fspec, "/goaldi/") then {
 		^w := split(fspec, ".")
 		^u := "http://golang.org/pkg/" || w[1] || "#" || w[2]
 		writes(" [silver]_(", u, "[", fspec, "])_")

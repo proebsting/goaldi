@@ -11,7 +11,7 @@
 package extensions
 
 import (
-	g "goaldi/runtime"
+	g "github.com/proebsting/goaldi/runtime"
 	"io"
 	"net/http"
 	"net/url"

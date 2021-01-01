@@ -4,7 +4,7 @@ package main
 
 import (
 	"fmt"
-	g "goaldi/runtime"
+	g "github.com/proebsting/goaldi/runtime"
 )
 
 //  procedure frame

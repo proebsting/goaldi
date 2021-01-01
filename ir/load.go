@@ -8,7 +8,7 @@ import (
 	"compress/bzip2"
 	"encoding/json"
 	"fmt"
-	g "goaldi/runtime"
+	g "github.com/proebsting/goaldi/runtime"
 	"io"
 	"reflect"
 	"runtime"
