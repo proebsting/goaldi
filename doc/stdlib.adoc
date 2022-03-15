@@ -739,6 +739,8 @@ If sep is empty, Split splits after each UTF-8 sequence. If both s and sep
 are empty, Split returns an empty slice.
 +
 It is equivalent to SplitN with a count of -1.
++
+To split around the first instance of a separator, see Cut.
 
 sprintf(fmt,x[]) -- make string by formatting values [silver]_(http://golang.org/pkg/fmt#Sprintf[fmt.Sprintf])_::
 Sprintf formats according to a format specifier and returns the resulting
