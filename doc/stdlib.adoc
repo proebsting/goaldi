@@ -155,8 +155,8 @@ is an error, it will be of type *PathError.
 
 chmod(name,mode) -- change file mode [silver]_(http://golang.org/pkg/os#Chmod[os.Chmod])_::
 Chmod changes the mode of the named file to mode. If the file is a symbolic
-link, it changes the mode of the link's target. If there is an error, it
-will be of type *PathError.
+link, it changes the mode of the link's target. If there is an error,
+it will be of type *PathError.
 +
 A different subset of the mode bits are used, depending on the operating
 system.
@@ -196,9 +196,9 @@ by the elements of arg, so arg should not include the command name itself.
 For example, Command("echo", "hello"). Args[0] is always name, not the
 possibly resolved Path.
 +
-On Windows, processes receive the whole command line as a single string and
-do their own parsing. Command combines and quotes Args into a command line
-string with an algorithm compatible with applications using
+On Windows, processes receive the whole command line as a single string
+and do their own parsing. Command combines and quotes Args into a
+command line string with an algorithm compatible with applications using
 CommandLineToArgvW (which is the most common way). Notable exceptions are
 msiexec.exe and cmd.exe (and thus, all batch files), which have a different
 unquoting algorithm. In these or other similar cases, you can do the quoting
@@ -206,8 +206,8 @@ yourself and provide the full command line in SysProcAttr.CmdLine, leaving
 Args empty.
 
 constructor(name,fields[]) -- build a record constructor::
-constructor(name, field...) builds a record constructor for creating records
-with the given type name and field list. There is no requirement or
+constructor(name, field...) builds a record constructor for creating
+records with the given type name and field list. There is no requirement or
 guarantee that record names be distinct.
 
 contains(s,substr) -- return 1 if substr is in s [silver]_(http://golang.org/pkg/strings#Contains[strings.Contains])_::
@@ -242,8 +242,8 @@ Special cases are:
     Cosh(NaN) = NaN
 
 cputime() -- return total processor time used::
-cputime() returns processor usage in seconds, likely a fractional value. The
-result includes both "user" and "system" time.
+cputime() returns processor usage in seconds, likely a fractional value.
+The result includes both "user" and "system" time.
 
 date() -- return the current date::
 date() returns the current date in the form "yyyy/mm/dd".
@@ -252,16 +252,16 @@ S.delete(x[]) -- remove members::
 S.delete(x...) removes all of its arguments from set S. It returns S.
 
 T.delete(x[]) -- remove entries::
-T.delete(k...) deletes the entries with the given keys from the table T. It
-returns T.
+T.delete(k...) deletes the entries with the given keys from the table T.
+It returns T.
 
 dtor(d) -- convert degrees to radians::
 dtor(d) returns the radian equivalent of the angle d given in degrees.
 
 duration(x) -- convert value to a Go Duration struct::
 duration(x) converts x to an external Go
-http://golang.org/pkg/time#Duration[time.Duration] value. If x is a string,
-it is passed directly to
+http://golang.org/pkg/time#Duration[time.Duration]
+value. If x is a string, it is passed directly to
 http://golang.org/pkg/time#ParseDuration[time.ParseDuration()]. If x is a
 number, "s" is appended to interpret it as an interval in seconds. If the
 conversion is unsuccessful, duration() fails.
@@ -271,8 +271,8 @@ Environ returns a copy of strings representing the environment, in the form
 "key=value".
 
 equalfold(s,t) -- return 1 if s==t with case folding [silver]_(http://golang.org/pkg/strings#EqualFold[strings.EqualFold])_::
-EqualFold reports whether s and t, interpreted as UTF-8 strings, are equal
-under Unicode case-folding, which is a more general form of
+EqualFold reports whether s and t, interpreted as UTF-8 strings,
+are equal under simple Unicode case-folding, which is a more general form of
 case-insensitivity.
 
 errresult(e) -- return e::
@@ -357,9 +357,9 @@ L.get() removes the first element from list L and returns the element's
 value.
 
 getenv(key) -- read environment variable [silver]_(http://golang.org/pkg/os#Getenv[os.Getenv])_::
-Getenv retrieves the value of the environment variable named by the key. It
-returns the value, which will be empty if the variable is not present. To
-distinguish between an empty value and an unset value, use LookupEnv.
+Getenv retrieves the value of the environment variable named by the key.
+It returns the value, which will be empty if the variable is not present.
+To distinguish between an empty value and an unset value, use LookupEnv.
 
 getpid() -- get process ID [silver]_(http://golang.org/pkg/os#Getpid[os.Getpid])_::
 Getpid returns the process id of the caller.
@@ -368,8 +368,8 @@ getppid() -- get parent process ID [silver]_(http://golang.org/pkg/os#Getppid[os
 Getppid returns the process id of the caller's parent.
 
 getwd() -- get working directory [silver]_(http://golang.org/pkg/os#Getwd[os.Getwd])_::
-Getwd returns a rooted path name corresponding to the current directory. If
-the current directory can be reached via multiple paths (due to symbolic
+Getwd returns a rooted path name corresponding to the current directory.
+If the current directory can be reached via multiple paths (due to symbolic
 links), Getwd may return any one of them.
 
 gmean(n[]) -- compute geometric mean::
@@ -501,8 +501,8 @@ handler.
 
 now() -- return the current instant as a Go Time struct::
 now() returns the current time as an external Go
-http://golang.org/pkg/time#Time[time.Time] value, which can then be
-formatted or otherwise manipulated by calling
+http://golang.org/pkg/time#Time[time.Time] value, which
+can then be formatted or otherwise manipulated by calling
 http://golang.org/pkg/time/#Time.Format[tval.Format()] or other associated
 methods.
 
@@ -549,8 +549,8 @@ L.pull() removes the final element from list L and returns the element's
 value.
 
 L.push(x[]) -- add to front::
-L.push(x...) adds its arguments, in order, to the beginning of list L. The
-last argument thus ends up as the first element of L.
+L.push(x...) adds its arguments, in order, to the beginning of list L.
+The last argument thus ends up as the first element of L.
 
 f.put(x[]) -- write values as lines::
 f.put(x,...) writes its arguments to file f, each followed by a newline.
@@ -572,8 +572,8 @@ qmean(n,...) returns the quadratic mean, or root mean square, of its
 arguments.
 
 quote(s) -- add quotation marks and escapes to s [silver]_(http://golang.org/pkg/strconv#Quote[strconv.Quote])_::
-Quote returns a double-quoted Go string literal representing s. The returned
-string uses Go escape sequences (\t, \n, \xFF, \u0100) for control
+Quote returns a double-quoted Go string literal representing s. The
+returned string uses Go escape sequences (\t, \n, \xFF, \u0100) for control
 characters and non-printable characters as defined by IsPrint.
 
 randgen(seed) -- create independent random sequence::
@@ -604,12 +604,12 @@ regex(expr) -- compile Go regular expression [silver]_(http://golang.org/pkg/reg
 Compile parses a regular expression and returns, if successful, a Regexp
 object that can be used to match against text.
 +
-When matching against text, the regexp returns a match that begins as early
-as possible in the input (leftmost), and among those it chooses the one that
-a backtracking search would have found first. This so-called leftmost-first
-matching is the same semantics that Perl, Python, and other implementations
-use, although this package implements it without the expense of
-backtracking. For POSIX leftmost-longest matching, see CompilePOSIX.
+When matching against text, the regexp returns a match that begins as
+early as possible in the input (leftmost), and among those it chooses
+the one that a backtracking search would have found first. This so-called
+leftmost-first matching is the same semantics that Perl, Python, and other
+implementations use, although this package implements it without the expense
+of backtracking. For POSIX leftmost-longest matching, see CompilePOSIX.
 
 regexp(expr) -- compile POSIX regular expression [silver]_(http://golang.org/pkg/regexp#CompilePOSIX[regexp.CompilePOSIX])_::
 CompilePOSIX is like Compile but restricts the regular expression to POSIX
@@ -621,24 +621,24 @@ match that is as long as possible. This so-called leftmost-longest matching
 is the same semantics that early regular expression implementations used and
 that POSIX specifies.
 +
-However, there can be multiple leftmost-longest matches, with different
-submatch choices, and here this package diverges from POSIX. Among the
-possible leftmost-longest matches, this package chooses the one that a
-backtracking search would have found first, while POSIX specifies that the
-match be chosen to maximize the length of the first subexpression, then the
-second, and so on from left to right. The POSIX rule is computationally
-prohibitive and not even well-defined. See
-https://swtch.com/~rsc/regexp/regexp2.html#posix for details.
+However, there can be multiple leftmost-longest matches, with
+different submatch choices, and here this package diverges from POSIX.
+Among the possible leftmost-longest matches, this package chooses the
+one that a backtracking search would have found first, while POSIX
+specifies that the match be chosen to maximize the length of the
+first subexpression, then the second, and so on from left to right.
+The POSIX rule is computationally prohibitive and not even well-defined.
+See https://swtch.com/~rsc/regexp/regexp2.html#posix for details.
 
 remove(name) -- delete file [silver]_(http://golang.org/pkg/os#Remove[os.Remove])_::
-Remove removes the named file or (empty) directory. If there is an error, it
-will be of type *PathError.
+Remove removes the named file or (empty) directory. If there is an error,
+it will be of type *PathError.
 
 rename(old,new) -- change file name [silver]_(http://golang.org/pkg/os#Rename[os.Rename])_::
-Rename renames (moves) oldpath to newpath. If newpath already exists and is
-not a directory, Rename replaces it. OS-specific restrictions may apply when
-oldpath and newpath are in different directories. If there is an error, it
-will be of type *LinkError.
+Rename renames (moves) oldpath to newpath. If newpath already exists and
+is not a directory, Rename replaces it. OS-specific restrictions may apply
+when oldpath and newpath are in different directories. If there is an error,
+it will be of type *LinkError.
 
 repl(s,count) -- concatenate copies of s [silver]_(http://golang.org/pkg/strings#Repeat[strings.Repeat])_::
 Repeat returns a new string consisting of count copies of the string s.
@@ -683,8 +683,8 @@ set(L) -- create a new set from list L::
 set(L) creates a set initialized by the values of list L.
 
 setenv(key,value) -- set environment variable [silver]_(http://golang.org/pkg/os#Setenv[os.Setenv])_::
-Setenv sets the value of the environment variable named by the key. It
-returns an error, if any.
+Setenv sets the value of the environment variable named by the key.
+It returns an error, if any.
 
 L.shuffle() -- return randomized copy::
 L.shuffle() returns a copy of list L in which the elements have been
@@ -709,8 +709,8 @@ Special cases are:
     Sinh(NaN) = NaN
 
 sleep(n) -- pause execution momentarily::
-sleep(n) delays execution for n seconds, which may be a fractional value. If
-n is nil, sleep() blocks indefinitely.
+sleep(n) delays execution for n seconds, which may be a fractional value.
+If n is nil, sleep() blocks indefinitely.
 
 L.sort(i) -- return sorted copy::
 L.sort(i) returns a copy of list L in which the elements have been sorted.
