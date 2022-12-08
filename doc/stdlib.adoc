@@ -664,10 +664,23 @@ rtod(r) returns the degree equivalent of the angle r given in radians.
 
 seed(n) -- set random number seed [silver]_(http://golang.org/pkg/math/rand#Seed[math/rand.Seed])_::
 Seed uses the provided seed value to initialize the default Source to a
-deterministic state. If Seed is not called, the generator behaves as if
-seeded by Seed(1). Seed values that have the same remainder when divided by
-2³¹-1 generate the same pseudo-random sequence. Seed, unlike the Rand.Seed
-method, is safe for concurrent use.
+deterministic state. Seed values that have the same remainder when divided
+by 2³¹-1 generate the same pseudo-random sequence. Seed, unlike the
+Rand.Seed method, is safe for concurrent use.
++
+If Seed is not called, the generator is seeded randomly at program startup.
++
+Prior to Go 1.20, the generator was seeded like Seed(1) at program startup.
+To force the old behavior, call Seed(1) at program startup. Alternately,
+set GODEBUG=randautoseed=0 in the environment before making any calls to
+functions in this package.
++
+Deprecated: Programs that call Seed and then expect a specific sequence of
+results from the global random source (using functions such as Int) can
+be broken when a dependency changes how much it consumes from the global
+random source. To avoid such breakages, programs that need a specific result
+sequence should use NewRand(NewSource(seed)) to obtain a random generator
+that other packages cannot access.
 
 f.seek(n) -- set file position::
 f.seek(n) sets the position for the next read or write on file f. File
