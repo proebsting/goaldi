@@ -9,16 +9,16 @@ import (
 
 var _ = fmt.Printf // enable debugging
 
-//  Declare library procedures
+// Declare library procedures
 func init() {
 	GoLib(Tuple, "tuple", "id:e...", "create anonymous record")
 	StdLib["tuple"].(*VProcedure).RawCall = true // add magic bit
 }
 
-//  tuple(id:e, ...) creates an anonymous record value.
-//  Each argument must be named.
-//  Each distinct identifier list defines a new type,
-//  all of which have the name "tuple".
+// tuple(id:e, ...) creates an anonymous record value.
+// Each argument must be named.
+// Each distinct identifier list defines a new type,
+// all of which have the name "tuple".
 func Tuple(env *Env, args []Value, names []string) (Value, *Closure) {
 	//  Note the special RawCall argument list (and special registration above).
 	defer Traceback("tuple", args)
@@ -29,10 +29,10 @@ func Tuple(env *Env, args []Value, names []string) (Value, *Closure) {
 	return Return(t.New(args))
 }
 
-//  Table of known tuples, indexed by stringified list of fields
+// Table of known tuples, indexed by stringified list of fields
 var KnownTuples = make(map[string]*VCtor)
 
-//  TupleType(names) finds or makes a type for constructing a tuple
+// TupleType(names) finds or makes a type for constructing a tuple
 func TupleType(names []string) *VCtor {
 	// make a string of the field names e.g. "a,b,c,"
 	var b bytes.Buffer

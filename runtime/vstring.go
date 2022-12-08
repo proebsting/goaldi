@@ -28,14 +28,14 @@ var (
 	UCASE = NewString("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
 )
 
-//  A string is encoded by one (usually) or two parallel slices.
-//  The representation may change; access only via Capitalized functions below.
+// A string is encoded by one (usually) or two parallel slices.
+// The representation may change; access only via Capitalized functions below.
 type VString struct {
 	low  []uint8  // required: low-order 8 bits of each rune
 	high []uint16 // optional: high-order 13 bits of each rune
 }
 
-//  NewString -- construct a Goaldi string from a Go UTF8 string
+// NewString -- construct a Goaldi string from a Go UTF8 string
 func NewString(s string) *VString {
 	return RuneString([]rune(s))
 }
@@ -45,11 +45,11 @@ var _ ICore = NewString("a")      // validate implementation
 var _ Numerable = NewString("a")  // validate implementation
 var _ Stringable = NewString("a") // validate implementation
 
-//  StringType is the string instance of type type.
+// StringType is the string instance of type type.
 var StringType = NewType("string", "s", rString, String, nil,
 	"string", "x", "render as string")
 
-//  RuneString -- construct a Goaldi string from a slice of Go runes
+// RuneString -- construct a Goaldi string from a slice of Go runes
 func RuneString(r []rune) *VString {
 	n := len(r)
 	low := make([]uint8, n)
@@ -68,15 +68,15 @@ func RuneString(r []rune) *VString {
 	}
 }
 
-//  BinaryString -- construct a Goaldi string from Go Latin1 bytes
+// BinaryString -- construct a Goaldi string from Go Latin1 bytes
 func BinaryString(s []byte) *VString {
 	low := make([]uint8, len(s))
 	copy(low, s)
 	return &VString{low, nil}
 }
 
-//  ToString(x) -- convert arbitrary value to String.
-//  Equivalent to x.(Stringable).ToString() but with better error reporting.
+// ToString(x) -- convert arbitrary value to String.
+// Equivalent to x.(Stringable).ToString() but with better error reporting.
 func ToString(x Value) *VString {
 	defer func() {
 		if recover() != nil {
@@ -86,7 +86,7 @@ func ToString(x Value) *VString {
 	return x.(Stringable).ToString()
 }
 
-//  VString.ToUTF8 -- convert Goaldi Unicode string to Go UTF8 string
+// VString.ToUTF8 -- convert Goaldi Unicode string to Go UTF8 string
 func (v *VString) ToUTF8() string {
 	b := make([]byte, 0, len(v.low))
 	p := make([]byte, 8)
@@ -101,7 +101,7 @@ func (v *VString) ToUTF8() string {
 	return string(b)
 }
 
-//  VString.ToRunes() -- convert Goaldi Unicode string to array of Go runes
+// VString.ToRunes() -- convert Goaldi Unicode string to array of Go runes
 func (v *VString) ToRunes() []rune {
 	n := len(v.low)
 	r := make([]rune, n)
@@ -115,29 +115,29 @@ func (v *VString) ToRunes() []rune {
 	return r
 }
 
-//  VString.ToBinary -- convert Goaldi Unicode to 8-bit bytes by truncation
+// VString.ToBinary -- convert Goaldi Unicode to 8-bit bytes by truncation
 func (v *VString) ToBinary() []byte {
 	b := make([]byte, len(v.low))
 	copy(b, v.low)
 	return b
 }
 
-//  VString.String -- default conversion to Go string
+// VString.String -- default conversion to Go string
 func (v *VString) String() string {
 	return v.ToUTF8()
 }
 
-//  VString.GoString -- convert to Go string for image() and printf("%#v")
+// VString.GoString -- convert to Go string for image() and printf("%#v")
 func (v *VString) GoString() string {
 	return strconv.Quote(v.ToUTF8()) // quoted Go literal with escapes
 }
 
-//  VString.ToString -- for a Goaldi string, this just returns self
+// VString.ToString -- for a Goaldi string, this just returns self
 func (v *VString) ToString() *VString {
 	return v
 }
 
-//  VString.TryNumber -- return conversion to VNumber or nil
+// VString.TryNumber -- return conversion to VNumber or nil
 func (v *VString) TryNumber() *VNumber {
 	if v.high != nil { // if has exotic characters
 		return nil // it can't be valid
@@ -150,7 +150,7 @@ func (v *VString) TryNumber() *VNumber {
 	}
 }
 
-//  VString.ToNumber -- return conversion to VNumber, or throw Exception
+// VString.ToNumber -- return conversion to VNumber, or throw Exception
 func (v *VString) ToNumber() *VNumber {
 	n := v.TryNumber()
 	if n == nil {
@@ -160,22 +160,22 @@ func (v *VString) ToNumber() *VNumber {
 	}
 }
 
-//  VString.Type -- return the string type
+// VString.Type -- return the string type
 func (v *VString) Type() IRank {
 	return StringType
 }
 
-//  VString.Copy returns itself
+// VString.Copy returns itself
 func (v *VString) Copy() Value {
 	return v
 }
 
-//  VString.Before compares two strings for sorting
+// VString.Before compares two strings for sorting
 func (a *VString) Before(b Value, i int) bool {
 	return a.compare(b.(*VString)) < 0
 }
 
-//  VString.Identical -- check equality for === operator
+// VString.Identical -- check equality for === operator
 func (s *VString) Identical(x Value) Value {
 	t, ok := x.(*VString)
 	if !ok {
@@ -187,12 +187,12 @@ func (s *VString) Identical(x Value) Value {
 	}
 }
 
-//  VString.Import returns itself
+// VString.Import returns itself
 func (v *VString) Import() Value {
 	return v
 }
 
-//  VString.Export returns a Go string
+// VString.Export returns a Go string
 func (v *VString) Export() interface{} {
 	return v.ToUTF8()
 }
@@ -204,22 +204,22 @@ type vSubStr struct {
 	i, j   int   // original subscripts
 }
 
-//  vSubStr.Deref() -- extract value of substring for use as an rvalue
+// vSubStr.Deref() -- extract value of substring for use as an rvalue
 func (ss *vSubStr) Deref() Value {
 	return Deref(ss.target).(*VString).slice(nil, ss.i, ss.j)
 }
 
-//  vSubStr.String() -- show string representation: produces (v[i:j])
+// vSubStr.String() -- show string representation: produces (v[i:j])
 func (ss *vSubStr) String() string {
 	return fmt.Sprintf("(%v[%d:%d])", ss.target, ss.i, ss.j)
 }
 
-//  vSubStr.GoString() -- show string image representation: produces (v[i:j])
+// vSubStr.GoString() -- show string image representation: produces (v[i:j])
 func (ss *vSubStr) GoString() string {
 	return fmt.Sprintf("(%#v[%d:%d])", ss.target, ss.i, ss.j)
 }
 
-//  vSubStr.Assign -- store value in target variable
+// vSubStr.Assign -- store value in target variable
 func (ss *vSubStr) Assign(v Value) IVariable {
 	tgt := ss.target.(IVariable)
 	src := Deref(tgt).(*VString)
@@ -235,13 +235,13 @@ func (ss *vSubStr) Assign(v Value) IVariable {
 
 //  -------------------------- internal functions ---------------------
 
-//  VString.length -- return string length as int
+// VString.length -- return string length as int
 func (s *VString) length() int {
 	return len(s.low)
 }
 
-//  VString.slice -- return substring given Go-style zero-based limits
-//  If lval is non-null, generates a trapped slice reference.
+// VString.slice -- return substring given Go-style zero-based limits
+// If lval is non-null, generates a trapped slice reference.
 func (s *VString) slice(lval Value, i int, j int) Value {
 	if lval != nil {
 		return &vSubStr{lval, i, j} // produce variable
@@ -260,7 +260,7 @@ func (s *VString) slice(lval Value, i int, j int) Value {
 	return r
 }
 
-//  VString.compare -- compare two strings, return <0, 0, or >0
+// VString.compare -- compare two strings, return <0, 0, or >0
 func (s *VString) compare(t *VString) int {
 	// check for easy case
 	if s == t {
@@ -291,9 +291,9 @@ func (s *VString) compare(t *VString) int {
 	return sn - tn
 }
 
-//  scat -- general string concatenator.
-//  produces x1[i1:j1] || s2[i2:j2] || s3[i3:j3]  (using Go indexing).
-//  all arguments are assumed valid.
+// scat -- general string concatenator.
+// produces x1[i1:j1] || s2[i2:j2] || s3[i3:j3]  (using Go indexing).
+// all arguments are assumed valid.
 func scat(s1 *VString, i1, j1 int, s2 *VString, i2, j2 int,
 	s3 *VString, i3, j3 int) *VString {
 	n1 := j1 - i1

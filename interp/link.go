@@ -9,16 +9,16 @@ import (
 	"strings"
 )
 
-//  A RecordEntry adds info to an Ir_Record
+// A RecordEntry adds info to an Ir_Record
 type RecordEntry struct {
 	ir.Ir_Record          // ir struct
 	ctor         *g.VCtor // constructor
 }
 
-//  RecordTable registers all the record declarations that have been seen
+// RecordTable registers all the record declarations that have been seen
 var RecordTable = make(map[string]*RecordEntry, 0)
 
-//  link combines IR files to make a complete program.
+// link combines IR files to make a complete program.
 func link(parts [][]interface{}) {
 
 	//  process individual declarations (proc, global, etc) from IR
@@ -57,11 +57,11 @@ func link(parts [][]interface{}) {
 	}
 }
 
-//  irDecl -- process IR file declaration
+//	 irDecl -- process IR file declaration
 //
-//	Install declared global variables as trapped refs in global dictionary.
-//	Install procedures in proc info table.
-//  Register initial procedures and global initialization procedures.
+//		Install declared global variables as trapped refs in global dictionary.
+//		Install procedures in proc info table.
+//	 Register initial procedures and global initialization procedures.
 func irDecl(decl interface{}) {
 	switch x := decl.(type) {
 	case ir.Ir_Global:
@@ -100,7 +100,7 @@ func irDecl(decl interface{}) {
 	}
 }
 
-//  registerMethod(pr, recname, methname) -- register method in record ctor
+// registerMethod(pr, recname, methname) -- register method in record ctor
 func registerMethod(pr *pr_Info, recname string, methname string) {
 	gv := pr.space.Get(recname)
 	if gv != nil {
@@ -117,7 +117,7 @@ func registerMethod(pr *pr_Info, recname string, methname string) {
 	}
 }
 
-//  registerProc(pr) -- register procedure pr in globals
+// registerProc(pr) -- register procedure pr in globals
 func registerProc(pr *pr_Info) {
 	pr.vproc = irProcedure(pr, nil)
 	gv := pr.space.Get(pr.name)
@@ -131,7 +131,7 @@ func registerProc(pr *pr_Info) {
 	delete(Undeclared, pr.name)
 }
 
-//  registerRecord(re) -- register a record constructor in the globals
+// registerRecord(re) -- register a record constructor in the globals
 func registerRecord(re *RecordEntry) {
 	defer func() { // catch "duplicate field name" exception
 		if e := recover(); e != nil {
@@ -173,7 +173,7 @@ func registerRecord(re *RecordEntry) {
 
 var regMark = &g.VCtor{} // marker for catching recursive definitions
 
-//  stdProcs() -- add referenced stdlib procedures to globals
+// stdProcs() -- add referenced stdlib procedures to globals
 func stdProcs() {
 	for name, p := range g.StdLib {
 		if Undeclared[name] {

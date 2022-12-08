@@ -6,9 +6,9 @@ import (
 	"reflect"
 )
 
-//  Identical(a,b) implements the === operator.
-//  NotIdentical(a,b) implements the ~=== operator.
-//  Both call a.Identical(b) if implemented (interface IIdentical).
+// Identical(a,b) implements the === operator.
+// NotIdentical(a,b) implements the ~=== operator.
+// Both call a.Identical(b) if implemented (interface IIdentical).
 func Identical(a, b Value) Value {
 	if aa, ok := a.(IIdentical); ok {
 		return aa.Identical(b)
@@ -40,8 +40,8 @@ func NotIdentical(a, b Value) Value {
 	}
 }
 
-//  Size(x) calls x.Size() or falls back to calling len().
-//  It panics on an inappropriate argument type.
+// Size(x) calls x.Size() or falls back to calling len().
+// It panics on an inappropriate argument type.
 func Size(x Value) Value {
 	if t, ok := x.(ISize); ok {
 		return t.Size()
@@ -50,7 +50,7 @@ func Size(x Value) Value {
 	}
 }
 
-//  VNumber.Call -- implement i(e1, e2, e3...)
+// VNumber.Call -- implement i(e1, e2, e3...)
 func (v *VNumber) Call(env *Env, args []Value, names []string) (Value, *Closure) {
 	if len(names) > 0 {
 		panic(NewExn("Named arguments not allowed", v))
@@ -63,7 +63,7 @@ func (v *VNumber) Call(env *Env, args []Value, names []string) (Value, *Closure)
 	}
 }
 
-//  ToBy -- implement "e1 to e2 by e3"
+// ToBy -- implement "e1 to e2 by e3"
 func ToBy(e1 Value, e2 Value, e3 Value) (Value, *Closure) {
 	v1 := FloatVal(e1)
 	v2 := FloatVal(e2)

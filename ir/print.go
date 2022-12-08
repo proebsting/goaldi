@@ -9,14 +9,14 @@ import (
 
 const indentBy = "   " // increment for additional indentation labels
 
-//  Print(label, tree) -- print a tree of IR structs on stdout
+// Print(label, tree) -- print a tree of IR structs on stdout
 func Print(label string, tree interface{}) {
 	fmt.Printf("\n========== %s ==========\n", label)
 	subprint("", tree)
 	fmt.Println()
 }
 
-//  subprint(indent, tree) -- print part of the IR tree
+// subprint(indent, tree) -- print part of the IR tree
 func subprint(indent string, tree interface{}) {
 	switch t := tree.(type) {
 	case nil:

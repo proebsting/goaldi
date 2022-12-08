@@ -33,7 +33,7 @@ var InitList = make([]*ir.Ir_Initial, 0) // sequential initialization blocks
 var nFatals = 0   // count of fatal errors
 var nWarnings = 0 // count of nonfatal errors
 
-//  main is the overall supervisor.
+// main is the overall supervisor.
 func main() {
 
 	// use all available processors
@@ -153,7 +153,7 @@ func main() {
 	g.Shutdown(0)
 }
 
-//  loadfile(label, reader) -- load and possibly print one file
+// loadfile(label, reader) -- load and possibly print one file
 func loadfile(label string, rdr io.Reader) [][]interface{} {
 	_, parts := ir.Load(rdr)
 	if opt_adump {
@@ -164,13 +164,13 @@ func loadfile(label string, rdr io.Reader) [][]interface{} {
 	return parts
 }
 
-//  warning -- report nonfatal error and continue
+// warning -- report nonfatal error and continue
 func warning(s string) {
 	nWarnings++
 	fmt.Fprintf(os.Stderr, "Warning: %s\n", s)
 }
 
-//  fatal -- report fatal error (but continue)
+// fatal -- report fatal error (but continue)
 func fatal(s string) {
 	nFatals++
 	fmt.Fprintf(os.Stderr, "Fatal:   %s\n", s)

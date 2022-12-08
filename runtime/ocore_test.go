@@ -41,8 +41,8 @@ func TestCore(t *testing.T) {
 	expect(t, "3z~", n3, NotIdentical(NilValue, n3))
 }
 
-//  expect -- check result against expected value
-//  n.b. uses Go comparison not Goaldi (does not look inside String or Number)
+// expect -- check result against expected value
+// n.b. uses Go comparison not Goaldi (does not look inside String or Number)
 func expect(t *testing.T, label string, expected, actual interface{}) {
 	if expected != actual {
 		t.Errorf("%s: expected %v, found %v\n", label, expected, actual)

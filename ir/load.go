@@ -18,15 +18,14 @@ import (
 
 var fileNumber = 1
 
-//  Load(reader) -- read a JSON-encoded IR file.
+// Load(reader) -- read a JSON-encoded IR file.
 //
-//  Each section of the input file is a JSON list value corresponding to a
-//  single source file.  (It is typical, then, to find just one section.)
-//  A list of sections -- a list of lists of IR structs -- is returned.
+// Each section of the input file is a JSON list value corresponding to a
+// single source file.  (It is typical, then, to find just one section.)
+// A list of sections -- a list of lists of IR structs -- is returned.
 //
-//  A per-section distinguishing integer is prepended to each procedure name
-//  that begins with "$".  No other changes are made during input.
-//
+// A per-section distinguishing integer is prepended to each procedure name
+// that begins with "$".  No other changes are made during input.
 func Load(rdr io.Reader) (comments []string, ircode [][]interface{}) {
 
 	//  collect initial comment lines (e.g. #!/usr/bin/env goaldi ...)
@@ -76,7 +75,7 @@ func Load(rdr io.Reader) (comments []string, ircode [][]interface{}) {
 	return comments, ircode
 }
 
-//  jstructs -- replace maps by IR structs in Json tree
+// jstructs -- replace maps by IR structs in Json tree
 func jstructs(jtree interface{}) interface{} {
 	switch x := jtree.(type) {
 	case []interface{}:
@@ -94,7 +93,7 @@ func jstructs(jtree interface{}) interface{} {
 	}
 }
 
-//  structFor -- return IR struct equivalent to map
+// structFor -- return IR struct equivalent to map
 func structFor(m map[string]interface{}) interface{} {
 	tag := m["tag"].(string)
 	if tag == "" {
@@ -114,7 +113,7 @@ func structFor(m map[string]interface{}) interface{} {
 	return result.Interface()
 }
 
-//  setField -- set field in struct
+// setField -- set field in struct
 func setField(f reflect.Value, key string, val interface{}) {
 
 	defer func() {
@@ -170,7 +169,7 @@ func setField(f reflect.Value, key string, val interface{}) {
 	f.Set(result)
 }
 
-//  Capitalize(s) -- convert first character of string to upper case
+// Capitalize(s) -- convert first character of string to upper case
 func Capitalize(s string) string {
 	r, n := utf8.DecodeRuneInString(s)
 	if unicode.IsLower(r) {
@@ -180,7 +179,7 @@ func Capitalize(s string) string {
 	}
 }
 
-//  DeCapit(s) -- convert first character of string to lower case
+// DeCapit(s) -- convert first character of string to lower case
 func DeCapit(s string) string {
 	r, n := utf8.DecodeRuneInString(s)
 	if unicode.IsUpper(r) {

@@ -16,9 +16,9 @@ type prBuffer struct { // ParallelReader buffer
 
 const BLINK = 1 * time.Millisecond // sleep time when blocked (empty / EOF)
 
-//  A ParallelReader spawns a separate goroutine to fill a hidden buffer,
-//  allowing the underlying reader (e.g. a decompressor) to run concurrently.
-//  Any error from the underlying reader causes a panic.
+// A ParallelReader spawns a separate goroutine to fill a hidden buffer,
+// allowing the underlying reader (e.g. a decompressor) to run concurrently.
+// Any error from the underlying reader causes a panic.
 func ParallelReader(rdr io.Reader, bufsize int) io.ReadCloser {
 	prb := &prBuffer{rdr, bytes.NewBuffer(make([]byte, 0, bufsize)),
 		make(chan int, 1)}
@@ -26,7 +26,7 @@ func ParallelReader(rdr io.Reader, bufsize int) io.ReadCloser {
 	return prb
 }
 
-//  prBuffer.filler runs in the background to fill the hidden buffer.
+// prBuffer.filler runs in the background to fill the hidden buffer.
 func (prb *prBuffer) filler(bufsize int) {
 	rbuffer := make([]byte, bufsize)
 	first := true // first-time flag
@@ -63,7 +63,7 @@ func (prb *prBuffer) filler(bufsize int) {
 	}
 }
 
-//  prBuffer.Read gets data from the hidden buffer.
+// prBuffer.Read gets data from the hidden buffer.
 func (prb *prBuffer) Read(p []byte) (int, error) {
 	n := <-prb.avb // get interlock
 	for n == 0 {   // while buffer is empty
@@ -83,7 +83,7 @@ func (prb *prBuffer) Read(p []byte) (int, error) {
 	return n, nil            // return results
 }
 
-//  prBuffer.Close closes the underlying Reader, if possible, and frees memory.
+// prBuffer.Close closes the underlying Reader, if possible, and frees memory.
 func (prb *prBuffer) Close() error {
 	r := prb.rdr                    // save underlying Reader
 	*prb = prBuffer{}               // zero struct to clear references

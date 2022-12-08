@@ -6,7 +6,7 @@ import (
 	"reflect"
 )
 
-//  Declare methods
+// Declare methods
 var ChannelMethods = MethodTable([]*VProcedure{
 	DefMeth(VChannel.Get, "get", "", "read from channel"),
 	DefMeth(VChannel.Put, "put", "x", "send to channel"),
@@ -14,40 +14,40 @@ var ChannelMethods = MethodTable([]*VProcedure{
 	DefMeth(VChannel.Buffer, "buffer", "size", "interpose channel buffer"),
 })
 
-//  Declare static functions
+// Declare static functions
 func init() {
 	DefLib(Buffer, "buffer", "size,c", "interpose buffer before channel")
 }
 
-//  Declare methods on Go channels
+// Declare methods on Go channels
 var GoChanMethods = MethodTable([]*VProcedure{
 	DefMeth(GoChanGet, "get", "", "read from channel"),
 	DefMeth(GoChanPut, "put", "x", "send to channel"),
 	DefMeth(GoChanClose, "close", "", "close channel"),
 })
 
-//  channel(size) creates and returns a new channel with the given buffer size.
+// channel(size) creates and returns a new channel with the given buffer size.
 func Channel(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("channel", args)
 	i := IntVal(ProcArg(args, 0, ZERO))
 	return Return(NewChannel(i))
 }
 
-//  c.get() reads the next value from channel c,
-//  or fails if no value is available.
+// c.get() reads the next value from channel c,
+// or fails if no value is available.
 func (c VChannel) Get(args ...Value) (Value, *Closure) {
 	defer Traceback("c.get", args)
 	return GetChan(c)
 }
 
-//  GoChanGet(c) returns the next value from a Go channel,
-//  or fails if no value is available.
+// GoChanGet(c) returns the next value from a Go channel,
+// or fails if no value is available.
 func GoChanGet(c Value, args ...Value) (Value, *Closure) {
 	defer Traceback("c.get", args)
 	return GetChan(c)
 }
 
-//  c.put(e...) writes its argument values, in order, to channel c.
+// c.put(e...) writes its argument values, in order, to channel c.
 func (c VChannel) Put(args ...Value) (Value, *Closure) {
 	defer Traceback("c.put", args)
 	for _, v := range args {
@@ -56,7 +56,7 @@ func (c VChannel) Put(args ...Value) (Value, *Closure) {
 	return Return(c)
 }
 
-//  GoChanPut(c, e...) writes values to a Go channel
+// GoChanPut(c, e...) writes values to a Go channel
 func GoChanPut(c Value, args ...Value) (Value, *Closure) {
 	defer Traceback("c.put", args)
 	for _, v := range args {
@@ -65,8 +65,8 @@ func GoChanPut(c Value, args ...Value) (Value, *Closure) {
 	return Return(c)
 }
 
-//  GoChanSend(x,v) sends value v to the Goaldi channel x.
-//  It panics on an inappropriate argument type.
+// GoChanSend(x,v) sends value v to the Goaldi channel x.
+// It panics on an inappropriate argument type.
 func GoChanSend(x Value, v Value) Value {
 	cv := reflect.ValueOf(x)
 	if cv.Kind() != reflect.Chan {
@@ -76,22 +76,22 @@ func GoChanSend(x Value, v Value) Value {
 	return v
 }
 
-//  c.close() closes the channel c.
+// c.close() closes the channel c.
 func (c VChannel) Close(args ...Value) (Value, *Closure) {
 	defer Traceback("c.close", args)
 	close(c)
 	return Return(c)
 }
 
-//  GoChanClose(c) closes a Go channel
+// GoChanClose(c) closes a Go channel
 func GoChanClose(c Value, args ...Value) (Value, *Closure) {
 	defer Traceback("c.close", args)
 	reflect.ValueOf(c).Close()
 	return Return(c)
 }
 
-//  c.buffer(size) returns a channel that interposes a buffer of the given size
-//  before the channel c.
+// c.buffer(size) returns a channel that interposes a buffer of the given size
+// before the channel c.
 func (c VChannel) Buffer(args ...Value) (Value, *Closure) {
 	defer Traceback("c.buffer", args)
 	i := IntVal(ProcArg(args, 0, ONE))
@@ -111,10 +111,10 @@ func (c VChannel) Buffer(args ...Value) (Value, *Closure) {
 	return Return(r)
 }
 
-//  buffer(size, c) returns a channel that interposes a buffer of the given size
-//  before the channel c.
-//  This is useful in the Goaldi form buffer(size, create e)
-//  to provide buffering of the results produced by an asynchronous thread.
+// buffer(size, c) returns a channel that interposes a buffer of the given size
+// before the channel c.
+// This is useful in the Goaldi form buffer(size, create e)
+// to provide buffering of the results produced by an asynchronous thread.
 func Buffer(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("buffer", args)
 	i := ProcArg(args, 0, ONE)

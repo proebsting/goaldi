@@ -8,11 +8,11 @@ import (
 
 var _ = fmt.Printf // enable debugging
 
-//  The global named "type"
+// The global named "type"
 var TypeType = NewType("type", "t", rType, Type, TypeMethods,
 	"type", "x", "return type of value")
 
-//  A type value structure
+// A type value structure
 type VType struct {
 	TypeName string                 // type name
 	Abbr     string                 // one-character abbreviation
@@ -24,10 +24,10 @@ type VType struct {
 const rType = 5        // declare sort ranking
 var _ ICore = &VType{} // validate implementation
 
-//  NewType defines and registers a Goaldi standard (not a record) type.
-//  The constructor procedure is installed in stdlib as libname.
-//  A nil constructor indicates an internal type (i.e. Trapped),
-//  and such a type is not installed in the library.
+// NewType defines and registers a Goaldi standard (not a record) type.
+// The constructor procedure is installed in stdlib as libname.
+// A nil constructor indicates an internal type (i.e. Trapped),
+// and such a type is not installed in the library.
 func NewType(name string, abbr string, rank int, ctor Procedure,
 	mtable map[string]*VProcedure,
 	libname string, pspec string, descr string) *VType {
@@ -39,33 +39,33 @@ func NewType(name string, abbr string, rank int, ctor Procedure,
 	return t
 }
 
-//  Declare methods
+// Declare methods
 var TypeMethods = MethodTable([]*VProcedure{
 	DefMeth((*VType).Name, "name", "", "get type name"),
 	DefMeth((*VType).Char, "char", "", "get abbreviation character"),
 })
 
-//  VType.String -- default conversion to Go string returns type name
+// VType.String -- default conversion to Go string returns type name
 func (t *VType) String() string {
 	return "t:" + t.TypeName
 }
 
-//  VType.GoString -- convert to Go string for image() and printf("%#v")
+// VType.GoString -- convert to Go string for image() and printf("%#v")
 func (t *VType) GoString() string {
 	return "type " + t.TypeName
 }
 
-//  VType.Type -- return the type "type"
+// VType.Type -- return the type "type"
 func (t *VType) Type() IRank {
 	return TypeType
 }
 
-//  VType.Copy returns itself
+// VType.Copy returns itself
 func (t *VType) Copy() Value {
 	return t
 }
 
-//  VType.Before compares itself with a constructor or type value
+// VType.Before compares itself with a constructor or type value
 func (a *VType) Before(b Value, i int) bool {
 	switch t := b.(type) {
 	case *VType:
@@ -77,37 +77,37 @@ func (a *VType) Before(b Value, i int) bool {
 	}
 }
 
-//  VType.Import returns itself
+// VType.Import returns itself
 func (t *VType) Import() Value {
 	return t
 }
 
-//  VType.Export returns itself.
+// VType.Export returns itself.
 func (t *VType) Export() interface{} {
 	return t
 }
 
-//  VType.Rank returns the sorting rank.
+// VType.Rank returns the sorting rank.
 func (t *VType) Rank() int {
 	return t.SortRank
 }
 
-//  VType.Call invokes the constructor procedure for a type.
+// VType.Call invokes the constructor procedure for a type.
 func (t *VType) Call(env *Env, args []Value, names []string) (Value, *Closure) {
 	return t.Ctor.Call(env, args, names)
 }
 
-//  t.name() returns the name of type t.
+// t.name() returns the name of type t.
 func (t *VType) Name(args ...Value) (Value, *Closure) {
 	return Return(NewString(t.TypeName))
 }
 
-//  t.char() returns single character used to abbreviate type t.
+// t.char() returns single character used to abbreviate type t.
 func (t *VType) Char(args ...Value) (Value, *Closure) {
 	return Return(NewString(t.Abbr))
 }
 
-//  type(x) returns the value of type "type" that represents the type of x.
+// type(x) returns the value of type "type" that represents the type of x.
 func Type(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("type", args)
 	v := ProcArg(args, 0, NilValue)
@@ -118,8 +118,8 @@ func Type(env *Env, args ...Value) (Value, *Closure) {
 	}
 }
 
-//  x.instanceof(t) returns x if x is an instance of type t;
-//  otherwise the call fails.
+// x.instanceof(t) returns x if x is an instance of type t;
+// otherwise the call fails.
 func InstanceOf(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("instanceof", args)
 	v := ProcArg(args, 0, NilValue)

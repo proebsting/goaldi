@@ -13,16 +13,16 @@ import (
 	"fmt"
 )
 
-//  VSet implements a Goaldi set.
-//  Strings and numbers are converted before use as keys;
-//  otherwise, unconverted "identical" values would appear distinct.
-//  All map values are "true"; deletions remove non-member keys.
+// VSet implements a Goaldi set.
+// Strings and numbers are converted before use as keys;
+// otherwise, unconverted "identical" values would appear distinct.
+// All map values are "true"; deletions remove non-member keys.
 type VSet map[Value]bool
 
 const rSet = 65       // declare sort ranking
 var _ ICore = &VSet{} // validate implementation
 
-//  NewSet -- construct a new Goaldi set from a Goaldi list.
+// NewSet -- construct a new Goaldi set from a Goaldi list.
 func NewSet(L *VList) *VSet {
 	S := VSet(make(map[Value]bool))
 	for _, v := range L.data {
@@ -31,10 +31,10 @@ func NewSet(L *VList) *VSet {
 	return &S
 }
 
-//  GoKey(v) turns a Goaldi value into something usable as a Go map key.
-//  Strings and numbers must be converted because otherwise two
-//  identical values in different objects would be seen as distinct keys.
-//  The inverse of GoKey() is Import().
+// GoKey(v) turns a Goaldi value into something usable as a Go map key.
+// Strings and numbers must be converted because otherwise two
+// identical values in different objects would be seen as distinct keys.
+// The inverse of GoKey() is Import().
 func GoKey(v Value) interface{} {
 	switch t := v.(type) {
 	case *VString:
@@ -46,11 +46,11 @@ func GoKey(v Value) interface{} {
 	}
 }
 
-//  SetType is the set instance of type type.
+// SetType is the set instance of type type.
 var SetType = NewType("set", "S", rSet, Set, SetMethods,
 	"set", "L", "create a new set from list L")
 
-//  SetVal(x) return x as a Set, or throws an exception.
+// SetVal(x) return x as a Set, or throws an exception.
 func SetVal(x Value) *VSet {
 	if S, ok := x.(*VSet); ok {
 		return S
@@ -59,14 +59,14 @@ func SetVal(x Value) *VSet {
 	}
 }
 
-//  VSet.String -- default conversion to Go string returns "S:size"
+// VSet.String -- default conversion to Go string returns "S:size"
 func (S *VSet) String() string {
 	return fmt.Sprintf("S:%d", len(*S))
 }
 
-//  VSet.GoString -- convert to Go string for image() and printf("%#v")
+// VSet.GoString -- convert to Go string for image() and printf("%#v")
 //
-//  For utility and reproducibility, we accept the cost of sorting the set.
+// For utility and reproducibility, we accept the cost of sorting the set.
 func (S *VSet) GoString() string {
 	if len(*S) == 0 {
 		return "set{}"
@@ -82,12 +82,12 @@ func (S *VSet) GoString() string {
 	return string(s)
 }
 
-//  VSet.Type -- return the set type
+// VSet.Type -- return the set type
 func (S *VSet) Type() IRank {
 	return SetType
 }
 
-//  VSet.Copy returns a duplicate of itself
+// VSet.Copy returns a duplicate of itself
 func (S *VSet) Copy() Value {
 	r := NewSet(EMPTYLIST)
 	for k := range *S {
@@ -96,18 +96,18 @@ func (S *VSet) Copy() Value {
 	return r
 }
 
-//  VSet.Before compares two sets for sorting
+// VSet.Before compares two sets for sorting
 func (a *VSet) Before(b Value, i int) bool {
 	return false // no ordering defined
 }
 
-//  VSet.Import returns itself
+// VSet.Import returns itself
 func (S *VSet) Import() Value {
 	return S
 }
 
-//  VSet.Export returns its underlying map[Value]bool.
-//  Go extensions may wish to use GoKey() for proper conversion of keys.
+// VSet.Export returns its underlying map[Value]bool.
+// Go extensions may wish to use GoKey() for proper conversion of keys.
 func (S *VSet) Export() interface{} {
 	return map[Value]bool(*S)
 }

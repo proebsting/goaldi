@@ -6,7 +6,7 @@ import (
 	"reflect"
 )
 
-//  list of IR struct examples for use by JSON input converter
+// list of IR struct examples for use by JSON input converter
 var irlist = [...]interface{}{
 	&Ir_Record{},
 	&Ir_Global{},
@@ -44,7 +44,7 @@ var irlist = [...]interface{}{
 	&Ir_Unreachable{}, // seen only if unoptimized; not implemented
 }
 
-//  struct table indexed by type names
+// struct table indexed by type names
 var irtable = make(map[string]reflect.Type)
 
 func init() {

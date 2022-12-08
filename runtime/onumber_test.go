@@ -41,7 +41,7 @@ func TestMath(t *testing.T) {
 		i7.Power(i6), i7.Power(s6), s7.Power(i6), s7.Power(s6))
 }
 
-//  nspair -- return number as a pair (number, string), checking conversions
+// nspair -- return number as a pair (number, string), checking conversions
 func nspair(t *testing.T, v float64) (*VNumber, *VString) {
 	n1 := NewNumber(v)
 	s1 := NewString(fmt.Sprintf("%g", v))
@@ -56,7 +56,7 @@ func nspair(t *testing.T, v float64) (*VNumber, *VString) {
 	return n1, s1
 }
 
-//  ck4n -- check four numeric values for equality with expected value
+// ck4n -- check four numeric values for equality with expected value
 func ck4n(t *testing.T, label string, n0 float64, v1, v2, v3, v4 Value) {
 	t.Log("testing", label)
 	n1 := v1.(*VNumber).Val()

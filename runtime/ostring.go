@@ -9,7 +9,7 @@ import (
 
 var _ = fmt.Printf // enable debugging
 
-//  sval -- extract VString value from arbitrary Value, or panic
+// sval -- extract VString value from arbitrary Value, or panic
 func sval(v Value) *VString {
 	if n, ok := v.(Stringable); ok {
 		return n.ToString()

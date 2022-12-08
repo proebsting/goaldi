@@ -8,14 +8,14 @@ import (
 	"os"
 )
 
-//  execution environment
+// execution environment
 type Env struct {
 	Parent   *Env             // parent environment
 	ThreadID int              // thread ID
 	VarMap   map[string]Value // dynamic variable table
 }
 
-//  NewEnv(e) returns a new environment with parent e.
+// NewEnv(e) returns a new environment with parent e.
 func NewEnv(e *Env) *Env {
 	enew := &Env{}
 	enew.Parent = e
@@ -29,7 +29,7 @@ func NewEnv(e *Env) *Env {
 	return enew
 }
 
-//  Env.Lookup(s, rval) -- look up dynamic variable s in environment tree
+// Env.Lookup(s, rval) -- look up dynamic variable s in environment tree
 func (e *Env) Lookup(s string, rval bool) Value {
 	for ; e != nil; e = e.Parent {
 		if v := e.VarMap[s]; v != nil {
@@ -47,7 +47,7 @@ func (e *Env) Lookup(s string, rval bool) Value {
 	panic(NewExn("Undefined dynamic variable", "%"+s))
 }
 
-//  ThreadID production
+// ThreadID production
 var TID = make(chan int)
 
 func init() {
@@ -60,16 +60,16 @@ func init() {
 	}()
 }
 
-//  StdEnv is the initial environment
+// StdEnv is the initial environment
 var StdEnv = make(map[string]Value)
 
-//  EnvInit registers a standard environment value or variable at init time.
-//  (Variables should be registered as trapped values).
+// EnvInit registers a standard environment value or variable at init time.
+// (Variables should be registered as trapped values).
 func EnvInit(name string, v Value) {
 	StdEnv[name] = v
 }
 
-//  Initial dynamic variables
+// Initial dynamic variables
 func init() {
 
 	// math constants
@@ -90,7 +90,7 @@ func init() {
 	EnvInit("gpath", NewString(os.Args[0])) // argv[0] for use by translator
 }
 
-//	ShowEnvironment(f) -- list standard environment on file f
+// ShowEnvironment(f) -- list standard environment on file f
 func ShowEnvironment(f io.Writer) {
 	fmt.Fprintln(f)
 	fmt.Fprintln(f, "Standard Environment")

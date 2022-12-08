@@ -12,9 +12,9 @@ import (
 	"os"
 )
 
-//  Declare methods
-//  Method names begin with an extra F to distinguish from those in vfile.go
-//  (whose names are fixed by the need to implement io.ReadWriteCloser).
+// Declare methods
+// Method names begin with an extra F to distinguish from those in vfile.go
+// (whose names are fixed by the need to implement io.ReadWriteCloser).
 var FileMethods = MethodTable([]*VProcedure{
 	DefMeth((*VFile).FUnbuffer, "unbuffer", "", "stop file buffering"),
 	DefMeth((*VFile).FFlush, "flush", "", "flush file"),
@@ -32,7 +32,7 @@ var FileMethods = MethodTable([]*VProcedure{
 	DefMeth((*VFile).FWhere, "where", "", "report current file position"),
 })
 
-//  Declare procedures
+// Declare procedures
 func init() {
 	// Goaldi procedures
 	DefLib(Read, "read", "f", "read one line from a file")
@@ -59,22 +59,23 @@ var noBytes = []byte("")
 var spByte = []byte(" ")
 var nlByte = []byte("\n")
 
-//	file(name,flags) opens a file and returns a file value.
+// file(name,flags) opens a file and returns a file value.
 //
-//	Each character of the optional flags argument selects an option:
-//		"r"   open for reading
-//		"w"   open for writing
-//		"a"   open for appending
-//		"c"   create and open for writing
-//		"n"   no buffering
-//		"f"   fail on error (instead of panicking)
+// Each character of the optional flags argument selects an option:
 //
-//	If none of "w", "a", or "c" are specified, then "r" is implied.
-//	"w" implies "c" unless "r" is also specified.
-//	Buffering is used if "n" is absent and the file is opened
-//	exclusively for reading or writing but not both.
+//	"r"   open for reading
+//	"w"   open for writing
+//	"a"   open for appending
+//	"c"   create and open for writing
+//	"n"   no buffering
+//	"f"   fail on error (instead of panicking)
 //
-//	In the absence of "f", any error throws an exception.
+// If none of "w", "a", or "c" are specified, then "r" is implied.
+// "w" implies "c" unless "r" is also specified.
+// Buffering is used if "n" is absent and the file is opened
+// exclusively for reading or writing but not both.
+//
+// In the absence of "f", any error throws an exception.
 func File(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("file", args)
 
@@ -155,8 +156,8 @@ func File(env *Env, args ...Value) (Value, *Closure) {
 	return Return(NewFile(name, f, reader, writer, f))
 }
 
-//  f.unbuffer() removes any buffering from file f.
-//  Any buffered output is flushed; any buffered input is lost.
+// f.unbuffer() removes any buffering from file f.
+// Any buffered output is flushed; any buffered input is lost.
 func (f *VFile) FUnbuffer(args ...Value) (Value, *Closure) {
 	defer Traceback("f.unbuffer", args)
 	if _, ok := f.Reader.(*bufio.Reader); ok {
@@ -169,14 +170,14 @@ func (f *VFile) FUnbuffer(args ...Value) (Value, *Closure) {
 	return Return(f)
 }
 
-//  f.flush() flushes output on file f.
+// f.flush() flushes output on file f.
 func (f *VFile) FFlush(args ...Value) (Value, *Closure) {
 	defer Traceback("f.flush", args)
 	f.Flush()
 	return Return(f)
 }
 
-//  f.close() closes file f.
+// f.close() closes file f.
 func (f *VFile) FClose(args ...Value) (Value, *Closure) {
 	defer Traceback("f.close", args)
 	f.Flush()
@@ -184,10 +185,10 @@ func (f *VFile) FClose(args ...Value) (Value, *Closure) {
 	return Return(f)
 }
 
-//  f.seek(n) sets the position for the next read or write on file f.
-//  File positions are measured in bytes, not characters, counting the
-//  first byte as 1.  A value of 0 seeks to end of file, and a negative
-//  value is an offset from the end.
+// f.seek(n) sets the position for the next read or write on file f.
+// File positions are measured in bytes, not characters, counting the
+// first byte as 1.  A value of 0 seeks to end of file, and a negative
+// value is an offset from the end.
 func (f *VFile) FSeek(args ...Value) (Value, *Closure) {
 	defer Traceback("f.seek", args)
 	posn := int64(FloatVal(ProcArg(args, 0, ONE)))
@@ -204,8 +205,8 @@ func (f *VFile) FSeek(args ...Value) (Value, *Closure) {
 	return Return(f)
 }
 
-//  f.where() reports the current position of file f.
-//  File positions are measured in bytes, counting the first byte as 1.
+// f.where() reports the current position of file f.
+// File positions are measured in bytes, counting the first byte as 1.
 func (f *VFile) FWhere(args ...Value) (Value, *Closure) {
 	defer Traceback("f.where", args)
 	offset, err := f.Seek(0, os.SEEK_CUR)
@@ -215,9 +216,9 @@ func (f *VFile) FWhere(args ...Value) (Value, *Closure) {
 	return Return(NewNumber(float64(offset + 1)))
 }
 
-//  read(f) consumes and returns next line of text from file f.
-//  The trailing linefeed or CRLF is removed from the returned value.
-//  read() fails at EOF when no more data is available.
+// read(f) consumes and returns next line of text from file f.
+// The trailing linefeed or CRLF is removed from the returned value.
+// read() fails at EOF when no more data is available.
 func Read(env *Env, args ...Value) (Value, *Closure) {
 	if len(args) > 0 {
 		return ProcArg(args, 0, NilValue).(*VFile).FRead(args)
@@ -226,9 +227,9 @@ func Read(env *Env, args ...Value) (Value, *Closure) {
 	}
 }
 
-//  f.get() consumes and returns next line of text from file f.
-//  The trailing linefeed or CRLF is removed from the returned value.
-//  f.get() fails at EOF when no more data is available.
+// f.get() consumes and returns next line of text from file f.
+// The trailing linefeed or CRLF is removed from the returned value.
+// f.get() fails at EOF when no more data is available.
 func (f *VFile) FGet(args ...Value) (Value, *Closure) {
 	defer Traceback("f.get", args)
 	s := f.ReadLine()
@@ -239,9 +240,9 @@ func (f *VFile) FGet(args ...Value) (Value, *Closure) {
 	}
 }
 
-//  f.read() consumes and returns next line of text from file f.
-//  The trailing linefeed or CRLF is removed from the returned value.
-//  f.read() fails at EOF when no more data is available.
+// f.read() consumes and returns next line of text from file f.
+// The trailing linefeed or CRLF is removed from the returned value.
+// f.read() fails at EOF when no more data is available.
 func (f *VFile) FRead(args ...Value) (Value, *Closure) {
 	defer Traceback("f.read", args)
 	s := f.ReadLine()
@@ -252,10 +253,10 @@ func (f *VFile) FRead(args ...Value) (Value, *Closure) {
 	}
 }
 
-//  f.readb(n) reads up to n bytes into individual characters
-//  without attempting any UTF-8 decoding.
-//  This is useful for reading binary files.
-//  f.readb() fails at EOF when no more data is available.
+// f.readb(n) reads up to n bytes into individual characters
+// without attempting any UTF-8 decoding.
+// This is useful for reading binary files.
+// f.readb() fails at EOF when no more data is available.
 func (f *VFile) FReadb(args ...Value) (Value, *Closure) {
 	defer Traceback("f.readb", args)
 	if f.Reader == nil {
@@ -273,10 +274,10 @@ func (f *VFile) FReadb(args ...Value) (Value, *Closure) {
 	}
 }
 
-//  f.writeb(s) writes the string s to file f without any UTF-8 encoding.
-//  Instead, the low 8 bits of each character are written as a single byte,
-//  ignoring all other bits.
-//  This is useful for writing binary files.
+// f.writeb(s) writes the string s to file f without any UTF-8 encoding.
+// Instead, the low 8 bits of each character are written as a single byte,
+// ignoring all other bits.
+// This is useful for writing binary files.
 func (f *VFile) FWriteb(args ...Value) (Value, *Closure) {
 	defer Traceback("f.writeb", args)
 	if f.Writer == nil {
@@ -287,66 +288,66 @@ func (f *VFile) FWriteb(args ...Value) (Value, *Closure) {
 	return Return(f)
 }
 
-//  write(x,...) writes its arguments to %stdout followed by a newline.
+// write(x,...) writes its arguments to %stdout followed by a newline.
 func Write(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("write", args)
 	return Wrt(env.Lookup("stdout", true), noBytes, nlByte, args)
 }
 
-//  f.put(x,...) writes its arguments to file f, each followed by a newline.
-//  This treats a file as as a container of text values separated by newlines,
-//  which is consistent with the interpretation used by f.get().
+// f.put(x,...) writes its arguments to file f, each followed by a newline.
+// This treats a file as as a container of text values separated by newlines,
+// which is consistent with the interpretation used by f.get().
 func (f *VFile) FPut(args ...Value) (Value, *Closure) {
 	defer Traceback("f.put", args)
 	return Wrt(f, nlByte, nlByte, args)
 }
 
-//  f.write(x,...) writes its arguments to file f followed by a single newline.
+// f.write(x,...) writes its arguments to file f followed by a single newline.
 func (f *VFile) FWrite(args ...Value) (Value, *Closure) {
 	defer Traceback("f.write", args)
 	return Wrt(f, noBytes, nlByte, args)
 }
 
-//  writes(x,...) write its arguments to %stdout with no following newline.
+// writes(x,...) write its arguments to %stdout with no following newline.
 func Writes(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("writes", args)
 	return Wrt(env.Lookup("stdout", true), noBytes, noBytes, args)
 }
 
-//  f.writes(x,...) write its arguments to file f with no following newline.
+// f.writes(x,...) write its arguments to file f with no following newline.
 func (f *VFile) FWrites(args ...Value) (Value, *Closure) {
 	defer Traceback("f.writes", args)
 	return Wrt(f, noBytes, noBytes, args)
 }
 
-//  print(x,...) writes its arguments to %stdout, separated by spaces.
+// print(x,...) writes its arguments to %stdout, separated by spaces.
 func Print(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("print", args)
 	return Wrt(env.Lookup("stdout", true), spByte, noBytes, args)
 }
 
-//  f.print(x,...) writes its arguments to file f, separated by spaces.
+// f.print(x,...) writes its arguments to file f, separated by spaces.
 func (f *VFile) FPrint(args ...Value) (Value, *Closure) {
 	defer Traceback("f.print", args)
 	return Wrt(f, spByte, noBytes, args)
 }
 
-//  println(x,...) writes its arguments to %stdout,
-//  separated by spaces and terminated by a newline character.
+// println(x,...) writes its arguments to %stdout,
+// separated by spaces and terminated by a newline character.
 func Println(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("println", args)
 	return Wrt(env.Lookup("stdout", true), spByte, nlByte, args)
 }
 
-//  f.println(x,...) writes its arguments to file f,
-//  separated by spaces and terminated by a newline character.
+// f.println(x,...) writes its arguments to file f,
+// separated by spaces and terminated by a newline character.
 func (f *VFile) FPrintln(args ...Value) (Value, *Closure) {
 	defer Traceback("f.println", args)
 	return Wrt(f, spByte, nlByte, args)
 }
 
-//  stop(x,...) writes its arguments to %stderr and terminates execution
-//  with an exit code of 1 (indicating an error).
+// stop(x,...) writes its arguments to %stderr and terminates execution
+// with an exit code of 1 (indicating an error).
 func Stop(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("stop", args)
 	Wrt(env.Lookup("stderr", true), noBytes, nlByte, args)
@@ -354,7 +355,7 @@ func Stop(env *Env, args ...Value) (Value, *Closure) {
 	return Fail()
 }
 
-//  Wrt(file, between, atEnd, x[]) -- implement write/writes/print/println/stop
+// Wrt(file, between, atEnd, x[]) -- implement write/writes/print/println/stop
 func Wrt(v Value, between []byte, atEnd []byte, args []Value) (Value, *Closure) {
 	f := v.(*VFile)
 	for i, v := range args {
@@ -368,7 +369,7 @@ func Wrt(v Value, between []byte, atEnd []byte, args []Value) (Value, *Closure) 
 	return Return(f)
 }
 
-//  Ock(n, e) -- output error check: panics if e is non-nil after output call
+// Ock(n, e) -- output error check: panics if e is non-nil after output call
 func Ock(n int, err error) {
 	if err != nil {
 		panic(err)

@@ -17,7 +17,7 @@ func init() {
 	DefLib(Qmean, "qmean", "n[]", "compute quadratic mean")
 }
 
-//  min(n, ...) returns the smallest of its arguments.
+// min(n, ...) returns the smallest of its arguments.
 func Min(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("min", args)
 	v := FloatVal(ProcArg(args, 0, NilValue))
@@ -30,7 +30,7 @@ func Min(env *Env, args ...Value) (Value, *Closure) {
 	return Return(NewNumber(v))
 }
 
-//  max(n, ...) returns the largest of its arguments.
+// max(n, ...) returns the largest of its arguments.
 func Max(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("max", args)
 	v := FloatVal(ProcArg(args, 0, NilValue))
@@ -43,10 +43,10 @@ func Max(env *Env, args ...Value) (Value, *Closure) {
 	return Return(NewNumber(v))
 }
 
-//  gcd(i,...) truncates its arguments to integer and
-//  returns their greatest common divisor.
-//  Negative values are allowed.
-//  gcd() returns zero if all values are zero.
+// gcd(i,...) truncates its arguments to integer and
+// returns their greatest common divisor.
+// Negative values are allowed.
+// gcd() returns zero if all values are zero.
 func GCD(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("gcd", args)
 	a := IntVal(ProcArg(args, 0, NilValue))
@@ -65,8 +65,8 @@ func GCD(env *Env, args ...Value) (Value, *Closure) {
 	return Return(NewNumber(float64(a)))
 }
 
-//  amean(n,...) returns the arithmetic mean, or simple average,
-//  of its arguments.
+// amean(n,...) returns the arithmetic mean, or simple average,
+// of its arguments.
 func Amean(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("amean", args)
 	t := FloatVal(ProcArg(args, 0, NilValue))
@@ -76,8 +76,8 @@ func Amean(env *Env, args ...Value) (Value, *Closure) {
 	return Return(NewNumber(float64(t) / float64(len(args))))
 }
 
-//  gmean(n,...) returns the geometric mean of its arguments,
-//  which must all be strictly positive.
+// gmean(n,...) returns the geometric mean of its arguments,
+// which must all be strictly positive.
 func Gmean(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("gmean", args)
 	p := FloatVal(ProcArg(args, 0, NilValue))
@@ -94,8 +94,8 @@ func Gmean(env *Env, args ...Value) (Value, *Closure) {
 	return Return(NewNumber(math.Exp(math.Log(p) / float64(len(args)))))
 }
 
-//  hmean(n,...) returns the harmonic mean of its arguments,
-//  which must all be strictly positive.
+// hmean(n,...) returns the harmonic mean of its arguments,
+// which must all be strictly positive.
 func Hmean(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("hmean", args)
 	v := FloatVal(ProcArg(args, 0, NilValue))
@@ -113,8 +113,8 @@ func Hmean(env *Env, args ...Value) (Value, *Closure) {
 	return Return(NewNumber(float64(len(args)) / t))
 }
 
-//  qmean(n,...) returns the quadratic mean, or root mean square,
-//  of its arguments.
+// qmean(n,...) returns the quadratic mean, or root mean square,
+// of its arguments.
 func Qmean(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("qmean", args)
 	v := FloatVal(ProcArg(args, 0, NilValue))

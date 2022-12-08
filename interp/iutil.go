@@ -10,26 +10,26 @@ import (
 	"time"
 )
 
-//  checkError aborts if error value e is not nil.
+// checkError aborts if error value e is not nil.
 func checkError(e error) {
 	if e != nil {
 		abort(e)
 	}
 }
 
-//  abort issues an error message and aborts.
+// abort issues an error message and aborts.
 func abort(e interface{}) {
 	fmt.Fprintln(os.Stderr, e)
 	quit(1)
 }
 
-//  quit exits with a given code after stopping profiling.
+// quit exits with a given code after stopping profiling.
 func quit(xc int) {
 	pprof.StopCPUProfile()
 	os.Exit(xc)
 }
 
-//  showInterval prints timing for the latest interval if opt_timings is set.
+// showInterval prints timing for the latest interval if opt_timings is set.
 func showInterval(label string) {
 	dt := cpuInterval().Seconds()
 	if label != "" && opt_timings {
@@ -37,7 +37,7 @@ func showInterval(label string) {
 	}
 }
 
-//  cpuInterval returns the CPU time (user + system) since the preceding call.
+// cpuInterval returns the CPU time (user + system) since the preceding call.
 func cpuInterval() time.Duration {
 	total := cpuTime()
 	delta := total - prevCPU
@@ -47,7 +47,7 @@ func cpuInterval() time.Duration {
 
 var prevCPU time.Duration // total time at list check
 
-//  cpuTime returns the current CPU usage (user time + system time).
+// cpuTime returns the current CPU usage (user time + system time).
 func cpuTime() time.Duration {
 	var ustruct syscall.Rusage
 	checkError(syscall.Getrusage(0, &ustruct))

@@ -8,19 +8,19 @@ import (
 	g "github.com/proebsting/goaldi/runtime"
 )
 
-//  iLiteral replaces Ir_NilLit, Ir_IntLit, Ir_RealLit, Ir_StrLit
+// iLiteral replaces Ir_NilLit, Ir_IntLit, Ir_RealLit, Ir_StrLit
 type iLiteral struct {
 	Lhs   int
 	Value g.Value
 }
 
-//  coexecute wraps an execute call to catch a panic in a co-expression
+// coexecute wraps an execute call to catch a panic in a co-expression
 func coexecute(f *pr_frame, label string) (g.Value, *g.Closure) {
 	defer g.Catcher(f.env)
 	return execute(f, label)
 }
 
-//  execute dispatches and interprets IR instructions for a procedure or coexpr
+// execute dispatches and interprets IR instructions for a procedure or coexpr
 func execute(f *pr_frame, label string) (rv g.Value, rc *g.Closure) {
 
 	// set up error catcher to call user recovery procedure
@@ -311,7 +311,7 @@ func execute(f *pr_frame, label string) (rv g.Value, rc *g.Closure) {
 	return self.Resume()
 }
 
-//  irSelect -- execute select statement, returning label of chosen case body
+// irSelect -- execute select statement, returning label of chosen case body
 func irSelect(f *pr_frame, irs ir.Ir_Select) string {
 
 	// set up data structures for selection

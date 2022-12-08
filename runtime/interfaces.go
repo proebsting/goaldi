@@ -6,12 +6,12 @@ import (
 	"fmt"
 )
 
-//  Any Go value can be a Goaldi value.
-//  This identifier is intended to designate a Goaldi value context.
+// Any Go value can be a Goaldi value.
+// This identifier is intended to designate a Goaldi value context.
 type Value interface{}
 
-//  IExternal -- declares an external type to be a Goaldi external
-//  (to prevent conversion of something that otherwise might be converted.)
+// IExternal -- declares an external type to be a Goaldi external
+// (to prevent conversion of something that otherwise might be converted.)
 type IExternal interface {
 	GoaldiExternal()
 }
@@ -60,7 +60,7 @@ type IField interface {
 	Field(string) Value // x.id
 }
 
-//  IIdentical -- for types where === is not just a pointer comparison
+// IIdentical -- for types where === is not just a pointer comparison
 type IIdentical interface {
 	Identical(Value) Value // === and ~===
 }
@@ -107,14 +107,14 @@ type Numerable interface {
 
 //	------------------------- Miscellaneous Interfaces -------------------------
 
-//  IRank designates anything usable as a type: VType or VCtor
+// IRank designates anything usable as a type: VType or VCtor
 type IRank interface {
 	Rank() int                            // return rank for sorting
 	Name(args ...Value) (Value, *Closure) // return type name to Goaldi
 	Char(args ...Value) (Value, *Closure) // return type char to Goaldi
 }
 
-//  IVariable -- an assignable trapped variable (simple or subscripted)
+// IVariable -- an assignable trapped variable (simple or subscripted)
 type IVariable interface {
 	Deref() Value           // return dereferenced value
 	Assign(Value) IVariable // assign value

@@ -8,7 +8,7 @@ import (
 	g "github.com/proebsting/goaldi/runtime"
 )
 
-//  iOperator flag bits
+// iOperator flag bits
 const (
 	rflag = 1 << iota // rvalue result wanted
 	v0                // arg0 used as value
@@ -18,7 +18,7 @@ const (
 	VAR1              // arg1 used as variable
 )
 
-//  iOperator instruction
+// iOperator instruction
 type iOperator struct {
 	OpCode     uint16 // integer opcode for dispatching
 	Flags      uint16 // flags
@@ -32,7 +32,7 @@ type iOperator struct {
 	FailLabel  string // may be nil
 }
 
-//  getOperator(i) returns the iOperator version of IR instruction i
+// getOperator(i) returns the iOperator version of IR instruction i
 func getOperator(i *ir.Ir_OpFunction) *iOperator {
 	// get a new *copy* (by value) of this insn's table entry
 	// with opcode and flags set
@@ -65,7 +65,7 @@ func getOperator(i *ir.Ir_OpFunction) *iOperator {
 	return &f
 }
 
-//  operate() executes an iOperator insn corresponding to a Goaldi operator
+// operate() executes an iOperator insn corresponding to a Goaldi operator
 func operate(env *g.Env, f *pr_frame, i *iOperator) (g.Value, *g.Closure) {
 
 	// load and possibly dereference arguments
@@ -208,7 +208,7 @@ func operate(env *g.Env, f *pr_frame, i *iOperator) (g.Value, *g.Closure) {
 	}
 }
 
-//  argval retrieves an argument for an operator and possibly dereferences it
+// argval retrieves an argument for an operator and possibly dereferences it
 func argval(f *pr_frame, t int, isvar uint16) g.Value {
 	v := f.temps[t]
 	if isvar == 0 {
@@ -217,7 +217,7 @@ func argval(f *pr_frame, t int, isvar uint16) g.Value {
 	return g.Value(v)
 }
 
-//  deltaSlice handles x[i+:k] or x[i-:k] by calling x[i:j]
+// deltaSlice handles x[i+:k] or x[i-:k] by calling x[i:j]
 func deltaSlice(lval g.Value, arg0 g.Value, arg1 g.Value, arg2 g.Value,
 	sign int) (g.Value, *g.Closure) {
 	x := g.Deref(arg0).(g.ISlice)
@@ -229,13 +229,13 @@ func deltaSlice(lval g.Value, arg0 g.Value, arg1 g.Value, arg2 g.Value,
 	return x.Slice(lval, g.NewNumber(float64(i)), g.NewNumber(float64(j))), nil
 }
 
-//  opTable maps Ir_OpFunction strings to iOperator opcodes
+// opTable maps Ir_OpFunction strings to iOperator opcodes
 var opTable = make(map[string]iOperator)
 
-//  codeTable maps opcodes back to strings for checking against duplicates
+// codeTable maps opcodes back to strings for checking against duplicates
 var codeTable = make(map[int]string)
 
-//  defOp creates a skeleton iOperator for replacing an Ir_OpFunction
+// defOp creates a skeleton iOperator for replacing an Ir_OpFunction
 func defOp(opstring string, opcode int, flags int) {
 	if opTable[opstring].OpCode != 0 {
 		panic(g.Malfunction("Duplicate opstring: " + opstring))
@@ -248,8 +248,8 @@ func defOp(opstring string, opcode int, flags int) {
 	opTable[opstring] = iOperator{OpCode: uint16(opcode), Flags: uint16(flags)}
 }
 
-//  This initializer defines the mapping of strings to opcodes
-//  with flags for variable and value usage.
+// This initializer defines the mapping of strings to opcodes
+// with flags for variable and value usage.
 func init() {
 	defOp("1/", oIsNull, VAR0)
 	defOp("1\\", oNotNull, VAR0)
@@ -301,7 +301,7 @@ func init() {
 	codeTable = nil // no longer needed; was just for sanity check
 }
 
-//  without no preprocessor, we must list the opcode names again to define them
+// without no preprocessor, we must list the opcode names again to define them
 const (
 	oInvalid = iota
 	oIsNull

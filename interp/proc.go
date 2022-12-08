@@ -9,7 +9,7 @@ import (
 	"unicode"
 )
 
-//  information about a procedure that is shared by all invocations
+// information about a procedure that is shared by all invocations
 type pr_Info struct {
 	space    *g.Namespace             // procedure namespace
 	name     string                   // procedure name
@@ -24,10 +24,10 @@ type pr_Info struct {
 	vproc    *g.VProcedure            // execution-time procedure struct
 }
 
-//  global index of procedure information (indexed by qualified name)
+// global index of procedure information (indexed by qualified name)
 var ProcTable = make(map[string]*pr_Info)
 
-//  declareProc initializes and returns a procedure info structure
+// declareProc initializes and returns a procedure info structure
 func declareProc(irf *ir.Ir_Function) *pr_Info {
 	pr := &pr_Info{}
 	pr.name = irf.Name
@@ -49,7 +49,7 @@ func declareProc(irf *ir.Ir_Function) *pr_Info {
 	return pr
 }
 
-//  setupProc finishes procedure setup now that all globals are known
+// setupProc finishes procedure setup now that all globals are known
 func setupProc(pr *pr_Info) {
 
 	// add qualifiers to unbound identifiers for dependency processing
@@ -92,7 +92,7 @@ func setupProc(pr *pr_Info) {
 	}
 }
 
-//  irProcedure makes a runtime procedure from static info and inherited vars
+// irProcedure makes a runtime procedure from static info and inherited vars
 func irProcedure(pr *pr_Info, outer map[string]interface{}) *g.VProcedure {
 
 	// make a list of unadorned parameter names

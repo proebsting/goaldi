@@ -11,18 +11,18 @@ import (
 	"strings"
 )
 
-//  Exception records a Goaldi panic value
+// Exception records a Goaldi panic value
 type Exception struct {
 	Msg  string  // explanatory message
 	Offv []Value // offending values (Goaldi or Go values)
 }
 
-//  Exception.Error(), by its existence, makes an Exception a Go "error"
+// Exception.Error(), by its existence, makes an Exception a Go "error"
 func (e *Exception) Error() string {
 	return e.String()
 }
 
-//  Exception.String() returns a string form of a Exception
+// Exception.String() returns a string form of a Exception
 func (e *Exception) String() string {
 	s := fmt.Sprintf("Exception(%#v", e.Msg)
 	for _, v := range e.Offv {
@@ -31,30 +31,30 @@ func (e *Exception) String() string {
 	return s + ")"
 }
 
-//  Exception.GoString() converts an exception for image() or printf(%#v)
+// Exception.GoString() converts an exception for image() or printf(%#v)
 func (e *Exception) GoString() string {
 	return e.String()
 }
 
-//  NewExn(s,v,...) creates and returns an Exception struct
+// NewExn(s,v,...) creates and returns an Exception struct
 func NewExn(s string, v ...Value) *Exception {
 	return &Exception{s, v}
 }
 
-//  A Malfunction indicates an internal Goaldi problem (vs. a user error)
+// A Malfunction indicates an internal Goaldi problem (vs. a user error)
 type Malfunction string
 
-//  Malfunction.String() returns the default string representation.
+// Malfunction.String() returns the default string representation.
 func (e Malfunction) String() string {
 	return "Malfunction: " + string(e)
 }
 
-//  Malfunction.Error() makes a Malfunction a Go "error"
+// Malfunction.Error() makes a Malfunction a Go "error"
 func (e Malfunction) Error() string {
 	return e.String()
 }
 
-//  CallFrame records one frame of traceback information
+// CallFrame records one frame of traceback information
 type CallFrame struct {
 	cause interface{} // underlying panic call
 	offv  []Value     // offending value
@@ -63,14 +63,14 @@ type CallFrame struct {
 	args  []Value     // procedure arguments
 }
 
-//  Traceback is called as a deferred function to catch and annotate a panic
+// Traceback is called as a deferred function to catch and annotate a panic
 func Traceback(procname string, arglist []Value) {
 	if p := recover(); p != nil {
 		panic(Catch(p, []Value{}, "", procname, arglist))
 	}
 }
 
-//  Catch annotates a caught panic value with traceback information
+// Catch annotates a caught panic value with traceback information
 func Catch(p interface{}, ev []Value, coord string,
 	procname string, arglist []Value) *CallFrame {
 	if te, ok := p.(*runtime.TypeAssertionError); ok {
@@ -79,8 +79,8 @@ func Catch(p interface{}, ev []Value, coord string,
 	return &CallFrame{p, ev, coord, procname, arglist}
 }
 
-//  Cause(x) returns the original panic underlying a chain of CallFrame structs.
-//  This is the value passed to an exception catcher.
+// Cause(x) returns the original panic underlying a chain of CallFrame structs.
+// This is the value passed to an exception catcher.
 func Cause(x interface{}) interface{} {
 	for {
 		if f, ok := x.(*CallFrame); ok {
@@ -91,8 +91,8 @@ func Cause(x interface{}) interface{} {
 	}
 }
 
-//  Catcher(env) prints a traceback after a panic.
-//  This is the recovery procedure at the top of the main (or coexpr) stack.
+// Catcher(env) prints a traceback after a panic.
+// This is the recovery procedure at the top of the main (or coexpr) stack.
 func Catcher(env *Env) {
 	if x := recover(); x != nil {
 		Diagnose(os.Stderr, x)                       // write Goaldi stack trace
@@ -105,8 +105,8 @@ func Catcher(env *Env) {
 	}
 }
 
-//  Diagnose prints traceback of a panic.
-//  It returns true for an "expected" (recognized) error.
+// Diagnose prints traceback of a panic.
+// It returns true for an "expected" (recognized) error.
 func Diagnose(f io.Writer, v interface{}) bool {
 	switch x := v.(type) {
 	case *CallFrame:
@@ -153,15 +153,15 @@ func Diagnose(f io.Writer, v interface{}) bool {
 	}
 }
 
-//  A TypeError wraps a Go TypeAssertionError so we can change how it prints.
+// A TypeError wraps a Go TypeAssertionError so we can change how it prints.
 type TypeError runtime.TypeAssertionError
 
 func (e *TypeError) Error() string {
 	return `TypeError("` + e.Cleanup() + `")`
 }
 
-//  Cleanup() simplifies the underlying Go runtime.TypeAssertionError.
-//  (This would be a lot easier if the error object fields weren't protected.)
+// Cleanup() simplifies the underlying Go runtime.TypeAssertionError.
+// (This would be a lot easier if the error object fields weren't protected.)
 func (e *TypeError) Cleanup() string {
 	errstr := ((*runtime.TypeAssertionError)(e)).Error()
 	subj := extract(errstr, "conversion: ")
@@ -183,8 +183,8 @@ func (e *TypeError) Cleanup() string {
 	}
 }
 
-//  extract finds the field following a given indicator prefix
-//  and cleans it up, removing any further [*][runtime.[V]] prefix
+// extract finds the field following a given indicator prefix
+// and cleans it up, removing any further [*][runtime.[V]] prefix
 func extract(s string, prefix string) string {
 	i := strings.Index(s, prefix)
 	if i < 0 {

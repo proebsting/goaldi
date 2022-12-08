@@ -14,19 +14,19 @@ import (
 	"strings"
 )
 
-//  StdLib is the set of procedures (including types) initially available
+// StdLib is the set of procedures (including types) initially available
 var StdLib = make(map[string]ICall)
 
-//  DefLib constructs and registers a standard library procedure.
+// DefLib constructs and registers a standard library procedure.
 func DefLib(entry Procedure, name string, pspec string, descr string) *VProcedure {
 	p := DefProc(entry, name, pspec, descr)
 	StdLib[name] = p
 	return p
 }
 
-//  GoLib registers a Go function as a standard library procedure.
-//  The ETOSS option is used to make regex, printf, remove, etc. throw
-//  an exceptions when an error occurs.
+// GoLib registers a Go function as a standard library procedure.
+// The ETOSS option is used to make regex, printf, remove, etc. throw
+// an exceptions when an error occurs.
 func GoLib(entry interface{}, name string, pspec string, descr string) *VProcedure {
 	pnames, isvar := ParmsFromSpec(pspec)
 	p := NewProcedure(name, pnames, isvar,
@@ -37,7 +37,7 @@ func GoLib(entry interface{}, name string, pspec string, descr string) *VProcedu
 
 const showLen = 79
 
-//  libentry registers a library entry for sorting and output
+// libentry registers a library entry for sorting and output
 type libentry struct {
 	tpfx string      // type prefix for method (e.g. "L.")
 	name string      // procedure, constructor, or method name
@@ -45,7 +45,7 @@ type libentry struct {
 	proc *VProcedure // underlying procedure
 }
 
-//  bykey implements sort.Interface for []*libentry
+// bykey implements sort.Interface for []*libentry
 type bykey []*libentry
 
 func (a bykey) Len() int      { return len(a) }
@@ -58,7 +58,7 @@ func (a bykey) Less(i, j int) bool {
 	}
 }
 
-//  ShowLibrary(f) lists all library functions and standard types on file f
+// ShowLibrary(f) lists all library functions and standard types on file f
 func ShowLibrary(f io.Writer) {
 
 	types := make([]*VType, 0)    // types seen
@@ -114,7 +114,7 @@ func ShowLibrary(f io.Writer) {
 	fmt.Fprintln(f, hrule)
 }
 
-//  VProcedure.ImplBy -- return name of implementing underlying function
+// VProcedure.ImplBy -- return name of implementing underlying function
 func (v *VProcedure) ImplBy() string {
 	if v.GoFunc == nil {
 		return v.Name // no further information available

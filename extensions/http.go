@@ -17,15 +17,15 @@ import (
 	"net/url"
 )
 
-//  declare new procedures for use from Goaldi
+// declare new procedures for use from Goaldi
 func init() {
 	g.GoLib(htfile, "htfile", "url", "open URL and return file")
 	g.GoLib(htget, "htget", "url", "get URL and return response")
 	g.GoLib(htpost, "htpost", "url,name,kv[]", "post form and return response")
 }
 
-//  htfile(url) returns a file for reading the body of a web file.
-//  It returns nil if the URL cannot be opened.
+// htfile(url) returns a file for reading the body of a web file.
+// It returns nil if the URL cannot be opened.
 func htfile(u string) io.Reader {
 	resp, err := http.Get(u)
 	if err != nil {
@@ -34,14 +34,15 @@ func htfile(u string) io.Reader {
 	return resp.Body
 }
 
-//  htget(url) returns an HTTP response object R for reading a web file.
-//  It returns nil if the url cannot be opened.
+// htget(url) returns an HTTP response object R for reading a web file.
+// It returns nil if the url cannot be opened.
 //
-//  Given an object R returned by htget():
-//  	The operation *R returns a file for reading the body.
-//  	The operation !R generates the header files.
+// Given an object R returned by htget():
 //
-//  (These use Goaldi operators instead of method calls just to show how.)
+//	The operation *R returns a file for reading the body.
+//	The operation !R generates the header files.
+//
+// (These use Goaldi operators instead of method calls just to show how.)
 func htget(u string) *htresp {
 	resp, err := http.Get(u)
 	if err != nil {
@@ -50,9 +51,9 @@ func htget(u string) *htresp {
 	return &htresp{resp}
 }
 
-//  htpost(url, k1, v1, k2, v2, ...) posts a form and returns response R.
-//  The (ki, vi) arguments are key-value pairs for supplying parameters.
-//  htpost() returns nil if the url cannot be opened.
+// htpost(url, k1, v1, k2, v2, ...) posts a form and returns response R.
+// The (ki, vi) arguments are key-value pairs for supplying parameters.
+// htpost() returns nil if the url cannot be opened.
 func htpost(u string, kv ...string) *htresp {
 	data := url.Values{}
 	for i := 0; i < len(kv); i += 2 {
@@ -65,19 +66,19 @@ func htpost(u string, kv ...string) *htresp {
 	return &htresp{resp}
 }
 
-//  htresp is our version of an http.Response with added Goaldi methods
+// htresp is our version of an http.Response with added Goaldi methods
 type htresp struct {
 	Resp *http.Response
 }
 
-//  htresp.Size() returns the underlying file for reading.
-//  This is a perversion of the *H unary operator for illustrative purposes.
+// htresp.Size() returns the underlying file for reading.
+// This is a perversion of the *H unary operator for illustrative purposes.
 func (h *htresp) Size() g.Value {
 	return g.Import(h.Resp.Body) // Import() converts Go value to Goaldi value
 }
 
-//  htresp.Dispense() generates the headers as name:value strings.
-//  This implements the !H unary operator.
+// htresp.Dispense() generates the headers as name:value strings.
+// This implements the !H unary operator.
 func (h *htresp) Dispense(unused g.Value) (g.Value, *g.Closure) {
 	//  range over the headers and feed into a channel
 	ch := make(chan *g.VString)

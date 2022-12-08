@@ -7,14 +7,14 @@ import (
 	"fmt"
 )
 
-//  A DependencyList holds a collection of globals and procedures for ordering
+// A DependencyList holds a collection of globals and procedures for ordering
 type DependencyList struct {
 	list    []*InitItem          // ordered list of entries
 	table   map[string]*InitItem // entries indexed by name
 	passnum int                  // pass number during processing
 }
 
-//  An InitItem is a global initialization procedure with dependencies
+// An InitItem is a global initialization procedure with dependencies
 type InitItem struct {
 	proc     *VProcedure // initialization procedure for globals (only!)
 	uses     []string    // variables used by this global or procedure
@@ -24,8 +24,8 @@ type InitItem struct {
 	awaiting *InitItem   // one item that blocks this one
 }
 
-//  InitItem status values
-//  The order matters here -- see InitItem.setStatus()
+// InitItem status values
+// The order matters here -- see InitItem.setStatus()
 const (
 	initUnk   = iota // never calculated
 	waitGlob         // waiting on at least one global
@@ -34,18 +34,18 @@ const (
 	initDone         // initialization done (or scheduled)
 )
 
-//  DependencyList.Add inserts an item in the list.
-//  This ordering is preserved in the absence of actual dependencies.
+// DependencyList.Add inserts an item in the list.
+// This ordering is preserved in the absence of actual dependencies.
 func (dl *DependencyList) Add(
 	name string, initProc *VProcedure, uses []string) {
 	item := &InitItem{initProc, uses, name, initUnk, 0, nil}
 	dl.list = append(dl.list, item)
 }
 
-//  DependencyList.Reorder places the procedures in dependency order.
-//  This is used for initializing globals.
-//  Reorder returns an error if circular dependencies remain at the end,
-//  or if an attempt is made to set the same global twice.
+// DependencyList.Reorder places the procedures in dependency order.
+// This is used for initializing globals.
+// Reorder returns an error if circular dependencies remain at the end,
+// or if an attempt is made to set the same global twice.
 func (dl *DependencyList) Reorder(trace bool) error {
 	if trace {
 		fmt.Printf("[-] begin dependency computation\n")
@@ -110,8 +110,8 @@ OuterLoop:
 	}
 }
 
-//  DependencyList.RunAll runs all the initializers in their current order.
-//  Execution errors are handled by the usual exception handling.
+// DependencyList.RunAll runs all the initializers in their current order.
+// Execution errors are handled by the usual exception handling.
 func (dl *DependencyList) RunAll() {
 	for _, item := range dl.list {
 		if item.proc != nil { // if a global initializer
@@ -120,7 +120,7 @@ func (dl *DependencyList) RunAll() {
 	}
 }
 
-//  InitItem.setSatus computes and returns the status for the current pass
+// InitItem.setSatus computes and returns the status for the current pass
 func (m *InitItem) setStatus(dl *DependencyList) int {
 	// if m is nil, this entry isn't even in the table and is considered done
 	if m == nil {

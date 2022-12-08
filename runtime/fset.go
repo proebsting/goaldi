@@ -8,7 +8,7 @@ import (
 
 var _ = fmt.Printf // enable debugging
 
-//  Declare methods
+// Declare methods
 var SetMethods = MethodTable([]*VProcedure{
 	DefMeth((*VSet).Put, "put", "x[]", "add members"),
 	DefMeth((*VSet).Delete, "delete", "x[]", "remove members"),
@@ -16,7 +16,7 @@ var SetMethods = MethodTable([]*VProcedure{
 	DefMeth((*VSet).Sort, "sort", "i", "produce sorted list"),
 })
 
-//  set(L) creates a set initialized by the values of list L.
+// set(L) creates a set initialized by the values of list L.
 func Set(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("set", args)
 	L := ProcArg(args, 0, EMPTYLIST).(*VList)
@@ -25,8 +25,8 @@ func Set(env *Env, args ...Value) (Value, *Closure) {
 
 var EMPTYLIST = NewList(0, nil)
 
-//  S.member(x) returns x if x is a member of set S;
-//  otherwise it fails.
+// S.member(x) returns x if x is a member of set S;
+// otherwise it fails.
 func (S *VSet) Member(args ...Value) (Value, *Closure) {
 	defer Traceback("S.member", args)
 	x := ProcArg(args, 0, NilValue)
@@ -37,8 +37,8 @@ func (S *VSet) Member(args ...Value) (Value, *Closure) {
 	}
 }
 
-//  S.put(x...) adds all its arguments to set S.
-//  It returns the set S.
+// S.put(x...) adds all its arguments to set S.
+// It returns the set S.
 func (S *VSet) Put(args ...Value) (Value, *Closure) {
 	defer Traceback("S.put", args)
 	for _, x := range args {
@@ -47,8 +47,8 @@ func (S *VSet) Put(args ...Value) (Value, *Closure) {
 	return Return(S)
 }
 
-//  S.delete(x...) removes all of its arguments from set S.
-//  It returns S.
+// S.delete(x...) removes all of its arguments from set S.
+// It returns S.
 func (S *VSet) Delete(args ...Value) (Value, *Closure) {
 	defer Traceback("S.delete", args)
 	for _, x := range args {
@@ -57,8 +57,8 @@ func (S *VSet) Delete(args ...Value) (Value, *Closure) {
 	return Return(S)
 }
 
-//  S.sort(i) returns a sorted list of the members of set S.
-//  This is equivalent to [:!S:].sort(i).
+// S.sort(i) returns a sorted list of the members of set S.
+// This is equivalent to [:!S:].sort(i).
 func (S *VSet) Sort(args ...Value) (Value, *Closure) {
 	defer Traceback("S.sort", args)
 	i := ProcArg(args, 0, ONE).(Numerable).ToNumber()

@@ -6,7 +6,7 @@ import (
 	"fmt"
 )
 
-//  VFile.Dispense() implements the !f operator
+// VFile.Dispense() implements the !f operator
 func (f *VFile) Dispense(unused Value) (Value, *Closure) {
 	var c *Closure
 	c = &Closure{func() (Value, *Closure) {
@@ -20,7 +20,7 @@ func (f *VFile) Dispense(unused Value) (Value, *Closure) {
 	return c.Resume()
 }
 
-//  VFile.Take(lval) implements the @f operator
+// VFile.Take(lval) implements the @f operator
 func (f *VFile) Take(lval Value) Value {
 	s := f.ReadLine()
 	if s != nil {
@@ -30,7 +30,7 @@ func (f *VFile) Take(lval Value) Value {
 	}
 }
 
-//  VFile.Send(lval, x) implements f @: x
+// VFile.Send(lval, x) implements f @: x
 func (f *VFile) Send(lval Value, x Value) Value {
 	s := fmt.Sprint(x)
 	Wrt(f, nil, nlByte, []Value{s})

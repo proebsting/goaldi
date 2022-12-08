@@ -49,12 +49,12 @@ func init() {
 	GoLib(math.Atanh, "atanh", "n", "compute hyperbolic arccosine")
 }
 
-//  number(x) returns its argument converted to number,
-//  or fails if it cannot be converted due to its form or datatype.
-//  For string (or stringable) arguments,
-//  number() trims leading and trailing spaces
-//  and then accepts standard Go decimal forms (fixed and floating)
-//  or Goaldi radix forms (101010b, 52o, 2Ax, 23r1J).
+// number(x) returns its argument converted to number,
+// or fails if it cannot be converted due to its form or datatype.
+// For string (or stringable) arguments,
+// number() trims leading and trailing spaces
+// and then accepts standard Go decimal forms (fixed and floating)
+// or Goaldi radix forms (101010b, 52o, 2Ax, 23r1J).
 func Number(env *Env, args ...Value) (Value, *Closure) {
 	// nonstandard entry; on panic, returns default nil values to fail
 	defer func() { recover() }()
@@ -66,8 +66,8 @@ func Number(env *Env, args ...Value) (Value, *Closure) {
 	}
 }
 
-//  seq(n,incr) generates an endless sequence of values beginning at n
-//  with increments of incr.
+// seq(n,incr) generates an endless sequence of values beginning at n
+// with increments of incr.
 func Seq(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("seq", args)
 	p1 := ProcArg(args, 0, ONE)
@@ -75,9 +75,9 @@ func Seq(env *Env, args ...Value) (Value, *Closure) {
 	return ToBy(p1, INF, p2)
 }
 
-//  log(n, b) returns the logarithm of n to base b.
-//  The default value of b is %e (2.7183...),
-//  so log(n) returns the natural logarithm of n.
+// log(n, b) returns the logarithm of n to base b.
+// The default value of b is %e (2.7183...),
+// so log(n) returns the natural logarithm of n.
 func Log(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("log", args)
 	r1 := FloatVal(ProcArg(args, 0, NilValue))
@@ -89,10 +89,10 @@ func Log(env *Env, args ...Value) (Value, *Closure) {
 	}
 }
 
-//  atan(y, x) returns the arctangent, in radians, of (y/x).
-//  The default value of x is 1, so atan(y) returns the arctangent of y.
-//  For the handling of special cases see
-//  http://golang.org/pkg/math/#Atan2[math.Atan2].
+// atan(y, x) returns the arctangent, in radians, of (y/x).
+// The default value of x is 1, so atan(y) returns the arctangent of y.
+// For the handling of special cases see
+// http://golang.org/pkg/math/#Atan2[math.Atan2].
 func Atan(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("atan", args)
 	r1 := FloatVal(ProcArg(args, 0, NilValue))
@@ -104,8 +104,8 @@ func Atan(env *Env, args ...Value) (Value, *Closure) {
 	}
 }
 
-//  randomize() seeds the random number generator
-//  with an irreproducible value obtained from /dev/urandom.
+// randomize() seeds the random number generator
+// with an irreproducible value obtained from /dev/urandom.
 func Randomize(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("randomize", args)
 	var seed int64
@@ -123,31 +123,31 @@ func Randomize(env *Env, args ...Value) (Value, *Closure) {
 	return Return(NewNumber(float64(seed)))
 }
 
-//  randgen(i) returns a new random generator seeded by i.
-//  The returned external value is a Go
-//  http://golang.org/pkg/math/rand/#Rand[math.rand/Rand] object
-//  whose methods may be called from Goaldi to produce random values.
+// randgen(i) returns a new random generator seeded by i.
+// The returned external value is a Go
+// http://golang.org/pkg/math/rand/#Rand[math.rand/Rand] object
+// whose methods may be called from Goaldi to produce random values.
 func RandGen(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("randgen", args)
 	i := int64(FloatVal(ProcArg(args, 0, ZERO)))
 	return Return(rand.New(rand.NewSource(i)))
 }
 
-//  dtor(d) returns the radian equivalent of the angle d given in degrees.
+// dtor(d) returns the radian equivalent of the angle d given in degrees.
 func DtoR(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("dtor", args)
 	r := FloatVal(ProcArg(args, 0, NilValue))
 	return Return(NewNumber(r * math.Pi / 180.0))
 }
 
-//  rtod(r) returns the degree equivalent of the angle r given in radians.
+// rtod(r) returns the degree equivalent of the angle r given in radians.
 func RtoD(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("rtod", args)
 	r := FloatVal(ProcArg(args, 0, NilValue))
 	return Return(NewNumber(r * 180.0 / math.Pi))
 }
 
-//  iand(i, j) returns the bitwise AND of the values i and j truncated to integer.
+// iand(i, j) returns the bitwise AND of the values i and j truncated to integer.
 func IAnd(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("iand", args)
 	i := int64(FloatVal(ProcArg(args, 0, NilValue)))
@@ -155,7 +155,7 @@ func IAnd(env *Env, args ...Value) (Value, *Closure) {
 	return Return(NewNumber(float64(i & j)))
 }
 
-//  ior(i, j) returns the bitwise OR of the values i and j truncated to integer.
+// ior(i, j) returns the bitwise OR of the values i and j truncated to integer.
 func IOr(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("ior", args)
 	i := int64(FloatVal(ProcArg(args, 0, NilValue)))
@@ -163,8 +163,8 @@ func IOr(env *Env, args ...Value) (Value, *Closure) {
 	return Return(NewNumber(float64(i | j)))
 }
 
-//  ixor(i, j) returns the bitwise exclusive OR
-//  of the values i and j truncated to integer.
+// ixor(i, j) returns the bitwise exclusive OR
+// of the values i and j truncated to integer.
 func IXor(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("ixor", args)
 	i := int64(FloatVal(ProcArg(args, 0, NilValue)))
@@ -172,8 +172,8 @@ func IXor(env *Env, args ...Value) (Value, *Closure) {
 	return Return(NewNumber(float64(i ^ j)))
 }
 
-//  iclear(i, j) returns the value of i cleared of those bits set in j,
-//  after truncating both arguments to integer.
+// iclear(i, j) returns the value of i cleared of those bits set in j,
+// after truncating both arguments to integer.
 func IClear(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("iclear", args)
 	i := int64(FloatVal(ProcArg(args, 0, NilValue)))
@@ -181,10 +181,10 @@ func IClear(env *Env, args ...Value) (Value, *Closure) {
 	return Return(NewNumber(float64(i &^ j)))
 }
 
-//  ishift(i, j) shifts i by j bits and returns the result.
-//  If j > 0, the shift is to the left with zero fill.
-//  If j < 0, the shift is to the right with sign extension.
-//  The arguments are both truncated to integer before operating.
+// ishift(i, j) shifts i by j bits and returns the result.
+// If j > 0, the shift is to the left with zero fill.
+// If j < 0, the shift is to the right with sign extension.
+// The arguments are both truncated to integer before operating.
 func IShift(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("ishift", args)
 	i := int64(FloatVal(ProcArg(args, 0, NilValue)))
@@ -196,7 +196,7 @@ func IShift(env *Env, args ...Value) (Value, *Closure) {
 	}
 }
 
-//  icom(i) truncates i to integer and returns its bitwise complement.
+// icom(i) truncates i to integer and returns its bitwise complement.
 func ICom(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("icom", args)
 	i := int64(FloatVal(ProcArg(args, 0, NilValue)))

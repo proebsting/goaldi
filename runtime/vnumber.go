@@ -13,7 +13,7 @@ import (
 
 type VNumber float64
 
-//  NewNumber -- construct a Goaldi number from a float value
+// NewNumber -- construct a Goaldi number from a float value
 func NewNumber(n float64) *VNumber {
 	vn := VNumber(n)
 	return &vn
@@ -24,13 +24,13 @@ var _ ICore = NewNumber(1)      // validate implementation
 var _ Numerable = NewNumber(1)  // validate implementation
 var _ Stringable = NewNumber(1) // validate implementation
 
-//  NumberType is the number instance of type type.
+// NumberType is the number instance of type type.
 var NumberType = NewType("number", "n", rNumber, Number, nil,
 	"number", "x", "convert to number")
 
-//  ParseNumber -- standard string-to-number conversion for Goaldi.
-//  Trims leading spaces and tabs, then allows either standard Go
-//  "ParseFloat" form or any Goaldi radix form (nnb, nno, nnx, nnrxxxx).
+// ParseNumber -- standard string-to-number conversion for Goaldi.
+// Trims leading spaces and tabs, then allows either standard Go
+// "ParseFloat" form or any Goaldi radix form (nnb, nno, nnx, nnrxxxx).
 func ParseNumber(s string) (float64, error) {
 	// trim leading and trailing strings; must have something left
 	s = strings.Trim(s, " \t")
@@ -79,8 +79,8 @@ var (
 	PHI  = NewNumber(math.Phi)
 )
 
-//  FloatVal(x) -- return float64 value after converting x.
-//  Equivalent to x.(Numerable).ToNumber().Val() but with better error report.
+// FloatVal(x) -- return float64 value after converting x.
+// Equivalent to x.(Numerable).ToNumber().Val() but with better error report.
 func FloatVal(x Value) float64 {
 	defer func() {
 		if recover() != nil {
@@ -90,17 +90,17 @@ func FloatVal(x Value) float64 {
 	return x.(Numerable).ToNumber().Val()
 }
 
-//  IntVal(x) -- return int value after converting x.
+// IntVal(x) -- return int value after converting x.
 func IntVal(x Value) int {
 	return int(FloatVal(x))
 }
 
-//  VNumber.Val -- return underlying float64 value
+// VNumber.Val -- return underlying float64 value
 func (v *VNumber) Val() float64 {
 	return float64(*v)
 }
 
-//  VNumber.String -- default conversion to Go string
+// VNumber.String -- default conversion to Go string
 func (v *VNumber) String() string {
 	i := int64(*v)
 	if v.IsExactInt(i) {
@@ -110,8 +110,8 @@ func (v *VNumber) String() string {
 	}
 }
 
-//  VNumber.GoString -- convert to Go string for image() and printf("%#v")
-//  The difference vs String() is that all significant digits are returned
+// VNumber.GoString -- convert to Go string for image() and printf("%#v")
+// The difference vs String() is that all significant digits are returned
 func (v *VNumber) GoString() string {
 	i := int64(*v)
 	if v.IsExactInt(i) {
@@ -121,32 +121,32 @@ func (v *VNumber) GoString() string {
 	}
 }
 
-//  VNumber.ToString -- convert to Goaldi string
+// VNumber.ToString -- convert to Goaldi string
 func (v *VNumber) ToString() *VString {
 	return NewString(v.String())
 }
 
-//  VNumber.Number -- return self
+// VNumber.Number -- return self
 func (v *VNumber) ToNumber() *VNumber {
 	return v
 }
 
-//  VNumber.Type -- return the number type
+// VNumber.Type -- return the number type
 func (v *VNumber) Type() IRank {
 	return NumberType
 }
 
-//  VNumber.Copy returns itself
+// VNumber.Copy returns itself
 func (v *VNumber) Copy() Value {
 	return v
 }
 
-//  VNumber.Before compares two numbers for sorting
+// VNumber.Before compares two numbers for sorting
 func (a *VNumber) Before(b Value, i int) bool {
 	return *a < *(b.(*VNumber))
 }
 
-//  VNumber.Identical -- check equality for === operator
+// VNumber.Identical -- check equality for === operator
 func (a *VNumber) Identical(x Value) Value {
 	b, ok := x.(*VNumber)
 	if ok && a.Val() == b.Val() {
@@ -156,17 +156,17 @@ func (a *VNumber) Identical(x Value) Value {
 	}
 }
 
-//  VNumber.Import returns itself
+// VNumber.Import returns itself
 func (v *VNumber) Import() Value {
 	return v
 }
 
-//  VNumber.Export returns a float64
+// VNumber.Export returns a float64
 func (v *VNumber) Export() interface{} {
 	return float64(*v)
 }
 
-//  VNumber.IsExactInt returns true if this VNumber represents int i exactly
+// VNumber.IsExactInt returns true if this VNumber represents int i exactly
 func (v *VNumber) IsExactInt(i int64) bool {
 	return float64(i) == float64(*v) && i <= MAX_EXACT && i >= -MAX_EXACT
 }

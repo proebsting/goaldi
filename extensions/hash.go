@@ -19,7 +19,7 @@ import (
 	"hash/fnv"
 )
 
-//  declare new procedures for use from Goaldi
+// declare new procedures for use from Goaldi
 func init() {
 	g.GoLib(adler32.New, "adler32", "", "create Adler-32 checksum engine")
 	g.GoLib(crc32.NewIEEE, "crc32", "", "create IEEE CRC-32 checksum engine")
@@ -28,7 +28,7 @@ func init() {
 	g.GoLib(hashvalue, "hashvalue", "", "return accumulated checksum value")
 }
 
-//  hashvalue(f) returns the current value of the hash engine f.
+// hashvalue(f) returns the current value of the hash engine f.
 func hashvalue(f hash.Hash32) uint32 {
 	return f.Sum32()
 }

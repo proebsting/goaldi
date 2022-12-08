@@ -21,18 +21,18 @@ type Closure struct {
 	Go Resumer // start or resumption function, depending on context
 }
 
-//  Procedure function prototype
+// Procedure function prototype
 type Procedure func(env *Env, args ...Value) (Value, *Closure)
 
-//  Procedure resumption prototype
+// Procedure resumption prototype
 type Resumer func() (Value, *Closure)
 
-//  ICall interface
+// ICall interface
 type ICall interface {
 	Call(env *Env, args []Value, names []string) (Value, *Closure)
 }
 
-//  ProcArg(a,i,d)  returns procedure argument a[i], defaulting to d
+// ProcArg(a,i,d)  returns procedure argument a[i], defaulting to d
 func ProcArg(a []Value, i int, d Value) Value {
 	if i < len(a) && a[i] != NilValue {
 		return a[i]
@@ -41,8 +41,8 @@ func ProcArg(a []Value, i int, d Value) Value {
 	}
 }
 
-//  Resume() executes the entry point in a Closure to produce the next result.
-//  If the pointer is nil, failure is produced.
+// Resume() executes the entry point in a Closure to produce the next result.
+// If the pointer is nil, failure is produced.
 func (c *Closure) Resume() (Value, *Closure) {
 	if c == nil {
 		return Fail()
@@ -50,18 +50,18 @@ func (c *Closure) Resume() (Value, *Closure) {
 	return c.Go()
 }
 
-//  Fail returns a failure indicator
+// Fail returns a failure indicator
 func Fail() (Value, *Closure) {
 	return nil, nil
 }
 
-//  Return returns a simple value as a duo
+// Return returns a simple value as a duo
 func Return(v Value) (Value, *Closure) {
 	return v, nil
 }
 
-//  ArgNames handles named arguments by building a new arglist.
-//  The pnames value may be nil to indicate no param names are known.
+// ArgNames handles named arguments by building a new arglist.
+// The pnames value may be nil to indicate no param names are known.
 func ArgNames(p *VProcedure, args []Value, names []string) []Value {
 	if p.Pnames != nil && len(args) > len(*p.Pnames) && !p.Variadic {
 		panic(NewExn("Too many arguments", p))
@@ -118,7 +118,7 @@ func ArgNames(p *VProcedure, args []Value, names []string) []Value {
 	return newargs
 }
 
-//  argIndex finds the index of an argument name in a list of strings
+// argIndex finds the index of an argument name in a list of strings
 func argIndex(name string, pnames *[]string) int {
 	for i, s := range *pnames {
 		if s == name {

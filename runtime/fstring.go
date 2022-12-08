@@ -10,7 +10,7 @@ import (
 	"unicode"
 )
 
-//  This init function adds a set of Go functions to the standard library
+// This init function adds a set of Go functions to the standard library
 func init() {
 	// Goaldi procedures
 	DefLib(Char, "char", "n", "return single character for Unicode value")
@@ -36,16 +36,16 @@ func init() {
 	GoLib(strings.Trim, "trim", "s,cutset", "remove leading and trailing characters")
 }
 
-//  string(x) returns a string representation of x.
-//  The result is identical to the value used by write(x) or sprintf("%v",x).
+// string(x) returns a string representation of x.
+// The result is identical to the value used by write(x) or sprintf("%v",x).
 func String(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("string", args)
 	v := ProcArg(args, 0, NilValue)
 	return Return(NewString(fmt.Sprint(v)))
 }
 
-//  char(n) returns the one-character string corresponding to the
-//  Unicode value of n truncated to integer.
+// char(n) returns the one-character string corresponding to the
+// Unicode value of n truncated to integer.
 func Char(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("char", args)
 	var r [1]rune
@@ -57,7 +57,7 @@ func Char(env *Env, args ...Value) (Value, *Closure) {
 	return Return(RuneString(r[:]))
 }
 
-//  ord(s) returns the Unicode value corresponding to the one-character string s.
+// ord(s) returns the Unicode value corresponding to the one-character string s.
 func Ord(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("ord", args)
 	r := ToString(ProcArg(args, 0, NilValue)).ToRunes()
@@ -67,7 +67,7 @@ func Ord(env *Env, args ...Value) (Value, *Closure) {
 	return Return(NewNumber(float64(r[0])))
 }
 
-//  left(s,w,p) left-justifies s in a string of width w, padding with p.
+// left(s,w,p) left-justifies s in a string of width w, padding with p.
 func Left(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("left", args)
 	s := ToString(ProcArg(args, 0, NilValue)).ToRunes()
@@ -86,7 +86,7 @@ func Left(env *Env, args ...Value) (Value, *Closure) {
 	return Return(RuneString(r))
 }
 
-//  right(s,w,p) right-justifies s in a string of width w, padding with p.
+// right(s,w,p) right-justifies s in a string of width w, padding with p.
 func Right(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("right", args)
 	s := ToString(ProcArg(args, 0, NilValue)).ToRunes()
@@ -109,7 +109,7 @@ func Right(env *Env, args ...Value) (Value, *Closure) {
 	}
 }
 
-//  center(s,w,p) centers s in a string of width w, padding with p.
+// center(s,w,p) centers s in a string of width w, padding with p.
 func Center(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("center", args)
 	s := ToString(ProcArg(args, 0, NilValue)).ToRunes()
@@ -139,7 +139,7 @@ func Center(env *Env, args ...Value) (Value, *Closure) {
 	}
 }
 
-//  reverse(s) returns the end-for-end reversal of the string s.
+// reverse(s) returns the end-for-end reversal of the string s.
 func Reverse(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("reverse", args)
 	r := ToString(ProcArg(args, 0, NilValue)).ToRunes()
@@ -150,10 +150,10 @@ func Reverse(env *Env, args ...Value) (Value, *Closure) {
 	return Return(RuneString(r))
 }
 
-//  unquote(s) removes delimiters and escapes from a quoted string.
-//  The argument s must begin and end with explicit "double quotes" or
-//  \`backticks`.  unquote() fails if s is not properly quoted or if it
-//  contains an invalid (by Go rules) escape sequence.
+// unquote(s) removes delimiters and escapes from a quoted string.
+// The argument s must begin and end with explicit "double quotes" or
+// \`backticks`.  unquote() fails if s is not properly quoted or if it
+// contains an invalid (by Go rules) escape sequence.
 func Unquote(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("unquote", args)
 	s := ToString(ProcArg(args, 0, NilValue)).ToUTF8()

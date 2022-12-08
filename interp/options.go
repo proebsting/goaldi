@@ -13,7 +13,7 @@ import (
 	"strings"
 )
 
-//  command-line options
+// command-line options
 var opt_noexec bool  // -l: load and link only; don't execute
 var opt_timings bool // -t: show CPU timings
 var opt_adump bool   // -A: dump assembly-style IR code
@@ -24,7 +24,7 @@ var opt_profile bool // -P: produce CPU profile on ./PROFILE
 var opt_trace bool   // -T: trace IR instruction execution
 var opt_delete bool  // -#: delete IR files after loading
 
-//  usage prints a usage message (with option descriptions) and aborts.
+// usage prints a usage message (with option descriptions) and aborts.
 func usage() {
 	fmt.Fprintf(os.Stderr,
 		"Usage: %s -x [options] file.gir... [--] [arg...]]\n", os.Args[0])
@@ -32,7 +32,7 @@ func usage() {
 	os.Exit(1)
 }
 
-//  options sets global flags and returns file names and execution arguments.
+// options sets global flags and returns file names and execution arguments.
 func options() (files []string, args []string) {
 
 	// check for enabling magic flag

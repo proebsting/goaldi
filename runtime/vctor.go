@@ -12,7 +12,7 @@ import (
 
 var _ = fmt.Printf // enable debugging
 
-//  VCtor is the constructor structure
+// VCtor is the constructor structure
 type VCtor struct {
 	VType                 // embedded type struct (VCtor extends VType, sort of)
 	Parent *VCtor         // parent type
@@ -22,8 +22,8 @@ type VCtor struct {
 
 var _ ICore = &VCtor{} // validate implementation
 
-//  NewCtor(name, parent, fields) -- make constructor: name extends parent
-//  Panics if a field name is duplicated.
+// NewCtor(name, parent, fields) -- make constructor: name extends parent
+// Panics if a field name is duplicated.
 func NewCtor(name string, parent *VCtor, newfields []string) *VCtor {
 
 	// combine the parent's fields with the new fields
@@ -48,8 +48,8 @@ func NewCtor(name string, parent *VCtor, newfields []string) *VCtor {
 	return ctor
 }
 
-//  AddMethod(name, procedure) -- add a method for this record type
-//  Returns false if rejected as a duplicate.
+// AddMethod(name, procedure) -- add a method for this record type
+// Returns false if rejected as a duplicate.
 func (v *VCtor) AddMethod(name string, vproc *VProcedure) bool {
 	if v.Methods[name] != nil {
 		return false // this is a duplicate
@@ -65,7 +65,7 @@ func (v *VCtor) AddMethod(name string, vproc *VProcedure) bool {
 	return true
 }
 
-//  VCtor.New(values) -- create a new underlying record object
+// VCtor.New(values) -- create a new underlying record object
 func (v *VCtor) New(a []Value) *VRecord {
 	r := &VRecord{v, make([]Value, len(v.Flist))}
 	for i := range r.Data {
@@ -78,13 +78,13 @@ func (v *VCtor) New(a []Value) *VRecord {
 	return r
 }
 
-//  Declare static constructor
+// Declare static constructor
 func init() {
 	DefLib(Constructor,
 		"constructor", "name,fields[]", "build a record constructor")
 }
 
-//  VCtor.Field -- implement C.id to override methods in VType
+// VCtor.Field -- implement C.id to override methods in VType
 func (c *VCtor) Field(f string) Value {
 	// check for universal method
 	// (must pass VCtor, not Vtype, for c.copy() or c.image())
@@ -96,12 +96,12 @@ func (c *VCtor) Field(f string) Value {
 	return GetMethod(TypeMethods, &c.VType, f)
 }
 
-//  VCtor.Size() returns the number of fields.
+// VCtor.Size() returns the number of fields.
 func (c *VCtor) Size() Value {
 	return NewNumber(float64(len(c.Flist)))
 }
 
-//  VCtor.Index -- implement C[x] to return name of field i.
+// VCtor.Index -- implement C[x] to return name of field i.
 func (c *VCtor) Index(lval Value, x Value) Value {
 	i, isNumber := c.Lookup(x)
 	if i < 0 {
@@ -116,7 +116,7 @@ func (c *VCtor) Index(lval Value, x Value) Value {
 	}
 }
 
-//  VCtor.Lookup(x) converts x (s or n) to zero-based Go index, or -1 to fail.
+// VCtor.Lookup(x) converts x (s or n) to zero-based Go index, or -1 to fail.
 func (c *VCtor) Lookup(x Value) (index int, isNumber bool) {
 	n := len(c.Flist)
 	// if this is a string, check first for matching field name
@@ -142,7 +142,7 @@ func (c *VCtor) Lookup(x Value) (index int, isNumber bool) {
 	}
 }
 
-//  VCtor.GoString -- convert to Go string for image() and printf("%#v")
+// VCtor.GoString -- convert to Go string for image() and printf("%#v")
 func (v *VCtor) GoString() string {
 	s := "constructor " + v.TypeName + "("
 	d := ""
@@ -153,12 +153,12 @@ func (v *VCtor) GoString() string {
 	return s + ")"
 }
 
-//  VCtor.Copy returns itself
+// VCtor.Copy returns itself
 func (v *VCtor) Copy() Value {
 	return v
 }
 
-//  VCtor.Before compares itself with a constructor or type value
+// VCtor.Before compares itself with a constructor or type value
 func (a *VCtor) Before(b Value, i int) bool {
 	switch t := b.(type) {
 	case *VCtor:
@@ -170,17 +170,17 @@ func (a *VCtor) Before(b Value, i int) bool {
 	}
 }
 
-//  VCtor.Import returns itself
+// VCtor.Import returns itself
 func (v *VCtor) Import() Value {
 	return v
 }
 
-//  VCtor.Export returns itself
+// VCtor.Export returns itself
 func (v *VCtor) Export() interface{} {
 	return v
 }
 
-//  VCtor.Dispense() implements !D to generate the field names
+// VCtor.Dispense() implements !D to generate the field names
 func (v *VCtor) Dispense(unused Value) (Value, *Closure) {
 	var c *Closure
 	i := -1
@@ -195,15 +195,15 @@ func (v *VCtor) Dispense(unused Value) (Value, *Closure) {
 	return c.Resume()
 }
 
-//  VCtor.Call() implements a record constructor
+// VCtor.Call() implements a record constructor
 func (v *VCtor) Call(env *Env, args []Value, names []string) (Value, *Closure) {
 	args = ArgNames(v.Ctor, args, names)
 	return Return(v.New(args))
 }
 
-//  constructor(name, field...) builds a record constructor for creating
-//  records with the given type name and field list.
-//  There is no requirement or guarantee that record names be distinct.
+// constructor(name, field...) builds a record constructor for creating
+// records with the given type name and field list.
+// There is no requirement or guarantee that record names be distinct.
 func Constructor(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("constructor", args)
 	name := Identifier(ProcArg(args, 0, NilValue))
@@ -214,7 +214,7 @@ func Constructor(env *Env, args ...Value) (Value, *Closure) {
 	return Return(NewCtor(name, nil, fields))
 }
 
-//  Identifier converts its argument to a Go string and validates its form
+// Identifier converts its argument to a Go string and validates its form
 func Identifier(x Value) string {
 	s := ToString(x).ToUTF8()
 	if !idPattern.MatchString(s) {

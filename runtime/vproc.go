@@ -15,7 +15,7 @@ import (
 
 var _ = fmt.Printf // enable debugging
 
-//  Procedure value
+// Procedure value
 type VProcedure struct {
 	Name     string      // registered name
 	Pnames   *[]string   // parameter names (nil if unknown)
@@ -29,13 +29,13 @@ type VProcedure struct {
 const rProc = 50            // declare sort ranking
 var _ ICore = &VProcedure{} // validate implementation
 
-//  DefProc constructs a procedure from a Goaldi function and a description.
+// DefProc constructs a procedure from a Goaldi function and a description.
 func DefProc(entry Procedure, name string, pspec string, descr string) *VProcedure {
 	pnames, isvar := ParmsFromSpec(pspec)
 	return NewProcedure(name, pnames, isvar, entry, entry, descr)
 }
 
-//  ParmsFromSpec turns a parameter spec into a pnames list and variadic flag
+// ParmsFromSpec turns a parameter spec into a pnames list and variadic flag
 func ParmsFromSpec(pspec string) (*[]string, bool) {
 	isvariadic := strings.HasSuffix(pspec, "[]")
 	if isvariadic {
@@ -45,24 +45,24 @@ func ParmsFromSpec(pspec string) (*[]string, bool) {
 	return &pnames, isvariadic
 }
 
-//  NewProcedure -- construct a procedure value
-//  The result is variadic only if allowvar is true *and* entry is variadic.
+// NewProcedure -- construct a procedure value
+// The result is variadic only if allowvar is true *and* entry is variadic.
 func NewProcedure(name string, pnames *[]string, allowvar bool,
 	entry Procedure, ufunc interface{}, descr string) *VProcedure {
 	isvar := allowvar && reflect.TypeOf(entry).IsVariadic()
 	return &VProcedure{name, pnames, isvar, false, entry, ufunc, descr}
 }
 
-//  ProcType is the procedure instance of type type.
+// ProcType is the procedure instance of type type.
 var ProcType = NewType("procedure", "p", rProc, ProcCtor, nil,
 	"proctype", "x", "succeed if procedure")
 
-//  VProcedure.String -- default conversion to Go string returns "p:procname"
+// VProcedure.String -- default conversion to Go string returns "p:procname"
 func (v *VProcedure) String() string {
 	return "p:" + v.Name
 }
 
-//  VProcedure.GoString -- convert to string for image() and printf("%#v")
+// VProcedure.GoString -- convert to string for image() and printf("%#v")
 func (v *VProcedure) GoString() string {
 	s := "procedure " + v.Name + "("
 	if v.Pnames == nil {
@@ -79,32 +79,32 @@ func (v *VProcedure) GoString() string {
 	return s + ")"
 }
 
-//  VProcedure.Type -- return the procedure type
+// VProcedure.Type -- return the procedure type
 func (v *VProcedure) Type() IRank {
 	return ProcType
 }
 
-//  VProcedure.Copy returns itself
+// VProcedure.Copy returns itself
 func (v *VProcedure) Copy() Value {
 	return v
 }
 
-//  VProcedure.Before compares two procs for sorting
+// VProcedure.Before compares two procs for sorting
 func (a *VProcedure) Before(b Value, i int) bool {
 	return a.Name < b.(*VProcedure).Name
 }
 
-//  VProcedure.Import returns itself
+// VProcedure.Import returns itself
 func (v *VProcedure) Import() Value {
 	return v
 }
 
-//  VProcedure.Export returns the underlying function
+// VProcedure.Export returns the underlying function
 func (v *VProcedure) Export() interface{} {
 	return v.GdProc
 }
 
-//  VProcedure.Call invokes a procedure
+// VProcedure.Call invokes a procedure
 func (v *VProcedure) Call(env *Env, args []Value, names []string) (Value, *Closure) {
 	if v.RawCall {
 		f := v.GoFunc.(func(*Env, []Value, []string) (Value, *Closure))
@@ -115,8 +115,8 @@ func (v *VProcedure) Call(env *Env, args []Value, names []string) (Value, *Closu
 	}
 }
 
-//  proctype(x) returns x if x is a procedure, and fails otherwise.
-//  proctype is the name of the result of main.type().
+// proctype(x) returns x if x is a procedure, and fails otherwise.
+// proctype is the name of the result of main.type().
 func ProcCtor(env *Env, args ...Value) (Value, *Closure) {
 	x := ProcArg(args, 0, NilValue)
 	if p, ok := x.(*VProcedure); ok {
@@ -126,13 +126,13 @@ func ProcCtor(env *Env, args ...Value) (Value, *Closure) {
 	}
 }
 
-//  Go methods already converted to Goaldi procedures
+// Go methods already converted to Goaldi procedures
 var KnownMethods = make(map[uintptr]*VProcedure)
 
-//  ImportMethod(val, name, meth) -- construct a Goaldi method from a Go method.
-//  meth is a method struct such as returned by reflect.Type.MethodByName(),
-//  not a bound method value such as returned by reflect.Value.MethodByName().
-//  No GoShim flags are set, so errors and nil results get no special treatment.
+// ImportMethod(val, name, meth) -- construct a Goaldi method from a Go method.
+// meth is a method struct such as returned by reflect.Type.MethodByName(),
+// not a bound method value such as returned by reflect.Value.MethodByName().
+// No GoShim flags are set, so errors and nil results get no special treatment.
 func ImportMethod(val Value, name string, meth reflect.Method) Value {
 	addr := meth.Func.Pointer()
 	p := KnownMethods[addr]
@@ -145,16 +145,16 @@ func ImportMethod(val Value, name string, meth reflect.Method) Value {
 	return MethodVal(p, Deref(val))
 }
 
-//  Flags for how GoShim should handle special return situations.
-//  ETOSS and RNILF may both be set in which case ETOSS is applied first.
+// Flags for how GoShim should handle special return situations.
+// ETOSS and RNILF may both be set in which case ETOSS is applied first.
 const (
 	RNORM = 0 // normal return
 	ETOSS = 1 // strip final error return and throw exception if not nil
 	RNILF = 2 // turn a sole nil return value into failure
 )
 
-//  GoShim(name, func, retf) makes a shim for converting args to a Go function.
-//  retf indicates the special handling, if any, of function returns.
+// GoShim(name, func, retf) makes a shim for converting args to a Go function.
+// retf indicates the special handling, if any, of function returns.
 func GoShim(name string, f interface{} /*func*/, retf int) Procedure {
 
 	//  get information about the Go function
@@ -253,8 +253,8 @@ func GoShim(name string, f interface{} /*func*/, retf int) Procedure {
 	}
 }
 
-//  passfunc returns a function that converts a Goaldi value
-//  into a Go reflect.Value of the specified type
+// passfunc returns a function that converts a Goaldi value
+// into a Go reflect.Value of the specified type
 func passfunc(t reflect.Type) func(Value) reflect.Value {
 	k := t.Kind()
 	switch k {

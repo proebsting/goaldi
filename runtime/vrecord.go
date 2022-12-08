@@ -15,12 +15,12 @@ type VRecord struct {
 const rRecord = 80       // declare sort ranking
 var _ ICore = &VRecord{} // validate implementation
 
-//  VRecord.String -- conversion to Go string returns "name{}"
+// VRecord.String -- conversion to Go string returns "name{}"
 func (v *VRecord) String() string {
 	return v.Ctor.TypeName + "{}"
 }
 
-//  VRecord.GoString -- returns string for image() and printf("%#v")
+// VRecord.GoString -- returns string for image() and printf("%#v")
 func (v *VRecord) GoString() string {
 	if len(v.Data) == 0 {
 		return v.Ctor.TypeName + "{}"
@@ -35,19 +35,19 @@ func (v *VRecord) GoString() string {
 	return string(s)
 }
 
-//  VRecord.Type returns the underlying constructor
+// VRecord.Type returns the underlying constructor
 func (v *VRecord) Type() IRank {
 	return v.Ctor
 }
 
-//  VRecord.Copy returns a distinct copy of itself
+// VRecord.Copy returns a distinct copy of itself
 func (v *VRecord) Copy() Value {
 	r := &VRecord{v.Ctor, make([]Value, len(v.Data))}
 	copy(r.Data, v.Data)
 	return r
 }
 
-//  VRecord.Before compares two records for sorting on field i
+// VRecord.Before compares two records for sorting on field i
 func (a *VRecord) Before(x Value, i int) bool {
 	b := x.(*VRecord)
 	if a.Ctor != b.Ctor {
@@ -63,12 +63,12 @@ func (a *VRecord) Before(x Value, i int) bool {
 	}
 }
 
-//  VRecord.Import returns itself
+// VRecord.Import returns itself
 func (v *VRecord) Import() Value {
 	return v
 }
 
-//  VRecord.Export returns itself
+// VRecord.Export returns itself
 func (v *VRecord) Export() interface{} {
 	return v
 }

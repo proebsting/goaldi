@@ -13,18 +13,18 @@ import (
 
 const rExternal = 99 // declare sort ranking
 
-//  ExternalType defines the type "external", which is mostly just a stub
+// ExternalType defines the type "external", which is mostly just a stub
 var ExternalType = NewType("external", "X", rExternal, External, nil,
 	"external", "x", "export and re-import")
 
-//  external(x) exports and then re-imports the value x.
+// external(x) exports and then re-imports the value x.
 func External(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("external", args)
 	x := ProcArg(args, 0, NilValue)
 	return Return(Import(Export(x)))
 }
 
-//  Import(x) builds a value of appropriate Goaldi type
+// Import(x) builds a value of appropriate Goaldi type
 func Import(x interface{}) Value {
 
 	// must check first for a typed nil
@@ -100,7 +100,7 @@ func Import(x interface{}) Value {
 	}
 }
 
-//  Export(v) returns the default Go representation of a Goaldi value
+// Export(v) returns the default Go representation of a Goaldi value
 func Export(v Value) interface{} {
 	if x, ok := v.(IExport); ok {
 		return x.Export()

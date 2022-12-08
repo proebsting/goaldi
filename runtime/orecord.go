@@ -9,7 +9,7 @@ import (
 
 var _ = fmt.Printf // enable debugging
 
-//  VRecord.Field() implements a field reference R.k
+// VRecord.Field() implements a field reference R.k
 func (v *VRecord) Field(f string) Value {
 	d := v.Ctor
 	i := d.Fmap[f]
@@ -31,7 +31,7 @@ func (v *VRecord) Field(f string) Value {
 	panic(NewExn("Field not found: "+f, v))
 }
 
-//  VRecord.Index(lval, x) implements an indexed reference R[x]
+// VRecord.Index(lval, x) implements an indexed reference R[x]
 func (v *VRecord) Index(lval Value, x Value) Value {
 	i, _ := v.Ctor.Lookup(x)
 	if i < 0 {
@@ -43,12 +43,12 @@ func (v *VRecord) Index(lval Value, x Value) Value {
 	}
 }
 
-//  VRecord.Size() implements *R, returning the number of fields
+// VRecord.Size() implements *R, returning the number of fields
 func (v *VRecord) Size() Value {
 	return NewNumber(float64(len(v.Data)))
 }
 
-//  VRecord.Choose() implements ?R
+// VRecord.Choose() implements ?R
 func (v *VRecord) Choose(lval Value) Value {
 	n := len(v.Data)
 	if n == 0 {
@@ -60,7 +60,7 @@ func (v *VRecord) Choose(lval Value) Value {
 	}
 }
 
-//  VRecord.Dispense() implements !R to generate the field values
+// VRecord.Dispense() implements !R to generate the field values
 func (v *VRecord) Dispense(lval Value) (Value, *Closure) {
 	var c *Closure
 	i := -1

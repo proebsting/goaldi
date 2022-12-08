@@ -13,12 +13,12 @@ func init() {
 const MAPSIZE = 128 // initial mapping table size
 const MMARGIN = 128 // extra margin to allow when growing the mapping table
 
-//  map(s,from,into) produces a new string that result from mapping the
-//  individual characters of a source string.
-//  Each character of s that appears in the "from" string is replaced by
-//  the corresponding character of the "into" string.  If there is no
-//  corresponding character, because "into" is shorter, then the character
-//  from s is discarded.
+// map(s,from,into) produces a new string that result from mapping the
+// individual characters of a source string.
+// Each character of s that appears in the "from" string is replaced by
+// the corresponding character of the "into" string.  If there is no
+// corresponding character, because "into" is shorter, then the character
+// from s is discarded.
 func Map(env *Env, args ...Value) (Value, *Closure) {
 	defer Traceback("map", args)
 

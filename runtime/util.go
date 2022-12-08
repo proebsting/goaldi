@@ -7,19 +7,19 @@ import (
 	"sort"
 )
 
-//  AllKeys generates (over a channel) the keys of a map[string].
-//  usage:  for k := range AllKeys(mymap) { ... }
+// AllKeys generates (over a channel) the keys of a map[string].
+// usage:  for k := range AllKeys(mymap) { ... }
 func AllKeys(m interface{}) chan string {
 	return genKeys(m, false)
 }
 
-//  SortedKeys generates in order (over a channel) the keys of a map[string].
-//  usage:  for k := range SortedKeys(mymap) { ... }
+// SortedKeys generates in order (over a channel) the keys of a map[string].
+// usage:  for k := range SortedKeys(mymap) { ... }
 func SortedKeys(m interface{}) chan string {
 	return genKeys(m, true)
 }
 
-//  genKeys does the actual work for AllKeys and SortedKeys.
+// genKeys does the actual work for AllKeys and SortedKeys.
 func genKeys(m interface{}, doSort bool) chan string {
 	vlist := reflect.ValueOf(m).MapKeys()
 	n := len(vlist)

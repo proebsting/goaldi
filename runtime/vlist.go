@@ -13,8 +13,8 @@ import (
 	"fmt"
 )
 
-//  A Goaldi list is a Go slice of values.
-//  The values are reversed if the last addition was via "push".
+// A Goaldi list is a Go slice of values.
+// The values are reversed if the last addition was via "push".
 type VList struct {
 	data []Value // current list contents
 	rev  bool    // true if list is reversed
@@ -23,11 +23,11 @@ type VList struct {
 const rList = 60       // declare sort ranking
 var _ ICore = &VList{} // validate implementation
 
-//  ListType is the list instance of type type.
+// ListType is the list instance of type type.
 var ListType = NewType("list", "L", rList, List, ListMethods,
 	"list", "size,x", "create list of copies of x")
 
-//  NewList(n, x) -- make a new list of n elements each initialized to copy(x)
+// NewList(n, x) -- make a new list of n elements each initialized to copy(x)
 func NewList(n int, x Value) *VList {
 	v := &VList{make([]Value, n), false}
 	for i := range v.data {
@@ -36,13 +36,13 @@ func NewList(n int, x Value) *VList {
 	return v
 }
 
-//  InitList(v []Value) -- construct a new VList containing the given list
-//  (directly, without copying)
+// InitList(v []Value) -- construct a new VList containing the given list
+// (directly, without copying)
 func InitList(v []Value) *VList {
 	return &VList{v, false}
 }
 
-//  VList.Elem(i) -- return the ith element, allowing for a reversed list
+// VList.Elem(i) -- return the ith element, allowing for a reversed list
 func (v *VList) Elem(i int) Value {
 	n := len(v.data)
 	if i < 0 || i >= n {
@@ -54,12 +54,12 @@ func (v *VList) Elem(i int) Value {
 	}
 }
 
-//  VList.String -- default conversion to Go string produces L:size
+// VList.String -- default conversion to Go string produces L:size
 func (v *VList) String() string {
 	return fmt.Sprintf("L:%d", len(v.data))
 }
 
-//  VList.GoString -- convert to Go string for image() and printf("%#v")
+// VList.GoString -- convert to Go string for image() and printf("%#v")
 func (v *VList) GoString() string {
 	if len(v.data) == 0 {
 		return "[]"
@@ -74,17 +74,17 @@ func (v *VList) GoString() string {
 	return string(s)
 }
 
-//  VList.Type -- return the list type
+// VList.Type -- return the list type
 func (v *VList) Type() IRank {
 	return ListType
 }
 
-//  VList.Copy returns a new list with identical contents
+// VList.Copy returns a new list with identical contents
 func (v *VList) Copy() Value {
 	return InitList(v.Export().([]Value))
 }
 
-//  VList.Before compares two lists for sorting on field i
+// VList.Before compares two lists for sorting on field i
 func (a *VList) Before(x Value, i int) bool {
 	b := x.(*VList)
 	if i >= 0 && len(a.data) > i && len(b.data) > i {
@@ -97,12 +97,12 @@ func (a *VList) Before(x Value, i int) bool {
 	}
 }
 
-//  VList.Import returns itself
+// VList.Import returns itself
 func (v *VList) Import() Value {
 	return v
 }
 
-//  VList.Export returns a copy of the data slice.
+// VList.Export returns a copy of the data slice.
 func (v *VList) Export() interface{} {
 	n := len(v.data)
 	r := make([]Value, n)
@@ -120,17 +120,17 @@ type vListRef struct {
 	ix   int    // zero-based nonnegative Go index
 }
 
-//  vListRef.String() -- show string representation: produces (list[k])
+// vListRef.String() -- show string representation: produces (list[k])
 func (lr *vListRef) String() string {
 	return fmt.Sprintf("(list[%v])", lr.ix)
 }
 
-//  vListRef.Deref() -- extract value from list
+// vListRef.Deref() -- extract value from list
 func (lr *vListRef) Deref() Value {
 	return lr.list.Elem(lr.ix)
 }
 
-//  vListRef.Assign -- store value in list
+// vListRef.Assign -- store value in list
 func (lr *vListRef) Assign(v Value) IVariable {
 	list := lr.list
 	n := len(list.data)
@@ -146,7 +146,7 @@ func (lr *vListRef) Assign(v Value) IVariable {
 
 //  -------------------------- internal functions ---------------------
 
-//  vList.Grow(front, name, args) -- put or push onto list
+// vList.Grow(front, name, args) -- put or push onto list
 func (v *VList) Grow(front bool, name string, args ...Value) (Value, *Closure) {
 	defer Traceback(name, args)
 	if front != v.rev { // if wrong way around for appending
@@ -157,7 +157,7 @@ func (v *VList) Grow(front bool, name string, args ...Value) (Value, *Closure) {
 	return Return(v)
 }
 
-//  vList.Snip(front, name, args) -- remove / return value from front or back
+// vList.Snip(front, name, args) -- remove / return value from front or back
 func (v *VList) Snip(front bool, name string, args ...Value) (Value, *Closure) {
 	defer Traceback(name, args)
 	if len(v.data) == 0 {
@@ -177,7 +177,7 @@ func (v *VList) Snip(front bool, name string, args ...Value) (Value, *Closure) {
 	}
 }
 
-//  ReverseValues(v) reverses a slice of values in place.
+// ReverseValues(v) reverses a slice of values in place.
 func ReverseValues(v []Value) {
 	n := len(v)
 	for i := n/2 - 1; i >= 0; i-- {

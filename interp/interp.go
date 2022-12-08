@@ -7,7 +7,7 @@ import (
 	g "github.com/proebsting/goaldi/runtime"
 )
 
-//  procedure frame
+// procedure frame
 type pr_frame struct {
 	env   *g.Env                 // dynamic execution environment
 	info  *pr_Info               // static procedure information
@@ -20,7 +20,7 @@ type pr_frame struct {
 	onerr *g.VProcedure          // recovery procedure
 }
 
-//  newframe(f) -- duplicate a procedure frame for "create e"
+// newframe(f) -- duplicate a procedure frame for "create e"
 func newframe(f *pr_frame) *pr_frame {
 	fnew := &pr_frame{} // allocate new frame
 	*fnew = *f          // duplicate values
@@ -41,7 +41,7 @@ func newframe(f *pr_frame) *pr_frame {
 	return fnew
 }
 
-//  duplvars(a) -- duplicate a list of (trapped) variables or parameters
+// duplvars(a) -- duplicate a list of (trapped) variables or parameters
 func duplvars(a []g.Value) []g.Value {
 	b := make([]g.Value, len(a))
 	for i, x := range a {
@@ -50,7 +50,7 @@ func duplvars(a []g.Value) []g.Value {
 	return b
 }
 
-//  interp -- interpret one procedure
+// interp -- interpret one procedure
 func interp(env *g.Env, pr *pr_Info, outer map[string]interface{},
 	args ...g.Value) (g.Value, *g.Closure) {
 

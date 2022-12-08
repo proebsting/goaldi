@@ -7,32 +7,32 @@ import (
 	"reflect"
 )
 
-//  VTable.Size -- return the table size
+// VTable.Size -- return the table size
 func (T *VTable) Size() Value {
 	return NewNumber(float64(len(T.data)))
 }
 
-//  VTable.Choose -- return random element as (key,value) pair
+// VTable.Choose -- return random element as (key,value) pair
 func (T *VTable) Choose(lval Value) Value {
 	return ChooseMap(T.data)
 }
 
-//  VTable.Take -- return random element as (key,value) pair
+// VTable.Take -- return random element as (key,value) pair
 func (T *VTable) Take(lval Value) Value {
 	return TakeMap(T.data)
 }
 
-//  VTable.Dispense -- generate table contents as (key,value) pairs
+// VTable.Dispense -- generate table contents as (key,value) pairs
 func (T *VTable) Dispense(lval Value) (Value, *Closure) {
 	return DispenseMap(T.data)
 }
 
-//  T.Index(lval, x) implements the [] operator.
+// T.Index(lval, x) implements the [] operator.
 func (T *VTable) Index(lval Value, x Value) Value {
 	return TrapMap(T, x)
 }
 
-//  ChooseMap returns a key/value pair from any Goaldi table or Go map
+// ChooseMap returns a key/value pair from any Goaldi table or Go map
 func ChooseMap(T interface{} /*anymap*/) Value {
 	mv := reflect.ValueOf(T)
 	klist := mv.MapKeys()
@@ -46,7 +46,7 @@ func ChooseMap(T interface{} /*anymap*/) Value {
 	return ElemType.New([]Value{k, v})
 }
 
-//  TakeMap returns a key/value pair after removal from the underlying map.
+// TakeMap returns a key/value pair after removal from the underlying map.
 func TakeMap(T interface{} /*anymap*/) Value {
 	kv := ChooseMap(T)
 	if kv != nil {
@@ -56,7 +56,7 @@ func TakeMap(T interface{} /*anymap*/) Value {
 	return kv
 }
 
-//  DispenseMap generates key/value pairs for any Goaldi table or Go map
+// DispenseMap generates key/value pairs for any Goaldi table or Go map
 func DispenseMap(T interface{} /*anymap*/) (Value, *Closure) {
 	mv := reflect.ValueOf(T)
 	klist := mv.MapKeys()
@@ -81,7 +81,7 @@ func DispenseMap(T interface{} /*anymap*/) (Value, *Closure) {
 
 //  -------------------------- trapped references ---------------------
 
-//  vMapTrap is a trapped reference T[k] into a Goaldi table or Go map
+// vMapTrap is a trapped reference T[k] into a Goaldi table or Go map
 type vMapTrap struct {
 	gmap  bool          // true if a Goaldi (not Go) map
 	dfval Value         // default value if a Goaldi map
@@ -89,7 +89,7 @@ type vMapTrap struct {
 	keyv  reflect.Value // key converted to appropriate Go type
 }
 
-//  TrapMap(T,k) creates a trapped variable for T[k]
+// TrapMap(T,k) creates a trapped variable for T[k]
 func TrapMap(x Value, key Value) *vMapTrap {
 	if T, ok := x.(*VTable); ok {
 		// this is a Goaldi table; must convert string or number key
@@ -102,12 +102,12 @@ func TrapMap(x Value, key Value) *vMapTrap {
 	}
 }
 
-//  vMapTrap.Exists() returns true if the reference matches an existing key
+// vMapTrap.Exists() returns true if the reference matches an existing key
 func (t *vMapTrap) Exists() bool {
 	return t.mapv.MapIndex(t.keyv).IsValid()
 }
 
-//  vMapTrap.Deref() returns the indexed value, or the default if not found
+// vMapTrap.Deref() returns the indexed value, or the default if not found
 func (t *vMapTrap) Deref() Value {
 	v := t.mapv.MapIndex(t.keyv)
 	if v.IsValid() {
@@ -119,7 +119,7 @@ func (t *vMapTrap) Deref() Value {
 	}
 }
 
-//  vMapTrap.Assign(x) stores x as a map entry using the trapped key
+// vMapTrap.Assign(x) stores x as a map entry using the trapped key
 func (t *vMapTrap) Assign(x Value) IVariable {
 	if t.gmap { // if Goaldi table
 		t.mapv.SetMapIndex(t.keyv, reflect.ValueOf(x))
@@ -129,7 +129,7 @@ func (t *vMapTrap) Assign(x Value) IVariable {
 	return t
 }
 
-//  vMapTrap.Delete() removes the entry, if any, associated with the trapped key
+// vMapTrap.Delete() removes the entry, if any, associated with the trapped key
 func (t *vMapTrap) Delete() {
 	t.mapv.SetMapIndex(t.keyv, reflect.Value{})
 }
