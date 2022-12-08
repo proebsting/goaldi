@@ -15,6 +15,7 @@ import (
 	g "github.com/proebsting/goaldi/runtime"
 	"github.com/proebsting/goaldi/tran"
 	"io"
+	"math/rand"
 	"os"
 	"runtime"
 	"runtime/pprof"
@@ -124,6 +125,7 @@ func main() {
 	}
 
 	// before running any initialization code, make sure main() exists
+	rand.Seed(1) // ensure reproducible random numbers
 	gmain := PubSpace.Get("main")
 	if gmain == nil {
 		abort("no main procedure")
