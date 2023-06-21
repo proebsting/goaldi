@@ -637,8 +637,9 @@ it will be of type *PathError.
 rename(old,new) -- change file name [silver]_(http://golang.org/pkg/os#Rename[os.Rename])_::
 Rename renames (moves) oldpath to newpath. If newpath already exists and
 is not a directory, Rename replaces it. OS-specific restrictions may apply
-when oldpath and newpath are in different directories. If there is an error,
-it will be of type *LinkError.
+when oldpath and newpath are in different directories. Even within the
+same directory, on non-Unix platforms Rename is not an atomic operation.
+If there is an error, it will be of type *LinkError.
 
 repl(s,count) -- concatenate copies of s [silver]_(http://golang.org/pkg/strings#Repeat[strings.Repeat])_::
 Repeat returns a new string consisting of count copies of the string s.
