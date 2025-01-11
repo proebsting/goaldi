@@ -164,10 +164,10 @@ system.
 On Unix, the mode's permission bits, ModeSetuid, ModeSetgid, and ModeSticky
 are used.
 +
-On Windows, only the 0200 bit (owner writable) of mode is used; it controls
+On Windows, only the 0o200 bit (owner writable) of mode is used; it controls
 whether the file's read-only attribute is set or cleared. The other bits are
 currently unused. For compatibility with Go 1.12 and earlier, use a non-zero
-mode. Use mode 0400 for a read-only file and 0600 for a readable+writable
+mode. Use mode 0o400 for a read-only file and 0o600 for a readable+writable
 file.
 +
 On Plan 9, the mode's permission bits, ModeAppend, ModeExclusive, and
@@ -368,9 +368,12 @@ getppid() -- get parent process ID [silver]_(http://golang.org/pkg/os#Getppid[os
 Getppid returns the process id of the caller's parent.
 
 getwd() -- get working directory [silver]_(http://golang.org/pkg/os#Getwd[os.Getwd])_::
-Getwd returns a rooted path name corresponding to the current directory.
+Getwd returns an absolute path name corresponding to the current directory.
 If the current directory can be reached via multiple paths (due to symbolic
 links), Getwd may return any one of them.
++
+On Unix platforms, if the environment variable PWD provides an absolute
+name, and it is a name of the current directory, it is returned.
 
 gmean(n[]) -- compute geometric mean::
 gmean(n,...) returns the geometric mean of its arguments, which must all be
@@ -636,7 +639,8 @@ it will be of type *PathError.
 
 rename(old,new) -- change file name [silver]_(http://golang.org/pkg/os#Rename[os.Rename])_::
 Rename renames (moves) oldpath to newpath. If newpath already exists and
-is not a directory, Rename replaces it. OS-specific restrictions may apply
+is not a directory, Rename replaces it. If newpath already exists and is
+a directory, Rename returns an error. OS-specific restrictions may apply
 when oldpath and newpath are in different directories. Even within the
 same directory, on non-Unix platforms Rename is not an atomic operation.
 If there is an error, it will be of type *LinkError.
@@ -680,6 +684,9 @@ Deprecated: As of Go 1.20 there is no reason to call Seed with a random
 value. Programs that call Seed with a known value to get a specific
 sequence of results should use New(NewSource(seed)) to obtain a local random
 generator.
++
+As of Go 1.24 Seed is a no-op. To restore the previous behavior set
+GODEBUG=randseednop=0.
 
 f.seek(n) -- set file position::
 f.seek(n) sets the position for the next read or write on file f. File
