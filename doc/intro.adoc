@@ -35,11 +35,6 @@ The library is easily extensible by additional Go code.
 The implementation can be downloaded (in source or binary form) from
 https://github.com/proebsting/goaldi[github.com/proebsting/goaldi].
 
-A https://list.arizona.edu/sympa/info/goaldi-language[mailing list]
-has been established for announcements and discussions. Please
-https://list.arizona.edu/sympa/subscribe/goaldi-language[subscribe]
-to stay informed of Goaldi developments.
-
 The name “Goaldi” is pronounced to rhyme with “moldy” (not “malady” or
 “o’baldy”).
 

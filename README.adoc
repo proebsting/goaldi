@@ -37,11 +37,5 @@ Just unpack the appropriate *.tgz* file and run the *goaldi* executable.
 * link:doc/build.adoc[Installation and Internals]
 
 
-== Discussion List
-A https://list.arizona.edu/sympa/info/goaldi-language[mailing list]
-has been established for announcements and discussions.
-Please https://list.arizona.edu/sympa/subscribe/goaldi-language[subscribe]
-to stay informed of Goaldi developments.
-
 == Contact Us Directly
 Reach us by e-mail at goaldi@cs.arizona.edu.

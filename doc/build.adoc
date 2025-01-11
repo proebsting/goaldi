@@ -132,16 +132,6 @@ By far the largest example is the Goaldi front-end itself, in the tran
 directory.  This is derived, via manual conversion and extensive
 editing, from the Jcon translator of Icon.
 
-Discussion List
-~~~~~~~~~~~~~~~
-
-A mailing list has been established at
-https://list.arizona.edu/sympa/info/goaldi-language[list.arizona.edu] for
-announcements and discussions related to the Goaldi language.  Please
-https://list.arizona.edu/sympa/subscribe/goaldi-language[subscribe
-yourself] (or just ask us, and we’ll add you) to stay informed and to
-contribute as you wish.
-
 Contact Us Directly
 ~~~~~~~~~~~~~~~~~~~
 
